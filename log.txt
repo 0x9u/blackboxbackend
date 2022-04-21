@@ -1,0 +1,186 @@
+INFO 2022/04/02 10:56:45 Handling requests
+INFO 2022/04/02 10:56:51 Sent all messages to client
+INFO 2022/04/02 21:41:47 Handling requests
+ERROR 2022/04/02 21:44:18 invalid character '-' in numeric literal
+ERROR 2022/04/02 21:45:53 invalid character '-' in numeric literal
+ERROR 2022/04/02 21:46:18 invalid character '-' in numeric literal
+ERROR 2022/04/02 21:47:57 invalid character 'a' looking for beginning of value
+ERROR 2022/04/02 21:48:11 invalid character '-' in numeric literal
+INFO 2022/04/02 21:49:57 Handling requests
+INFO 2022/04/02 21:50:03 ----------------------------531750148568901222730744
+Content-Disposition: form-data; name="{author"
+
+"bob",
+----------------------------531750148568901222730744
+Content-Disposition: form-data; name="content"
+
+"Hello testing 123"}
+----------------------------531750148568901222730744--
+
+ERROR 2022/04/02 21:50:03 invalid character '-' in numeric literal
+INFO 2022/04/02 21:50:32 {
+    "author" : "bruh",
+    "content" : "ass"
+}
+INFO 2022/04/02 21:50:32 Message recieved ass
+INFO 2022/04/02 21:57:37 {
+    "id" : "central3:bpteto1se7977g8w1a3wo7q127t03p",
+    "msg" : "hello!"
+}
+INFO 2022/04/02 21:57:37 Message recieved 
+INFO 2022/04/02 21:58:12 ----------------------------559867993266467044378947
+Content-Disposition: form-data; name="msg"
+
+
+----------------------------559867993266467044378947
+Content-Disposition: form-data; name="id"
+
+
+----------------------------559867993266467044378947--
+
+ERROR 2022/04/02 21:58:12 invalid character '-' in numeric literal
+INFO 2022/04/04 21:53:23 Handling requests
+INFO 2022/04/04 21:55:46 Handling requests
+ERROR 2022/04/04 21:55:50 pq: SSL is not enabled on the server
+ERROR 2022/04/04 21:56:11 pq: SSL is not enabled on the server
+ERROR 2022/04/04 21:56:17 pq: SSL is not enabled on the server
+INFO 2022/04/04 21:57:36 Handling requests
+ERROR 2022/04/04 21:57:38 pq: SSL is not enabled on the server
+ERROR 2022/04/04 21:57:42 pq: SSL is not enabled on the server
+INFO 2022/04/04 22:02:18 Handling requests
+ERROR 2022/04/04 22:02:21 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:12:35 Handling requests
+INFO 2022/04/04 22:12:37 limit: , timestamp 2022-04-04 22:12:37.3961175 +1000 AEST m=+2.074043701
+ERROR 2022/04/04 22:12:37 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:14:41 Handling requests
+INFO 2022/04/04 22:14:42 limit: 50, timestamp �
+ERROR 2022/04/04 22:14:42 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:14:47 limit: 50, timestamp �
+ERROR 2022/04/04 22:14:47 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:14:52 Handling requests
+INFO 2022/04/04 22:14:54 limit: 50, timestamp �
+ERROR 2022/04/04 22:14:54 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:15:37 Handling requests
+INFO 2022/04/04 22:15:41 limit: 50, timestamp 1649074541
+ERROR 2022/04/04 22:15:41 pq: syntax error at or near "LIMIT"
+INFO 2022/04/04 22:18:36 Handling requests
+INFO 2022/04/04 22:18:39 limit: 50, timestamp 1649074719
+ERROR 2022/04/04 22:18:39 pq: syntax error at or near "ORDER"
+INFO 2022/04/05 18:06:58 Handling requests
+INFO 2022/04/05 18:07:03 limit: 50, timestamp 1649146023
+ERROR 2022/04/05 18:07:03 pq: syntax error at or near "ORDER"
+INFO 2022/04/05 18:14:43 Handling requests
+INFO 2022/04/05 18:14:46 limit: 50, timestamp 1649146486
+INFO 2022/04/05 18:18:06 Handling requests
+INFO 2022/04/05 18:18:11 limit: 50, timestamp 1649146691
+ERROR 2022/04/05 18:18:11 pq: syntax error at or near "ORDER"
+INFO 2022/04/05 18:20:37 Handling requests
+INFO 2022/04/05 18:20:42 limit: 50, timestamp 1649146842
+ERROR 2022/04/05 18:20:42 pq: syntax error at end of input
+INFO 2022/04/05 18:20:56 Handling requests
+INFO 2022/04/05 18:20:57 limit: 50, timestamp 1649146857
+INFO 2022/04/05 18:21:42 Handling requests
+INFO 2022/04/05 18:21:44 limit: 50, timestamp 1649146904
+ERROR 2022/04/05 18:21:44 pq: syntax error at or near "ORDER"
+INFO 2022/04/05 18:24:26 Handling requests
+INFO 2022/04/05 18:24:30 limit: 50, timestamp 1649147070
+ERROR 2022/04/05 18:24:30 pq: syntax error at or near "ORDER"
+INFO 2022/04/05 18:25:33 Handling requests
+INFO 2022/04/05 18:25:38 limit: 50, timestamp 1649147138
+INFO 2022/04/05 18:28:07 Handling requests
+INFO 2022/04/05 18:28:08 limit: 50, timestamp 1649147288
+INFO 2022/04/05 18:28:09 limit: 50, timestamp 1649147289
+INFO 2022/04/05 18:28:10 limit: 50, timestamp 1649147290
+INFO 2022/04/05 18:28:11 limit: 50, timestamp 1649147291
+INFO 2022/04/05 18:28:12 limit: 50, timestamp 1649147292
+INFO 2022/04/05 18:29:37 Handling requests
+INFO 2022/04/05 18:29:47 
+ERROR 2022/04/05 18:29:47 unexpected end of JSON input
+INFO 2022/04/05 18:33:50 
+ERROR 2022/04/05 18:33:50 unexpected end of JSON input
+INFO 2022/04/05 18:35:22 Handling requests
+INFO 2022/04/05 18:35:24 
+ERROR 2022/04/05 18:35:24 unexpected end of JSON input
+INFO 2022/04/05 18:35:30 
+ERROR 2022/04/05 18:35:30 unexpected end of JSON input
+INFO 2022/04/05 18:35:54 Handling requests
+INFO 2022/04/05 18:36:26 limit: 50, timestamp a
+ERROR 2022/04/05 18:36:26 pq: invalid input syntax for type bigint: "a"
+INFO 2022/04/05 18:36:51 Handling requests
+INFO 2022/04/05 18:36:52 limit: 50, timestamp a
+ERROR 2022/04/05 18:36:52 pq: invalid input syntax for type bigint: "a"
+INFO 2022/04/05 18:39:24 limit: 50, timestamp 1649147964
+INFO 2022/04/05 18:40:18 {
+    "Author" : 124812,
+    "Content" : "abc 123 u and me",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:40:18 Message recieved abc 123 u and me
+ERROR 2022/04/05 18:40:18 pq: INSERT has more expressions than target columns
+INFO 2022/04/05 18:40:32 Handling requests
+INFO 2022/04/05 18:40:33 {
+    "Author" : 124812,
+    "Content" : "abc 123 u and me",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:40:33 Message recieved abc 123 u and me
+INFO 2022/04/05 18:45:35 limit: 50, timestamp 50
+INFO 2022/04/05 18:45:44 limit: 50, timestamp 100000
+INFO 2022/04/05 18:45:47 limit: 50, timestamp 1000000
+INFO 2022/04/05 18:46:09 Handling requests
+INFO 2022/04/05 18:46:10 limit: 50, timestamp 1000000
+INFO 2022/04/05 18:46:23 Handling requests
+INFO 2022/04/05 18:46:23 limit: 50, timestamp 1000000
+INFO 2022/04/05 18:47:52 Handling requests
+INFO 2022/04/05 18:47:52 limit: 50, timestamp 1000000
+INFO 2022/04/05 18:48:03 Handling requests
+INFO 2022/04/05 18:48:07 {
+    "Author" : 124812,
+    "Content" : "abc 123 u and me",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:48:07 Message recieved abc 123 u and me
+ERROR 2022/04/05 18:48:07 pq: got 3 parameters but the statement requires 4
+INFO 2022/04/05 18:48:20 Handling requests
+INFO 2022/04/05 18:48:20 {
+    "Author" : 124812,
+    "Content" : "abc 123 u and me",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:48:20 Message recieved abc 123 u and me
+ERROR 2022/04/05 18:48:20 pq: INSERT has more target columns than expressions
+INFO 2022/04/05 18:48:31 Handling requests
+INFO 2022/04/05 18:48:31 {
+    "Author" : 124812,
+    "Content" : "abc 123 u and me",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:48:31 Message recieved abc 123 u and me
+INFO 2022/04/05 18:49:01 Handling requests
+INFO 2022/04/05 18:49:05 {
+    "Author" : 124812,
+    "Content" : "new thing",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:49:05 Message recieved new thing
+INFO 2022/04/05 18:49:16 limit: 50, timestamp 1000000
+INFO 2022/04/05 18:49:21 limit: 50, timestamp 1649148561
+INFO 2022/04/05 18:54:05 Handling requests
+INFO 2022/04/05 18:54:20 {
+    "Author" : 124812,
+    "Content" : "new thing",
+    "Guild" : 1,
+    "time" : 1
+}
+INFO 2022/04/05 18:54:20 Message recieved new thing
+INFO 2022/04/05 18:54:29 limit: 50, timestamp 1649148869
+INFO 2022/04/05 18:54:32 limit: 50, timestamp 1649148872
+INFO 2022/04/09 00:01:01 Handling requests
+INFO 2022/04/14 13:31:10 Handling requests
+ERROR 2022/04/14 13:35:12 sql: converting argument $2 type: unsupported type [32]uint8, a array
