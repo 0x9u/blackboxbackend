@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -23,6 +24,14 @@ var (
 	tokens   = make(map[string]session)   // tokens : user ids
 )
 
+var (
+	errorToken          = errors.New("token is not provided")
+	errorInvalidToken   = errors.New("token is invalid")
+	errorExpiredToken   = errors.New("token has expired")
+	errorNotInGuild     = errors.New("user is not in guild")
+	errorUsernameExists = errors.New("username already exists")
+)
+
 const (
 	host       = "localhost"
 	port       = 5432
@@ -32,13 +41,12 @@ const (
 	sslenabled = "disable"
 )
 
-/*
-func reportError(w http.ResponseWriter, err error) {
+func reportError(status int, w http.ResponseWriter, err error) {
 	log.WriteLog(logger.ERROR, err.Error())
+	w.WriteHeader(status)
 	w.Write([]byte("bad request"))
-	w.WriteHeader(http.StatusBadRequest)
 }
-*/
+
 var characters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 func generateRandString(l int) string { //copied from stackoverflow
@@ -84,17 +92,19 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/send", msgRecieve)
 	r.HandleFunc("/api/msg", msgSend)
-	r.HandleFunc("/api/ws", msgSocket)
+	r.HandleFunc("/api/ws", webSocket)
 	r.HandleFunc("/api/reset", msgReset)
 	r.HandleFunc("/api/login", userlogin)
 	r.HandleFunc("/api/signup", createuser)
 	r.HandleFunc("/api/guild/create", createGuild)
+	r.HandleFunc("/api/guild/geninv", genGuildInvite)
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"
+	//Allow any connection /*/ for client side routing
 	log.WriteLog(logger.INFO, "Handling requests")
 	http.Handle("/", r)
-	http.ListenAndServe(":8090", nil)
+	log.WriteLog(logger.FATAL, http.ListenAndServe(":8090", nil).Error())
 }
 
 func initWs() {
