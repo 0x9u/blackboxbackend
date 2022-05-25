@@ -2339,3 +2339,285 @@ INFO 2022/05/24 07:47:03 ping token SqQlx1E6g3HYnQg6 actual token SqQlx1E6g3HYnQ
 ERROR 2022/05/24 07:47:04 read tcp 127.0.0.1:8090->127.0.0.1:54314: i/o timeout
 INFO 2022/05/24 07:47:04 Disconnecting websocket
 INFO 2022/05/24 07:47:04 Leaving websocket
+INFO 2022/05/24 16:00:42 Handling requests
+INFO 2022/05/24 16:00:47 time to add 1440h0m0s
+INFO 2022/05/24 16:00:47 time now unix 1653372047
+INFO 2022/05/24 16:02:53 Handling requests
+INFO 2022/05/24 16:02:54 time to add 1440h0m0s
+INFO 2022/05/24 16:02:54 time now unix 1653372174
+INFO 2022/05/24 16:03:07 ping token SqQlx1E6g3HYnQg6 actual token z4dRoIwVVkiTaxJD
+INFO 2022/05/24 16:03:07 Disconnecting websocket as it is a invalid token
+INFO 2022/05/24 16:03:07 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:03:21 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+ERROR 2022/05/24 16:03:22 read tcp 127.0.0.1:8090->127.0.0.1:55866: i/o timeout
+INFO 2022/05/24 16:03:22 Disconnecting websocket
+INFO 2022/05/24 16:03:22 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:03:35 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+ERROR 2022/05/24 16:03:41 read tcp 127.0.0.1:8090->127.0.0.1:55867: i/o timeout
+INFO 2022/05/24 16:03:41 Disconnecting websocket
+INFO 2022/05/24 16:03:41 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:03:48 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+INFO 2022/05/24 16:03:50 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+INFO 2022/05/24 16:03:52 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+INFO 2022/05/24 16:03:53 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+INFO 2022/05/24 16:03:55 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+ERROR 2022/05/24 16:03:56 read tcp 127.0.0.1:8090->127.0.0.1:55870: i/o timeout
+INFO 2022/05/24 16:03:56 Disconnecting websocket
+INFO 2022/05/24 16:03:56 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:03:57 ping token z4dRoIwVVkiTaxJD actual token z4dRoIwVVkiTaxJD
+ERROR 2022/05/24 16:03:59 websocket: close 1000 (normal)
+INFO 2022/05/24 16:03:59 Disconnecting websocket
+INFO 2022/05/24 16:03:59 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:05:01 Handling requests
+INFO 2022/05/24 16:05:01 time to add 1440h0m0s
+INFO 2022/05/24 16:05:01 time now unix 1653372301
+ERROR 2022/05/24 16:05:11 token is invalid
+INFO 2022/05/24 16:05:21 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:05:23 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:25 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:26 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:27 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:29 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:30 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:05:31 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+ERROR 2022/05/24 16:05:31 read tcp 127.0.0.1:8090->127.0.0.1:57337: i/o timeout
+INFO 2022/05/24 16:05:31 Disconnecting websocket
+INFO 2022/05/24 16:05:31 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:30:16 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:30:18 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:30:23 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:30:24 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:30:24 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+INFO 2022/05/24 16:30:24 ping token vRkNe7mMHG1PfyBf actual token vRkNe7mMHG1PfyBf
+ERROR 2022/05/24 16:30:26 read tcp 127.0.0.1:8090->127.0.0.1:57527: i/o timeout
+INFO 2022/05/24 16:30:26 Disconnecting websocket
+INFO 2022/05/24 16:30:26 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:30:34 Handling requests
+INFO 2022/05/24 16:30:36 time to add 1440h0m0s
+INFO 2022/05/24 16:30:36 time now unix 1653373836
+INFO 2022/05/24 16:30:46 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:30:50 ping token yBMXK76cCXfrjww7 actual token yBMXK76cCXfrjww7
+INFO 2022/05/24 16:30:52 ping token yBMXK76cCXfrjww7 actual token yBMXK76cCXfrjww7
+INFO 2022/05/24 16:30:55 ping token yBMXK76cCXfrjww7 actual token yBMXK76cCXfrjww7
+ERROR 2022/05/24 16:30:56 read tcp 127.0.0.1:8090->127.0.0.1:62071: i/o timeout
+INFO 2022/05/24 16:30:56 Disconnecting websocket
+INFO 2022/05/24 16:30:56 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:35:34 Handling requests
+INFO 2022/05/24 16:35:40 time to add 1440h0m0s
+INFO 2022/05/24 16:35:40 time now unix 1653374140
+ERROR 2022/05/24 16:35:57 token is invalid
+INFO 2022/05/24 16:36:01 time to add 1440h0m0s
+INFO 2022/05/24 16:36:01 time now unix 1653374161
+INFO 2022/05/24 16:36:11 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 16:36:21 read tcp 127.0.0.1:8090->127.0.0.1:52012: i/o timeout
+INFO 2022/05/24 16:36:21 Disconnecting websocket
+INFO 2022/05/24 16:36:21 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:36:26 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:36:27 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:32 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:32 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:32 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:32 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:33 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:33 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:33 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:33 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:33 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:34 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:34 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:34 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:34 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:34 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:35 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:35 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:35 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:35 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:35 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:36 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:36 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:36 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+INFO 2022/05/24 16:36:36 ping token ZCALjPnU8slBovZB actual token ZCALjPnU8slBovZB
+ERROR 2022/05/24 16:36:36 read tcp 127.0.0.1:8090->127.0.0.1:52014: i/o timeout
+INFO 2022/05/24 16:36:36 Disconnecting websocket
+INFO 2022/05/24 16:36:36 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:37:10 Handling requests
+INFO 2022/05/24 16:37:30 time to add 1440h0m0s
+INFO 2022/05/24 16:37:30 time now unix 1653374250
+INFO 2022/05/24 16:37:34 time to add 1440h0m0s
+INFO 2022/05/24 16:37:34 time now unix 1653374254
+INFO 2022/05/24 16:39:14 Handling requests
+INFO 2022/05/24 16:39:16 time to add 1440h0m0s
+INFO 2022/05/24 16:39:16 time now unix 1653374356
+ERROR 2022/05/24 16:39:24 token is invalid
+INFO 2022/05/24 16:39:27 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:39:28 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:30 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:30 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:31 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:32 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:33 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:34 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:35 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+INFO 2022/05/24 16:39:36 ping token HdsyhCKcVIfLhuMX actual token HdsyhCKcVIfLhuMX
+ERROR 2022/05/24 16:39:37 read tcp 127.0.0.1:8090->127.0.0.1:59597: i/o timeout
+INFO 2022/05/24 16:39:37 Disconnecting websocket
+INFO 2022/05/24 16:39:37 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:41:19 Handling requests
+INFO 2022/05/24 16:41:26 time to add 1440h0m0s
+INFO 2022/05/24 16:41:26 time now unix 1653374486
+INFO 2022/05/24 16:41:39 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:41:40 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:41 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:44 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:45 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:47 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:48 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+ERROR 2022/05/24 16:41:49 read tcp 127.0.0.1:8090->127.0.0.1:52199: i/o timeout
+INFO 2022/05/24 16:41:49 Disconnecting websocket
+INFO 2022/05/24 16:41:49 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:41:49 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 16:41:49 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+INFO 2022/05/24 16:41:50 ping token VxKFbHMcAJtRIFiQ actual token VxKFbHMcAJtRIFiQ
+ERROR 2022/05/24 16:41:51 websocket: close 1000 (normal)
+INFO 2022/05/24 16:41:51 Disconnecting websocket
+INFO 2022/05/24 16:41:51 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 16:47:17 Handling requests
+INFO 2022/05/24 16:47:19 time to add 1440h0m0s
+INFO 2022/05/24 16:47:19 time now unix 1653374839
+INFO 2022/05/24 16:47:30 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 17:19:03 Handling requests
+INFO 2022/05/24 17:19:04 time to add 1440h0m0s
+INFO 2022/05/24 17:19:04 time now unix 1653376744
+INFO 2022/05/24 17:19:13 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 17:19:17 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:18 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:20 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:20 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:21 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:22 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:22 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:23 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:23 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:24 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:24 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:25 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:26 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:26 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:27 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:27 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:28 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:29 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:29 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:31 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:34 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:34 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:35 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:35 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+INFO 2022/05/24 17:19:36 ping token iS1V7vqlYKnVUYc1 actual token iS1V7vqlYKnVUYc1
+ERROR 2022/05/24 17:19:37 websocket: close 1000 (normal)
+INFO 2022/05/24 17:19:37 Disconnecting websocket
+INFO 2022/05/24 17:19:37 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 21:40:25 Handling requests
+INFO 2022/05/24 21:40:34 time to add 1440h0m0s
+INFO 2022/05/24 21:40:34 time now unix 1653392434
+INFO 2022/05/24 21:40:41 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 21:40:43 read tcp 127.0.0.1:8090->127.0.0.1:64249: use of closed network connection
+INFO 2022/05/24 21:40:43 Disconnecting websocket
+INFO 2022/05/24 21:40:43 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 21:41:16 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 21:41:16 Disconnecting websocket as it is a invalid token
+INFO 2022/05/24 21:41:16 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 21:41:30 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 21:41:32 read tcp 127.0.0.1:8090->127.0.0.1:64265: use of closed network connection
+INFO 2022/05/24 21:41:32 Disconnecting websocket
+INFO 2022/05/24 21:41:32 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:05:05 Handling requests
+INFO 2022/05/24 22:05:06 time to add 1440h0m0s
+INFO 2022/05/24 22:05:06 time now unix 1653393906
+INFO 2022/05/24 22:05:14 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 22:05:16 read tcp 127.0.0.1:8090->127.0.0.1:57272: use of closed network connection
+INFO 2022/05/24 22:05:16 Disconnecting websocket
+INFO 2022/05/24 22:05:16 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:05:56 Handling requests
+INFO 2022/05/24 22:05:59 time to add 1440h0m0s
+INFO 2022/05/24 22:05:59 time now unix 1653393959
+INFO 2022/05/24 22:06:09 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 22:06:11 read tcp 127.0.0.1:8090->127.0.0.1:60454: use of closed network connection
+INFO 2022/05/24 22:06:11 Disconnecting websocket
+INFO 2022/05/24 22:06:11 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:08:31 Handling requests
+INFO 2022/05/24 22:08:31 time to add 1440h0m0s
+INFO 2022/05/24 22:08:31 time now unix 1653394111
+INFO 2022/05/24 22:08:38 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 22:08:40 Websocket of 127.0.0.1:8090 has been closed
+ERROR 2022/05/24 22:08:40 read tcp 127.0.0.1:8090->127.0.0.1:60973: use of closed network connection
+INFO 2022/05/24 22:08:40 Disconnecting websocket
+INFO 2022/05/24 22:15:35 Handling requests
+INFO 2022/05/24 22:26:14 Handling requests
+INFO 2022/05/24 22:26:16 time to add 1440h0m0s
+INFO 2022/05/24 22:26:16 time now unix 1653395176
+INFO 2022/05/24 22:26:24 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 22:26:34 read tcp 127.0.0.1:8090->127.0.0.1:58800: i/o timeout
+INFO 2022/05/24 22:26:34 Disconnecting websocket
+INFO 2022/05/24 22:26:34 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:27:30 Handling requests
+INFO 2022/05/24 22:27:31 time to add 1440h0m0s
+INFO 2022/05/24 22:27:31 time now unix 1653395251
+INFO 2022/05/24 22:27:41 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 22:27:50 Writing to client
+ERROR 2022/05/24 22:27:51 read tcp 127.0.0.1:8090->127.0.0.1:60632: i/o timeout
+INFO 2022/05/24 22:27:51 Disconnecting websocket
+INFO 2022/05/24 22:27:51 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:28:33 Handling requests
+INFO 2022/05/24 22:28:35 time to add 1440h0m0s
+INFO 2022/05/24 22:28:35 time now unix 1653395315
+INFO 2022/05/24 22:28:51 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 22:28:53 Writing to client
+INFO 2022/05/24 22:28:55 Writing to client
+INFO 2022/05/24 22:28:57 Writing to client
+INFO 2022/05/24 22:28:59 Writing to client
+INFO 2022/05/24 22:29:01 Writing to client
+INFO 2022/05/24 22:29:03 Writing to client
+INFO 2022/05/24 22:29:05 Writing to client
+ERROR 2022/05/24 22:29:05 read tcp 127.0.0.1:8090->127.0.0.1:50815: i/o timeout
+INFO 2022/05/24 22:29:05 Disconnecting websocket
+INFO 2022/05/24 22:29:05 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:29:46 Handling requests
+ERROR 2022/05/24 22:29:51 token is invalid
+INFO 2022/05/24 22:29:54 time to add 1440h0m0s
+INFO 2022/05/24 22:29:54 time now unix 1653395394
+ERROR 2022/05/24 22:30:01 token is invalid
+INFO 2022/05/24 22:30:06 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 22:30:08 Writing to client
+INFO 2022/05/24 22:30:10 Writing to client
+INFO 2022/05/24 22:30:12 Writing to client
+INFO 2022/05/24 22:30:14 Writing to client
+INFO 2022/05/24 22:30:16 Writing to client
+ERROR 2022/05/24 22:30:16 read tcp 127.0.0.1:8090->127.0.0.1:56907: i/o timeout
+INFO 2022/05/24 22:30:16 Disconnecting websocket
+INFO 2022/05/24 22:30:16 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:50:11 Handling requests
+ERROR 2022/05/24 22:50:14 token is invalid
+INFO 2022/05/24 22:50:17 time to add 1440h0m0s
+INFO 2022/05/24 22:50:17 time now unix 1653396617
+INFO 2022/05/24 22:50:26 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 22:50:36 read tcp 127.0.0.1:8090->127.0.0.1:65050: i/o timeout
+INFO 2022/05/24 22:50:36 Disconnecting websocket
+INFO 2022/05/24 22:50:36 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:51:02 Handling requests
+INFO 2022/05/24 22:51:02 time to add 1440h0m0s
+INFO 2022/05/24 22:51:02 time now unix 1653396662
+INFO 2022/05/24 22:51:12 Websocket active of 127.0.0.1:8090
+ERROR 2022/05/24 22:51:22 read tcp 127.0.0.1:8090->127.0.0.1:62619: i/o timeout
+INFO 2022/05/24 22:51:22 Disconnecting websocket
+INFO 2022/05/24 22:51:22 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/05/24 22:51:50 Handling requests
+INFO 2022/05/24 22:51:51 time to add 1440h0m0s
+INFO 2022/05/24 22:51:51 time now unix 1653396711
+INFO 2022/05/24 22:51:57 Websocket active of 127.0.0.1:8090
+INFO 2022/05/24 22:52:06 Writing to client
+INFO 2022/05/24 22:52:15 Writing to client
+INFO 2022/05/24 22:52:24 Writing to client
+ERROR 2022/05/24 22:52:27 websocket: close 1000 (normal)
+INFO 2022/05/24 22:52:27 Disconnecting websocket
+INFO 2022/05/24 22:52:27 Websocket of 127.0.0.1:8090 has been closed
