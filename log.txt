@@ -2621,3 +2621,275 @@ INFO 2022/05/24 22:52:24 Writing to client
 ERROR 2022/05/24 22:52:27 websocket: close 1000 (normal)
 INFO 2022/05/24 22:52:27 Disconnecting websocket
 INFO 2022/05/24 22:52:27 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 15:50:29 Handling requests
+INFO 2022/06/01 15:51:28 time to add 1440h0m0s
+INFO 2022/06/01 15:51:28 time now unix 1654062688
+INFO 2022/06/01 15:51:51 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 15:52:00 Writing to client
+ERROR 2022/06/01 15:52:01 read tcp 127.0.0.1:8090->127.0.0.1:56505: i/o timeout
+INFO 2022/06/01 15:52:01 Disconnecting websocket
+INFO 2022/06/01 15:52:01 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 15:52:04 Websocket active of 127.0.0.1:8090
+ERROR 2022/06/01 15:52:20 read tcp 127.0.0.1:8090->127.0.0.1:52113: i/o timeout
+INFO 2022/06/01 15:52:20 Disconnecting websocket
+INFO 2022/06/01 15:52:20 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 15:52:20 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 15:53:36 Handling requests
+INFO 2022/06/01 15:53:39 time to add 1440h0m0s
+INFO 2022/06/01 15:53:39 time now unix 1654062819
+INFO 2022/06/01 15:53:57 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 15:54:01 Writing to client
+ERROR 2022/06/01 15:54:19 read tcp 127.0.0.1:8090->127.0.0.1:65272: i/o timeout
+INFO 2022/06/01 15:54:19 Disconnecting websocket
+INFO 2022/06/01 15:54:19 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 15:57:52 Handling requests
+INFO 2022/06/01 15:57:58 time to add 1440h0m0s
+INFO 2022/06/01 15:57:58 time now unix 1654063078
+INFO 2022/06/01 15:58:12 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 15:58:16 Writing to client
+INFO 2022/06/01 15:58:21 Writing to client
+INFO 2022/06/01 15:58:26 Writing to client
+INFO 2022/06/01 15:58:32 Writing to client
+ERROR 2022/06/01 15:58:37 websocket: close 1000 (normal)
+INFO 2022/06/01 15:58:37 Disconnecting websocket
+INFO 2022/06/01 15:58:37 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:00:15 Handling requests
+ERROR 2022/06/01 16:01:58 token is invalid
+INFO 2022/06/01 16:02:08 time to add 1440h0m0s
+INFO 2022/06/01 16:02:08 time now unix 1654063328
+INFO 2022/06/01 16:02:49 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:02:55 Writing to client
+INFO 2022/06/01 16:03:01 Writing to client
+INFO 2022/06/01 16:03:08 Writing to client
+INFO 2022/06/01 16:03:12 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:03:12 Message recieved Test123
+ERROR 2022/06/01 16:03:12 user is not in guild
+INFO 2022/06/01 16:03:14 Writing to client
+INFO 2022/06/01 16:03:16 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:03:16 Message recieved Test123
+ERROR 2022/06/01 16:03:16 user is not in guild
+INFO 2022/06/01 16:03:21 Writing to client
+ERROR 2022/06/01 16:03:21 websocket: close 1000 (normal)
+INFO 2022/06/01 16:03:21 Disconnecting websocket
+INFO 2022/06/01 16:03:21 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:09:09 Handling requests
+INFO 2022/06/01 16:09:10 time to add 1440h0m0s
+INFO 2022/06/01 16:09:10 time now unix 1654063750
+INFO 2022/06/01 16:09:42 Websocket active of 127.0.0.1:8090
+ERROR 2022/06/01 16:09:47 token is invalid
+INFO 2022/06/01 16:09:48 Writing to client
+INFO 2022/06/01 16:09:52 Writing to client
+ERROR 2022/06/01 16:09:54 read tcp 127.0.0.1:8090->127.0.0.1:61267: i/o timeout
+INFO 2022/06/01 16:09:54 Disconnecting websocket
+INFO 2022/06/01 16:09:54 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:10:10 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:10:13 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:10:13 Message recieved Test123
+ERROR 2022/06/01 16:10:13 user is not in guild
+INFO 2022/06/01 16:10:14 Writing to client
+INFO 2022/06/01 16:10:20 Writing to client
+ERROR 2022/06/01 16:10:21 websocket: close 1000 (normal)
+INFO 2022/06/01 16:10:21 Disconnecting websocket
+INFO 2022/06/01 16:10:21 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:12:55 Handling requests
+INFO 2022/06/01 16:12:55 time to add 1440h0m0s
+INFO 2022/06/01 16:12:55 time now unix 1654063975
+INFO 2022/06/01 16:13:09 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:13:12 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:13:12 Message recieved Test123
+ERROR 2022/06/01 16:13:12 pq: syntax error at or near "="
+ERROR 2022/06/01 16:13:12 user is not in guild
+INFO 2022/06/01 16:13:13 Writing to client
+INFO 2022/06/01 16:13:17 Writing to client
+INFO 2022/06/01 16:14:05 Handling requests
+INFO 2022/06/01 16:14:07 time to add 1440h0m0s
+INFO 2022/06/01 16:14:07 time now unix 1654064047
+INFO 2022/06/01 16:14:31 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:14:35 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:14:35 Message recieved Test123
+INFO 2022/06/01 16:14:37 Writing to client
+INFO 2022/06/01 16:14:41 Writing to client
+INFO 2022/06/01 16:16:15 Handling requests
+ERROR 2022/06/01 16:16:22 token is invalid
+INFO 2022/06/01 16:16:25 time to add 1440h0m0s
+INFO 2022/06/01 16:16:25 time now unix 1654064185
+INFO 2022/06/01 16:16:36 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:16:40 Writing to client
+ERROR 2022/06/01 16:16:44 token is invalid
+INFO 2022/06/01 16:16:44 Writing to client
+ERROR 2022/06/01 16:16:46 read tcp 127.0.0.1:8090->127.0.0.1:55491: i/o timeout
+INFO 2022/06/01 16:16:46 Disconnecting websocket
+INFO 2022/06/01 16:16:46 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:16:56 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:17:00 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:17:00 Message recieved Test123
+INFO 2022/06/01 16:17:00 Writing to client
+INFO 2022/06/01 16:17:06 Writing to client
+INFO 2022/06/01 16:18:15 Handling requests
+INFO 2022/06/01 16:18:29 time to add 1440h0m0s
+INFO 2022/06/01 16:18:29 time now unix 1654064309
+INFO 2022/06/01 16:18:41 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:18:41 Message recieved Test123
+INFO 2022/06/01 16:18:41 clientslist map[]
+INFO 2022/06/01 16:23:58 Handling requests
+INFO 2022/06/01 16:24:43 time to add 1440h0m0s
+INFO 2022/06/01 16:24:43 time now unix 1654064683
+INFO 2022/06/01 16:24:54 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:24:56 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:24:56 Message recieved Test123
+INFO 2022/06/01 16:24:56 clientslist <nil>
+INFO 2022/06/01 16:24:58 Writing to client
+INFO 2022/06/01 16:24:59 Disconnecting websocket as it is a invalid token
+INFO 2022/06/01 16:24:59 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:25:32 Handling requests
+INFO 2022/06/01 16:25:33 time to add 1440h0m0s
+INFO 2022/06/01 16:25:33 time now unix 1654064733
+INFO 2022/06/01 16:25:38 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:25:38 Message recieved Test123
+INFO 2022/06/01 16:25:38 clientslist <nil> 0
+INFO 2022/06/01 16:27:29 Handling requests
+INFO 2022/06/01 16:27:30 time to add 1440h0m0s
+INFO 2022/06/01 16:27:30 time now unix 1654064850
+INFO 2022/06/01 16:27:46 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:27:49 {
+    "Content" : "Test123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:27:49 Message recieved Test123
+INFO 2022/06/01 16:27:49 clientslist 0xc000096720 1
+INFO 2022/06/01 16:27:49 Message sent to 1
+INFO 2022/06/01 16:27:51 Writing to client
+INFO 2022/06/01 16:27:55 Writing to client
+ERROR 2022/06/01 16:27:55 websocket: close 1000 (normal)
+INFO 2022/06/01 16:27:55 Disconnecting websocket
+INFO 2022/06/01 16:27:55 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:29:10 Handling requests
+INFO 2022/06/01 16:29:11 time to add 1440h0m0s
+INFO 2022/06/01 16:29:11 time now unix 1654064951
+INFO 2022/06/01 16:29:19 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:29:19 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:29:19 clientslist {0 0 Teasdasdasdsast123 1 1654064959}
+ERROR 2022/06/01 16:29:23 token is invalid
+INFO 2022/06/01 16:29:25 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:29:25 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:29:25 clientslist {0 0 Teasdasdasdsast123 1 1654064965}
+ERROR 2022/06/01 16:29:28 token is invalid
+INFO 2022/06/01 16:29:34 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:29:37 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:29:37 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:29:37 clientslist {0 0 Teasdasdasdsast123 1 1654064977}
+INFO 2022/06/01 16:29:37 Message sent to 1
+INFO 2022/06/01 16:29:38 Writing to client
+INFO 2022/06/01 16:29:44 Writing to client
+ERROR 2022/06/01 16:29:47 websocket: close 1000 (normal)
+INFO 2022/06/01 16:29:47 Disconnecting websocket
+INFO 2022/06/01 16:29:47 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:31:00 Handling requests
+INFO 2022/06/01 16:31:01 time to add 1440h0m0s
+INFO 2022/06/01 16:31:01 time now unix 1654065061
+INFO 2022/06/01 16:31:14 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:31:17 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:31:17 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:31:17 clientslist {0 0 Teasdasdasdsast123 1 1654065077}
+INFO 2022/06/01 16:31:17 Message sent to 1
+INFO 2022/06/01 16:31:18 Writing to client
+ERROR 2022/06/01 16:31:19 websocket: close 1000 (normal)
+INFO 2022/06/01 16:31:19 Disconnecting websocket
+INFO 2022/06/01 16:31:19 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/01 16:33:25 time to add 1440h0m0s
+INFO 2022/06/01 16:33:25 time now unix 1654065205
+INFO 2022/06/01 16:33:34 time to add 1440h0m0s
+INFO 2022/06/01 16:33:34 time now unix 1654065214
+INFO 2022/06/01 16:40:19 Handling requests
+INFO 2022/06/01 16:40:20 time to add 1440h0m0s
+INFO 2022/06/01 16:40:20 time now unix 1654065620
+INFO 2022/06/01 16:40:32 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:40:36 Writing to client
+INFO 2022/06/01 16:40:36 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:40:36 Message recieved Teasdasdasdsast123
+ERROR 2022/06/01 16:40:36 pq: syntax error at or near "RETURNING"
+INFO 2022/06/01 16:40:40 Writing to client
+INFO 2022/06/01 16:40:44 Writing to client
+INFO 2022/06/01 16:40:49 Writing to client
+INFO 2022/06/01 16:41:16 Handling requests
+INFO 2022/06/01 16:41:17 time to add 1440h0m0s
+INFO 2022/06/01 16:41:17 time now unix 1654065677
+INFO 2022/06/01 16:41:27 Websocket active of 127.0.0.1:8090
+INFO 2022/06/01 16:41:31 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:41:31 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:41:31 clientslist {13 1 Teasdasdasdsast123 1 1654065691}
+INFO 2022/06/01 16:41:31 Message sent to 1
+INFO 2022/06/01 16:41:31 Writing to client
+INFO 2022/06/01 16:41:38 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 1,
+    "Time" : 1651126336
+}
+INFO 2022/06/01 16:41:38 Message recieved Teasdasdasdsast123
+INFO 2022/06/01 16:41:38 clientslist {14 1 Teasdasdasdsast123 1 1654065698}
+INFO 2022/06/01 16:41:38 Message sent to 1
+INFO 2022/06/01 16:41:38 Writing to client
+ERROR 2022/06/01 16:41:41 websocket: close 1000 (normal)
+INFO 2022/06/01 16:41:41 Disconnecting websocket
+INFO 2022/06/01 16:41:41 Websocket of 127.0.0.1:8090 has been closed

@@ -18,7 +18,7 @@ type client struct {
 	ws       *websocket.Conn
 	id       int
 	guilds   []int
-	timer    time.Ticker
+	timer    *time.Ticker
 	quit     context.Context //chan bool //also temporary maybe use contexts later
 	quitFunc context.CancelFunc
 	//	keepAlive bool //temporary try find solution
@@ -35,7 +35,7 @@ type pong struct {
 const (
 	pingDelay    = 10 * time.Second
 	messageLimit = 2 << 7 //256
-	pongDelay    = (pingDelay * 9) / 10
+	pongDelay    = (pingDelay * 2) / 5
 )
 
 func (c *client) run() {
@@ -75,19 +75,7 @@ func (c *client) run() {
 
 func (c *client) heartBeat() {
 	c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //note to self put that thing in seconds otherwise its goddamn miliseconds which is hard to debug
-	/*c.ws.SetPingHandler(func(string) error {        //not activating for some reason
-		fmt.Println("New deadline activated")
-		c.ws.SetReadDeadline(time.Now().Add(pingDelay))
-		return nil
-	}) //copied from example //nah man im a ping hater now
-	*/
-	for { //need to check for quit
-		/*err := c.ws.WriteMessage(websocket.PingMessage, []byte("ping"))
-		if err != nil {
-			c.quit <- true
-			return
-		}
-		*/
+	for {                                           //need to check for quit
 		_, message, err := c.ws.ReadMessage()
 		if err != nil { //should usually return io error which is fine since it means the websocket has timeouted
 			log.WriteLog(logger.ERROR, err.Error()) //or if the websocket has closed which is a 1000 (normal)
@@ -110,14 +98,15 @@ func (c *client) heartBeat() {
 			return
 		}
 		c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
+		c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
+
 	}
 }
 
 func (c *client) eventCheck(data interface{}) {
 	switch data.(type) {
 	case msg: //implement files soon or something idk guild change ban or kick whatever
-		var content msg
-		err := c.ws.WriteJSON(content)
+		err := c.ws.WriteJSON(data)
 		if err != nil {
 			log.WriteLog(logger.ERROR, err.Error())
 			//c.quit <- true
@@ -170,7 +159,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		ws:       ws,
 		id:       user.Id,
 		guilds:   guilds,
-		timer:    *time.NewTicker(pongDelay),
+		timer:    time.NewTicker(pongDelay),
 		quit:     quit,
 		quitFunc: quitFunc,
 	}

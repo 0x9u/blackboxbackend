@@ -55,18 +55,24 @@ func msgRecieve(w http.ResponseWriter, r *http.Request) {
 	//send msg to database
 	//broadcast msg to all connections to websocket
 	var id int
-	row := db.QueryRow("SELECT user_id FROM userguilds guild_id=$1 AND user_id=$2")
+	row := db.QueryRow("SELECT user_id FROM userguilds WHERE guild_id=$1 AND user_id=$2", datamsg.Guild, user.Id)
+	if err := row.Err(); err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
 	row.Scan(&id)
 	if id != user.Id {
 		reportError(http.StatusBadRequest, w, errorNotInGuild)
 		return
 	}
 
-	if _, err = db.Exec("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4)", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time); err != nil {
+	row = db.QueryRow("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4) RETURNING id", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time)
+	if err = row.Err(); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-
+	row.Scan(&datamsg.Id)
+	datamsg.Author = user.Id
 	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", datamsg.Guild)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
@@ -83,17 +89,19 @@ func msgRecieve(w http.ResponseWriter, r *http.Request) {
 		}
 		ids = append(ids, id)
 	}
-	for id := range ids {
+	for _, id := range ids {
 		client := clients[id]
+		log.WriteLog(logger.INFO, fmt.Sprintf("clientslist %v", datamsg))
 		if client == nil {
 			continue
 		}
 		client <- datamsg
+		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
 	}
 	w.WriteHeader(http.StatusOK)
 }
 
-func msgSend(w http.ResponseWriter, r *http.Request) {
+func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 
 	token, ok := r.Header["Auth-Token"]
 	if !ok || len(token) == 0 {
@@ -142,4 +150,18 @@ func msgSend(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
+}
+
+func msgTyping(w http.ResponseWriter, r *http.Request) {
+
+	token, ok := r.Header["Auth-Token"]
+	if !ok || len(token) == 0 {
+		reportError(http.StatusBadRequest, w, errorToken)
+		return
+	}
+	user, err := checkToken(token[0])
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
 }
