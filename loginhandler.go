@@ -29,6 +29,12 @@ type session struct {
 	Id      int
 }
 
+type dataChange struct {
+	Password string `json:"Password"`
+	Change   int    `json:"Change"` // 0 for password, 1 for email, 2 for username
+	New      string `json:"New"`
+}
+
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months
 
 func checkToken(token string) (*session, error) {
@@ -102,4 +108,60 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func changeDetails(w http.ResponseWriter, r *http.Request) {
+	token, ok := r.Header["Auth-Token"]
+	if !ok || len(token) == 0 {
+		reportError(http.StatusBadRequest, w, errorToken)
+		return
+	}
+	user, err := checkToken(token[0])
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var change dataChange
+	err = json.Unmarshal(bodyBytes, &change)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	switch change.Change {
+	case 0:
+		var username string
+		row := db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id)
+		if err := row.Err(); err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		row.Scan(&username)
+		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
+		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, change.Password)
+		if err != nil {
+			reportError(http.StatusBadRequest, w, err)
+			return
+		}
+	case 1:
+		_, err = db.Exec("UPDATE users SET email=$1 WHERE id=$2", change.New, user.Id)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+
+	case 2:
+		_, err = db.Exec("UPDATE users SET username=$1 WHERE id=$2", change.New, user.Id)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+	default:
+		reportError(http.StatusBadRequest, w, errorInvalidChange)
+		return
+	}
 }

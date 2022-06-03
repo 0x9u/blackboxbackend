@@ -30,6 +30,7 @@ var (
 	errorExpiredToken   = errors.New("token has expired")
 	errorNotInGuild     = errors.New("user is not in guild")
 	errorUsernameExists = errors.New("username already exists")
+	errorInvalidChange  = errors.New("invalid change option")
 )
 
 const (
@@ -92,12 +93,13 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/send", msgRecieve)
 	r.HandleFunc("/api/msg", msgSend)
-	r.HandleFunc("/api/ws", webSocket)
+	r.HandleFunc("/api/ws", webSocket) //make middleware later for token validation
 	r.HandleFunc("/api/reset", msgReset)
 	r.HandleFunc("/api/login", userlogin)
 	r.HandleFunc("/api/signup", createuser)
 	r.HandleFunc("/api/guild/create", createGuild)
 	r.HandleFunc("/api/guild/geninv", genGuildInvite)
+	r.HandleFunc("/api/changedetails", changeDetails)
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"

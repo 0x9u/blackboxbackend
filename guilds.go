@@ -58,6 +58,10 @@ func createGuild(w http.ResponseWriter, r *http.Request) {
 		Invite: generateRandString(10),
 		Guild:  guild_id,
 	}
+	if _, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild_id, user.Id); err != nil { //cleanup if failed later
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
 	if _, err = db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, invite.Guild); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
