@@ -152,6 +152,7 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 	w.Write(result)
 }
 
+/*
 func msgTyping(w http.ResponseWriter, r *http.Request) {
 
 	token, ok := r.Header["Auth-Token"]
@@ -165,3 +166,4 @@ func msgTyping(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+*/
