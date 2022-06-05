@@ -18,6 +18,13 @@ type msg struct {
 	Time    int64  `json:"Time"`
 }
 
+type deleteMsg struct {
+	Id     int `json:"Id"`
+	Author int `json:"Author"`
+	Guild  int `json:"Guild"`
+	Time   int `json:"Time"` //delete messages up to timestamp
+}
+
 /*
 type content struct {
 	Id     int `json:"Id"`
@@ -118,6 +125,7 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 
 	limit := r.URL.Query().Get("limit")
 	timestamp := r.URL.Query().Get("time")
+	guild := r.URL.Query().Get("guild")
 
 	if timestamp == "" {
 		timestamp = fmt.Sprintf("%v", time.Now().Unix())
@@ -127,8 +135,13 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 		limit = "50"
 	}
 
+	if guild == "" {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
 	log.WriteLog(logger.INFO, fmt.Sprintf("limit: %v, timestamp %v", limit, timestamp))
-	rows, err := db.Query("SELECT * FROM messages WHERE time <= $1 ORDER BY time DESC LIMIT $2", timestamp, limit)
+	rows, err := db.Query("SELECT * FROM messages WHERE time <= $1 AND guild_id = $2 ORDER BY time DESC LIMIT $3", timestamp, guild, limit)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
@@ -150,6 +163,72 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
+}
+
+func msgDelete(w http.ResponseWriter, r *http.Request) {
+	token, ok := r.Header["Auth-Token"]
+	if !ok || len(token) == 0 {
+		reportError(http.StatusBadRequest, w, errorToken)
+		return
+	}
+	user, err := checkToken(token[0])
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var datamsg deleteMsg
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &datamsg)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if datamsg.Guild == 0 {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if datamsg.Author == 0 {
+		_, err = db.Exec("DELETE FROM messages WHERE time <= $1 AND guild_id = $2 AND user_id = $3", datamsg.Time, datamsg.Guild, user.Id)
+	} else if datamsg.Time == 0 {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	} else {
+		_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, user.Id)
+	}
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", datamsg.Guild)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	defer rows.Close()
+	var ids []int
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		ids = append(ids, id)
+	}
+	for _, id := range ids { //make this a function later or something when im cleaning up
+		client := clients[id]
+		log.WriteLog(logger.INFO, fmt.Sprintf("clientslist %v", datamsg))
+		if client == nil {
+			continue
+		}
+		client <- datamsg
+		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
+	}
+	w.WriteHeader(http.StatusAccepted)
 }
 
 /*

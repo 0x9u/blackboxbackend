@@ -58,7 +58,7 @@ func generateRandString(l int) string { //copied from stackoverflow
 	return string(b)
 }
 
-func msgReset(w http.ResponseWriter, r *http.Request) {
+func msgReset(w http.ResponseWriter, r *http.Request) { //dangerous remove when finished
 	q := `
 		DELETE FROM messages;
 		ALTER SEQUENCE messages_id_seq RESTART WITH 1;
@@ -91,10 +91,11 @@ func main() {
 	defer db.Close()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/send", msgRecieve)
-	r.HandleFunc("/api/msg", msgSend)
-	r.HandleFunc("/api/ws", webSocket) //make middleware later for token validation
-	r.HandleFunc("/api/reset", msgReset)
+	r.HandleFunc("/api/msg", msgRecieve).Methods("POST")
+	r.HandleFunc("/api/msg", msgSend).Methods("GET")
+	r.HandleFunc("/api/msg", msgDelete).Methods("DELETE")
+	r.HandleFunc("/api/ws", webSocket)   //make middleware later for token validation
+	r.HandleFunc("/api/reset", msgReset) //dangerous
 	r.HandleFunc("/api/login", userlogin)
 	r.HandleFunc("/api/signup", createuser)
 	r.HandleFunc("/api/guild/create", createGuild)
