@@ -1,9 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 /*
@@ -14,12 +16,12 @@ id PRIMARY KEY SERIAL | name VARCHAR(16) | icon INT | owner_id INT | invites_amo
 Invites table
 invite VARCHAR(10) | guild_id INT | ExpireDate (IMPLEMENT THIS LATER ON) INT64
 */
-type reqCreateGuild struct {
+type createGuildData struct {
 	Icon int    `json:"Icon"` // if icon none its zero assume no icon
 	Name string `json:"Name"`
 }
 
-type getInvite struct {
+type deleteGuildData struct {
 	Guild int `json:"Guild"`
 }
 
@@ -28,30 +30,19 @@ type deleteInvite struct {
 	Invite string `json:"invite"`
 }
 
-type reqInvite struct {
+type sendInvite struct {
 	Invite string `json:"Invite"`
 	Guild  int    `json:"Guild"`
 }
 
-func createGuild(w http.ResponseWriter, r *http.Request) {
-
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	user, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	var guild reqCreateGuild
+	var guild createGuildData
 	if err := json.Unmarshal(bodyBytes, &guild); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -59,7 +50,7 @@ func createGuild(w http.ResponseWriter, r *http.Request) {
 	var guild_id int
 	row := db.QueryRow("INSERT INTO guilds (name, icon, owner_id) VALUES ($1, $2, $3) RETURNING id", guild.Name, guild.Icon, user.Id)
 	row.Scan(&guild_id)
-	invite := reqInvite{
+	invite := sendInvite{
 		Invite: generateRandString(10),
 		Guild:  guild_id,
 	}
@@ -80,57 +71,70 @@ func createGuild(w http.ResponseWriter, r *http.Request) {
 	w.Write(bodyBytes)
 }
 
-func genGuildInvite(w http.ResponseWriter, r *http.Request) {
-
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	_, err := checkToken(token[0])
+func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	guildParam := r.URL.Query().Get("Guild")
+	guild, err := strconv.Atoi(guildParam)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
+	row := db.QueryRow("SELECT id FROM guilds WHERE id=$1 AND owner_id=$2", guild, user.Id)
+	if err := row.Err(); err == sql.ErrNoRows {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	} else if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM messages WHERE guild_id=$1", guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	w.WriteHeader(http.StatusAccepted)
+}
+
+func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
+	guildParam := r.URL.Query().Get("guild")
+	guild, err := strconv.Atoi(guildParam)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	var inv getInvite
-	if err := json.Unmarshal(bodyBytes, &inv); err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	invite := reqInvite{
+	invite := sendInvite{
 		Invite: generateRandString(10),
-		Guild:  inv.Guild,
+		Guild:  guild,
 	}
 	if _, err := db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, invite.Guild); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	bodyBytes, err = json.Marshal(invite)
+	bodyBytes, err := json.Marshal(invite)
 	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	w.Write(bodyBytes)
+	w.WriteHeader(http.StatusOK)
 }
 
-func deleteInvGuild(w http.ResponseWriter, r *http.Request) {
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	_, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)

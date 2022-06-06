@@ -32,18 +32,7 @@ type content struct {
 }
 */
 
-func msgRecieve(w http.ResponseWriter, r *http.Request) {
-
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	user, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
@@ -80,46 +69,15 @@ func msgRecieve(w http.ResponseWriter, r *http.Request) {
 	}
 	row.Scan(&datamsg.Id)
 	datamsg.Author = user.Id
-	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", datamsg.Guild)
+	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
 	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
+		reportError(statusCode, w, err)
 		return
-	}
-	defer rows.Close()
-	var ids []int
-	for rows.Next() {
-		var id int
-		err := rows.Scan(&id)
-		if err != nil {
-			reportError(http.StatusInternalServerError, w, err)
-			return
-		}
-		ids = append(ids, id)
-	}
-	for _, id := range ids {
-		client := clients[id]
-		log.WriteLog(logger.INFO, fmt.Sprintf("clientslist %v", datamsg))
-		if client == nil {
-			continue
-		}
-		client <- datamsg
-		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
 	}
 	w.WriteHeader(http.StatusOK)
 }
 
-func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
-
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	_, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends message history
 
 	messages := []msg{}
 
@@ -136,7 +94,7 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 	}
 
 	if guild == "" {
-		reportError(http.StatusBadRequest, w, err)
+		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
 		return
 	}
 
@@ -165,17 +123,7 @@ func msgSend(w http.ResponseWriter, r *http.Request) { //sends message history
 	w.Write(result)
 }
 
-func msgDelete(w http.ResponseWriter, r *http.Request) {
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	user, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //deletes message
 	var datamsg deleteMsg
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -193,7 +141,7 @@ func msgDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	if datamsg.Author == 0 {
 		_, err = db.Exec("DELETE FROM messages WHERE time <= $1 AND guild_id = $2 AND user_id = $3", datamsg.Time, datamsg.Guild, user.Id)
-	} else if datamsg.Time == 0 {
+	} else if datamsg.Id == 0 {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	} else {
@@ -203,30 +151,10 @@ func msgDelete(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", datamsg.Guild)
+	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
 	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
+		reportError(statusCode, w, err)
 		return
-	}
-	defer rows.Close()
-	var ids []int
-	for rows.Next() {
-		var id int
-		err := rows.Scan(&id)
-		if err != nil {
-			reportError(http.StatusInternalServerError, w, err)
-			return
-		}
-		ids = append(ids, id)
-	}
-	for _, id := range ids { //make this a function later or something when im cleaning up
-		client := clients[id]
-		log.WriteLog(logger.INFO, fmt.Sprintf("clientslist %v", datamsg))
-		if client == nil {
-			continue
-		}
-		client <- datamsg
-		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
 	}
 	w.WriteHeader(http.StatusAccepted)
 }

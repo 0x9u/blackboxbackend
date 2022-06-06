@@ -166,3 +166,32 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 	instanceuser.run()
 
 }
+
+func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
+	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", guild)
+	if err != nil {
+		//reportError(http.StatusBadRequest, w, err)
+		return http.StatusBadRequest, err
+	}
+	defer rows.Close()
+	var ids []int
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			//reportError(http.StatusInternalServerError, w, err)
+			return http.StatusInternalServerError, err
+		}
+		ids = append(ids, id)
+	}
+	for _, id := range ids {
+		client := clients[id]
+		log.WriteLog(logger.INFO, fmt.Sprintf("clientslist %v", data))
+		if client == nil {
+			continue
+		}
+		client <- data
+		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
+	}
+	return 0, nil
+}

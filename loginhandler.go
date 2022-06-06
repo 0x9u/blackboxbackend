@@ -110,17 +110,7 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func changeDetails(w http.ResponseWriter, r *http.Request) {
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-	user, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
+func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
@@ -164,4 +154,5 @@ func changeDetails(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusBadRequest, w, errorInvalidChange)
 		return
 	}
+	w.WriteHeader(http.StatusAccepted)
 }

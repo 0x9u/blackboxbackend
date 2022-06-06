@@ -5,3 +5,4 @@
 - Have games support (single player)
 - multiplayer games
 - Shorten authentication using middleware
+- Make a failsafe for same invite code

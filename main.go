@@ -25,12 +25,13 @@ var (
 )
 
 var (
-	errorToken          = errors.New("token is not provided")
-	errorInvalidToken   = errors.New("token is invalid")
-	errorExpiredToken   = errors.New("token has expired")
-	errorNotInGuild     = errors.New("user is not in guild")
-	errorUsernameExists = errors.New("username already exists")
-	errorInvalidChange  = errors.New("invalid change option")
+	errorToken            = errors.New("token is not provided")
+	errorInvalidToken     = errors.New("token is invalid")
+	errorExpiredToken     = errors.New("token has expired")
+	errorNotInGuild       = errors.New("user is not in guild")
+	errorUsernameExists   = errors.New("username already exists")
+	errorInvalidChange    = errors.New("invalid change option")
+	errorGuildNotProvided = errors.New("guild is not provided")
 )
 
 const (
@@ -91,17 +92,19 @@ func main() {
 	defer db.Close()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/msg", msgRecieve).Methods("POST")
-	r.HandleFunc("/api/msg", msgSend).Methods("GET")
-	r.HandleFunc("/api/msg", msgDelete).Methods("DELETE")
-	r.HandleFunc("/api/ws", webSocket)   //make middleware later for token validation
-	r.HandleFunc("/api/reset", msgReset) //dangerous
-	r.HandleFunc("/api/user", userlogin).Methods("GET")
-	r.HandleFunc("/api/user", createuser).Methods("POST")
-	r.HandleFunc("/api/guild/create", createGuild)
-	r.HandleFunc("/api/guild/invite", genGuildInvite).Methods("POST")
-	r.HandleFunc("/api/guild/invite", deleteInvGuild).Methods("DELETE")
-	r.HandleFunc("/api/changedetails", changeDetails)
+	api := r.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/msg", middleWare(msgRecieve)).Methods("POST")
+	api.HandleFunc("/msg", middleWare(msgHistory)).Methods("GET")
+	api.HandleFunc("/msg", middleWare(msgDelete)).Methods("DELETE")
+	api.HandleFunc("/guild", middleWare(createGuild)).Methods("POST")
+	api.HandleFunc("/guild", middleWare(deleteGuild)).Methods("DELETE")
+	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
+	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
+	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
+	api.HandleFunc("/reset", msgReset) //dangerous
+	api.HandleFunc("/user", userlogin).Methods("GET")
+	api.HandleFunc("/user", createuser).Methods("POST")
+	api.HandleFunc("/user", middleWare(changeDetails)).Methods("PUT")
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"
