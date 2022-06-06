@@ -8,11 +8,11 @@ import (
 
 /*
 Guilds table
-id PRIMARY KEY SERIAL | name VARCHAR(16) | icon INT | owner_id INT
+id PRIMARY KEY SERIAL | name VARCHAR(16) | icon INT | owner_id INT | invites_amount SMALLINT
 */
 /*
 Invites table
-invite VARCHAR(10) | guild_id INT
+invite VARCHAR(10) | guild_id INT | ExpireDate (IMPLEMENT THIS LATER ON) INT64
 */
 type reqCreateGuild struct {
 	Icon int    `json:"Icon"` // if icon none its zero assume no icon
@@ -21,6 +21,11 @@ type reqCreateGuild struct {
 
 type getInvite struct {
 	Guild int `json:"Guild"`
+}
+
+type deleteInvite struct {
+	Guild  int    `json:"Guild"`
+	Invite string `json:"invite"`
 }
 
 type reqInvite struct {
@@ -113,4 +118,34 @@ func genGuildInvite(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(bodyBytes)
+}
+
+func deleteInvGuild(w http.ResponseWriter, r *http.Request) {
+	token, ok := r.Header["Auth-Token"]
+	if !ok || len(token) == 0 {
+		reportError(http.StatusBadRequest, w, errorToken)
+		return
+	}
+	_, err := checkToken(token[0])
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var inv deleteInvite
+	err = json.Unmarshal(bodyBytes, &inv)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	row := db.QueryRow("DELETE FROM guilds WHERE guild_id=$1, invite=$2", inv.Guild, inv.Invite)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
 }

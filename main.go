@@ -96,10 +96,11 @@ func main() {
 	r.HandleFunc("/api/msg", msgDelete).Methods("DELETE")
 	r.HandleFunc("/api/ws", webSocket)   //make middleware later for token validation
 	r.HandleFunc("/api/reset", msgReset) //dangerous
-	r.HandleFunc("/api/login", userlogin)
-	r.HandleFunc("/api/signup", createuser)
+	r.HandleFunc("/api/user", userlogin).Methods("GET")
+	r.HandleFunc("/api/user", createuser).Methods("POST")
 	r.HandleFunc("/api/guild/create", createGuild)
-	r.HandleFunc("/api/guild/geninv", genGuildInvite)
+	r.HandleFunc("/api/guild/invite", genGuildInvite).Methods("POST")
+	r.HandleFunc("/api/guild/invite", deleteInvGuild).Methods("DELETE")
 	r.HandleFunc("/api/changedetails", changeDetails)
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
