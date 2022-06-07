@@ -35,6 +35,11 @@ type changeGuild struct {
 	Name        string `json:"Name"`
 }
 
+type userGuild struct {
+	Username string
+	Id       int
+}
+
 func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
@@ -130,6 +135,49 @@ func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		guilds = append(guilds, guild)
 	}
 	bodyBytes, err := json.Marshal(guilds)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
+}
+
+func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND owner_id=$2 AND banned=false)", guild, user.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusInternalServerError, w, errorNotInGuild)
+		return
+	}
+	rows, err := db.Query("SELECT users.username, users.id FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1", guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	userlist := []userGuild{}
+	for rows.Next() {
+		var user userGuild
+		err = rows.Scan(&user.Username, &user.Id)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		userlist = append(userlist, user)
+	}
+	bodyBytes, err := json.Marshal(userlist)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return

@@ -56,14 +56,14 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 
 	//send msg to database
 	//broadcast msg to all connections to websocket
-	var id int
-	row := db.QueryRow("SELECT user_id FROM userguilds WHERE guild_id=$1 AND user_id=$2", datamsg.Guild, user.Id)
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", datamsg.Guild, user.Id)
 	if err := row.Err(); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	row.Scan(&id)
-	if id != user.Id {
+	row.Scan(&valid)
+	if !valid {
 		reportError(http.StatusBadRequest, w, errorNotInGuild)
 		return
 	}
@@ -101,6 +101,17 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 
 	if guild == "" {
 		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
+		return
+	}
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guild, user.Id)
+	if err := row.Err(); err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotInGuild)
 		return
 	}
 
