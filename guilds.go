@@ -72,8 +72,8 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	params := mux.Vars(r)
-	guild, err := strconv.Atoi(params["guild"])
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -89,12 +89,7 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
-	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild) //start deleting
-	if err != nil {
-		reportError(http.StatusInternalServerError, w, err)
-		return
-	}
-	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild) //delete from users guilds
+	_, err = db.Exec("DELETE FROM messages WHERE guild_id=$1", guild) //start deleting
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
@@ -104,13 +99,43 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM messages WHERE guild_id=$1", guild)
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild) //delete from users guilds
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", user.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var guilds []int
+	for rows.Next() {
+		var guild int
+		err = rows.Scan(&guild)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		guilds = append(guilds, guild)
+	}
+	bodyBytes, err := json.Marshal(guilds)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
 }
 
 func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
@@ -131,12 +156,13 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	broadcastGuild(newSettings.Guild, newSettings)
 	w.WriteHeader(http.StatusOK)
 }
 
 func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
-	params := mux.Vars(r)
-	guild, err := strconv.Atoi(params["guild"])
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return

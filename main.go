@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -44,6 +45,12 @@ const (
 	sslenabled = "disable"
 )
 
+type statusInfo struct {
+	ClientNumber int `json:"clientNumber"`
+	GuildNumber  int `json:"guildNumber"`
+	MsgNumber    int `json:"msgNumber"`
+}
+
 func reportError(status int, w http.ResponseWriter, err error) {
 	log.WriteLog(logger.ERROR, err.Error())
 	w.WriteHeader(status)
@@ -74,6 +81,36 @@ func msgReset(w http.ResponseWriter, r *http.Request) { //dangerous remove when 
 	}
 }
 
+func showStatus(w http.ResponseWriter, r *http.Request) { //debugging
+	row := db.QueryRow("SELECT COUNT(*) FROM messages")
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	var msgNumber int
+	row.Scan(&msgNumber)
+	row = db.QueryRow("SELECT COUNT(*) FROM guilds")
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	var guildNumber int
+	row.Scan(&guildNumber)
+
+	status := statusInfo{
+		ClientNumber: len(clients),
+		GuildNumber:  guildNumber,
+		MsgNumber:    msgNumber,
+	}
+	bodyBytes, err := json.Marshal(status)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.Write(bodyBytes)
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -95,18 +132,26 @@ func main() {
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/msg", middleWare(msgRecieve)).Methods("POST")
+	api.HandleFunc("/msg", middleWare(msgEdit)).Methods("PUT")
 	api.HandleFunc("/msg", middleWare(msgHistory)).Methods("GET")
 	api.HandleFunc("/msg", middleWare(msgDelete)).Methods("DELETE")
+
 	api.HandleFunc("/guild", middleWare(createGuild)).Methods("POST")
 	api.HandleFunc("/guild", middleWare(deleteGuild)).Methods("DELETE")
+	api.HandleFunc("/guild", middleWare(getGuild)).Methods("GET") //might send guilds to client through websocket
 	api.HandleFunc("/guild", middleWare(editGuild)).Methods("PUT")
+
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
+
 	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
 	api.HandleFunc("/reset", msgReset) //dangerous
+
 	api.HandleFunc("/user", userlogin).Methods("GET")
 	api.HandleFunc("/user", createuser).Methods("POST")
 	api.HandleFunc("/user", middleWare(changeDetails)).Methods("PUT")
+
+	api.HandleFunc("/status", showStatus).Methods("GET")
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"

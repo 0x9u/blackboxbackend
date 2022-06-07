@@ -2896,3 +2896,67 @@ ERROR 2022/06/01 16:41:41 websocket: close 1000 (normal)
 INFO 2022/06/01 16:41:41 Disconnecting websocket
 INFO 2022/06/01 16:41:41 Websocket of 127.0.0.1:8090 has been closed
 >>>>>>> 7c1328aabf964b8800f449e7d08b53b819e32485
+INFO 2022/06/07 15:47:25 Handling requests
+INFO 2022/06/07 15:48:41 time to add 1440h0m0s
+INFO 2022/06/07 15:48:41 time now unix 1654580921
+INFO 2022/06/07 15:51:29 Websocket active of 127.0.0.1:8090
+INFO 2022/06/07 15:51:36 Writing to client
+INFO 2022/06/07 15:51:41 {
+    "Content" : "Teasdasdasdsast123",
+    "Guild" : 2,
+    "Time" : 1651126336
+}
+INFO 2022/06/07 15:51:41 Message recieved Teasdasdasdsast123
+INFO 2022/06/07 15:51:41 clientslist {15 1 Teasdasdasdsast123 2 1654581101}
+INFO 2022/06/07 15:51:41 Message sent to 1
+INFO 2022/06/07 15:51:42 Writing to client
+INFO 2022/06/07 15:51:47 Writing to client
+INFO 2022/06/07 15:51:52 Writing to client
+INFO 2022/06/07 15:51:58 Writing to client
+INFO 2022/06/07 15:52:03 Writing to client
+ERROR 2022/06/07 15:52:05 websocket: close 1000 (normal)
+INFO 2022/06/07 15:52:05 Disconnecting websocket
+INFO 2022/06/07 15:52:05 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/07 16:10:32 Handling requests
+INFO 2022/06/07 16:13:28 Handling requests
+INFO 2022/06/07 16:14:00 time to add 1440h0m0s
+INFO 2022/06/07 16:14:00 time now unix 1654582440
+INFO 2022/06/07 16:14:12 Websocket active of 127.0.0.1:8090
+INFO 2022/06/07 16:14:16 Writing to client
+INFO 2022/06/07 16:14:20 Writing to client
+INFO 2022/06/07 16:14:26 Writing to client
+ERROR 2022/06/07 16:14:29 websocket: close 1000 (normal)
+INFO 2022/06/07 16:14:29 Disconnecting websocket
+INFO 2022/06/07 16:14:29 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/07 16:22:06 Handling requests
+INFO 2022/06/07 16:22:10 time to add 1440h0m0s
+INFO 2022/06/07 16:22:10 time now unix 1654582930
+ERROR 2022/06/07 16:22:37 strconv.Atoi: parsing "": invalid syntax
+INFO 2022/06/07 16:23:47 Handling requests
+INFO 2022/06/07 16:23:47 time to add 1440h0m0s
+INFO 2022/06/07 16:23:47 time now unix 1654583027
+INFO 2022/06/07 16:23:54 map[]
+ERROR 2022/06/07 16:23:54 strconv.Atoi: parsing "": invalid syntax
+INFO 2022/06/07 16:24:22 Handling requests
+ERROR 2022/06/07 16:24:24 token is invalid
+INFO 2022/06/07 16:24:46 Handling requests
+INFO 2022/06/07 16:24:47 time to add 1440h0m0s
+INFO 2022/06/07 16:24:47 time now unix 1654583087
+INFO 2022/06/07 16:24:56 
+ERROR 2022/06/07 16:24:56 strconv.Atoi: parsing "": invalid syntax
+INFO 2022/06/07 16:28:25 Handling requests
+INFO 2022/06/07 16:28:34 time to add 1440h0m0s
+INFO 2022/06/07 16:28:34 time now unix 1654583314
+ERROR 2022/06/07 16:28:40 pq: update or delete on table "guilds" violates foreign key constraint "fk_message_guild" on table "messages"
+INFO 2022/06/07 16:33:14 Handling requests
+INFO 2022/06/07 16:33:15 time to add 1440h0m0s
+INFO 2022/06/07 16:33:15 time now unix 1654583595
+INFO 2022/06/07 16:55:58 Handling requests
+INFO 2022/06/07 16:55:58 time to add 1440h0m0s
+INFO 2022/06/07 16:55:58 time now unix 1654584958
+INFO 2022/06/07 16:56:12 Websocket active of 127.0.0.1:8090
+INFO 2022/06/07 16:56:16 Writing to client
+INFO 2022/06/07 16:56:23 Writing to client
+ERROR 2022/06/07 16:56:26 websocket: close 1000 (normal)
+INFO 2022/06/07 16:56:26 Disconnecting websocket
+INFO 2022/06/07 16:56:26 Websocket of 127.0.0.1:8090 has been closed

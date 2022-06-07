@@ -24,12 +24,13 @@ type client struct {
 	//	keepAlive bool //temporary try find solution
 }
 
-type ping struct {
-	Token string `json:"token"` //probably include more stuff maybe idk
+type sendDataType struct {
+	DataType int         //0 for pingpong 1 for message 2 for guild Changes
+	Data     interface{} //data to send
 }
 
-type pong struct {
-	Token string `json:"token"`
+type pingpong struct {
+	Token string `json:"token"` //probably include more stuff maybe idk
 }
 
 const (
@@ -63,7 +64,10 @@ func (c *client) run() {
 		case <-c.quit.Done(): //<-c.quit:
 			return
 		case <-c.timer.C:
-			data := pong{c.token}
+			data := sendDataType{
+				DataType: 0,
+				Data:     pingpong{c.token},
+			}
 			message, _ := json.Marshal(data)
 			log.WriteLog(logger.INFO, "Writing to client")
 			if err := c.ws.WriteMessage(websocket.TextMessage, message); err != nil {
@@ -84,7 +88,7 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.INFO, "Disconnecting websocket")
 			break
 		}
-		var recieved ping
+		var recieved pingpong
 		err = json.Unmarshal(message, &recieved)
 		if err != nil {
 			log.WriteLog(logger.WARN, "an error occured during unmarshalling with websocket: "+c.ws.LocalAddr().String()+": "+err.Error())
@@ -104,14 +108,22 @@ func (c *client) heartBeat() {
 }
 
 func (c *client) eventCheck(data interface{}) {
+	var dataType int
 	switch data.(type) {
-	case msg: //implement files soon or something idk guild change ban or kick whatever
-		err := c.ws.WriteJSON(data)
-		if err != nil {
-			log.WriteLog(logger.ERROR, err.Error())
-			//c.quit <- true
-			c.quitFunc()
-		}
+	case msg:
+		dataType = 1
+	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
+		dataType = 2
+	}
+	sendData := sendDataType{
+		DataType: dataType,
+		Data:     data,
+	}
+	err := c.ws.WriteJSON(sendData)
+	if err != nil {
+		log.WriteLog(logger.ERROR, err.Error())
+		//c.quit <- true
+		c.quitFunc()
 	}
 }
 

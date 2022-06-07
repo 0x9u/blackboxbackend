@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -23,6 +24,11 @@ type deleteMsg struct {
 	Author int `json:"Author"`
 	Guild  int `json:"Guild"`
 	Time   int `json:"Time"` //delete messages up to timestamp
+}
+
+type editMsg struct {
+	Id      int    `json:"Id"`      //msg id
+	Content string `json:"Content"` //new msg content
 }
 
 /*
@@ -168,6 +174,34 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+}
+
+func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
+	var datamsg editMsg
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &datamsg)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if datamsg.Id == 0 || datamsg.Content == "" {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	_, err = db.Exec("UPDATE messages SET content = $1 WHERE id = $2 AND user_id = $3", datamsg.Content, datamsg.Id, user.Id)
+	if err == sql.ErrNoRows {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	} else if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+
 }
 
 /*
