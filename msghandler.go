@@ -201,7 +201,6 @@ func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-
 }
 
 /*
