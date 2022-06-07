@@ -32,6 +32,7 @@ var (
 	errorUsernameExists   = errors.New("username already exists")
 	errorInvalidChange    = errors.New("invalid change option")
 	errorGuildNotProvided = errors.New("guild is not provided")
+	errorNotGuildOwner    = errors.New("user is not owner")
 )
 
 const (
@@ -98,6 +99,7 @@ func main() {
 	api.HandleFunc("/msg", middleWare(msgDelete)).Methods("DELETE")
 	api.HandleFunc("/guild", middleWare(createGuild)).Methods("POST")
 	api.HandleFunc("/guild", middleWare(deleteGuild)).Methods("DELETE")
+	api.HandleFunc("/guild", middleWare(editGuild)).Methods("PUT")
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
 	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation

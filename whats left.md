@@ -6,3 +6,4 @@
 - multiplayer games
 - Shorten authentication using middleware
 - Make a failsafe for same invite code
+- ADd some guild shit (edit settings)

@@ -139,12 +139,23 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	if datamsg.Author == 0 {
+	if datamsg.Author == 0 { //if no author is specified then assume its the users
 		_, err = db.Exec("DELETE FROM messages WHERE time <= $1 AND guild_id = $2 AND user_id = $3", datamsg.Time, datamsg.Guild, user.Id)
 	} else if datamsg.Id == 0 {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	} else {
+		var valid bool
+		row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id = $2)", datamsg.Guild, user.Id)
+		if row.Err() != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		row.Scan(&valid)
+		if !valid {
+			reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+			return
+		}
 		_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, user.Id)
 	}
 	if err != nil {

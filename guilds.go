@@ -1,16 +1,17 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 /*
 Guilds table
-id PRIMARY KEY SERIAL | name VARCHAR(16) | icon INT | owner_id INT | invites_amount SMALLINT
+id PRIMARY KEY SERIAL | name VARCHAR(16) | icon INT | owner_id INT | invites_amount SMALLINT DEFAULT 1 | public BOOLEAN DEFAULT FALSE | keephistory BOOLEAN DEFAULT FALSE
 */
 /*
 Invites table
@@ -21,18 +22,17 @@ type createGuildData struct {
 	Name string `json:"Name"`
 }
 
-type deleteGuildData struct {
-	Guild int `json:"Guild"`
-}
-
-type deleteInvite struct {
-	Guild  int    `json:"Guild"`
-	Invite string `json:"invite"`
-}
-
 type sendInvite struct {
 	Invite string `json:"Invite"`
 	Guild  int    `json:"Guild"`
+}
+
+//small but keep it like that for now
+type changeGuild struct {
+	Guild       int    `json:"Guild"`
+	Public      bool   `json:"Public"`
+	KeepHistory bool   `json:"KeepHistory"`
+	Name        string `json:"Name"`
 }
 
 func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
@@ -72,31 +72,34 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	guildParam := r.URL.Query().Get("Guild")
-	guild, err := strconv.Atoi(guildParam)
+	params := mux.Vars(r)
+	guild, err := strconv.Atoi(params["guild"])
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	row := db.QueryRow("SELECT id FROM guilds WHERE id=$1 AND owner_id=$2", guild, user.Id)
-	if err := row.Err(); err == sql.ErrNoRows {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	} else if err != nil {
-		reportError(http.StatusInternalServerError, w, err)
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT id FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
 		return
 	}
-	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild)
+	row.Scan(&valid)
+	if !valid { //user is a fraud
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild) //start deleting
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild)
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild) //delete from users guilds
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild)
+	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild) //delete all existing invites
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
@@ -107,12 +110,33 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusOK)
+}
+
+func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	var newSettings changeGuild
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &newSettings) //a error really shouldnt occur here i am only
+	//going to remove this after i know this works
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	_, err = db.Exec("UPDATE guilds SET public=$1, KeepHistory=$2, name=$3 WHERE id=$4 AND owner_id=$5", newSettings.Public, newSettings.KeepHistory, newSettings.Name, newSettings.Guild, user.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
-	guildParam := r.URL.Query().Get("guild")
-	guild, err := strconv.Atoi(guildParam)
+	params := mux.Vars(r)
+	guild, err := strconv.Atoi(params["guild"])
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -135,21 +159,28 @@ func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
+	params := mux.Vars(r)
+	invite := params["invite"]
+	guild, err := strconv.Atoi(params["guild"])
+	if err != nil || invite == "" {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	var inv deleteInvite
-	err = json.Unmarshal(bodyBytes, &inv)
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	row := db.QueryRow("DELETE FROM guilds WHERE guild_id=$1, invite=$2", inv.Guild, inv.Invite)
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
 	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	_, err = db.Exec("DELETE FROM guilds WHERE guild_id=$1 AND invite=$2", guild, invite)
+	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusOK)
 }
