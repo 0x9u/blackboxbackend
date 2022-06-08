@@ -1,12 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 /*
@@ -33,6 +32,11 @@ type changeGuild struct {
 	Public      bool   `json:"Public"`
 	KeepHistory bool   `json:"KeepHistory"`
 	Name        string `json:"Name"`
+}
+
+type movedGuild struct {
+	DataType int `json:"DataType"`
+	Guild    int `json:"Guild"`
 }
 
 type userGuild struct {
@@ -152,7 +156,7 @@ func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 
 	var valid bool
-	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND owner_id=$2 AND banned=false)", guild, user.Id)
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guild, user.Id)
 	if row.Err() != nil {
 		reportError(http.StatusInternalServerError, w, row.Err())
 		return
@@ -228,14 +232,14 @@ func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	w.Write(bodyBytes)
 	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
 }
 
 func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	params := mux.Vars(r)
-	invite := params["invite"]
-	guild, err := strconv.Atoi(params["guild"])
+	params := r.URL.Query()
+	invite := params.Get("invite")
+	guild, err := strconv.Atoi(params.Get("guild"))
 	if err != nil || invite == "" {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -256,5 +260,95 @@ func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	invite := params.Get("invite")
+	if invite == "" {
+		reportError(http.StatusBadRequest, w, errorNoInvite)
+		return
+	}
+	row := db.QueryRow("SELECT guild_id FROM invites WHERE invite=$1", invite)
+	if err := row.Err(); err == sql.ErrNoRows {
+		reportError(http.StatusBadRequest, w, errorInvalidInvite)
+		return
+	} else if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var guild int
+	row.Scan(&guild)
+	_, err := db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2) ", guild, user.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	broadcastClient(user.Id, movedGuild{DataType: 0, Guild: guild})
+	w.WriteHeader(http.StatusOK)
+}
+
+func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	userId, err := strconv.Atoi(params.Get("user"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guild, userId)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	broadcastClient(userId, movedGuild{DataType: 1, Guild: guild})
+	w.WriteHeader(http.StatusOK)
+}
+
+func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	userId, err := strconv.Atoi(params.Get("user"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	_, err = db.Exec("UPDATE userguilds SET banned=true WHERE guild_id=$1 AND user_id=$2", guild, userId)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	broadcastClient(userId, movedGuild{DataType: 2, Guild: guild})
 	w.WriteHeader(http.StatusOK)
 }

@@ -2960,3 +2960,74 @@ INFO 2022/06/07 16:56:23 Writing to client
 ERROR 2022/06/07 16:56:26 websocket: close 1000 (normal)
 INFO 2022/06/07 16:56:26 Disconnecting websocket
 INFO 2022/06/07 16:56:26 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/08 11:53:20 Handling requests
+INFO 2022/06/08 11:53:22 time to add 1440h0m0s
+INFO 2022/06/08 11:53:22 time now unix 1654653202
+ERROR 2022/06/08 11:54:20 pq: column "owner_id" does not exist
+INFO 2022/06/08 11:54:43 Handling requests
+INFO 2022/06/08 11:54:45 time to add 1440h0m0s
+INFO 2022/06/08 11:54:45 time now unix 1654653285
+ERROR 2022/06/08 11:55:28 token is invalid
+INFO 2022/06/08 13:27:49 Handling requests
+INFO 2022/06/08 13:27:50 time to add 1440h0m0s
+INFO 2022/06/08 13:27:50 time now unix 1654658870
+INFO 2022/06/08 13:30:06 Handling requests
+ERROR 2022/06/08 13:30:14 invalid character '-' in numeric literal
+INFO 2022/06/08 13:30:40 Handling requests
+INFO 2022/06/08 13:30:41 body ----------------------------781788743343153692736031
+Content-Disposition: form-data; name="Username"
+
+asianchinaboi
+----------------------------781788743343153692736031
+Content-Disposition: form-data; name="Password"
+
+12345678Po!
+----------------------------781788743343153692736031--
+
+ERROR 2022/06/08 13:30:41 invalid character '-' in numeric literal
+INFO 2022/06/08 13:31:43 body {
+    "username" : "opo",
+    "password" : "12345678Po!"
+}
+INFO 2022/06/08 13:31:43 a476ac3a1acc0bc519eae5ab3f0f0b9a8f0ed5836e5b8e049ce0db190a03eea0
+INFO 2022/06/08 13:36:31 time to add 1440h0m0s
+INFO 2022/06/08 13:36:31 time now unix 1654659391
+ERROR 2022/06/08 13:40:45 token is not provided
+ERROR 2022/06/08 13:42:11 invalid character '}' looking for beginning of object key string
+INFO 2022/06/08 13:42:19 time to add 1440h0m0s
+INFO 2022/06/08 13:42:19 time now unix 1654659739
+ERROR 2022/06/08 13:42:51 pq: duplicate key value violates unique constraint "userguilds_pkey"
+INFO 2022/06/08 13:48:14 {
+    "content" : "hello",
+}
+ERROR 2022/06/08 13:48:14 invalid character '}' looking for beginning of object key string
+INFO 2022/06/08 13:48:19 {
+    "content" : "hello"
+}
+INFO 2022/06/08 13:48:19 Message recieved hello
+ERROR 2022/06/08 13:48:19 user is not in guild
+INFO 2022/06/08 13:48:36 {
+    "content" : "hello",
+    "guild" : 4
+}
+INFO 2022/06/08 13:48:36 Message recieved hello
+INFO 2022/06/08 13:48:36 clientslist {17 2 hello 4 1654660116}
+INFO 2022/06/08 13:48:36 clientslist {17 2 hello 4 1654660116}
+INFO 2022/06/08 13:59:03 Handling requests
+INFO 2022/06/08 13:59:04 time to add 1440h0m0s
+INFO 2022/06/08 13:59:04 time now unix 1654660744
+INFO 2022/06/08 13:59:12 Websocket active of 127.0.0.1:8090
+INFO 2022/06/08 13:59:16 Writing to client
+INFO 2022/06/08 13:59:20 Writing to client
+INFO 2022/06/08 13:59:26 Writing to client
+INFO 2022/06/08 13:59:32 Writing to client
+INFO 2022/06/08 13:59:37 Writing to client
+INFO 2022/06/08 13:59:43 Writing to client
+INFO 2022/06/08 13:59:50 Writing to client
+INFO 2022/06/08 13:59:54 Writing to client
+INFO 2022/06/08 13:59:59 Writing to client
+INFO 2022/06/08 14:00:04 Writing to client
+INFO 2022/06/08 14:00:09 Writing to client
+ERROR 2022/06/08 14:00:11 websocket: close 1000 (normal)
+INFO 2022/06/08 14:00:11 Disconnecting websocket
+INFO 2022/06/08 14:00:11 Websocket of 127.0.0.1:8090 has been closed

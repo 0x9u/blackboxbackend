@@ -14,7 +14,6 @@ import (
 type brcastEvents chan interface{}
 
 type client struct {
-	token    string
 	ws       *websocket.Conn
 	id       int
 	guilds   []int
@@ -30,7 +29,7 @@ type sendDataType struct {
 }
 
 type pingpong struct {
-	Token string `json:"token"` //probably include more stuff maybe idk
+	Data string //probably include more stuff maybe idk
 }
 
 const (
@@ -66,7 +65,7 @@ func (c *client) run() {
 		case <-c.timer.C:
 			data := sendDataType{
 				DataType: 0,
-				Data:     pingpong{c.token},
+				Data:     pingpong{Data: "pong"},
 			}
 			message, _ := json.Marshal(data)
 			log.WriteLog(logger.INFO, "Writing to client")
@@ -94,13 +93,6 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.WARN, "an error occured during unmarshalling with websocket: "+c.ws.LocalAddr().String()+": "+err.Error())
 			continue
 		}
-		//log.WriteLog(logger.INFO, fmt.Sprintf("ping token %s actual token %s", recieved.Token, c.token))
-		if recieved.Token != c.token {
-			log.WriteLog(logger.INFO, "Disconnecting websocket as it is a invalid token")
-			//c.quit <- true
-			c.quitFunc()
-			return
-		}
 		c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
 		c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
 
@@ -112,8 +104,12 @@ func (c *client) eventCheck(data interface{}) {
 	switch data.(type) {
 	case msg:
 		dataType = 1
-	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
+	case deleteMsg:
 		dataType = 2
+	case editMsg:
+		dataType = 3
+	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
+		dataType = 4
 	}
 	sendData := sendDataType{
 		DataType: dataType,
@@ -127,30 +123,13 @@ func (c *client) eventCheck(data interface{}) {
 	}
 }
 
-func webSocket(w http.ResponseWriter, r *http.Request) {
-
-	token, ok := r.Header["Auth-Token"]
-	if !ok || len(token) == 0 {
-		reportError(http.StatusBadRequest, w, errorToken)
-		return
-	}
-
-	user, err := checkToken(token[0])
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-
+func webSocket(w http.ResponseWriter, r *http.Request, user *session) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	//defer ws.Close()
-	if user.Id == 0 {
-		reportError(http.StatusBadRequest, w, fmt.Errorf("invalid token: %v", token[0]))
-		return
-	}
+
 	rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", user.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
@@ -167,7 +146,6 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	quit, quitFunc := context.WithCancel(ctx)
 	instanceuser := client{
-		token:    token[0],
 		ws:       ws,
 		id:       user.Id,
 		guilds:   guilds,
@@ -205,5 +183,14 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 		client <- data
 		log.WriteLog(logger.INFO, fmt.Sprintf("Message sent to %d", id))
 	}
+	return 0, nil
+}
+
+func broadcastClient(id int, data interface{}) (statusCode int, err error) {
+	client := clients[id]
+	if client == nil {
+		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
+	}
+	client <- data
 	return 0, nil
 }

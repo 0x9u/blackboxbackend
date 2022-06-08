@@ -86,6 +86,7 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
+	log.WriteLog(logger.INFO, fmt.Sprintf("body %v", string(bodyBytes)))
 	err = json.Unmarshal(bodyBytes, &acc)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)

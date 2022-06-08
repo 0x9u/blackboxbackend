@@ -34,6 +34,8 @@ var (
 	errorInvalidChange    = errors.New("invalid change option")
 	errorGuildNotProvided = errors.New("guild is not provided")
 	errorNotGuildOwner    = errors.New("user is not owner")
+	errorNoInvite         = errors.New("no invite provided")
+	errorInvalidInvite    = errors.New("invalid invite provided")
 )
 
 const (
@@ -107,8 +109,8 @@ func showStatus(w http.ResponseWriter, r *http.Request) { //debugging
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	w.Write(bodyBytes)
 	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
 }
 
 func main() {
@@ -141,12 +143,15 @@ func main() {
 	api.HandleFunc("/guild", middleWare(getGuild)).Methods("GET") //might send guilds to client through websocket
 	api.HandleFunc("/guild", middleWare(editGuild)).Methods("PUT")
 	api.HandleFunc("/guild/users", middleWare(getGuildUsers)).Methods("GET")
+	api.HandleFunc("/guild/join", middleWare(joinGuild)).Methods("POST")
+	api.HandleFunc("/guild/ban", middleWare(banGuildUser)).Methods("POST")
+	api.HandleFunc("/guild/kick", middleWare(kickGuildUser)).Methods("POST")
 
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
 
-	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
-	api.HandleFunc("/reset", msgReset) //dangerous
+	api.HandleFunc("/ws", middleWare(webSocket)) //make middleware later for token validation
+	api.HandleFunc("/reset", msgReset)           //dangerous
 
 	api.HandleFunc("/user", userlogin).Methods("GET")
 	api.HandleFunc("/user", createuser).Methods("POST")
