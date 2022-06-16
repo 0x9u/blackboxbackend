@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/logger"
@@ -14,12 +15,13 @@ import (
 type brcastEvents chan interface{}
 
 type client struct {
-	ws       *websocket.Conn
-	id       int
-	guilds   []int
-	timer    *time.Ticker
-	quit     context.Context //chan bool //also temporary maybe use contexts later
-	quitFunc context.CancelFunc
+	ws        *websocket.Conn
+	id        int
+	guilds    []int //not used might remove later
+	timer     *time.Ticker
+	broadcast brcastEvents
+	quit      context.Context //chan bool //also temporary maybe use contexts later
+	quitFunc  context.CancelFunc
 	//	keepAlive bool //temporary try find solution
 }
 
@@ -31,6 +33,8 @@ type sendDataType struct {
 type pingpong struct {
 	Data string //probably include more stuff maybe idk
 }
+
+var lock sync.Mutex
 
 const (
 	pingDelay    = 10 * time.Second
@@ -53,7 +57,7 @@ func (c *client) run() {
 	c.ws.SetReadLimit(messageLimit)
 	for {
 		select {
-		//case : //recieve messages
+		//recieve messages
 		case data, ok := <-clients[c.id]:
 			if !ok {
 				c.quitFunc() //call cancel but never actually recieve it
@@ -136,27 +140,46 @@ func webSocket(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	var guilds []int
+	broadcastChannel := make(brcastEvents)
 	for rows.Next() {
 		var guild int
 		rows.Scan(&guild)
 		guilds = append(guilds, guild)
+		lock.Lock() //slow needs fix
+		//only implementing to prevent data races
+		guildPool, ok := pools[guild]
+		clientData := addClientData{
+			Id: user.Id,
+			Ch: broadcastChannel,
+		}
+		if !ok {
+			createPool(guild)
+			pools[guild].Add <- clientData
+		} else {
+			guildPool.Add <- clientData
+		}
+		lock.Unlock()
+		fmt.Println("successful")
 	}
+	//get all the guilds the user is in
 	rows.Close()
-	clients[user.Id] = make(brcastEvents)
 	ctx := context.Background()
 	quit, quitFunc := context.WithCancel(ctx)
 	instanceuser := client{
-		ws:       ws,
-		id:       user.Id,
-		guilds:   guilds,
-		timer:    time.NewTicker(pongDelay),
-		quit:     quit,
-		quitFunc: quitFunc,
+		ws:        ws,
+		id:        user.Id, //broadcast to all clients
+		guilds:    guilds,
+		timer:     time.NewTicker(pongDelay),
+		broadcast: broadcastChannel,
+		quit:      quit,
+		quitFunc:  quitFunc,
 	}
+	clients[user.Id] = instanceuser.broadcast
 	instanceuser.run()
 
 }
 
+/*
 func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 	rows, err := db.Query("SELECT user_id FROM userguilds WHERE guild_id=$1", guild)
 	if err != nil {
@@ -185,6 +208,7 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 	}
 	return 0, nil
 }
+*/
 
 func broadcastClient(id int, data interface{}) (statusCode int, err error) {
 	client := clients[id]

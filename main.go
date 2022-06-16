@@ -18,27 +18,30 @@ import (
 )
 
 var (
-	log      *logger.Logger
-	db       *sql.DB
-	upgrader websocket.Upgrader
-	clients  = make(map[int]brcastEvents) // id : channel
-	tokens   = make(map[string]session)   // tokens : user ids
+	log        *logger.Logger
+	db         *sql.DB
+	upgrader   websocket.Upgrader
+	clients    = make(map[int]brcastEvents) // id : channel
+	pools      = make(map[int]*pool)        //guild id : guild channel
+	tokens     = make(map[string]session)   // tokens : user ids
+	characters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 )
 
 var (
-	errorToken            = errors.New("token is not provided")
-	errorInvalidToken     = errors.New("token is invalid")
-	errorExpiredToken     = errors.New("token has expired")
-	errorNotInGuild       = errors.New("user is not in guild")
-	errorUsernameExists   = errors.New("username already exists")
-	errorInvalidChange    = errors.New("invalid change option")
-	errorGuildNotProvided = errors.New("guild is not provided")
-	errorNotGuildOwner    = errors.New("user is not owner")
-	errorNoInvite         = errors.New("no invite provided")
-	errorInvalidInvite    = errors.New("invalid invite provided")
+	errorToken             = errors.New("token is not provided")
+	errorInvalidToken      = errors.New("token is invalid")
+	errorExpiredToken      = errors.New("token has expired")
+	errorNotInGuild        = errors.New("user is not in guild")
+	errorUsernameExists    = errors.New("username already exists")
+	errorInvalidChange     = errors.New("invalid change option")
+	errorGuildNotProvided  = errors.New("guild is not provided")
+	errorNotGuildOwner     = errors.New("user is not owner")
+	errorNoInvite          = errors.New("no invite provided")
+	errorInvalidInvite     = errors.New("invalid invite provided")
+	errorGuildPoolNotExist = errors.New("guild pool does not exist")
 )
 
-const (
+const ( //settings
 	host       = "localhost"
 	port       = 5432
 	user       = "postgres"
@@ -58,8 +61,6 @@ func reportError(status int, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 	w.Write([]byte("bad request"))
 }
-
-var characters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 func generateRandString(l int) string { //copied from stackoverflow
 	b := make([]rune, l)

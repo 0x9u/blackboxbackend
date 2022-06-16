@@ -3031,3 +3031,115 @@ INFO 2022/06/08 14:00:09 Writing to client
 ERROR 2022/06/08 14:00:11 websocket: close 1000 (normal)
 INFO 2022/06/08 14:00:11 Disconnecting websocket
 INFO 2022/06/08 14:00:11 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/11 07:49:02 Handling requests
+INFO 2022/06/16 18:14:24 Handling requests
+INFO 2022/06/16 18:15:53 time to add 1440h0m0s
+INFO 2022/06/16 18:15:53 time now unix 1655367353
+INFO 2022/06/16 18:16:35 Websocket active of 127.0.0.1:8090
+INFO 2022/06/16 18:16:39 Writing to client
+INFO 2022/06/16 18:16:43 Writing to client
+ERROR 2022/06/16 18:16:45 read tcp 127.0.0.1:8090->127.0.0.1:40910: i/o timeout
+INFO 2022/06/16 18:16:45 Disconnecting websocket
+INFO 2022/06/16 18:16:45 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/16 18:16:48 Websocket active of 127.0.0.1:8090
+INFO 2022/06/16 18:16:52 Writing to client
+INFO 2022/06/16 18:16:57 Writing to client
+INFO 2022/06/16 18:17:01 Writing to client
+ERROR 2022/06/16 18:17:03 websocket: close 1000 (normal)
+INFO 2022/06/16 18:17:03 Disconnecting websocket
+INFO 2022/06/16 18:17:03 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 07:43:06 Handling requests
+INFO 2022/06/17 07:45:39 time to add 1440h0m0s
+INFO 2022/06/17 07:45:39 time now unix 1655415939
+INFO 2022/06/17 07:45:50 Pool created for guild 1
+INFO 2022/06/17 07:45:50 Pool created for guild 3
+INFO 2022/06/17 07:45:50 Pool created for guild 4
+INFO 2022/06/17 07:45:50 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 07:45:54 Writing to client
+INFO 2022/06/17 07:45:58 Writing to client
+ERROR 2022/06/17 07:45:58 websocket: close 1000 (normal)
+INFO 2022/06/17 07:45:58 Disconnecting websocket
+INFO 2022/06/17 07:45:58 Websocket of 127.0.0.1:8090 has been closed
+ERROR 2022/06/17 07:50:16 token is not provided
+INFO 2022/06/17 07:51:00 {
+    "guild" : 0,
+    "content" : "sup bitch"
+}
+INFO 2022/06/17 07:51:00 Message recieved sup bitch
+ERROR 2022/06/17 07:51:00 user is not in guild
+INFO 2022/06/17 07:51:08 {
+    "guild" : 1,
+    "content" : "sup bitch"
+}
+INFO 2022/06/17 07:51:08 Message recieved sup bitch
+INFO 2022/06/17 07:52:18 Handling requests
+INFO 2022/06/17 07:52:23 time to add 1440h0m0s
+INFO 2022/06/17 07:52:23 time now unix 1655416343
+INFO 2022/06/17 07:52:32 {
+    "guild" : 1,
+    "content" : "sup bitch"
+}
+INFO 2022/06/17 07:52:32 Message recieved sup bitch
+ERROR 2022/06/17 07:52:32 guild pool does not exist
+ERROR 2022/06/17 07:52:53 token is invalid
+INFO 2022/06/17 07:52:56 Pool created for guild 1
+INFO 2022/06/17 07:52:56 Pool created for guild 3
+INFO 2022/06/17 07:52:56 Pool created for guild 4
+INFO 2022/06/17 07:52:56 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 07:53:00 Writing to client
+INFO 2022/06/17 07:53:04 Writing to client
+ERROR 2022/06/17 07:53:06 read tcp 127.0.0.1:8090->127.0.0.1:56620: i/o timeout
+INFO 2022/06/17 07:53:06 Disconnecting websocket
+INFO 2022/06/17 07:53:06 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 07:53:34 {
+    "guild" : 1,
+    "content" : "sup bitch"
+}
+INFO 2022/06/17 07:53:34 Message recieved sup bitch
+INFO 2022/06/17 07:56:09 Handling requests
+INFO 2022/06/17 07:56:16 time to add 1440h0m0s
+INFO 2022/06/17 07:56:16 time now unix 1655416576
+INFO 2022/06/17 07:56:34 Pool created for guild 1
+INFO 2022/06/17 07:57:35 Handling requests
+INFO 2022/06/17 07:57:39 time to add 1440h0m0s
+INFO 2022/06/17 07:57:39 time now unix 1655416659
+INFO 2022/06/17 07:57:49 Pool created for guild 1
+INFO 2022/06/17 07:59:19 Handling requests
+INFO 2022/06/17 07:59:21 time to add 1440h0m0s
+INFO 2022/06/17 07:59:21 time now unix 1655416761
+INFO 2022/06/17 07:59:32 Pool created for guild 1
+INFO 2022/06/17 07:59:32 Pool created for guild 3
+INFO 2022/06/17 07:59:32 Pool created for guild 4
+INFO 2022/06/17 07:59:32 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 07:59:36 Writing to client
+INFO 2022/06/17 07:59:40 Writing to client
+ERROR 2022/06/17 07:59:42 read tcp 127.0.0.1:8090->127.0.0.1:43184: i/o timeout
+INFO 2022/06/17 07:59:42 Disconnecting websocket
+INFO 2022/06/17 07:59:42 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 07:59:44 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 07:59:48 Writing to client
+INFO 2022/06/17 07:59:53 Writing to client
+INFO 2022/06/17 07:59:58 Writing to client
+INFO 2022/06/17 08:00:06 Writing to client
+ERROR 2022/06/17 08:00:08 websocket: close 1000 (normal)
+INFO 2022/06/17 08:00:08 Disconnecting websocket
+INFO 2022/06/17 08:00:08 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 08:01:05 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 08:01:07 
+ERROR 2022/06/17 08:01:07 unexpected end of JSON input
+INFO 2022/06/17 08:01:09 Writing to client
+INFO 2022/06/17 08:01:13 Writing to client
+ERROR 2022/06/17 08:01:15 websocket: close 1000 (normal)
+INFO 2022/06/17 08:01:15 Disconnecting websocket
+INFO 2022/06/17 08:01:15 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 08:01:53 Websocket active of 127.0.0.1:8090
+INFO 2022/06/17 08:01:55 {
+    "guild" : 1,
+    "content" : "bruh momento"
+}
+INFO 2022/06/17 08:01:55 Message recieved bruh momento
+INFO 2022/06/17 08:01:57 Writing to client
+INFO 2022/06/17 08:02:01 Writing to client
+ERROR 2022/06/17 08:02:08 websocket: close 1000 (normal)
+INFO 2022/06/17 08:02:08 Disconnecting websocket
+INFO 2022/06/17 08:02:08 Websocket of 127.0.0.1:8090 has been closed
