@@ -42,25 +42,20 @@ func checkToken(token string) (*session, error) {
 	if !ok {
 		return nil, errorInvalidToken
 	}
-	if time.Now().Unix() > user.Expires {
+	if time.Now().Unix() > user.Expires { //needs fix can take up too much memory
+		delete(tokens, token)
 		return nil, errorExpiredToken
 	}
 	return &user, nil
 }
 
 func userlogin(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	username := params.Get("username")
+	password := params.Get("pwd")
 	var acc account
-	bodyBytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	if err := json.Unmarshal(bodyBytes, &acc); err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(acc.Password+acc.Username)))
-	if err := db.QueryRow("SELECT * FROM users WHERE username=$1 AND password=$2 AND email=$3", acc.Username, hashedpass, acc.Email).Scan(&acc.Id, &acc.Email, &acc.Password, &acc.Username); err != nil {
+	hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(password+username)))
+	if err := db.QueryRow("SELECT * FROM users WHERE username=$1 AND password=$2", username, hashedpass).Scan(&acc.Id, &acc.Email, &acc.Password, &acc.Username); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}

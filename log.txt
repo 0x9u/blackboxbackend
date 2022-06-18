@@ -3143,3 +3143,9 @@ INFO 2022/06/17 08:02:01 Writing to client
 ERROR 2022/06/17 08:02:08 websocket: close 1000 (normal)
 INFO 2022/06/17 08:02:08 Disconnecting websocket
 INFO 2022/06/17 08:02:08 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/17 08:12:14 Handling requests
+INFO 2022/06/17 08:15:20 Handling requests
+INFO 2022/06/18 13:33:03 Handling requests
+ERROR 2022/06/18 13:34:34 sql: no rows in result set
+INFO 2022/06/18 13:35:03 time to add 1440h0m0s
+INFO 2022/06/18 13:35:03 time now unix 1655523303
