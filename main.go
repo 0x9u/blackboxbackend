@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	_ "github.com/lib/pq"
@@ -56,10 +57,22 @@ type statusInfo struct {
 	MsgNumber    int `json:"msgNumber"`
 }
 
+type errorInfo struct {
+	Error string `json:"error"`
+}
+
 func reportError(status int, w http.ResponseWriter, err error) {
 	log.WriteLog(logger.ERROR, err.Error())
 	w.WriteHeader(status)
-	w.Write([]byte("bad request"))
+	errorData := errorInfo{
+		Error: err.Error(),
+	}
+	bodyBytes, err := json.Marshal(errorData)
+	if err != nil {
+		log.WriteLog(logger.ERROR, err.Error())
+		return
+	}
+	w.Write(bodyBytes)
 }
 
 func generateRandString(l int) string { //copied from stackoverflow
@@ -163,9 +176,17 @@ func main() {
 	//make some function that grabs user profiles based on "/user profiles/*(put a random int here (user id))"
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"
 	//Allow any connection /*/ for client side routing
+
+	srv := &http.Server{ //server settings
+		Addr:         "0.0.0.0:8090",
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 15,
+		Handler:      handlers.CORS()(r),
+	}
+
 	log.WriteLog(logger.INFO, "Handling requests")
-	http.Handle("/", r)
-	log.WriteLog(logger.FATAL, http.ListenAndServe(":8090", nil).Error())
+	log.WriteLog(logger.FATAL, srv.ListenAndServe().Error())
 }
 
 func initWs() {

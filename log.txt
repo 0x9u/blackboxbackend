@@ -3149,3 +3149,100 @@ INFO 2022/06/18 13:33:03 Handling requests
 ERROR 2022/06/18 13:34:34 sql: no rows in result set
 INFO 2022/06/18 13:35:03 time to add 1440h0m0s
 INFO 2022/06/18 13:35:03 time now unix 1655523303
+INFO 2022/06/18 17:25:50 Handling requests
+INFO 2022/06/18 17:44:52 Handling requests
+INFO 2022/06/18 17:57:58 Handling requests
+INFO 2022/06/18 18:00:10 Handling requests
+INFO 2022/06/19 09:38:01 Handling requests
+INFO 2022/06/19 09:39:19 Handling requests
+INFO 2022/06/19 13:36:40 time to add 1440h0m0s
+INFO 2022/06/19 13:36:40 time now unix 1655609800
+INFO 2022/06/19 13:36:52 Handling requests
+INFO 2022/06/19 13:36:53 time to add 1440h0m0s
+INFO 2022/06/19 13:36:53 time now unix 1655609813
+INFO 2022/06/19 13:37:32 Handling requests
+INFO 2022/06/19 13:37:38 time to add 1440h0m0s
+INFO 2022/06/19 13:37:38 time now unix 1655609858
+INFO 2022/06/19 13:42:36 Handling requests
+ERROR 2022/06/19 13:44:59 sql: no rows in result set
+ERROR 2022/06/19 13:45:11 sql: no rows in result set
+INFO 2022/06/19 13:45:35 Handling requests
+INFO 2022/06/19 13:45:36 username undefined password 
+ERROR 2022/06/19 13:45:36 sql: no rows in result set
+INFO 2022/06/19 13:47:16 Handling requests
+ERROR 2022/06/19 13:47:19 sql: no rows in result set
+INFO 2022/06/19 13:47:41 time to add 1440h0m0s
+INFO 2022/06/19 13:47:41 time now unix 1655610461
+INFO 2022/06/19 13:47:44 time to add 1440h0m0s
+INFO 2022/06/19 13:47:44 time now unix 1655610464
+INFO 2022/06/19 13:49:07 time to add 1440h0m0s
+INFO 2022/06/19 13:49:07 time now unix 1655610547
+INFO 2022/06/19 13:50:30 time to add 1440h0m0s
+INFO 2022/06/19 13:50:30 time now unix 1655610630
+INFO 2022/06/19 13:51:32 Handling requests
+INFO 2022/06/19 13:51:35 time to add 1440h0m0s
+INFO 2022/06/19 13:51:35 time now unix 1655610695
+INFO 2022/06/19 13:51:52 time to add 1440h0m0s
+INFO 2022/06/19 13:51:52 time now unix 1655610712
+INFO 2022/06/19 13:53:43 Handling requests
+INFO 2022/06/19 13:53:57 time to add 1440h0m0s
+INFO 2022/06/19 13:53:57 time now unix 1655610837
+INFO 2022/06/19 13:55:35 time to add 1440h0m0s
+INFO 2022/06/19 13:55:35 time now unix 1655610935
+INFO 2022/06/19 13:57:50 Handling requests
+INFO 2022/06/19 14:05:28 Handling requests
+INFO 2022/06/19 14:06:23 Handling requests
+INFO 2022/06/19 14:07:18 cors activated
+ERROR 2022/06/19 14:07:18 sql: no rows in result set
+INFO 2022/06/19 14:08:51 Handling requests
+INFO 2022/06/19 14:09:35 Handling requests
+INFO 2022/06/19 14:09:37 cors activated
+INFO 2022/06/19 14:10:49 cors activated
+ERROR 2022/06/19 14:10:49 sql: no rows in result set
+INFO 2022/06/19 14:11:07 cors activated
+ERROR 2022/06/19 14:11:07 sql: no rows in result set
+INFO 2022/06/19 14:11:38 cors activated
+INFO 2022/06/19 14:11:38 time to add 1440h0m0s
+INFO 2022/06/19 14:11:38 time now unix 1655611898
+INFO 2022/06/19 14:12:49 cors activated
+INFO 2022/06/19 14:12:49 time to add 1440h0m0s
+INFO 2022/06/19 14:12:49 time now unix 1655611969
+INFO 2022/06/19 14:13:07 cors activated
+INFO 2022/06/19 14:13:07 time to add 1440h0m0s
+INFO 2022/06/19 14:13:07 time now unix 1655611987
+INFO 2022/06/19 14:16:10 cors activated
+INFO 2022/06/19 14:16:10 time to add 1440h0m0s
+INFO 2022/06/19 14:16:10 time now unix 1655612170
+INFO 2022/06/19 16:48:38 Handling requests
+INFO 2022/06/19 16:48:43 cors activated
+ERROR 2022/06/19 16:48:43 sql: no rows in result set
+INFO 2022/06/19 16:48:57 cors activated
+ERROR 2022/06/19 16:48:57 sql: no rows in result set
+INFO 2022/06/19 16:54:36 cors activated
+ERROR 2022/06/19 16:54:36 sql: no rows in result set
+INFO 2022/06/19 16:55:21 cors activated
+INFO 2022/06/19 16:55:21 time to add 1440h0m0s
+INFO 2022/06/19 16:55:21 time now unix 1655621721
+INFO 2022/06/19 16:55:32 cors activated
+ERROR 2022/06/19 16:55:32 sql: no rows in result set
+INFO 2022/06/19 16:55:37 cors activated
+INFO 2022/06/19 16:55:37 time to add 1440h0m0s
+INFO 2022/06/19 16:55:37 time now unix 1655621737
+INFO 2022/06/19 22:02:09 Handling requests
+ERROR 2022/06/19 22:03:26 sql: no rows in result set
+INFO 2022/06/19 22:03:44 time to add 1440h0m0s
+INFO 2022/06/19 22:03:44 time now unix 1655640224
+INFO 2022/06/19 22:03:57 Handling requests
+ERROR 2022/06/19 22:04:01 sql: no rows in result set
+INFO 2022/06/19 22:04:05 time to add 1440h0m0s
+INFO 2022/06/19 22:04:05 time now unix 1655640245
+INFO 2022/06/19 22:05:48 Handling requests
+ERROR 2022/06/19 22:05:54 sql: no rows in result set
+INFO 2022/06/19 22:06:00 time to add 1440h0m0s
+INFO 2022/06/19 22:06:00 time now unix 1655640360
+INFO 2022/06/19 22:08:18 Handling requests
+INFO 2022/06/19 22:08:29 time to add 1440h0m0s
+INFO 2022/06/19 22:08:29 time now unix 1655640509
+ERROR 2022/06/19 22:08:37 sql: no rows in result set
+INFO 2022/06/19 22:09:01 time to add 1440h0m0s
+INFO 2022/06/19 22:09:01 time now unix 1655640541
