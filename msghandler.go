@@ -47,7 +47,7 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 	var datamsg msg
 	log.WriteLog(logger.INFO, string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &datamsg)
-	datamsg.Time = time.Now().Unix()
+	datamsg.Time = time.Now().UnixMilli()
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -76,7 +76,7 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 	row.Scan(&datamsg.Id)
 	datamsg.Author = user.Id
 	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
-	if err != nil {
+	if err != nil && err != errorGuildPoolNotExist {
 		reportError(statusCode, w, err)
 		return
 	}

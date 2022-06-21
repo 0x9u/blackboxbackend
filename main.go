@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -8,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -40,6 +42,8 @@ var (
 	errorNoInvite          = errors.New("no invite provided")
 	errorInvalidInvite     = errors.New("invalid invite provided")
 	errorGuildPoolNotExist = errors.New("guild pool does not exist")
+	errorInvalidEmail      = errors.New("invalid email")
+	errorInvalidDetails    = errors.New("invalid details")
 )
 
 const ( //settings
@@ -177,8 +181,12 @@ func main() {
 	//make some function that grabs user profiles based on "/guild icons/*(put a random int here (guild id))"
 	//Allow any connection /*/ for client side routing
 
+	// \A\/[^api](.*) is a regex that matches everything except api
+	//r.HandleFunc(`\A\/[^api](.*)`, )
+
 	srv := &http.Server{ //server settings
-		Addr:         "0.0.0.0:8090",
+		Addr: "0.0.0.0:8090",
+		//prevents ddos attacks
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 15,
@@ -186,7 +194,22 @@ func main() {
 	}
 
 	log.WriteLog(logger.INFO, "Handling requests")
-	log.WriteLog(logger.FATAL, srv.ListenAndServe().Error())
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.WriteLog(logger.FATAL, err.Error())
+		}
+	}()
+
+	c := make(chan os.Signal, 1) //listen for cancellation
+	signal.Notify(c, os.Interrupt)
+	<-c //pause code here until interrupted
+
+	log.WriteLog(logger.INFO, "Shutting down server")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+
+	srv.Shutdown(ctx)
 }
 
 func initWs() {

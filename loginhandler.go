@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/mail"
+	"regexp"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/logger"
@@ -19,34 +21,64 @@ type account struct {
 	Email    string `json:"email"`
 }
 
-type identity struct {
-	Token   string `json:"token"`
-	Expires int64  `json:"expires"`
-}
-
 type session struct {
 	Expires int64
 	Id      int
 }
 
+type sessionToken struct {
+	Expires int64  `json:"expires"`
+	Id      int    `json:"user_id"`
+	Token   string `json:"token"`
+}
+
 type dataChange struct {
-	Password string `json:"Password"`
-	Change   int    `json:"Change"` // 0 for password, 1 for email, 2 for username
-	New      string `json:"New"`
+	Password string `json:"password"`
+	Change   int    `json:"change"` // 0 for password, 1 for email, 2 for username
+	New      string `json:"new"`
 }
 
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months
 
 func checkToken(token string) (*session, error) {
-	user, ok := tokens[token]
-	if !ok {
+	var user session
+	err := db.QueryRow("SELECT user_id, token_expires FROM tokens WHERE token=$1", token).Scan(&user.Id, &user.Expires)
+	if err != nil && err == sql.ErrNoRows {
 		return nil, errorInvalidToken
+	} else if err != nil {
+		return nil, err
 	}
-	if time.Now().Unix() > user.Expires { //needs fix can take up too much memory
-		delete(tokens, token)
+	if time.Now().Unix() > user.Expires {
+		_, err = db.Exec("DELETE FROM tokens WHERE token=$1", token)
 		return nil, errorExpiredToken
 	}
 	return &user, nil
+}
+
+func genToken(id int) (sessionToken, error) {
+	var authData sessionToken
+	err := db.QueryRow("SELECT token, token_expires FROM tokens WHERE user_id=$1", id).Scan(&authData.Token, &authData.Expires)
+	if err != nil && err != sql.ErrNoRows {
+		return authData, err
+	} else if err == sql.ErrNoRows {
+		authToken := generateRandString(16)
+		authExpires := time.Now().Add(expireTime).UnixMilli()
+		authData = sessionToken{Id: id, Expires: authExpires, Token: authToken}
+		_, err = db.Exec("INSERT INTO tokens (user_id, token, token_expires) VALUES ($1, $2, $3)", id, authToken, authExpires)
+		if err != nil {
+			return authData, err
+		}
+	} else {
+		authData.Id = id
+	}
+	return authData, nil
+
+}
+
+//make email validation
+func validateEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func userlogin(w http.ResponseWriter, r *http.Request) {
@@ -59,13 +91,18 @@ func userlogin(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	authToken := generateRandString(16)
-	log.WriteLog(logger.INFO, fmt.Sprintf("time to add %v", expireTime))
-	log.WriteLog(logger.INFO, fmt.Sprintf("time now unix %v", time.Now().Unix()))
-	authExpires := time.Now().Add(expireTime).Unix()
-	tokens[authToken] = session{Id: acc.Id, Expires: authExpires}
-	auth := identity{Token: authToken, Expires: authExpires}
-	result, err := json.Marshal(auth)
+	//authToken := generateRandString(16)
+	//log.WriteLog(logger.INFO, fmt.Sprintf("time to add %v", expireTime))
+	//log.WriteLog(logger.INFO, fmt.Sprintf("time now unix %v", time.Now().Unix()))
+	log.WriteLog(logger.INFO, "Generating token")
+
+	authData, err := genToken(acc.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	result, err := json.Marshal(authData)
+
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -81,12 +118,32 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	log.WriteLog(logger.INFO, fmt.Sprintf("body %v", string(bodyBytes)))
 	err = json.Unmarshal(bodyBytes, &acc)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
+	//validation
+	if acc.Email != "" && !validateEmail(acc.Email) {
+		reportError(http.StatusBadRequest, w, errorInvalidEmail)
+		return
+	}
+	usernameValid, err := regexp.MatchString("^[a-zA-Z0-9_]{6,32}$", acc.Username)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	passwordValid, err := regexp.MatchString(`^[\x00-\xFF]{6,64}$`, acc.Password)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+
+	if !usernameValid || !passwordValid {
+		reportError(http.StatusBadRequest, w, errorInvalidDetails)
+		return
+	}
+
 	var username string
 	err = db.QueryRow("SELECT username FROM users WHERE username=$1", acc.Username).Scan(&username)
 	if err != nil && err != sql.ErrNoRows {
@@ -97,13 +154,21 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(acc.Password+acc.Username))) //just in case users have same password coincidentally
-	log.WriteLog(logger.INFO, hashedpass)
-	_, err = db.Exec("INSERT INTO users (email, password, username) VALUES ($1, $2, $3)", acc.Email, hashedpass, acc.Username)
+	err = db.QueryRow("INSERT INTO users (email, password, username) VALUES ($1, $2, $3) RETURNING id", acc.Email, hashedpass, acc.Username).Scan(&acc.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	//create session for new user
+	authData, err := genToken(acc.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	result, err := json.Marshal(authData)
+	log.WriteLog(logger.INFO, fmt.Sprintf("info about new user %v", authData))
 	w.WriteHeader(http.StatusOK)
+	w.Write(result)
 }
 
 func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {

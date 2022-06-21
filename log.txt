@@ -3246,3 +3246,140 @@ INFO 2022/06/19 22:08:29 time now unix 1655640509
 ERROR 2022/06/19 22:08:37 sql: no rows in result set
 INFO 2022/06/19 22:09:01 time to add 1440h0m0s
 INFO 2022/06/19 22:09:01 time now unix 1655640541
+INFO 2022/06/19 22:22:31 Handling requests
+INFO 2022/06/19 22:22:44 Handling requests
+INFO 2022/06/19 22:22:48 Shutting down server
+FATAL 2022/06/19 22:22:48 http: Server closed
+INFO 2022/06/19 22:23:18 Handling requests
+INFO 2022/06/19 22:23:19 Shutting down server
+FATAL 2022/06/19 22:23:19 http: Server closed
+INFO 2022/06/19 22:50:04 Handling requests
+ERROR 2022/06/19 22:51:03 sql: no rows in result set
+INFO 2022/06/19 22:51:18 time to add 1440h0m0s
+INFO 2022/06/19 22:51:18 time now unix 1655643078
+INFO 2022/06/20 07:50:47 Handling requests
+INFO 2022/06/20 07:51:25 time to add 1440h0m0s
+INFO 2022/06/20 07:51:25 time now unix 1655675485
+INFO 2022/06/20 08:15:07 Handling requests
+INFO 2022/06/20 09:21:12 time to add 1440h0m0s
+INFO 2022/06/20 09:21:12 time now unix 1655680872
+INFO 2022/06/20 09:22:16 time to add 1440h0m0s
+INFO 2022/06/20 09:22:16 time now unix 1655680936
+INFO 2022/06/20 09:23:13 time to add 1440h0m0s
+INFO 2022/06/20 09:23:13 time now unix 1655680993
+INFO 2022/06/20 09:24:17 time to add 1440h0m0s
+INFO 2022/06/20 09:24:17 time now unix 1655681057
+INFO 2022/06/20 09:24:37 time to add 1440h0m0s
+INFO 2022/06/20 09:24:37 time now unix 1655681077
+ERROR 2022/06/20 09:24:53 sql: no rows in result set
+ERROR 2022/06/20 09:25:00 sql: no rows in result set
+INFO 2022/06/20 09:25:03 time to add 1440h0m0s
+INFO 2022/06/20 09:25:03 time now unix 1655681103
+ERROR 2022/06/20 09:28:38 sql: no rows in result set
+INFO 2022/06/20 09:28:46 time to add 1440h0m0s
+INFO 2022/06/20 09:28:46 time now unix 1655681326
+INFO 2022/06/20 09:30:56 time to add 1440h0m0s
+INFO 2022/06/20 09:30:56 time now unix 1655681456
+INFO 2022/06/20 09:34:24 Handling requests
+INFO 2022/06/20 09:34:32 time to add 1440h0m0s
+INFO 2022/06/20 09:34:32 time now unix 1655681672
+INFO 2022/06/20 09:36:19 time to add 1440h0m0s
+INFO 2022/06/20 09:36:19 time now unix 1655681779
+INFO 2022/06/20 09:36:48 Handling requests
+INFO 2022/06/20 09:36:54 Handling requests
+ERROR 2022/06/20 09:37:12 sql: no rows in result set
+INFO 2022/06/20 09:37:22 time to add 1440h0m0s
+INFO 2022/06/20 09:37:22 time now unix 1655681842
+INFO 2022/06/20 09:45:49 time to add 1440h0m0s
+INFO 2022/06/20 09:45:49 time now unix 1655682349
+INFO 2022/06/20 09:48:42 {
+    "guild" : 1,
+    "content" : "bruh momento"
+}
+INFO 2022/06/20 09:48:42 Message recieved bruh momento
+ERROR 2022/06/20 09:48:42 guild pool does not exist
+INFO 2022/06/20 09:50:31 Handling requests
+INFO 2022/06/20 09:50:48 time to add 1440h0m0s
+INFO 2022/06/20 09:50:48 time now unix 1655682648
+INFO 2022/06/20 09:51:10 {
+    "guild" : 1,
+    "content" : "bruh momento"
+}
+INFO 2022/06/20 09:51:10 Message recieved bruh momento
+INFO 2022/06/20 22:43:42 Handling requests
+INFO 2022/06/20 22:44:18 Generating token
+ERROR 2022/06/20 22:44:18 sql: no rows in result set
+INFO 2022/06/20 22:45:09 Handling requests
+INFO 2022/06/20 22:45:10 Generating token
+ERROR 2022/06/20 22:45:10 sql: no rows in result set
+INFO 2022/06/20 22:45:40 Handling requests
+INFO 2022/06/20 22:45:41 Generating token
+ERROR 2022/06/20 22:45:41 sql: no rows in result set
+INFO 2022/06/20 22:46:54 Handling requests
+INFO 2022/06/20 22:46:56 Generating token
+ERROR 2022/06/20 22:46:56 sql: no rows in result set
+INFO 2022/06/20 22:47:25 Handling requests
+INFO 2022/06/20 22:47:27 Generating token
+ERROR 2022/06/20 22:47:27 error sql: no rows in result set
+ERROR 2022/06/20 22:47:27 sql: no rows in result set
+INFO 2022/06/20 22:48:27 Handling requests
+INFO 2022/06/20 22:48:30 Generating token
+INFO 2022/06/20 22:50:09 Handling requests
+INFO 2022/06/20 22:50:14 Generating token
+INFO 2022/06/20 22:54:23 Handling requests
+INFO 2022/06/20 22:54:25 Generating token
+INFO 2022/06/21 14:17:46 Handling requests
+INFO 2022/06/21 14:17:48 Generating token
+INFO 2022/06/21 14:19:48 Generating token
+INFO 2022/06/21 14:23:38 Handling requests
+INFO 2022/06/21 14:25:16 Handling requests
+INFO 2022/06/21 14:26:03 Handling requests
+INFO 2022/06/21 14:26:11 Generating token
+INFO 2022/06/21 14:26:25 Handling requests
+INFO 2022/06/21 14:27:37 Handling requests
+INFO 2022/06/21 14:27:51 Handling requests
+INFO 2022/06/21 14:31:40 Handling requests
+INFO 2022/06/21 14:34:39 body 
+ERROR 2022/06/21 14:34:39 unexpected end of JSON input
+ERROR 2022/06/21 14:35:00 sql: no rows in result set
+INFO 2022/06/21 14:36:18 body {"email":"asianchinaboi@gmail.com","username":"bruhmemory","password":"12345678"}
+INFO 2022/06/21 14:36:18 5d5938e9f5aa54e043b896d91ed3e57fb15876d4ed2fff5d0856059bf9a37897
+ERROR 2022/06/21 14:36:18 pq: insert or update on table "tokens" violates foreign key constraint "fk_user_id"
+INFO 2022/06/21 14:37:17 Handling requests
+INFO 2022/06/21 14:37:19 body {"email":"asianchinaboi@gmail.com","username":"bruhmemory","password":"12345678"}
+ERROR 2022/06/21 14:37:19 username already exists
+INFO 2022/06/21 14:37:42 body {"email":"asianchinaboi@gmail.com","username":"bruhmemorya","password":"12345678"}
+INFO 2022/06/21 14:37:42 feee30113195d95c1542cf78adbe0499ea796e1ac8a16ec6cf9752e3957f26c4
+ERROR 2022/06/21 14:37:42 pq: insert or update on table "tokens" violates foreign key constraint "fk_user_id"
+INFO 2022/06/21 15:28:35 Handling requests
+INFO 2022/06/21 15:29:04 87fea3649f150cc02b5cd1f7d2e749a2682fe12aa2825a965757aee308f43839
+INFO 2022/06/21 15:31:42 Handling requests
+INFO 2022/06/21 15:33:57 Handling requests
+INFO 2022/06/21 15:34:16 info about new user {{1660973656491 7} 0SsNZEZfg1Pf8cB7}
+INFO 2022/06/21 15:36:27 Handling requests
+INFO 2022/06/21 15:37:11 info about new user {1660973831287 8 40w5qeLJSzjiW8Nz}
+INFO 2022/06/21 15:38:46 Handling requests
+INFO 2022/06/21 15:39:17 info about new user {1660973957333 9 F0YwkiRajXTIHL4y}
+ERROR 2022/06/21 15:40:31 invalid details
+INFO 2022/06/21 15:41:18 info about new user {1660974078101 10 ZDtZmEOFUNii8304}
+INFO 2022/06/21 15:43:39 info about new user {1660974219372 11 PevW7oZL5uBw9INn}
+INFO 2022/06/22 08:33:16 Handling requests
+INFO 2022/06/22 08:33:47 Generating token
+INFO 2022/06/22 08:34:01 Pool created for guild 1
+INFO 2022/06/22 08:34:01 Pool created for guild 3
+INFO 2022/06/22 08:34:01 Pool created for guild 4
+INFO 2022/06/22 08:34:01 Websocket active of 127.0.0.1:8090
+INFO 2022/06/22 08:34:05 Writing to client
+INFO 2022/06/22 08:34:09 Writing to client
+ERROR 2022/06/22 08:34:11 read tcp 127.0.0.1:8090->127.0.0.1:50354: i/o timeout
+INFO 2022/06/22 08:34:11 Disconnecting websocket
+INFO 2022/06/22 08:34:11 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/22 08:34:31 Websocket active of 127.0.0.1:8090
+INFO 2022/06/22 08:34:35 Writing to client
+WARNING 2022/06/22 08:34:35 an error occured during unmarshalling with websocket: 127.0.0.1:8090: json: cannot unmarshal object into Go struct field pingpong.Data of type string
+INFO 2022/06/22 08:34:39 Writing to client
+WARNING 2022/06/22 08:34:39 an error occured during unmarshalling with websocket: 127.0.0.1:8090: json: cannot unmarshal object into Go struct field pingpong.Data of type string
+ERROR 2022/06/22 08:34:41 read tcp 127.0.0.1:8090->127.0.0.1:46528: i/o timeout
+INFO 2022/06/22 08:34:41 Disconnecting websocket
+INFO 2022/06/22 08:34:41 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/06/22 08:34:41 Websocket active of 127.0.0.1:8090

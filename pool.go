@@ -51,7 +51,6 @@ func (p *pool) run() {
 
 func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 	guildPool, ok := pools[guild]
-	fmt.Println("broadcastGuild", guild, data, "Pool: ", guildPool, "ok: ", ok)
 	if !ok {
 		return http.StatusBadRequest, errorGuildPoolNotExist
 	}
