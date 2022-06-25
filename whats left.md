@@ -22,3 +22,4 @@
 - Implement rate limiting
     - store in ram in a map of ips pointing to timers
     - 500 ms rate limit
+- Implement email checking so theres no duplicate emails

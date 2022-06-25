@@ -3383,3 +3383,109 @@ ERROR 2022/06/22 08:34:41 read tcp 127.0.0.1:8090->127.0.0.1:46528: i/o timeout
 INFO 2022/06/22 08:34:41 Disconnecting websocket
 INFO 2022/06/22 08:34:41 Websocket of 127.0.0.1:8090 has been closed
 INFO 2022/06/22 08:34:41 Websocket active of 127.0.0.1:8090
+INFO 2022/06/24 20:57:29 Handling requests
+INFO 2022/06/24 21:00:11 Generating token
+INFO 2022/06/24 21:00:49 Generating token
+INFO 2022/06/24 21:01:23 Generating token
+INFO 2022/06/24 21:01:46 Generating token
+INFO 2022/06/24 21:06:05 Handling requests
+INFO 2022/06/24 21:08:03 Generating token
+INFO 2022/06/24 21:09:45 Generating token
+INFO 2022/06/24 21:10:47 Generating token
+INFO 2022/06/24 21:11:36 Handling requests
+INFO 2022/06/24 21:11:44 Generating token
+INFO 2022/06/24 21:13:31 Handling requests
+ERROR 2022/06/24 21:13:52 sql: no rows in result set
+ERROR 2022/06/24 21:14:16 sql: no rows in result set
+INFO 2022/06/25 09:27:56 Handling requests
+INFO 2022/06/25 09:28:48 Generating token
+ERROR 2022/06/25 09:29:12 sql: no rows in result set
+ERROR 2022/06/25 09:31:20 sql: no rows in result set
+ERROR 2022/06/25 09:31:37 sql: no rows in result set
+ERROR 2022/06/25 09:32:09 sql: no rows in result set
+ERROR 2022/06/25 09:32:34 sql: no rows in result set
+ERROR 2022/06/25 09:32:55 sql: no rows in result set
+ERROR 2022/06/25 09:33:53 sql: no rows in result set
+ERROR 2022/06/25 09:35:11 sql: no rows in result set
+ERROR 2022/06/25 09:35:15 sql: no rows in result set
+ERROR 2022/06/25 09:41:05 sql: no rows in result set
+ERROR 2022/06/25 09:41:18 sql: no rows in result set
+ERROR 2022/06/25 09:41:50 sql: no rows in result set
+ERROR 2022/06/25 09:42:55 sql: no rows in result set
+ERROR 2022/06/25 09:43:48 sql: no rows in result set
+ERROR 2022/06/25 09:44:39 sql: no rows in result set
+ERROR 2022/06/25 09:44:43 sql: no rows in result set
+ERROR 2022/06/25 09:45:03 sql: no rows in result set
+ERROR 2022/06/25 09:45:49 sql: no rows in result set
+ERROR 2022/06/25 09:53:42 sql: no rows in result set
+ERROR 2022/06/25 09:53:48 sql: no rows in result set
+ERROR 2022/06/25 10:01:29 sql: no rows in result set
+ERROR 2022/06/25 10:03:28 sql: no rows in result set
+ERROR 2022/06/25 10:16:01 sql: no rows in result set
+ERROR 2022/06/25 10:17:17 sql: no rows in result set
+ERROR 2022/06/25 10:17:47 sql: no rows in result set
+ERROR 2022/06/25 10:18:42 sql: no rows in result set
+ERROR 2022/06/25 10:18:54 sql: no rows in result set
+ERROR 2022/06/25 10:19:08 sql: no rows in result set
+ERROR 2022/06/25 10:19:16 sql: no rows in result set
+ERROR 2022/06/25 10:19:56 sql: no rows in result set
+INFO 2022/06/25 10:20:03 Generating token
+INFO 2022/06/25 10:22:20 Generating token
+INFO 2022/06/25 10:24:48 Generating token
+INFO 2022/06/25 10:25:24 Generating token
+INFO 2022/06/25 13:50:09 Generating token
+INFO 2022/06/25 13:51:00 Generating token
+INFO 2022/06/25 13:52:25 Generating token
+ERROR 2022/06/25 14:07:48 sql: no rows in result set
+ERROR 2022/06/25 14:09:12 sql: no rows in result set
+ERROR 2022/06/25 14:10:16 sql: no rows in result set
+INFO 2022/06/25 14:12:12 Handling requests
+ERROR 2022/06/25 14:12:15 sql: no rows in result set
+ERROR 2022/06/25 14:12:20 sql: no rows in result set
+ERROR 2022/06/25 14:15:19 sql: no rows in result set
+ERROR 2022/06/25 14:16:43 sql: no rows in result set
+ERROR 2022/06/25 14:18:23 sql: no rows in result set
+ERROR 2022/06/25 14:18:58 sql: no rows in result set
+ERROR 2022/06/25 14:19:42 sql: no rows in result set
+ERROR 2022/06/25 14:20:30 sql: no rows in result set
+ERROR 2022/06/25 14:21:41 sql: no rows in result set
+INFO 2022/06/25 14:25:51 Handling requests
+INFO 2022/06/25 14:27:13 Creating User
+INFO 2022/06/25 14:27:13 info about new user {1661315233829 12 n0bUEA8rjFPGO2WO}
+ERROR 2022/06/25 14:28:50 sql: no rows in result set
+ERROR 2022/06/25 14:28:57 sql: no rows in result set
+ERROR 2022/06/25 14:29:34 sql: no rows in result set
+ERROR 2022/06/25 14:31:08 sql: no rows in result set
+ERROR 2022/06/25 14:31:46 sql: no rows in result set
+ERROR 2022/06/25 14:32:18 sql: no rows in result set
+ERROR 2022/06/25 14:32:32 sql: no rows in result set
+ERROR 2022/06/25 14:35:43 sql: no rows in result set
+ERROR 2022/06/25 14:36:26 sql: no rows in result set
+ERROR 2022/06/25 14:37:27 sql: no rows in result set
+INFO 2022/06/25 16:14:55 Handling requests
+ERROR 2022/06/25 16:15:00 sql: no rows in result set
+INFO 2022/06/25 16:16:21 Handling requests
+INFO 2022/06/25 16:16:25 Getting user
+ERROR 2022/06/25 16:16:25 sql: no rows in result set
+INFO 2022/06/25 16:19:16 Getting user
+ERROR 2022/06/25 16:19:16 sql: no rows in result set
+INFO 2022/06/25 16:20:15 Getting user
+ERROR 2022/06/25 16:20:15 sql: no rows in result set
+INFO 2022/06/25 16:21:40 Creating User
+ERROR 2022/06/25 16:21:40 unexpected end of JSON input
+INFO 2022/06/25 16:22:37 Getting user
+ERROR 2022/06/25 16:22:37 sql: no rows in result set
+INFO 2022/06/25 16:23:21 Getting user
+ERROR 2022/06/25 16:23:21 sql: no rows in result set
+INFO 2022/06/25 16:24:24 Getting user
+ERROR 2022/06/25 16:24:24 sql: no rows in result set
+INFO 2022/06/25 16:27:28 Getting user
+ERROR 2022/06/25 16:27:28 sql: no rows in result set
+INFO 2022/06/25 16:31:26 Creating User
+ERROR 2022/06/25 16:31:26 username already exists
+INFO 2022/06/25 16:33:54 Creating User
+ERROR 2022/06/25 16:33:54 username already exists
+INFO 2022/06/25 16:35:53 Creating User
+ERROR 2022/06/25 16:35:53 username already exists
+INFO 2022/06/25 16:36:44 Getting user
+INFO 2022/06/25 16:36:44 Generating token

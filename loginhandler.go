@@ -15,7 +15,7 @@ import (
 )
 
 type account struct {
-	Id       int    `json:"user_id"`
+	Id       int    `json:"userId"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
@@ -28,7 +28,7 @@ type session struct {
 
 type sessionToken struct {
 	Expires int64  `json:"expires"`
-	Id      int    `json:"user_id"`
+	Id      int    `json:"userId"`
 	Token   string `json:"token"`
 }
 
@@ -82,6 +82,7 @@ func validateEmail(email string) bool {
 }
 
 func userlogin(w http.ResponseWriter, r *http.Request) {
+	log.WriteLog(logger.INFO, "Getting user")
 	params := r.URL.Query()
 	username := params.Get("username")
 	password := params.Get("pwd")
@@ -112,6 +113,7 @@ func userlogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func createuser(w http.ResponseWriter, r *http.Request) {
+	log.WriteLog(logger.INFO, "Creating User")
 	var acc account
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
