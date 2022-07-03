@@ -3489,3 +3489,30 @@ INFO 2022/06/25 16:35:53 Creating User
 ERROR 2022/06/25 16:35:53 username already exists
 INFO 2022/06/25 16:36:44 Getting user
 INFO 2022/06/25 16:36:44 Generating token
+INFO 2022/06/25 17:03:22 Handling requests
+INFO 2022/06/25 17:07:24 Getting user
+INFO 2022/06/25 17:07:24 Generating token
+INFO 2022/07/02 17:48:17 Handling requests
+INFO 2022/07/02 17:48:21 Getting user
+ERROR 2022/07/02 17:48:21 sql: no rows in result set
+INFO 2022/07/02 17:48:29 Getting user
+INFO 2022/07/02 17:48:29 Generating token
+INFO 2022/07/02 18:21:42 Handling requests
+INFO 2022/07/02 18:22:15 Getting user
+INFO 2022/07/02 18:22:15 Generating token
+ERROR 2022/07/02 18:24:09 sql: expected 4 destination arguments in Scan, not 1
+INFO 2022/07/02 18:26:54 Handling requests
+INFO 2022/07/02 18:27:00 Getting user
+INFO 2022/07/02 18:27:00 Generating token
+INFO 2022/07/02 18:27:03 Getting user
+INFO 2022/07/02 18:27:03 Generating token
+INFO 2022/07/03 11:48:46 Handling requests
+INFO 2022/07/03 11:49:44 Getting user
+INFO 2022/07/03 11:49:44 Generating token
+ERROR 2022/07/03 11:50:14 token is not provided
+ERROR 2022/07/03 11:50:26 guild is not provided
+ERROR 2022/07/03 11:50:37 guild is not provided
+ERROR 2022/07/03 11:51:10 guild is not provided
+ERROR 2022/07/03 11:51:38 guild is not provided
+INFO 2022/07/03 11:52:11 limit: 50, timestamp 1656813131
+INFO 2022/07/03 12:03:33 Handling requests

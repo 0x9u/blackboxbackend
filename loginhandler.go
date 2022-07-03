@@ -21,6 +21,12 @@ type account struct {
 	Email    string `json:"email"`
 }
 
+type userInfoData struct {
+	Icon     int    `json:"icon"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
 type session struct {
 	Expires int64
 	Id      int
@@ -49,7 +55,7 @@ func checkToken(token string) (*session, error) {
 		return nil, err
 	}
 	if time.Now().Unix() > user.Expires {
-		_, err = db.Exec("DELETE FROM tokens WHERE token=$1", token)
+		db.Exec("DELETE FROM tokens WHERE token=$1", token)
 		return nil, errorExpiredToken
 	}
 	return &user, nil
@@ -167,7 +173,7 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	result, err := json.Marshal(authData)
+	result, _ := json.Marshal(authData)
 	log.WriteLog(logger.INFO, fmt.Sprintf("info about new user %v", authData))
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
@@ -218,4 +224,27 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+}
+
+func userInfo(w http.ResponseWriter, r *http.Request, user *session) {
+	var acc userInfoData
+	row := db.QueryRow("SELECT email, username FROM users WHERE id=$1", user.Id)
+	if err := row.Err(); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	//placeholder for now
+	acc.Icon = 0
+	err := row.Scan(&acc.Email, &acc.Username)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	result, err := json.Marshal(acc)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(result)
 }

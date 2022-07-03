@@ -25,7 +25,6 @@ var (
 	upgrader   websocket.Upgrader
 	clients    = make(map[int]brcastEvents) // id : channel
 	pools      = make(map[int]*pool)        //guild id : guild channel
-	tokens     = make(map[string]session)   // tokens : user ids
 	characters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 )
 
@@ -157,6 +156,7 @@ func main() {
 	api.HandleFunc("/user", userlogin).Methods("GET")
 	api.HandleFunc("/user", createuser).Methods("POST")
 	api.HandleFunc("/user", middleWare(changeDetails)).Methods("PUT")
+	api.HandleFunc("/user/info", middleWare(userInfo)).Methods("GET")
 
 	api.HandleFunc("/status", showStatus).Methods("GET")
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"

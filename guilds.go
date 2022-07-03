@@ -32,6 +32,7 @@ type changeGuild struct {
 	Public      bool   `json:"Public"`
 	KeepHistory bool   `json:"KeepHistory"`
 	Name        string `json:"Name"`
+	Icon        int    `json:"Icon"`
 }
 
 type movedGuild struct {
@@ -42,6 +43,13 @@ type movedGuild struct {
 type userGuild struct {
 	Username string
 	Id       int
+	Icon     int
+}
+
+type infoGuild struct {
+	Id   int    `json:"Id"`
+	Name string `json:"Name"`
+	Icon int    `json:"Icon"`
 }
 
 func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
@@ -123,15 +131,21 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", user.Id)
+	rows, err := db.Query(
+		`
+		SELECT g.id, g.name, g.icon 
+		FROM userguilds u 
+		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1`,
+		user.Id,
+	)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	var guilds []int
+	var guilds []infoGuild
 	for rows.Next() {
-		var guild int
-		err = rows.Scan(&guild)
+		var guild infoGuild
+		err = rows.Scan(&guild.Id, &guild.Name, &guild.Icon)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
@@ -175,6 +189,7 @@ func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
 	for rows.Next() {
 		var user userGuild
 		err = rows.Scan(&user.Username, &user.Id)
+		user.Icon = 0 //placeholder until upload is implemented
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
@@ -203,9 +218,17 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("UPDATE guilds SET public=$1, KeepHistory=$2, name=$3 WHERE id=$4 AND owner_id=$5", newSettings.Public, newSettings.KeepHistory, newSettings.Name, newSettings.Guild, user.Id)
+	_, err = db.Exec(
+		"UPDATE guilds SET public=$1, KeepHistory=$2, name=$3, icon=$4 WHERE id=$5 AND owner_id=$6",
+		newSettings.Public,
+		newSettings.KeepHistory,
+		newSettings.Name,
+		newSettings.Icon,
+		newSettings.Guild,
+		user.Id,
+	)
 	if err != nil {
-		reportError(http.StatusInternalServerError, w, err)
+		reportError(http.StatusBadRequest, w, err)
 		return
 	}
 	broadcastGuild(newSettings.Guild, newSettings)
@@ -286,6 +309,15 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	broadcastClient(user.Id, movedGuild{DataType: 0, Guild: guild})
+
+	var username string
+	err = db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&username)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+
+	broadcastGuild(guild, userGuild{Username: username, Id: user.Id})
 	w.WriteHeader(http.StatusOK)
 }
 

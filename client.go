@@ -114,6 +114,8 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 3
 	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
 		dataType = 4
+	case userGuild: //means send invite message (P.S invite messages are not saved as of yet)
+		dataType = 5
 	}
 	sendData := sendDataType{
 		DataType: dataType,
