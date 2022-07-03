@@ -41,7 +41,7 @@ type sessionToken struct {
 type dataChange struct {
 	Password string `json:"password"`
 	Change   int    `json:"change"` // 0 for password, 1 for email, 2 for username
-	New      string `json:"new"`
+	NewData  string `json:"newdata"`
 }
 
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months
@@ -191,30 +191,42 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
+
+	//validation
+	var username string
+	row := db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id)
+	if err := row.Err(); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	row.Scan(&username)
+	checkPass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
+	row = db.QueryRow("SELECT EXISTS (SELECT id FROM users WHERE password=$1)", checkPass)
+	if err := row.Err(); err != nil && err != sql.ErrNoRows {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	} else if err == sql.ErrNoRows {
+		reportError(http.StatusBadRequest, w, errorInvalidDetails)
+		return
+	}
+
 	switch change.Change {
 	case 0:
-		var username string
-		row := db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id)
-		if err := row.Err(); err != nil {
-			reportError(http.StatusInternalServerError, w, err)
-			return
-		}
-		row.Scan(&username)
-		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
+		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.NewData+username)))
 		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, change.Password)
 		if err != nil {
 			reportError(http.StatusBadRequest, w, err)
 			return
 		}
 	case 1:
-		_, err = db.Exec("UPDATE users SET email=$1 WHERE id=$2", change.New, user.Id)
+		_, err = db.Exec("UPDATE users SET email=$1 WHERE id=$2", change.NewData, user.Id)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
 		}
 
 	case 2:
-		_, err = db.Exec("UPDATE users SET username=$1 WHERE id=$2", change.New, user.Id)
+		_, err = db.Exec("UPDATE users SET username=$1 WHERE id=$2", change.NewData, user.Id)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
