@@ -41,7 +41,7 @@ type sessionToken struct {
 type dataChange struct {
 	Password string `json:"password"`
 	Change   int    `json:"change"` // 0 for password, 1 for email, 2 for username
-	NewData  string `json:"newdata"`
+	NewData  string `json:"newData"`
 }
 
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months

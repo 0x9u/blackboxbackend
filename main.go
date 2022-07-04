@@ -150,8 +150,8 @@ func main() {
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
 
-	api.HandleFunc("/ws", middleWare(webSocket)) //make middleware later for token validation
-	api.HandleFunc("/reset", msgReset)           //dangerous
+	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
+	api.HandleFunc("/reset", msgReset) //dangerous
 
 	api.HandleFunc("/user", userlogin).Methods("GET")
 	api.HandleFunc("/user", createuser).Methods("POST")

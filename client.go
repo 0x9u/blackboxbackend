@@ -26,8 +26,8 @@ type client struct {
 }
 
 type sendDataType struct {
-	DataType int         //0 for pingpong 1 for message 2 for guild Changes
-	Data     interface{} //data to send
+	DataType int         `json:"dataType"` //0 for pingpong 1 for message 2 for guild Changes
+	Data     interface{} `json:"data"`     //data to send
 }
 
 type pingpong struct {
@@ -91,15 +91,16 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.INFO, "Disconnecting websocket")
 			break
 		}
-		var recieved pingpong
+		var recieved sendDataType
 		err = json.Unmarshal(message, &recieved)
 		if err != nil {
 			log.WriteLog(logger.WARN, "an error occured during unmarshalling with websocket: "+c.ws.LocalAddr().String()+": "+err.Error())
 			continue
 		}
-		c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
-		c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
-
+		if recieved.DataType == 0 {
+			c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
+			c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
+		}
 	}
 }
 
@@ -129,7 +130,18 @@ func (c *client) eventCheck(data interface{}) {
 	}
 }
 
-func webSocket(w http.ResponseWriter, r *http.Request, user *session) {
+func webSocket(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+	if len(token) == 0 {
+		reportError(http.StatusBadRequest, w, errorToken)
+		return
+	}
+	user, err := checkToken(token)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
