@@ -13,6 +13,11 @@
         - possible bad practice so research more into it
         - modulize each file and split long lengthy functions into files in a folder
 
+# MAYBES
+- Learn C# and program in unity in WASM (make games)
+- Make multiplayer games
+- Add machine learning
+
 # Currently doing
 - implement websocket pool for better efficency - done
     - gather websockets associated with a guild - done (Needs more testing)

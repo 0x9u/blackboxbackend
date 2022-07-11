@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"github.com/asianchinaboi/backendserver/logger"
 )
 
 /*
@@ -131,6 +133,7 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	log.WriteLog(logger.INFO, "Getting guilds")
 	rows, err := db.Query(
 		`
 		SELECT g.id, g.name, g.icon 
@@ -232,57 +235,6 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	broadcastGuild(newSettings.Guild, newSettings)
-	w.WriteHeader(http.StatusOK)
-}
-
-func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
-	params := r.URL.Query()
-	guild, err := strconv.Atoi(params.Get("guild"))
-	if err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	invite := sendInvite{
-		Invite: generateRandString(10),
-		Guild:  guild,
-	}
-	if _, err := db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, invite.Guild); err != nil {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	bodyBytes, err := json.Marshal(invite)
-	if err != nil {
-		reportError(http.StatusInternalServerError, w, err)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(bodyBytes)
-}
-
-func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	params := r.URL.Query()
-	invite := params.Get("invite")
-	guild, err := strconv.Atoi(params.Get("guild"))
-	if err != nil || invite == "" {
-		reportError(http.StatusBadRequest, w, err)
-		return
-	}
-	var valid bool
-	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
-	if row.Err() != nil {
-		reportError(http.StatusInternalServerError, w, row.Err())
-		return
-	}
-	row.Scan(&valid)
-	if !valid {
-		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
-		return
-	}
-	_, err = db.Exec("DELETE FROM guilds WHERE guild_id=$1 AND invite=$2", guild, invite)
-	if err != nil {
-		reportError(http.StatusInternalServerError, w, err)
-		return
-	}
 	w.WriteHeader(http.StatusOK)
 }
 

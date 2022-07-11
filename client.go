@@ -97,7 +97,9 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.WARN, "an error occured during unmarshalling with websocket: "+c.ws.LocalAddr().String()+": "+err.Error())
 			continue
 		}
+		log.WriteLog(logger.INFO, "Recieved info")
 		if recieved.DataType == 0 {
+			log.WriteLog(logger.INFO, "Has been pinged")
 			c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
 			c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
 		}

@@ -3532,3 +3532,630 @@ INFO 2022/07/04 22:06:04 Writing to client
 ERROR 2022/07/04 22:06:05 websocket: close 1000 (normal)
 INFO 2022/07/04 22:06:05 Disconnecting websocket
 INFO 2022/07/04 22:06:05 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/07 12:05:55 Handling requests
+INFO 2022/07/07 12:06:29 limit: 50, timestamp 1657159589
+ERROR 2022/07/07 12:06:29 sql: expected 9 destination arguments in Scan, not 7
+INFO 2022/07/07 12:07:04 Handling requests
+INFO 2022/07/07 12:07:06 limit: 50, timestamp 1657159626
+ERROR 2022/07/07 12:07:06 sql: Scan error on column index 2, name "user_id": unsupported Scan, storing driver.Value type int64 into type *main.author
+INFO 2022/07/07 12:09:05 Handling requests
+INFO 2022/07/07 12:09:10 limit: 50, timestamp 1657159750
+ERROR 2022/07/07 12:09:10 sql: Scan error on column index 2, name "user_id": unsupported Scan, storing driver.Value type int64 into type *main.author
+INFO 2022/07/07 12:11:34 limit: 50, timestamp 1657159894
+ERROR 2022/07/07 12:11:34 sql: Scan error on column index 2, name "user_id": unsupported Scan, storing driver.Value type int64 into type *main.author
+INFO 2022/07/07 12:11:43 Handling requests
+INFO 2022/07/07 12:11:46 limit: 50, timestamp 1657159906
+ERROR 2022/07/07 12:11:46 sql: Scan error on column index 2, name "user_id": unsupported Scan, storing driver.Value type int64 into type *main.author
+INFO 2022/07/07 12:13:30 Handling requests
+INFO 2022/07/07 12:13:34 limit: 50, timestamp 1657160014
+INFO 2022/07/07 19:42:13 Handling requests
+ERROR 2022/07/07 19:45:26 token is not provided
+ERROR 2022/07/07 19:45:33 token is not provided
+ERROR 2022/07/07 19:46:04 token is not provided
+INFO 2022/07/07 19:46:14 Pool created for guild 1
+INFO 2022/07/07 19:46:14 Pool created for guild 3
+INFO 2022/07/07 19:46:14 Pool created for guild 4
+INFO 2022/07/07 19:46:14 Websocket active of 127.0.0.1:8090
+INFO 2022/07/07 19:46:18 Writing to client
+ERROR 2022/07/07 19:46:20 websocket: close 1000 (normal)
+INFO 2022/07/07 19:46:20 Disconnecting websocket
+INFO 2022/07/07 19:46:20 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/07 19:58:40 Handling requests
+INFO 2022/07/07 20:15:28 Handling requests
+INFO 2022/07/07 20:19:35 Getting guilds
+INFO 2022/07/07 23:40:31 Getting user
+ERROR 2022/07/07 23:40:31 sql: no rows in result set
+INFO 2022/07/07 23:40:47 Getting user
+ERROR 2022/07/07 23:40:47 sql: no rows in result set
+INFO 2022/07/07 23:42:23 Getting user
+ERROR 2022/07/07 23:42:23 sql: no rows in result set
+INFO 2022/07/07 23:43:57 Getting user
+ERROR 2022/07/07 23:43:57 sql: no rows in result set
+INFO 2022/07/07 23:44:36 Getting user
+ERROR 2022/07/07 23:44:36 sql: no rows in result set
+INFO 2022/07/07 23:44:54 Getting user
+ERROR 2022/07/07 23:44:54 sql: no rows in result set
+INFO 2022/07/07 23:45:16 Getting user
+INFO 2022/07/07 23:45:16 Generating token
+INFO 2022/07/07 23:54:33 Handling requests
+INFO 2022/07/07 23:54:37 Getting guilds
+INFO 2022/07/07 23:54:37 Getting guilds
+INFO 2022/07/07 23:55:04 Handling requests
+INFO 2022/07/07 23:55:22 Handling requests
+INFO 2022/07/07 23:55:24 Getting guilds
+INFO 2022/07/07 23:55:24 Getting guilds
+INFO 2022/07/07 23:56:31 Getting guilds
+INFO 2022/07/07 23:56:31 Getting guilds
+INFO 2022/07/07 23:56:32 Getting guilds
+INFO 2022/07/07 23:56:32 Getting guilds
+INFO 2022/07/07 23:58:00 Getting guilds
+INFO 2022/07/07 23:58:00 Getting guilds
+INFO 2022/07/08 00:10:18 Getting guilds
+INFO 2022/07/08 00:10:18 Getting guilds
+INFO 2022/07/08 00:10:19 Getting guilds
+INFO 2022/07/08 00:10:19 Getting guilds
+INFO 2022/07/08 00:10:35 Getting guilds
+INFO 2022/07/08 00:10:35 Getting guilds
+INFO 2022/07/08 00:25:33 Getting guilds
+INFO 2022/07/08 00:25:33 Getting guilds
+INFO 2022/07/08 00:31:46 Getting guilds
+INFO 2022/07/08 00:31:46 Getting guilds
+INFO 2022/07/08 00:32:07 Getting guilds
+INFO 2022/07/08 00:32:07 Getting guilds
+INFO 2022/07/08 00:32:11 Getting guilds
+INFO 2022/07/08 00:32:11 Getting guilds
+INFO 2022/07/08 00:33:34 Getting guilds
+INFO 2022/07/08 00:33:34 Getting guilds
+INFO 2022/07/08 00:34:59 Getting guilds
+INFO 2022/07/08 00:34:59 Getting guilds
+INFO 2022/07/08 11:19:27 Handling requests
+INFO 2022/07/08 11:19:29 Getting guilds
+INFO 2022/07/08 11:19:29 Getting guilds
+INFO 2022/07/08 11:21:04 Getting guilds
+INFO 2022/07/08 11:21:07 Getting guilds
+INFO 2022/07/08 11:22:00 Getting guilds
+INFO 2022/07/08 11:22:00 Getting guilds
+INFO 2022/07/08 11:23:36 Getting guilds
+INFO 2022/07/08 11:23:36 Getting guilds
+INFO 2022/07/08 11:24:41 Getting guilds
+INFO 2022/07/08 11:24:41 Getting guilds
+INFO 2022/07/08 11:25:07 Getting guilds
+INFO 2022/07/08 11:25:07 Getting guilds
+INFO 2022/07/08 11:25:36 Getting guilds
+INFO 2022/07/08 11:25:36 Getting guilds
+INFO 2022/07/08 11:26:04 Getting guilds
+INFO 2022/07/08 11:26:04 Getting guilds
+INFO 2022/07/08 11:26:25 Getting guilds
+INFO 2022/07/08 11:26:25 Getting guilds
+INFO 2022/07/08 11:26:52 Getting guilds
+INFO 2022/07/08 11:26:52 Getting guilds
+INFO 2022/07/08 11:27:31 Getting guilds
+INFO 2022/07/08 11:27:31 Getting guilds
+INFO 2022/07/08 11:28:01 Getting guilds
+INFO 2022/07/08 11:28:01 Getting guilds
+INFO 2022/07/08 11:28:09 Getting guilds
+INFO 2022/07/08 11:28:09 Getting guilds
+INFO 2022/07/08 11:28:13 Getting guilds
+INFO 2022/07/08 11:28:13 Getting guilds
+INFO 2022/07/08 11:28:29 Getting guilds
+INFO 2022/07/08 11:28:29 Getting guilds
+INFO 2022/07/08 11:28:45 Getting guilds
+INFO 2022/07/08 11:28:45 Getting guilds
+INFO 2022/07/08 11:29:11 Getting guilds
+INFO 2022/07/08 11:29:11 Getting guilds
+INFO 2022/07/08 11:32:09 Getting guilds
+INFO 2022/07/08 11:32:09 Getting guilds
+INFO 2022/07/08 11:32:11 Getting guilds
+INFO 2022/07/08 11:32:11 Getting guilds
+INFO 2022/07/08 11:32:39 Getting guilds
+INFO 2022/07/08 11:32:39 Getting guilds
+INFO 2022/07/08 11:33:18 Getting guilds
+INFO 2022/07/08 11:33:18 Getting guilds
+INFO 2022/07/08 11:33:25 Getting guilds
+INFO 2022/07/08 11:33:25 Getting guilds
+INFO 2022/07/08 11:33:52 Getting guilds
+INFO 2022/07/08 11:33:52 Getting guilds
+INFO 2022/07/08 11:34:00 Getting guilds
+INFO 2022/07/08 11:34:00 Getting guilds
+INFO 2022/07/08 11:34:31 Getting guilds
+INFO 2022/07/08 11:34:32 Getting guilds
+INFO 2022/07/08 11:34:44 Getting guilds
+INFO 2022/07/08 11:34:48 Getting guilds
+INFO 2022/07/08 11:34:48 Getting guilds
+INFO 2022/07/08 11:35:11 Getting guilds
+INFO 2022/07/08 11:35:11 Getting guilds
+INFO 2022/07/08 11:35:17 Getting guilds
+INFO 2022/07/08 11:35:17 Getting guilds
+INFO 2022/07/08 11:35:57 Getting guilds
+INFO 2022/07/08 11:35:57 Getting guilds
+INFO 2022/07/08 11:36:13 Getting guilds
+INFO 2022/07/08 11:36:13 Getting guilds
+INFO 2022/07/08 11:38:38 Getting guilds
+INFO 2022/07/08 11:38:38 Getting guilds
+INFO 2022/07/08 11:39:31 Getting guilds
+INFO 2022/07/08 11:39:31 Getting guilds
+INFO 2022/07/08 11:40:20 Getting guilds
+INFO 2022/07/08 11:40:20 Getting guilds
+INFO 2022/07/08 11:40:34 Getting guilds
+INFO 2022/07/08 11:40:34 Getting guilds
+INFO 2022/07/08 11:40:53 Getting guilds
+INFO 2022/07/08 11:40:53 Getting guilds
+INFO 2022/07/08 11:41:01 Getting guilds
+INFO 2022/07/08 11:41:01 Getting guilds
+INFO 2022/07/08 11:41:10 Getting guilds
+INFO 2022/07/08 11:41:10 Getting guilds
+INFO 2022/07/08 11:41:22 Getting guilds
+INFO 2022/07/08 11:41:22 Getting guilds
+INFO 2022/07/08 11:41:29 Getting guilds
+INFO 2022/07/08 11:41:29 Getting guilds
+INFO 2022/07/08 11:41:46 Getting guilds
+INFO 2022/07/08 11:41:46 Getting guilds
+INFO 2022/07/08 11:42:29 Getting guilds
+INFO 2022/07/08 11:42:29 Getting guilds
+INFO 2022/07/08 11:42:53 Getting guilds
+INFO 2022/07/08 11:42:53 Getting guilds
+INFO 2022/07/08 11:43:53 Getting guilds
+INFO 2022/07/08 11:43:53 Getting guilds
+INFO 2022/07/08 11:52:47 Getting guilds
+INFO 2022/07/08 11:52:47 Getting guilds
+INFO 2022/07/08 11:52:56 Getting guilds
+INFO 2022/07/08 11:52:56 Getting guilds
+INFO 2022/07/08 11:53:17 Getting guilds
+INFO 2022/07/08 11:53:17 Getting guilds
+INFO 2022/07/08 11:54:08 Getting guilds
+INFO 2022/07/08 11:54:08 Getting guilds
+INFO 2022/07/08 11:54:17 Getting guilds
+INFO 2022/07/08 11:54:17 Getting guilds
+INFO 2022/07/08 11:54:24 Getting guilds
+INFO 2022/07/08 11:54:24 Getting guilds
+INFO 2022/07/08 11:54:42 Getting guilds
+INFO 2022/07/08 11:54:42 Getting guilds
+INFO 2022/07/08 11:55:14 Getting guilds
+INFO 2022/07/08 11:55:14 Getting guilds
+INFO 2022/07/08 11:56:05 Getting guilds
+INFO 2022/07/08 11:56:05 Getting guilds
+INFO 2022/07/08 11:56:18 Getting guilds
+INFO 2022/07/08 11:56:18 Getting guilds
+INFO 2022/07/08 12:01:43 Getting guilds
+INFO 2022/07/08 12:01:43 Getting guilds
+INFO 2022/07/08 12:02:24 Getting guilds
+INFO 2022/07/08 12:02:24 Getting guilds
+INFO 2022/07/08 12:02:48 Getting guilds
+INFO 2022/07/08 12:03:02 Getting guilds
+INFO 2022/07/08 12:03:52 Getting guilds
+INFO 2022/07/08 12:04:05 Getting guilds
+INFO 2022/07/08 12:04:05 Getting guilds
+INFO 2022/07/08 12:04:15 Getting guilds
+INFO 2022/07/08 12:04:52 Getting guilds
+INFO 2022/07/08 12:04:52 Getting guilds
+INFO 2022/07/08 12:05:09 Getting guilds
+INFO 2022/07/08 12:05:09 Getting guilds
+INFO 2022/07/08 12:05:21 Getting guilds
+INFO 2022/07/08 12:05:21 Getting guilds
+INFO 2022/07/08 12:06:17 Getting guilds
+INFO 2022/07/08 12:06:17 Getting guilds
+INFO 2022/07/08 12:06:39 Getting guilds
+INFO 2022/07/08 12:06:39 Getting guilds
+INFO 2022/07/08 12:07:37 Getting guilds
+INFO 2022/07/08 12:07:37 Getting guilds
+INFO 2022/07/08 12:10:35 Getting guilds
+INFO 2022/07/08 12:10:39 Getting guilds
+INFO 2022/07/08 12:10:39 Getting guilds
+INFO 2022/07/08 12:10:56 Getting guilds
+INFO 2022/07/08 12:10:56 Getting guilds
+INFO 2022/07/08 12:14:27 Getting guilds
+INFO 2022/07/08 12:14:27 Getting guilds
+INFO 2022/07/08 12:14:56 Getting guilds
+INFO 2022/07/08 12:14:59 Getting guilds
+INFO 2022/07/08 12:15:03 Getting guilds
+INFO 2022/07/08 12:15:03 Getting guilds
+INFO 2022/07/08 12:15:11 Getting guilds
+INFO 2022/07/08 12:15:11 Getting guilds
+INFO 2022/07/08 12:15:19 Getting guilds
+INFO 2022/07/08 12:15:24 Getting guilds
+INFO 2022/07/08 12:15:24 Getting guilds
+INFO 2022/07/08 12:15:32 Getting guilds
+INFO 2022/07/08 12:16:33 Getting guilds
+INFO 2022/07/08 12:16:33 Getting guilds
+INFO 2022/07/08 12:16:36 Getting guilds
+INFO 2022/07/08 12:16:36 Getting guilds
+INFO 2022/07/08 12:17:27 Getting guilds
+INFO 2022/07/08 12:17:27 Getting guilds
+INFO 2022/07/08 12:17:52 Getting guilds
+INFO 2022/07/08 12:18:10 Getting guilds
+INFO 2022/07/08 12:18:12 Getting guilds
+INFO 2022/07/08 12:18:12 Getting guilds
+INFO 2022/07/08 12:18:32 Getting guilds
+INFO 2022/07/08 12:18:32 Getting guilds
+INFO 2022/07/08 12:19:03 Getting guilds
+INFO 2022/07/08 12:19:03 Getting guilds
+INFO 2022/07/08 12:19:07 Getting guilds
+INFO 2022/07/08 12:19:07 Getting guilds
+INFO 2022/07/08 12:19:25 Getting guilds
+INFO 2022/07/08 12:19:25 Getting guilds
+INFO 2022/07/08 12:19:47 Getting guilds
+INFO 2022/07/08 12:19:47 Getting guilds
+INFO 2022/07/08 12:20:04 Getting guilds
+INFO 2022/07/08 12:20:04 Getting guilds
+INFO 2022/07/08 12:20:55 Getting guilds
+INFO 2022/07/08 12:20:55 Getting guilds
+INFO 2022/07/08 12:22:45 Getting guilds
+INFO 2022/07/08 12:22:45 Getting guilds
+INFO 2022/07/08 12:22:56 Getting guilds
+INFO 2022/07/08 12:22:56 Getting guilds
+INFO 2022/07/08 12:22:59 Getting guilds
+INFO 2022/07/08 12:22:59 Getting guilds
+INFO 2022/07/08 12:23:09 Getting guilds
+INFO 2022/07/08 12:23:09 Getting guilds
+INFO 2022/07/08 12:23:16 Getting guilds
+INFO 2022/07/08 12:23:16 Getting guilds
+INFO 2022/07/08 12:23:23 Getting guilds
+INFO 2022/07/08 12:23:23 Getting guilds
+INFO 2022/07/08 12:23:36 Getting guilds
+INFO 2022/07/08 12:23:36 Getting guilds
+INFO 2022/07/08 12:27:30 Getting guilds
+INFO 2022/07/08 12:27:30 Getting guilds
+INFO 2022/07/08 12:27:33 Getting guilds
+INFO 2022/07/08 12:27:33 Getting guilds
+INFO 2022/07/08 12:27:39 Getting guilds
+INFO 2022/07/08 12:27:39 Getting guilds
+INFO 2022/07/08 12:27:57 Getting guilds
+INFO 2022/07/08 12:27:57 Getting guilds
+INFO 2022/07/08 12:28:03 Getting guilds
+INFO 2022/07/08 12:28:03 Getting guilds
+INFO 2022/07/08 12:28:09 Getting guilds
+INFO 2022/07/08 12:28:09 Getting guilds
+INFO 2022/07/08 12:28:16 Getting guilds
+INFO 2022/07/08 12:28:16 Getting guilds
+INFO 2022/07/08 12:28:21 Getting guilds
+INFO 2022/07/08 12:28:21 Getting guilds
+INFO 2022/07/08 12:28:26 Getting guilds
+INFO 2022/07/08 12:28:26 Getting guilds
+INFO 2022/07/08 12:30:24 Getting guilds
+INFO 2022/07/08 12:30:24 limit: 50, timestamp 1657247424759
+INFO 2022/07/08 12:30:54 Getting guilds
+INFO 2022/07/08 12:30:54 Getting guilds
+INFO 2022/07/08 12:30:54 limit: 50, timestamp 1657247454360
+INFO 2022/07/08 12:30:54 limit: 50, timestamp 1657247454427
+INFO 2022/07/08 12:32:09 Getting guilds
+INFO 2022/07/08 12:32:09 Getting guilds
+INFO 2022/07/08 12:32:09 limit: 50, timestamp 1657247529434
+INFO 2022/07/08 12:32:09 limit: 50, timestamp 1657247529497
+INFO 2022/07/08 12:33:48 Getting guilds
+INFO 2022/07/08 12:33:48 Getting guilds
+INFO 2022/07/08 12:33:48 limit: 50, timestamp 1657247628136
+INFO 2022/07/08 12:33:48 limit: 50, timestamp 1657247628178
+INFO 2022/07/08 12:33:55 Getting guilds
+INFO 2022/07/08 12:33:55 Getting guilds
+INFO 2022/07/08 12:33:55 limit: 50, timestamp 1657247635538
+INFO 2022/07/08 12:33:55 limit: 50, timestamp 1657247635644
+INFO 2022/07/08 12:34:19 Getting guilds
+INFO 2022/07/08 12:34:20 Getting guilds
+INFO 2022/07/08 12:34:20 limit: 50, timestamp 1657247660121
+INFO 2022/07/08 12:34:20 limit: 50, timestamp 1657247660273
+INFO 2022/07/08 12:35:08 Getting guilds
+INFO 2022/07/08 12:35:08 Getting guilds
+INFO 2022/07/08 12:35:08 limit: 50, timestamp 1657247708698
+INFO 2022/07/08 12:35:08 limit: 50, timestamp 1657247708665
+INFO 2022/07/08 12:35:25 Getting guilds
+INFO 2022/07/08 12:35:25 Getting guilds
+INFO 2022/07/08 12:35:25 limit: 50, timestamp 1657247725681
+INFO 2022/07/08 12:35:25 limit: 50, timestamp 1657247725784
+INFO 2022/07/08 12:36:30 Getting guilds
+INFO 2022/07/08 12:36:30 Getting guilds
+INFO 2022/07/08 12:36:31 limit: 50, timestamp 1657247791032
+INFO 2022/07/08 12:36:31 limit: 50, timestamp 1657247791271
+INFO 2022/07/08 12:36:58 Getting guilds
+INFO 2022/07/08 12:36:58 Getting guilds
+INFO 2022/07/08 12:36:58 limit: 50, timestamp 1657247818803
+INFO 2022/07/08 12:36:58 limit: 50, timestamp 1657247818835
+INFO 2022/07/08 12:37:33 Getting guilds
+INFO 2022/07/08 12:37:33 limit: 50, timestamp 1657247853813
+INFO 2022/07/08 12:38:30 Getting guilds
+INFO 2022/07/08 12:38:30 Getting guilds
+INFO 2022/07/08 12:38:30 limit: 50, timestamp 1657247910421
+INFO 2022/07/08 12:38:30 limit: 50, timestamp 1657247910451
+INFO 2022/07/08 12:38:51 Getting guilds
+INFO 2022/07/08 12:38:51 Getting guilds
+INFO 2022/07/08 12:38:51 limit: 50, timestamp 1657247931549
+INFO 2022/07/08 12:38:51 limit: 50, timestamp 1657247931620
+INFO 2022/07/08 12:39:19 Getting guilds
+INFO 2022/07/08 12:39:19 Getting guilds
+INFO 2022/07/08 12:39:19 limit: 50, timestamp 1657247959637
+INFO 2022/07/08 12:39:19 limit: 50, timestamp 1657247959716
+INFO 2022/07/08 12:39:40 Getting guilds
+INFO 2022/07/08 12:39:40 Getting guilds
+INFO 2022/07/08 12:39:40 limit: 50, timestamp 1657247980617
+INFO 2022/07/08 12:39:40 limit: 50, timestamp 1657247980651
+INFO 2022/07/08 12:39:53 Getting guilds
+INFO 2022/07/08 12:39:53 limit: 50, timestamp 1657247993944
+INFO 2022/07/08 22:04:05 Getting guilds
+INFO 2022/07/08 22:04:05 limit: 50, timestamp 1657281845088
+INFO 2022/07/08 22:04:23 Getting guilds
+INFO 2022/07/08 22:04:23 limit: 50, timestamp 1657281863547
+INFO 2022/07/08 22:05:02 Getting guilds
+INFO 2022/07/08 22:05:02 limit: 50, timestamp 1657281902612
+INFO 2022/07/08 22:07:26 Getting guilds
+INFO 2022/07/08 22:07:26 limit: 50, timestamp 1657282046256
+INFO 2022/07/08 22:07:29 Getting guilds
+INFO 2022/07/08 22:07:29 limit: 50, timestamp 1657282049508
+INFO 2022/07/08 22:13:02 Getting guilds
+INFO 2022/07/08 22:13:03 limit: 50, timestamp 1657282383192
+INFO 2022/07/08 22:14:08 Getting guilds
+INFO 2022/07/08 22:14:08 limit: 50, timestamp 1657282448313
+INFO 2022/07/08 22:17:28 Getting guilds
+INFO 2022/07/08 22:17:28 limit: 50, timestamp 1657282648568
+INFO 2022/07/08 22:20:24 Getting guilds
+INFO 2022/07/08 22:20:24 limit: 50, timestamp 1657282824865
+INFO 2022/07/08 22:20:35 Getting guilds
+INFO 2022/07/08 22:20:35 limit: 50, timestamp 1657282835286
+INFO 2022/07/08 22:20:38 Getting guilds
+INFO 2022/07/08 22:20:38 limit: 50, timestamp 1657282838936
+INFO 2022/07/08 22:21:10 Getting guilds
+INFO 2022/07/08 22:21:10 limit: 50, timestamp 1657282870555
+INFO 2022/07/08 22:21:47 Getting guilds
+INFO 2022/07/08 22:21:47 limit: 50, timestamp 1657282907623
+INFO 2022/07/08 22:21:50 Getting guilds
+INFO 2022/07/08 22:21:50 limit: 50, timestamp 1657282910531
+INFO 2022/07/08 22:21:54 Getting guilds
+INFO 2022/07/08 22:21:54 limit: 50, timestamp 1657282914480
+INFO 2022/07/08 22:21:57 Getting guilds
+INFO 2022/07/08 22:21:57 limit: 50, timestamp 1657282917977
+INFO 2022/07/08 22:22:00 Getting guilds
+INFO 2022/07/08 22:22:00 limit: 50, timestamp 1657282920879
+INFO 2022/07/08 22:24:03 Getting guilds
+INFO 2022/07/08 22:24:43 Getting guilds
+INFO 2022/07/08 22:24:51 Getting guilds
+INFO 2022/07/08 22:24:55 Getting guilds
+INFO 2022/07/08 22:24:58 Getting guilds
+INFO 2022/07/08 22:25:24 Getting guilds
+INFO 2022/07/08 22:25:27 Getting guilds
+INFO 2022/07/08 22:25:30 Getting guilds
+INFO 2022/07/08 22:26:26 Getting guilds
+INFO 2022/07/08 22:27:07 Getting guilds
+INFO 2022/07/08 22:27:59 Getting guilds
+INFO 2022/07/08 22:28:12 Getting guilds
+INFO 2022/07/08 22:29:35 Getting guilds
+INFO 2022/07/08 22:30:00 Getting guilds
+INFO 2022/07/08 22:30:07 Getting guilds
+INFO 2022/07/08 22:30:12 Getting guilds
+INFO 2022/07/08 22:30:52 Getting guilds
+INFO 2022/07/08 22:30:53 limit: 50, timestamp 1657283453040
+INFO 2022/07/08 22:33:02 Getting guilds
+INFO 2022/07/08 22:33:03 limit: 50, timestamp 1657283583096
+INFO 2022/07/08 22:33:05 Getting guilds
+INFO 2022/07/08 22:33:05 limit: 50, timestamp 1657283585910
+INFO 2022/07/08 22:33:15 Getting guilds
+INFO 2022/07/08 22:33:15 limit: 50, timestamp 1657283595338
+INFO 2022/07/08 22:34:23 Getting guilds
+INFO 2022/07/08 22:34:23 limit: 50, timestamp 1657283663710
+INFO 2022/07/08 22:34:51 Getting guilds
+INFO 2022/07/08 22:34:51 limit: 50, timestamp 1657283691549
+INFO 2022/07/08 22:34:54 Getting guilds
+INFO 2022/07/08 22:34:54 limit: 50, timestamp 1657283694974
+INFO 2022/07/08 22:36:58 Getting guilds
+INFO 2022/07/08 22:36:58 limit: 50, timestamp 1657283818338
+INFO 2022/07/08 22:37:25 Getting guilds
+INFO 2022/07/08 22:37:25 limit: 50, timestamp 1657283845832
+INFO 2022/07/08 22:37:31 Getting guilds
+INFO 2022/07/08 22:37:31 limit: 50, timestamp 1657283851803
+INFO 2022/07/08 22:38:06 Getting guilds
+INFO 2022/07/08 22:38:06 limit: 50, timestamp 1657283886462
+INFO 2022/07/08 22:38:10 Getting guilds
+INFO 2022/07/08 22:38:10 limit: 50, timestamp 1657283890829
+INFO 2022/07/08 22:41:55 Handling requests
+INFO 2022/07/08 22:42:09 Getting guilds
+INFO 2022/07/08 22:42:09 limit: 50, timestamp 1657284129697
+INFO 2022/07/08 22:42:19 Getting guilds
+INFO 2022/07/08 22:42:19 limit: 50, timestamp 1657284139340
+INFO 2022/07/08 22:42:25 Getting guilds
+INFO 2022/07/08 22:42:25 limit: 50, timestamp 1657284145471
+INFO 2022/07/08 22:42:32 Getting guilds
+INFO 2022/07/08 22:42:32 limit: 50, timestamp 1657284152689
+INFO 2022/07/08 22:43:04 Getting guilds
+INFO 2022/07/08 22:43:04 limit: 50, timestamp 1657284184961
+INFO 2022/07/08 22:43:09 Getting guilds
+INFO 2022/07/08 22:43:09 limit: 50, timestamp 1657284189935
+INFO 2022/07/08 22:43:14 Getting guilds
+INFO 2022/07/08 22:43:14 limit: 50, timestamp 1657284194596
+INFO 2022/07/08 22:45:52 Getting guilds
+INFO 2022/07/08 22:45:52 limit: 50, timestamp 1657284352805
+INFO 2022/07/09 00:14:25 Getting guilds
+INFO 2022/07/09 00:14:25 limit: 50, timestamp 1657289665695
+INFO 2022/07/09 00:14:54 Getting guilds
+INFO 2022/07/09 00:14:54 limit: 50, timestamp 1657289694562
+INFO 2022/07/09 11:13:18 Getting guilds
+INFO 2022/07/09 11:13:18 limit: 50, timestamp 1657329198842
+INFO 2022/07/09 11:13:57 Getting guilds
+INFO 2022/07/09 11:13:57 limit: 50, timestamp 1657329237760
+INFO 2022/07/09 11:13:59 Getting guilds
+INFO 2022/07/09 11:13:59 limit: 50, timestamp 1657329239943
+INFO 2022/07/09 11:15:59 Getting guilds
+INFO 2022/07/09 11:15:59 limit: 50, timestamp 1657329359382
+INFO 2022/07/09 11:16:41 Getting guilds
+INFO 2022/07/09 11:16:41 limit: 50, timestamp 1657329401930
+INFO 2022/07/09 11:16:49 Getting guilds
+INFO 2022/07/09 11:16:50 limit: 50, timestamp 1657329410119
+INFO 2022/07/09 11:20:52 Getting guilds
+INFO 2022/07/09 11:20:53 limit: 50, timestamp 1657329653070
+INFO 2022/07/09 11:23:30 Getting guilds
+INFO 2022/07/09 11:23:30 limit: 50, timestamp 1657329810328
+INFO 2022/07/09 11:24:13 Getting guilds
+INFO 2022/07/09 11:24:13 limit: 50, timestamp 1657329853197
+INFO 2022/07/09 11:25:46 Getting guilds
+INFO 2022/07/09 11:25:46 limit: 50, timestamp 1657329946264
+INFO 2022/07/09 11:26:47 Getting guilds
+INFO 2022/07/09 11:26:47 limit: 50, timestamp 1657330007130
+INFO 2022/07/09 11:28:16 Getting guilds
+INFO 2022/07/09 11:28:16 limit: 50, timestamp 1657330096465
+INFO 2022/07/09 11:34:29 Getting guilds
+INFO 2022/07/09 11:34:29 limit: 50, timestamp 1657330469872
+INFO 2022/07/09 11:34:56 Getting guilds
+INFO 2022/07/09 11:34:56 limit: 50, timestamp 1657330496597
+INFO 2022/07/09 11:37:38 Getting guilds
+INFO 2022/07/09 11:37:38 limit: 50, timestamp 1657330658277
+INFO 2022/07/09 11:39:03 Getting guilds
+INFO 2022/07/09 11:39:03 limit: 50, timestamp 1657330743145
+INFO 2022/07/09 11:39:35 Getting guilds
+INFO 2022/07/09 11:39:35 limit: 50, timestamp 1657330775568
+INFO 2022/07/09 11:39:50 Getting guilds
+INFO 2022/07/09 11:39:50 limit: 50, timestamp 1657330790353
+INFO 2022/07/09 11:40:32 Getting guilds
+INFO 2022/07/09 11:40:32 limit: 50, timestamp 1657330832895
+INFO 2022/07/09 11:40:59 Getting guilds
+INFO 2022/07/09 11:40:59 limit: 50, timestamp 1657330859678
+INFO 2022/07/09 11:41:17 Getting guilds
+INFO 2022/07/09 11:41:17 limit: 50, timestamp 1657330877490
+INFO 2022/07/09 11:42:01 Getting guilds
+INFO 2022/07/09 11:42:01 limit: 50, timestamp 1657330921764
+INFO 2022/07/09 11:42:33 Getting guilds
+INFO 2022/07/09 11:42:33 limit: 50, timestamp 1657330953504
+INFO 2022/07/09 11:45:14 Getting guilds
+INFO 2022/07/09 11:45:14 limit: 50, timestamp 1657331114729
+ERROR 2022/07/09 11:45:19 strconv.Atoi: parsing "": invalid syntax
+INFO 2022/07/09 11:51:54 Handling requests
+INFO 2022/07/09 12:03:14 Handling requests
+ERROR 2022/07/09 12:03:41 token is invalid
+ERROR 2022/07/09 12:03:50 unexpected end of JSON input
+INFO 2022/07/09 12:08:27 Getting guilds
+INFO 2022/07/09 12:08:27 limit: 50, timestamp 1657332507740
+INFO 2022/07/09 12:10:39 Getting guilds
+INFO 2022/07/09 12:10:39 limit: 50, timestamp 1657332639468
+INFO 2022/07/09 12:10:58 Getting guilds
+INFO 2022/07/09 12:10:58 limit: 50, timestamp 1657332658828
+INFO 2022/07/09 12:12:20 Getting guilds
+INFO 2022/07/09 12:12:20 limit: 50, timestamp 1657332740543
+INFO 2022/07/09 12:12:23 Getting guilds
+INFO 2022/07/09 12:12:23 limit: 50, timestamp 1657332743550
+INFO 2022/07/09 12:12:38 Getting guilds
+INFO 2022/07/09 12:12:38 limit: 50, timestamp 1657332758405
+INFO 2022/07/09 12:12:59 Getting guilds
+INFO 2022/07/09 12:12:59 limit: 50, timestamp 1657332779887
+INFO 2022/07/09 12:13:02 Getting guilds
+INFO 2022/07/09 12:13:03 limit: 50, timestamp 1657332783112
+INFO 2022/07/09 12:13:25 Getting guilds
+INFO 2022/07/09 12:13:25 limit: 50, timestamp 1657332805947
+INFO 2022/07/09 12:13:28 Getting guilds
+INFO 2022/07/09 12:13:28 limit: 50, timestamp 1657332808195
+INFO 2022/07/09 12:14:02 Getting guilds
+INFO 2022/07/09 12:14:03 limit: 50, timestamp 1657332843056
+INFO 2022/07/09 12:14:05 Getting guilds
+INFO 2022/07/09 12:14:05 limit: 50, timestamp 1657332845349
+INFO 2022/07/09 12:14:15 Getting guilds
+INFO 2022/07/09 12:14:15 limit: 50, timestamp 1657332855322
+INFO 2022/07/11 15:30:37 Handling requests
+INFO 2022/07/11 15:30:40 Getting guilds
+INFO 2022/07/11 15:30:40 limit: 50, timestamp 1657517440454
+INFO 2022/07/11 15:35:23 Getting guilds
+INFO 2022/07/11 15:35:23 limit: 50, timestamp 1657517723835
+INFO 2022/07/11 15:35:42 Getting guilds
+INFO 2022/07/11 15:35:42 limit: 50, timestamp 1657517742416
+INFO 2022/07/11 15:36:34 Getting guilds
+INFO 2022/07/11 15:36:35 limit: 50, timestamp 1657517795255
+INFO 2022/07/11 15:42:58 Getting guilds
+INFO 2022/07/11 15:42:59 limit: 50, timestamp 1657518179001
+INFO 2022/07/11 15:50:30 Getting guilds
+INFO 2022/07/11 15:50:30 limit: 50, timestamp 1657518630430
+INFO 2022/07/11 15:50:32 Getting guilds
+INFO 2022/07/11 15:50:33 limit: 50, timestamp 1657518633125
+INFO 2022/07/11 15:52:43 Pool created for guild 1
+INFO 2022/07/11 15:52:43 Pool created for guild 3
+INFO 2022/07/11 15:52:43 Pool created for guild 4
+INFO 2022/07/11 15:52:43 Websocket active of 127.0.0.1:8090
+ERROR 2022/07/11 15:52:45 websocket: close 1000 (normal)
+INFO 2022/07/11 15:52:45 Disconnecting websocket
+INFO 2022/07/11 15:52:45 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/11 15:54:49 Handling requests
+INFO 2022/07/11 15:55:42 Getting user
+INFO 2022/07/11 15:55:42 Generating token
+ERROR 2022/07/11 15:56:21 token is not provided
+INFO 2022/07/11 15:56:37 Pool created for guild 1
+INFO 2022/07/11 15:56:37 Pool created for guild 3
+INFO 2022/07/11 15:56:37 Pool created for guild 4
+INFO 2022/07/11 15:56:37 Websocket active of [::1]:8090
+INFO 2022/07/11 15:56:37 Getting guilds
+INFO 2022/07/11 15:56:37 limit: 50, timestamp 1657518997761
+INFO 2022/07/11 15:56:41 Writing to client
+INFO 2022/07/11 15:56:45 Writing to client
+ERROR 2022/07/11 15:56:47 read tcp [::1]:8090->[::1]:58508: i/o timeout
+INFO 2022/07/11 15:56:47 Disconnecting websocket
+INFO 2022/07/11 15:56:47 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:07:07 Websocket active of [::1]:8090
+INFO 2022/07/11 16:07:07 Getting guilds
+INFO 2022/07/11 16:07:07 limit: 50, timestamp 1657519627652
+INFO 2022/07/11 16:07:11 Writing to client
+INFO 2022/07/11 16:07:15 Writing to client
+ERROR 2022/07/11 16:07:17 read tcp [::1]:8090->[::1]:57606: i/o timeout
+INFO 2022/07/11 16:07:17 Disconnecting websocket
+INFO 2022/07/11 16:07:17 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:09:02 Getting guilds
+INFO 2022/07/11 16:09:02 Websocket active of [::1]:8090
+INFO 2022/07/11 16:09:03 limit: 50, timestamp 1657519743309
+INFO 2022/07/11 16:09:06 Writing to client
+INFO 2022/07/11 16:09:10 Writing to client
+ERROR 2022/07/11 16:09:12 read tcp [::1]:8090->[::1]:48660: i/o timeout
+INFO 2022/07/11 16:09:12 Disconnecting websocket
+INFO 2022/07/11 16:09:12 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:14:20 Getting guilds
+INFO 2022/07/11 16:14:20 Websocket active of [::1]:8090
+INFO 2022/07/11 16:14:20 limit: 50, timestamp 1657520060391
+INFO 2022/07/11 16:14:24 Writing to client
+INFO 2022/07/11 16:14:28 Writing to client
+ERROR 2022/07/11 16:14:30 read tcp [::1]:8090->[::1]:52014: i/o timeout
+INFO 2022/07/11 16:14:30 Disconnecting websocket
+INFO 2022/07/11 16:14:30 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:14:51 Getting guilds
+INFO 2022/07/11 16:14:51 Websocket active of [::1]:8090
+INFO 2022/07/11 16:14:52 limit: 50, timestamp 1657520092148
+INFO 2022/07/11 16:14:55 Writing to client
+INFO 2022/07/11 16:14:59 Writing to client
+ERROR 2022/07/11 16:15:01 read tcp [::1]:8090->[::1]:53868: i/o timeout
+INFO 2022/07/11 16:15:01 Disconnecting websocket
+INFO 2022/07/11 16:15:01 Websocket of [::1]:8090 has been closed
+ERROR 2022/07/11 16:16:20 token is not provided
+ERROR 2022/07/11 16:16:31 token is not provided
+ERROR 2022/07/11 16:16:39 token is not provided
+INFO 2022/07/11 16:16:52 Websocket active of 127.0.0.1:8090
+INFO 2022/07/11 16:16:56 Writing to client
+INFO 2022/07/11 16:17:00 Writing to client
+ERROR 2022/07/11 16:17:02 read tcp 127.0.0.1:8090->127.0.0.1:48158: i/o timeout
+INFO 2022/07/11 16:17:02 Disconnecting websocket
+INFO 2022/07/11 16:17:02 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/11 16:17:03 Websocket active of 127.0.0.1:8090
+INFO 2022/07/11 16:17:07 Writing to client
+INFO 2022/07/11 16:17:13 Writing to client
+INFO 2022/07/11 16:17:17 Writing to client
+INFO 2022/07/11 16:17:22 Writing to client
+ERROR 2022/07/11 16:17:24 websocket: close 1000 (normal)
+INFO 2022/07/11 16:17:24 Disconnecting websocket
+INFO 2022/07/11 16:17:24 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/11 16:19:40 Websocket active of [::1]:8090
+INFO 2022/07/11 16:19:40 Getting guilds
+INFO 2022/07/11 16:19:40 limit: 50, timestamp 1657520380311
+INFO 2022/07/11 16:19:44 Writing to client
+INFO 2022/07/11 16:19:48 Writing to client
+ERROR 2022/07/11 16:19:50 read tcp [::1]:8090->[::1]:39916: i/o timeout
+INFO 2022/07/11 16:19:50 Disconnecting websocket
+INFO 2022/07/11 16:19:50 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:41:59 Getting guilds
+INFO 2022/07/11 16:41:59 Websocket active of [::1]:8090
+INFO 2022/07/11 16:42:00 limit: 50, timestamp 1657521720445
+INFO 2022/07/11 16:42:03 Writing to client
+INFO 2022/07/11 16:42:07 Writing to client
+ERROR 2022/07/11 16:42:09 read tcp [::1]:8090->[::1]:44582: i/o timeout
+INFO 2022/07/11 16:42:09 Disconnecting websocket
+INFO 2022/07/11 16:42:09 Websocket of [::1]:8090 has been closed
+INFO 2022/07/11 16:43:27 Handling requests
+INFO 2022/07/11 16:43:53 Handling requests
+INFO 2022/07/11 16:44:10 Handling requests
+INFO 2022/07/11 16:44:32 Pool created for guild 1
+INFO 2022/07/11 16:44:32 Pool created for guild 3
+INFO 2022/07/11 16:44:32 Pool created for guild 4
+INFO 2022/07/11 16:44:32 Websocket active of [::1]:8090
+INFO 2022/07/11 16:44:32 Getting guilds
+INFO 2022/07/11 16:44:33 limit: 50, timestamp 1657521873002
+INFO 2022/07/11 16:44:36 Writing to client
+INFO 2022/07/11 16:44:40 Writing to client
+ERROR 2022/07/11 16:44:42 read tcp [::1]:8090->[::1]:58598: i/o timeout
+INFO 2022/07/11 16:44:42 Disconnecting websocket
+INFO 2022/07/11 16:44:42 Websocket of [::1]:8090 has been closed

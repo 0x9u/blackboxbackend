@@ -148,6 +148,7 @@ func main() {
 	api.HandleFunc("/guild/kick", middleWare(kickGuildUser)).Methods("POST")
 
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
+	api.HandleFunc("/invite", middleWare(getGuildInvite)).Methods("GET")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
 
 	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
@@ -173,7 +174,11 @@ func main() {
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 15,
-		Handler:      handlers.CORS()(r),
+		Handler: handlers.CORS(
+			handlers.AllowedHeaders([]string{"content-type", "Auth-Token"}), //took some time to figure out middleware problem
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowCredentials(),
+		)(r),
 	}
 
 	log.WriteLog(logger.INFO, "Handling requests")

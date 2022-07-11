@@ -15,16 +15,16 @@ import (
 )
 
 type account struct {
-	Id       int    `json:"userId"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	Id       int    `json:"UserId"`
+	Username string `json:"Username"`
+	Password string `json:"Password"`
+	Email    string `json:"Email"`
 }
 
 type userInfoData struct {
-	Icon     int    `json:"icon"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	Icon     int    `json:"Icon"`
+	Username string `json:"Username"`
+	Email    string `json:"Email"`
 }
 
 type session struct {
@@ -33,15 +33,15 @@ type session struct {
 }
 
 type sessionToken struct {
-	Expires int64  `json:"expires"`
-	Id      int    `json:"userId"`
-	Token   string `json:"token"`
+	Expires int64  `json:"Expires"`
+	Id      int    `json:"UserId"`
+	Token   string `json:"Token"`
 }
 
 type dataChange struct {
-	Password string `json:"password"`
-	Change   int    `json:"change"` // 0 for password, 1 for email, 2 for username
-	NewData  string `json:"newData"`
+	Password string `json:"Password"`
+	Change   int    `json:"Change"` // 0 for password, 1 for email, 2 for username
+	NewData  string `json:"NewData"`
 }
 
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months

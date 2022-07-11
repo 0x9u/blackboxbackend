@@ -13,10 +13,16 @@ import (
 
 type msg struct {
 	Id      int    `json:"Id"`
-	Author  int    `json:"Author"`  // author id aka user id
+	Author  author `json:"Author"`  // author id aka user id
 	Content string `json:"Content"` // message content
 	Guild   int    `json:"Guild"`   // Chat id
 	Time    int64  `json:"Time"`
+}
+
+type author struct {
+	Id       int    `json:"Id"`
+	Username string `json:"Username"`
+	Icon     int    `json:"Icon"` //will be implemented later
 }
 
 type deleteMsg struct {
@@ -74,7 +80,11 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	row.Scan(&datamsg.Id)
-	datamsg.Author = user.Id
+	var authorData author
+	db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorData.Username)
+	authorData.Id = user.Id
+	authorData.Icon = 0 //placeholder
+	datamsg.Author = authorData
 	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
 	if err != nil && err != errorGuildPoolNotExist {
 		reportError(statusCode, w, err)
@@ -116,7 +126,13 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 	}
 
 	log.WriteLog(logger.INFO, fmt.Sprintf("limit: %v, timestamp %v", limit, timestamp))
-	rows, err := db.Query("SELECT * FROM messages WHERE time <= $1 AND guild_id = $2 ORDER BY time DESC LIMIT $3", timestamp, guild, limit)
+	rows, err := db.Query(
+		`SELECT m.*, u.username
+		FROM messages m INNER JOIN users u 
+		ON u.id = m.id 
+		WHERE time <= $1 AND guild_id = $2 
+		ORDER BY time DESC LIMIT $3`,
+		timestamp, guild, limit)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
@@ -124,7 +140,11 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 	defer rows.Close()
 	for rows.Next() {
 		message := msg{}
-		err := rows.Scan(&message.Id, &message.Content, &message.Author, &message.Guild, &message.Time)
+		authorData := author{}
+		err := rows.Scan(&message.Id, &message.Content, &authorData.Id,
+			&message.Guild, &message.Time, &authorData.Username)
+		authorData.Icon = 0 //placeholder
+		message.Author = authorData
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
