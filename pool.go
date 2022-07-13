@@ -26,6 +26,7 @@ type pool struct {
 
 func (p *pool) run() {
 	defer func() {
+		log.WriteLog(logger.INFO, fmt.Sprintf("Pool closed: %d", p.guild))
 		delete(pools, p.guild)
 		close(p.Broadcast)
 		close(p.Remove)
@@ -34,6 +35,7 @@ func (p *pool) run() {
 	for {
 		select { //pretty sure a data race is impossible here
 		case id := <-p.Remove:
+			log.WriteLog(logger.INFO, "User left pool")
 			delete(p.clients, id)
 		case data := <-p.Add:
 			p.clients[data.Id] = data.Ch
@@ -41,7 +43,7 @@ func (p *pool) run() {
 			for _, ch := range p.clients {
 				ch <- data
 			}
-		default: //ran if no signals are sent
+		default:
 			if len(p.clients) == 0 { //quit if no clients left in pool
 				return
 			}

@@ -51,6 +51,27 @@ func (c *client) run() {
 		close(clients[c.id])
 		delete(clients, c.id)
 		log.WriteLog(logger.INFO, "Websocket of "+c.ws.LocalAddr().String()+" has been closed")
+		//leaves the guild pools
+		rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id = $1", c.id)
+		if err != nil {
+			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
+			return
+		}
+		for rows.Next() {
+			var guildId int
+			err = rows.Scan(&guildId)
+			if err != nil {
+				log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
+				return
+			}
+			/*
+				_, ok := pools[guildId]
+				if !ok {// shouldnt happen but just in case
+					continue
+				}
+			*/
+			pools[guildId].Remove <- c.id
+		}
 	}()
 	log.WriteLog(logger.INFO, "Websocket active of "+c.ws.LocalAddr().String())
 	go c.heartBeat()
