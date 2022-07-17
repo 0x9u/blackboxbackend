@@ -11,6 +11,8 @@ import (
 	"os/signal"
 	"time"
 
+	_ "net/http/pprof"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -133,6 +135,8 @@ func main() {
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api").Subrouter()
+	r.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
+
 	api.HandleFunc("/msg", middleWare(msgRecieve)).Methods("POST")
 	api.HandleFunc("/msg", middleWare(msgEdit)).Methods("PUT")
 	api.HandleFunc("/msg", middleWare(msgHistory)).Methods("GET")

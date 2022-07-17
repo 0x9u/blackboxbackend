@@ -4159,3 +4159,3025 @@ INFO 2022/07/11 16:44:40 Writing to client
 ERROR 2022/07/11 16:44:42 read tcp [::1]:8090->[::1]:58598: i/o timeout
 INFO 2022/07/11 16:44:42 Disconnecting websocket
 INFO 2022/07/11 16:44:42 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:38:26 Handling requests
+INFO 2022/07/13 15:39:25 Getting guilds
+INFO 2022/07/13 15:39:25 Pool created for guild 1
+INFO 2022/07/13 15:39:25 Pool created for guild 3
+INFO 2022/07/13 15:39:25 Pool created for guild 4
+INFO 2022/07/13 15:39:25 Websocket active of [::1]:8090
+INFO 2022/07/13 15:39:25 limit: 50, timestamp 1657690765540
+INFO 2022/07/13 15:39:29 Writing to client
+INFO 2022/07/13 15:39:33 Writing to client
+ERROR 2022/07/13 15:39:35 read tcp [::1]:8090->[::1]:56462: i/o timeout
+INFO 2022/07/13 15:39:35 Disconnecting websocket
+INFO 2022/07/13 15:39:35 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:41:13 Getting guilds
+INFO 2022/07/13 15:41:13 Websocket active of [::1]:8090
+INFO 2022/07/13 15:41:14 limit: 50, timestamp 1657690874176
+INFO 2022/07/13 15:41:17 Writing to client
+INFO 2022/07/13 15:41:21 Writing to client
+ERROR 2022/07/13 15:41:23 read tcp [::1]:8090->[::1]:49696: i/o timeout
+INFO 2022/07/13 15:41:23 Disconnecting websocket
+INFO 2022/07/13 15:41:23 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:41:41 Getting guilds
+INFO 2022/07/13 15:41:41 Websocket active of [::1]:8090
+INFO 2022/07/13 15:41:41 limit: 50, timestamp 1657690901764
+INFO 2022/07/13 15:41:45 Writing to client
+INFO 2022/07/13 15:41:49 Writing to client
+ERROR 2022/07/13 15:41:51 read tcp [::1]:8090->[::1]:58508: i/o timeout
+INFO 2022/07/13 15:41:51 Disconnecting websocket
+INFO 2022/07/13 15:41:51 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:58:04 Getting guilds
+INFO 2022/07/13 15:58:04 Websocket active of [::1]:8090
+INFO 2022/07/13 15:58:05 limit: 50, timestamp 1657691885056
+INFO 2022/07/13 15:58:08 Writing to client
+ERROR 2022/07/13 15:58:08 websocket: close 1005 (no status)
+INFO 2022/07/13 15:58:08 Disconnecting websocket
+INFO 2022/07/13 15:58:08 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:58:28 Getting guilds
+INFO 2022/07/13 15:58:28 Websocket active of [::1]:8090
+INFO 2022/07/13 15:58:28 limit: 50, timestamp 1657691908734
+INFO 2022/07/13 15:58:32 Writing to client
+ERROR 2022/07/13 15:58:32 websocket: close 1005 (no status)
+INFO 2022/07/13 15:58:32 Disconnecting websocket
+INFO 2022/07/13 15:58:32 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:58:59 Getting guilds
+INFO 2022/07/13 15:58:59 Websocket active of [::1]:8090
+INFO 2022/07/13 15:59:00 limit: 50, timestamp 1657691940001
+INFO 2022/07/13 15:59:03 Writing to client
+ERROR 2022/07/13 15:59:03 websocket: close 1005 (no status)
+INFO 2022/07/13 15:59:03 Disconnecting websocket
+INFO 2022/07/13 15:59:03 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:59:06 Getting guilds
+INFO 2022/07/13 15:59:06 Websocket active of [::1]:8090
+INFO 2022/07/13 15:59:07 limit: 50, timestamp 1657691947310
+INFO 2022/07/13 15:59:10 Writing to client
+ERROR 2022/07/13 15:59:10 websocket: close 1005 (no status)
+INFO 2022/07/13 15:59:10 Disconnecting websocket
+INFO 2022/07/13 15:59:10 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:59:32 Getting guilds
+INFO 2022/07/13 15:59:32 Websocket active of [::1]:8090
+INFO 2022/07/13 15:59:32 limit: 50, timestamp 1657691972339
+INFO 2022/07/13 15:59:36 Writing to client
+ERROR 2022/07/13 15:59:36 websocket: close 1005 (no status)
+INFO 2022/07/13 15:59:36 Disconnecting websocket
+INFO 2022/07/13 15:59:36 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 15:59:46 Getting guilds
+INFO 2022/07/13 15:59:46 Websocket active of [::1]:8090
+INFO 2022/07/13 15:59:46 limit: 50, timestamp 1657691986603
+INFO 2022/07/13 15:59:50 Writing to client
+ERROR 2022/07/13 15:59:50 websocket: close 1005 (no status)
+INFO 2022/07/13 15:59:50 Disconnecting websocket
+INFO 2022/07/13 15:59:50 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:00:11 Getting guilds
+INFO 2022/07/13 16:00:12 limit: 50, timestamp 1657692012141
+INFO 2022/07/13 16:00:20 Getting guilds
+INFO 2022/07/13 16:00:20 Websocket active of [::1]:8090
+INFO 2022/07/13 16:00:21 limit: 50, timestamp 1657692021084
+INFO 2022/07/13 16:00:24 Writing to client
+ERROR 2022/07/13 16:00:24 websocket: close 1005 (no status)
+INFO 2022/07/13 16:00:24 Disconnecting websocket
+INFO 2022/07/13 16:00:24 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:00:38 Getting guilds
+INFO 2022/07/13 16:00:38 Websocket active of [::1]:8090
+INFO 2022/07/13 16:00:38 limit: 50, timestamp 1657692038939
+INFO 2022/07/13 16:00:42 Writing to client
+ERROR 2022/07/13 16:00:42 websocket: close 1005 (no status)
+INFO 2022/07/13 16:00:42 Disconnecting websocket
+INFO 2022/07/13 16:00:42 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:01:16 Getting guilds
+INFO 2022/07/13 16:01:16 Websocket active of [::1]:8090
+INFO 2022/07/13 16:01:17 limit: 50, timestamp 1657692077194
+INFO 2022/07/13 16:01:20 Writing to client
+ERROR 2022/07/13 16:01:20 websocket: close 1005 (no status)
+INFO 2022/07/13 16:01:20 Disconnecting websocket
+INFO 2022/07/13 16:01:20 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:01:25 Getting guilds
+INFO 2022/07/13 16:01:25 Websocket active of [::1]:8090
+INFO 2022/07/13 16:01:26 limit: 50, timestamp 1657692086090
+INFO 2022/07/13 16:01:29 Writing to client
+ERROR 2022/07/13 16:01:29 websocket: close 1005 (no status)
+INFO 2022/07/13 16:01:29 Disconnecting websocket
+INFO 2022/07/13 16:01:29 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:01:43 Websocket active of [::1]:8090
+INFO 2022/07/13 16:01:44 Getting guilds
+INFO 2022/07/13 16:01:44 limit: 50, timestamp 1657692104332
+ERROR 2022/07/13 16:01:47 websocket: close 1001 (going away)
+INFO 2022/07/13 16:01:47 Disconnecting websocket
+INFO 2022/07/13 16:01:47 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:01:47 Getting guilds
+INFO 2022/07/13 16:01:47 Websocket active of [::1]:8090
+INFO 2022/07/13 16:01:48 limit: 50, timestamp 1657692108167
+INFO 2022/07/13 16:01:51 Writing to client
+ERROR 2022/07/13 16:01:52 websocket: close 1005 (no status)
+INFO 2022/07/13 16:01:52 Disconnecting websocket
+INFO 2022/07/13 16:01:52 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:08:42 Getting guilds
+INFO 2022/07/13 16:08:42 Websocket active of [::1]:8090
+INFO 2022/07/13 16:08:43 limit: 50, timestamp 1657692523083
+INFO 2022/07/13 16:08:46 Writing to client
+ERROR 2022/07/13 16:08:46 websocket: close 1005 (no status)
+INFO 2022/07/13 16:08:46 Disconnecting websocket
+INFO 2022/07/13 16:08:46 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:09:22 Websocket active of [::1]:8090
+INFO 2022/07/13 16:09:22 Getting guilds
+INFO 2022/07/13 16:09:22 limit: 50, timestamp 1657692562439
+INFO 2022/07/13 16:09:26 Writing to client
+ERROR 2022/07/13 16:09:26 websocket: close 1005 (no status)
+INFO 2022/07/13 16:09:26 Disconnecting websocket
+INFO 2022/07/13 16:09:26 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:09:37 Getting guilds
+INFO 2022/07/13 16:09:37 Websocket active of [::1]:8090
+INFO 2022/07/13 16:09:38 limit: 50, timestamp 1657692577998
+ERROR 2022/07/13 16:09:40 websocket: close 1001 (going away)
+INFO 2022/07/13 16:09:40 Disconnecting websocket
+INFO 2022/07/13 16:09:40 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:09:41 Getting guilds
+INFO 2022/07/13 16:09:41 Websocket active of [::1]:8090
+INFO 2022/07/13 16:09:41 limit: 50, timestamp 1657692581749
+INFO 2022/07/13 16:09:45 Writing to client
+ERROR 2022/07/13 16:09:45 websocket: close 1005 (no status)
+INFO 2022/07/13 16:09:45 Disconnecting websocket
+INFO 2022/07/13 16:09:45 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:13:06 Getting guilds
+INFO 2022/07/13 16:13:06 Websocket active of [::1]:8090
+INFO 2022/07/13 16:13:06 limit: 50, timestamp 1657692786384
+INFO 2022/07/13 16:13:10 Writing to client
+ERROR 2022/07/13 16:13:10 websocket: close 1005 (no status)
+INFO 2022/07/13 16:13:10 Disconnecting websocket
+INFO 2022/07/13 16:13:10 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:14:53 Websocket active of [::1]:8090
+INFO 2022/07/13 16:14:53 Getting guilds
+INFO 2022/07/13 16:14:54 limit: 50, timestamp 1657692894321
+ERROR 2022/07/13 16:14:56 websocket: close 1001 (going away)
+INFO 2022/07/13 16:14:56 Disconnecting websocket
+INFO 2022/07/13 16:14:56 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:14:57 Getting guilds
+INFO 2022/07/13 16:14:57 Websocket active of [::1]:8090
+INFO 2022/07/13 16:14:58 limit: 50, timestamp 1657692898312
+INFO 2022/07/13 16:15:01 Writing to client
+ERROR 2022/07/13 16:15:01 websocket: close 1005 (no status)
+INFO 2022/07/13 16:15:01 Disconnecting websocket
+INFO 2022/07/13 16:15:01 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 16:15:35 Getting guilds
+INFO 2022/07/13 16:15:35 Websocket active of [::1]:8090
+INFO 2022/07/13 16:15:36 limit: 50, timestamp 1657692936225
+INFO 2022/07/13 16:15:39 Writing to client
+INFO 2022/07/13 16:15:43 Writing to client
+ERROR 2022/07/13 16:15:45 read tcp [::1]:8090->[::1]:49450: i/o timeout
+INFO 2022/07/13 16:15:45 Disconnecting websocket
+INFO 2022/07/13 16:15:45 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:24:58 Handling requests
+INFO 2022/07/13 19:24:59 Getting guilds
+INFO 2022/07/13 19:24:59 Pool created for guild 1
+INFO 2022/07/13 19:24:59 Pool created for guild 3
+INFO 2022/07/13 19:24:59 Pool created for guild 4
+INFO 2022/07/13 19:24:59 Websocket active of [::1]:8090
+INFO 2022/07/13 19:24:59 limit: 50, timestamp 1657704299455
+INFO 2022/07/13 19:25:03 Writing to client
+INFO 2022/07/13 19:25:07 Writing to client
+ERROR 2022/07/13 19:25:09 read tcp [::1]:8090->[::1]:33004: i/o timeout
+INFO 2022/07/13 19:25:09 Disconnecting websocket
+INFO 2022/07/13 19:25:09 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:25:13 Websocket active of [::1]:8090
+INFO 2022/07/13 19:25:13 Getting guilds
+INFO 2022/07/13 19:25:13 limit: 50, timestamp 1657704313600
+INFO 2022/07/13 19:25:17 Writing to client
+INFO 2022/07/13 19:25:21 Writing to client
+ERROR 2022/07/13 19:25:23 read tcp [::1]:8090->[::1]:51090: i/o timeout
+INFO 2022/07/13 19:25:23 Disconnecting websocket
+INFO 2022/07/13 19:25:23 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:27:06 Handling requests
+INFO 2022/07/13 19:27:08 Getting guilds
+INFO 2022/07/13 19:27:08 Pool created for guild 1
+INFO 2022/07/13 19:27:08 Pool created for guild 3
+INFO 2022/07/13 19:27:08 Pool created for guild 4
+INFO 2022/07/13 19:27:08 Websocket active of [::1]:8090
+INFO 2022/07/13 19:27:08 limit: 50, timestamp 1657704428621
+INFO 2022/07/13 19:27:12 Writing to client
+INFO 2022/07/13 19:27:16 Writing to client
+ERROR 2022/07/13 19:27:18 read tcp [::1]:8090->[::1]:46362: i/o timeout
+INFO 2022/07/13 19:27:18 Disconnecting websocket
+INFO 2022/07/13 19:27:18 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:28:05 Handling requests
+INFO 2022/07/13 19:28:18 Getting guilds
+INFO 2022/07/13 19:28:18 Pool created for guild 1
+INFO 2022/07/13 19:28:18 Pool created for guild 3
+INFO 2022/07/13 19:28:18 Pool created for guild 4
+INFO 2022/07/13 19:28:18 Websocket active of [::1]:8090
+INFO 2022/07/13 19:28:18 limit: 50, timestamp 1657704498721
+INFO 2022/07/13 19:28:22 Writing to client
+INFO 2022/07/13 19:28:26 Writing to client
+ERROR 2022/07/13 19:28:28 read tcp [::1]:8090->[::1]:44878: i/o timeout
+INFO 2022/07/13 19:28:28 Disconnecting websocket
+INFO 2022/07/13 19:28:28 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:29:15 Handling requests
+INFO 2022/07/13 19:29:17 Pool created for guild 1
+INFO 2022/07/13 19:29:17 Pool created for guild 3
+INFO 2022/07/13 19:29:17 Pool created for guild 4
+INFO 2022/07/13 19:29:17 Websocket active of [::1]:8090
+INFO 2022/07/13 19:29:17 Getting guilds
+INFO 2022/07/13 19:29:17 limit: 50, timestamp 1657704557486
+INFO 2022/07/13 19:29:21 Writing to client
+INFO 2022/07/13 19:29:25 Writing to client
+ERROR 2022/07/13 19:29:27 read tcp [::1]:8090->[::1]:37732: i/o timeout
+INFO 2022/07/13 19:29:27 Disconnecting websocket
+INFO 2022/07/13 19:29:27 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:41:28 Handling requests
+INFO 2022/07/13 19:41:31 Pool created for guild 1
+INFO 2022/07/13 19:41:31 Getting guilds
+INFO 2022/07/13 19:41:31 Pool created for guild 3
+INFO 2022/07/13 19:41:31 Pool created for guild 4
+INFO 2022/07/13 19:41:31 Websocket active of [::1]:8090
+INFO 2022/07/13 19:41:32 limit: 50, timestamp 1657705292206
+INFO 2022/07/13 19:41:35 Writing to client
+INFO 2022/07/13 19:41:39 Writing to client
+ERROR 2022/07/13 19:41:41 read tcp [::1]:8090->[::1]:59970: i/o timeout
+INFO 2022/07/13 19:41:41 Disconnecting websocket
+INFO 2022/07/13 19:41:41 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:41:41 User left pool
+INFO 2022/07/13 19:41:41 Pool closed: 1
+INFO 2022/07/13 19:41:41 User left pool
+INFO 2022/07/13 19:41:41 Pool closed: 3
+INFO 2022/07/13 19:41:41 User left pool
+INFO 2022/07/13 19:41:41 Pool closed: 4
+INFO 2022/07/13 19:42:53 Handling requests
+INFO 2022/07/13 19:48:16 Handling requests
+INFO 2022/07/13 19:48:28 Getting guilds
+INFO 2022/07/13 19:48:29 Pool created for guild 1
+INFO 2022/07/13 19:48:29 Pool created for guild 3
+INFO 2022/07/13 19:48:29 Pool created for guild 4
+INFO 2022/07/13 19:48:29 Websocket active of [::1]:8090
+INFO 2022/07/13 19:48:29 limit: 50, timestamp 1657705709216
+INFO 2022/07/13 19:48:33 Writing to client
+INFO 2022/07/13 19:48:37 Writing to client
+ERROR 2022/07/13 19:48:39 read tcp [::1]:8090->[::1]:53372: i/o timeout
+INFO 2022/07/13 19:48:39 Disconnecting websocket
+INFO 2022/07/13 19:48:39 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 19:48:39 User left pool
+INFO 2022/07/13 19:48:39 Pool closed: 1
+INFO 2022/07/13 19:48:39 User left pool
+INFO 2022/07/13 19:48:39 Pool closed: 3
+INFO 2022/07/13 19:48:39 User left pool
+INFO 2022/07/13 19:48:39 Pool closed: 4
+INFO 2022/07/13 20:49:25 Pool created for guild 1
+INFO 2022/07/13 20:49:25 Pool created for guild 3
+INFO 2022/07/13 20:49:25 Pool created for guild 4
+INFO 2022/07/13 20:49:25 Websocket active of [::1]:8090
+INFO 2022/07/13 20:49:25 Getting guilds
+INFO 2022/07/13 20:49:26 limit: 50, timestamp 1657709366038
+ERROR 2022/07/13 20:49:28 websocket: close 1001 (going away)
+INFO 2022/07/13 20:49:28 Disconnecting websocket
+INFO 2022/07/13 20:49:28 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:49:28 User left pool
+INFO 2022/07/13 20:49:28 Pool closed: 1
+INFO 2022/07/13 20:49:28 User left pool
+INFO 2022/07/13 20:49:28 Pool closed: 3
+INFO 2022/07/13 20:49:28 User left pool
+INFO 2022/07/13 20:49:28 Pool closed: 4
+INFO 2022/07/13 20:49:29 Getting guilds
+INFO 2022/07/13 20:49:29 Pool created for guild 1
+INFO 2022/07/13 20:49:29 Pool created for guild 3
+INFO 2022/07/13 20:49:29 Pool created for guild 4
+INFO 2022/07/13 20:49:29 Websocket active of [::1]:8090
+INFO 2022/07/13 20:49:30 limit: 50, timestamp 1657709370214
+INFO 2022/07/13 20:49:33 Writing to client
+INFO 2022/07/13 20:49:37 Writing to client
+ERROR 2022/07/13 20:49:39 read tcp [::1]:8090->[::1]:40036: i/o timeout
+INFO 2022/07/13 20:49:39 Disconnecting websocket
+INFO 2022/07/13 20:49:39 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:49:39 User left pool
+INFO 2022/07/13 20:49:39 Pool closed: 1
+INFO 2022/07/13 20:49:39 User left pool
+INFO 2022/07/13 20:49:39 Pool closed: 3
+INFO 2022/07/13 20:49:39 User left pool
+INFO 2022/07/13 20:49:39 Pool closed: 4
+INFO 2022/07/13 20:49:59 Getting guilds
+INFO 2022/07/13 20:49:59 Pool created for guild 1
+INFO 2022/07/13 20:49:59 Pool created for guild 3
+INFO 2022/07/13 20:49:59 Pool created for guild 4
+INFO 2022/07/13 20:49:59 Websocket active of [::1]:8090
+INFO 2022/07/13 20:50:00 limit: 50, timestamp 1657709400362
+INFO 2022/07/13 20:50:03 Writing to client
+INFO 2022/07/13 20:50:07 Writing to client
+ERROR 2022/07/13 20:50:09 read tcp [::1]:8090->[::1]:36374: i/o timeout
+INFO 2022/07/13 20:50:09 Disconnecting websocket
+INFO 2022/07/13 20:50:09 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:50:09 User left pool
+INFO 2022/07/13 20:50:09 Pool closed: 1
+INFO 2022/07/13 20:50:09 User left pool
+INFO 2022/07/13 20:50:09 Pool closed: 3
+INFO 2022/07/13 20:50:09 User left pool
+INFO 2022/07/13 20:50:09 Pool closed: 4
+INFO 2022/07/13 20:52:42 Getting guilds
+INFO 2022/07/13 20:52:42 Pool created for guild 1
+INFO 2022/07/13 20:52:42 Pool created for guild 3
+INFO 2022/07/13 20:52:42 Pool created for guild 4
+INFO 2022/07/13 20:52:42 Websocket active of [::1]:8090
+INFO 2022/07/13 20:52:43 limit: 50, timestamp 1657709563169
+INFO 2022/07/13 20:52:46 Writing to client
+INFO 2022/07/13 20:52:50 Writing to client
+ERROR 2022/07/13 20:52:52 read tcp [::1]:8090->[::1]:48786: i/o timeout
+INFO 2022/07/13 20:52:52 Disconnecting websocket
+INFO 2022/07/13 20:52:52 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:52:52 User left pool
+INFO 2022/07/13 20:52:52 User left pool
+INFO 2022/07/13 20:52:52 Pool closed: 4
+INFO 2022/07/13 20:52:52 Pool closed: 1
+INFO 2022/07/13 20:52:52 User left pool
+INFO 2022/07/13 20:52:52 Pool closed: 3
+INFO 2022/07/13 20:53:22 Getting guilds
+INFO 2022/07/13 20:53:22 Pool created for guild 1
+INFO 2022/07/13 20:53:22 Pool created for guild 3
+INFO 2022/07/13 20:53:22 Pool created for guild 4
+INFO 2022/07/13 20:53:22 Websocket active of [::1]:8090
+INFO 2022/07/13 20:53:22 limit: 50, timestamp 1657709602591
+INFO 2022/07/13 20:53:26 Writing to client
+INFO 2022/07/13 20:53:30 Writing to client
+ERROR 2022/07/13 20:53:32 read tcp [::1]:8090->[::1]:49514: i/o timeout
+INFO 2022/07/13 20:53:32 Disconnecting websocket
+INFO 2022/07/13 20:53:32 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:53:32 User left pool
+INFO 2022/07/13 20:53:32 Pool closed: 1
+INFO 2022/07/13 20:53:32 User left pool
+INFO 2022/07/13 20:53:32 Pool closed: 3
+INFO 2022/07/13 20:53:32 User left pool
+INFO 2022/07/13 20:53:32 Pool closed: 4
+INFO 2022/07/13 20:54:26 Getting guilds
+INFO 2022/07/13 20:54:26 Pool created for guild 1
+INFO 2022/07/13 20:54:26 Pool created for guild 3
+INFO 2022/07/13 20:54:26 Pool created for guild 4
+INFO 2022/07/13 20:54:26 Websocket active of [::1]:8090
+INFO 2022/07/13 20:54:26 limit: 50, timestamp 1657709666731
+INFO 2022/07/13 20:54:30 Writing to client
+INFO 2022/07/13 20:54:34 Writing to client
+ERROR 2022/07/13 20:54:36 read tcp [::1]:8090->[::1]:59942: i/o timeout
+INFO 2022/07/13 20:54:36 Disconnecting websocket
+INFO 2022/07/13 20:54:36 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:54:36 User left pool
+INFO 2022/07/13 20:54:36 Pool closed: 1
+INFO 2022/07/13 20:54:36 User left pool
+INFO 2022/07/13 20:54:36 User left pool
+INFO 2022/07/13 20:54:36 Pool closed: 4
+INFO 2022/07/13 20:54:36 Pool closed: 3
+INFO 2022/07/13 20:55:17 Getting guilds
+INFO 2022/07/13 20:55:17 Pool created for guild 1
+INFO 2022/07/13 20:55:17 Pool created for guild 3
+INFO 2022/07/13 20:55:17 Pool created for guild 4
+INFO 2022/07/13 20:55:17 Websocket active of [::1]:8090
+INFO 2022/07/13 20:55:18 limit: 50, timestamp 1657709718357
+ERROR 2022/07/13 20:55:19 websocket: close 1001 (going away)
+INFO 2022/07/13 20:55:19 Disconnecting websocket
+INFO 2022/07/13 20:55:19 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:55:19 User left pool
+INFO 2022/07/13 20:55:19 Pool closed: 1
+INFO 2022/07/13 20:55:19 User left pool
+INFO 2022/07/13 20:55:19 Pool closed: 3
+INFO 2022/07/13 20:55:19 User left pool
+INFO 2022/07/13 20:55:19 Pool closed: 4
+INFO 2022/07/13 20:55:20 Getting guilds
+INFO 2022/07/13 20:55:21 Pool created for guild 1
+INFO 2022/07/13 20:55:21 Pool created for guild 3
+INFO 2022/07/13 20:55:21 Pool created for guild 4
+INFO 2022/07/13 20:55:21 Websocket active of [::1]:8090
+INFO 2022/07/13 20:55:21 limit: 50, timestamp 1657709721293
+INFO 2022/07/13 20:55:25 Writing to client
+INFO 2022/07/13 20:55:29 Writing to client
+ERROR 2022/07/13 20:55:31 read tcp [::1]:8090->[::1]:35582: i/o timeout
+INFO 2022/07/13 20:55:31 Disconnecting websocket
+INFO 2022/07/13 20:55:31 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:55:31 User left pool
+INFO 2022/07/13 20:55:31 Pool closed: 1
+INFO 2022/07/13 20:55:31 User left pool
+INFO 2022/07/13 20:55:31 Pool closed: 3
+INFO 2022/07/13 20:55:31 User left pool
+INFO 2022/07/13 20:55:31 Pool closed: 4
+INFO 2022/07/13 20:59:19 Getting guilds
+INFO 2022/07/13 20:59:19 Pool created for guild 1
+INFO 2022/07/13 20:59:19 Pool created for guild 3
+INFO 2022/07/13 20:59:19 Pool created for guild 4
+INFO 2022/07/13 20:59:19 Websocket active of [::1]:8090
+INFO 2022/07/13 20:59:19 Recieved info
+INFO 2022/07/13 20:59:19 Has been pinged
+ERROR 2022/07/13 20:59:19 websocket: close 1005 (no status)
+INFO 2022/07/13 20:59:19 Disconnecting websocket
+INFO 2022/07/13 20:59:19 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 20:59:19 User left pool
+INFO 2022/07/13 20:59:19 Pool closed: 1
+INFO 2022/07/13 20:59:19 User left pool
+INFO 2022/07/13 20:59:19 Pool closed: 3
+INFO 2022/07/13 20:59:19 User left pool
+INFO 2022/07/13 20:59:19 Pool closed: 4
+INFO 2022/07/13 20:59:19 limit: 50, timestamp 1657709959904
+INFO 2022/07/13 20:59:43 Handling requests
+INFO 2022/07/13 20:59:47 Getting guilds
+INFO 2022/07/13 20:59:47 Pool created for guild 1
+INFO 2022/07/13 20:59:47 Pool created for guild 3
+INFO 2022/07/13 20:59:47 Pool closed: 3
+INFO 2022/07/13 20:59:48 limit: 50, timestamp 1657709988044
+INFO 2022/07/13 21:00:08 Handling requests
+INFO 2022/07/13 21:00:11 Getting guilds
+INFO 2022/07/13 21:00:11 Pool created for guild 1
+INFO 2022/07/13 21:00:11 Pool created for guild 3
+INFO 2022/07/13 21:00:11 Pool created for guild 4
+INFO 2022/07/13 21:00:11 Websocket active of [::1]:8090
+INFO 2022/07/13 21:00:11 Recieved info
+INFO 2022/07/13 21:00:11 Has been pinged
+ERROR 2022/07/13 21:00:11 websocket: close 1005 (no status)
+INFO 2022/07/13 21:00:11 Disconnecting websocket
+INFO 2022/07/13 21:00:11 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:00:12 User left pool
+INFO 2022/07/13 21:00:12 Pool closed: 1
+INFO 2022/07/13 21:00:12 User left pool
+INFO 2022/07/13 21:00:12 Pool closed: 3
+INFO 2022/07/13 21:00:12 User left pool
+INFO 2022/07/13 21:00:12 Pool closed: 4
+INFO 2022/07/13 21:00:12 limit: 50, timestamp 1657710012307
+INFO 2022/07/13 21:00:49 Getting guilds
+INFO 2022/07/13 21:00:49 Pool created for guild 1
+INFO 2022/07/13 21:00:49 Pool created for guild 3
+INFO 2022/07/13 21:00:49 Pool created for guild 4
+INFO 2022/07/13 21:00:49 Websocket active of [::1]:8090
+INFO 2022/07/13 21:00:49 Recieved info
+INFO 2022/07/13 21:00:49 Has been pinged
+ERROR 2022/07/13 21:00:49 websocket: close 1005 (no status)
+INFO 2022/07/13 21:00:49 Disconnecting websocket
+INFO 2022/07/13 21:00:49 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:00:49 User left pool
+INFO 2022/07/13 21:00:49 Pool closed: 1
+INFO 2022/07/13 21:00:49 User left pool
+INFO 2022/07/13 21:00:49 Pool closed: 3
+INFO 2022/07/13 21:00:49 User left pool
+INFO 2022/07/13 21:00:49 Pool closed: 4
+INFO 2022/07/13 21:00:49 limit: 50, timestamp 1657710049914
+INFO 2022/07/13 21:00:53 Getting guilds
+INFO 2022/07/13 21:00:53 Pool created for guild 1
+INFO 2022/07/13 21:00:53 Pool created for guild 3
+INFO 2022/07/13 21:00:53 Pool created for guild 4
+INFO 2022/07/13 21:00:53 Websocket active of [::1]:8090
+INFO 2022/07/13 21:00:53 Recieved info
+INFO 2022/07/13 21:00:53 Has been pinged
+ERROR 2022/07/13 21:00:53 websocket: close 1005 (no status)
+INFO 2022/07/13 21:00:53 Disconnecting websocket
+INFO 2022/07/13 21:00:53 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:00:53 User left pool
+INFO 2022/07/13 21:00:53 Pool closed: 1
+INFO 2022/07/13 21:00:53 User left pool
+INFO 2022/07/13 21:00:53 Pool closed: 3
+INFO 2022/07/13 21:00:53 User left pool
+INFO 2022/07/13 21:00:53 Pool closed: 4
+INFO 2022/07/13 21:00:53 limit: 50, timestamp 1657710053674
+INFO 2022/07/13 21:04:08 Getting guilds
+INFO 2022/07/13 21:04:08 Pool created for guild 1
+INFO 2022/07/13 21:04:08 Pool created for guild 3
+INFO 2022/07/13 21:04:08 Pool created for guild 4
+INFO 2022/07/13 21:04:08 Websocket active of [::1]:8090
+INFO 2022/07/13 21:04:08 Recieved info
+INFO 2022/07/13 21:04:08 Has been pinged
+WARNING 2022/07/13 21:04:08 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:04:08 limit: 50, timestamp 1657710248809
+INFO 2022/07/13 21:04:12 Writing to client
+ERROR 2022/07/13 21:04:14 websocket: close 1001 (going away)
+INFO 2022/07/13 21:04:14 Disconnecting websocket
+INFO 2022/07/13 21:04:14 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:04:14 User left pool
+INFO 2022/07/13 21:04:14 Pool closed: 1
+INFO 2022/07/13 21:04:14 User left pool
+INFO 2022/07/13 21:04:14 Pool closed: 3
+INFO 2022/07/13 21:04:14 User left pool
+INFO 2022/07/13 21:04:14 Pool closed: 4
+INFO 2022/07/13 21:04:15 Getting guilds
+INFO 2022/07/13 21:04:15 Pool created for guild 1
+INFO 2022/07/13 21:04:15 Pool created for guild 3
+INFO 2022/07/13 21:04:15 Pool created for guild 4
+INFO 2022/07/13 21:04:15 Websocket active of [::1]:8090
+INFO 2022/07/13 21:04:15 Recieved info
+INFO 2022/07/13 21:04:15 Has been pinged
+WARNING 2022/07/13 21:04:15 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:04:15 limit: 50, timestamp 1657710255904
+INFO 2022/07/13 21:04:19 Writing to client
+INFO 2022/07/13 21:04:23 Writing to client
+ERROR 2022/07/13 21:04:25 read tcp [::1]:8090->[::1]:55146: i/o timeout
+INFO 2022/07/13 21:04:25 Disconnecting websocket
+INFO 2022/07/13 21:04:25 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:04:25 User left pool
+INFO 2022/07/13 21:04:25 Pool closed: 1
+INFO 2022/07/13 21:04:25 User left pool
+INFO 2022/07/13 21:04:25 Pool closed: 3
+INFO 2022/07/13 21:04:25 User left pool
+INFO 2022/07/13 21:04:25 Pool closed: 4
+INFO 2022/07/13 21:05:13 Getting guilds
+INFO 2022/07/13 21:05:13 Pool created for guild 1
+INFO 2022/07/13 21:05:13 Pool created for guild 3
+INFO 2022/07/13 21:05:13 Pool created for guild 4
+INFO 2022/07/13 21:05:13 Websocket active of [::1]:8090
+INFO 2022/07/13 21:05:13 limit: 50, timestamp 1657710313827
+INFO 2022/07/13 21:05:17 Writing to client
+ERROR 2022/07/13 21:05:17 websocket: close 1005 (no status)
+INFO 2022/07/13 21:05:17 Disconnecting websocket
+INFO 2022/07/13 21:05:17 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:05:17 User left pool
+INFO 2022/07/13 21:05:17 Pool closed: 1
+INFO 2022/07/13 21:05:17 User left pool
+INFO 2022/07/13 21:05:17 Pool closed: 3
+INFO 2022/07/13 21:05:17 User left pool
+INFO 2022/07/13 21:05:17 Pool closed: 4
+INFO 2022/07/13 21:07:56 Getting guilds
+INFO 2022/07/13 21:07:56 Pool created for guild 1
+INFO 2022/07/13 21:07:56 Pool created for guild 3
+INFO 2022/07/13 21:07:56 Pool created for guild 4
+INFO 2022/07/13 21:07:56 Websocket active of [::1]:8090
+INFO 2022/07/13 21:07:57 limit: 50, timestamp 1657710477260
+INFO 2022/07/13 21:08:00 Writing to client
+INFO 2022/07/13 21:08:04 Writing to client
+ERROR 2022/07/13 21:08:06 read tcp [::1]:8090->[::1]:54766: i/o timeout
+INFO 2022/07/13 21:08:06 Disconnecting websocket
+INFO 2022/07/13 21:08:06 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:08:06 User left pool
+INFO 2022/07/13 21:08:06 Pool closed: 1
+INFO 2022/07/13 21:08:06 User left pool
+INFO 2022/07/13 21:08:06 Pool closed: 3
+INFO 2022/07/13 21:08:06 User left pool
+INFO 2022/07/13 21:08:06 Pool closed: 4
+INFO 2022/07/13 21:17:48 Getting guilds
+INFO 2022/07/13 21:17:48 Pool created for guild 1
+INFO 2022/07/13 21:17:48 Pool created for guild 3
+INFO 2022/07/13 21:17:48 Pool created for guild 4
+INFO 2022/07/13 21:17:48 Websocket active of [::1]:8090
+INFO 2022/07/13 21:17:48 limit: 50, timestamp 1657711068375
+INFO 2022/07/13 21:17:52 Writing to client
+INFO 2022/07/13 21:17:56 Writing to client
+ERROR 2022/07/13 21:17:58 read tcp [::1]:8090->[::1]:53872: i/o timeout
+INFO 2022/07/13 21:17:58 Disconnecting websocket
+INFO 2022/07/13 21:17:58 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:17:58 User left pool
+INFO 2022/07/13 21:17:58 Pool closed: 1
+INFO 2022/07/13 21:17:58 User left pool
+INFO 2022/07/13 21:17:58 Pool closed: 3
+INFO 2022/07/13 21:17:58 User left pool
+INFO 2022/07/13 21:17:58 Pool closed: 4
+INFO 2022/07/13 21:53:47 Getting guilds
+INFO 2022/07/13 21:53:47 Pool created for guild 1
+INFO 2022/07/13 21:53:47 Pool created for guild 3
+INFO 2022/07/13 21:53:47 Pool created for guild 4
+INFO 2022/07/13 21:53:47 Websocket active of [::1]:8090
+INFO 2022/07/13 21:53:48 limit: 50, timestamp 1657713228288
+INFO 2022/07/13 21:53:51 Writing to client
+INFO 2022/07/13 21:53:55 Writing to client
+ERROR 2022/07/13 21:53:57 read tcp [::1]:8090->[::1]:34346: i/o timeout
+INFO 2022/07/13 21:53:57 Disconnecting websocket
+INFO 2022/07/13 21:53:57 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:53:57 User left pool
+INFO 2022/07/13 21:53:57 Pool closed: 1
+INFO 2022/07/13 21:53:57 User left pool
+INFO 2022/07/13 21:53:57 Pool closed: 3
+INFO 2022/07/13 21:53:57 User left pool
+INFO 2022/07/13 21:53:57 Pool closed: 4
+INFO 2022/07/13 21:54:31 Pool created for guild 1
+INFO 2022/07/13 21:54:31 Pool created for guild 3
+INFO 2022/07/13 21:54:31 Pool created for guild 4
+INFO 2022/07/13 21:54:31 Websocket active of [::1]:8090
+INFO 2022/07/13 21:54:31 Getting guilds
+INFO 2022/07/13 21:54:32 limit: 50, timestamp 1657713272171
+INFO 2022/07/13 21:54:35 Writing to client
+INFO 2022/07/13 21:54:39 Writing to client
+ERROR 2022/07/13 21:54:41 read tcp [::1]:8090->[::1]:52768: i/o timeout
+INFO 2022/07/13 21:54:41 Disconnecting websocket
+INFO 2022/07/13 21:54:41 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:54:41 User left pool
+INFO 2022/07/13 21:54:41 Pool closed: 1
+INFO 2022/07/13 21:54:41 User left pool
+INFO 2022/07/13 21:54:41 Pool closed: 3
+INFO 2022/07/13 21:54:41 User left pool
+INFO 2022/07/13 21:54:41 Pool closed: 4
+INFO 2022/07/13 21:55:04 Getting guilds
+INFO 2022/07/13 21:55:04 Pool created for guild 1
+INFO 2022/07/13 21:55:04 Pool created for guild 3
+INFO 2022/07/13 21:55:04 Pool created for guild 4
+INFO 2022/07/13 21:55:04 Websocket active of [::1]:8090
+INFO 2022/07/13 21:55:04 limit: 50, timestamp 1657713304603
+INFO 2022/07/13 21:55:08 Writing to client
+INFO 2022/07/13 21:55:12 Writing to client
+ERROR 2022/07/13 21:55:14 read tcp [::1]:8090->[::1]:46478: i/o timeout
+INFO 2022/07/13 21:55:14 Disconnecting websocket
+INFO 2022/07/13 21:55:14 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:55:14 User left pool
+INFO 2022/07/13 21:55:14 Pool closed: 1
+INFO 2022/07/13 21:55:14 User left pool
+INFO 2022/07/13 21:55:14 Pool closed: 3
+INFO 2022/07/13 21:55:14 User left pool
+INFO 2022/07/13 21:55:14 Pool closed: 4
+INFO 2022/07/13 21:55:37 Getting guilds
+INFO 2022/07/13 21:55:37 Pool created for guild 1
+INFO 2022/07/13 21:55:37 Pool created for guild 3
+INFO 2022/07/13 21:55:37 Pool created for guild 4
+INFO 2022/07/13 21:55:37 Websocket active of [::1]:8090
+WARNING 2022/07/13 21:55:37 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:55:37 limit: 50, timestamp 1657713337592
+INFO 2022/07/13 21:55:41 Writing to client
+INFO 2022/07/13 21:55:45 Writing to client
+ERROR 2022/07/13 21:55:47 read tcp [::1]:8090->[::1]:47360: i/o timeout
+INFO 2022/07/13 21:55:47 Disconnecting websocket
+INFO 2022/07/13 21:55:47 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:55:47 User left pool
+INFO 2022/07/13 21:55:47 Pool closed: 1
+INFO 2022/07/13 21:55:47 User left pool
+INFO 2022/07/13 21:55:47 Pool closed: 3
+INFO 2022/07/13 21:55:47 User left pool
+INFO 2022/07/13 21:55:47 Pool closed: 4
+INFO 2022/07/13 21:56:34 Getting guilds
+INFO 2022/07/13 21:56:34 Pool created for guild 1
+INFO 2022/07/13 21:56:34 Pool created for guild 3
+INFO 2022/07/13 21:56:34 Pool created for guild 4
+INFO 2022/07/13 21:56:34 Websocket active of [::1]:8090
+WARNING 2022/07/13 21:56:34 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:56:34 limit: 50, timestamp 1657713394727
+INFO 2022/07/13 21:56:38 Writing to client
+WARNING 2022/07/13 21:56:38 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:56:42 Writing to client
+WARNING 2022/07/13 21:56:42 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+ERROR 2022/07/13 21:56:44 read tcp [::1]:8090->[::1]:56442: i/o timeout
+INFO 2022/07/13 21:56:44 Disconnecting websocket
+INFO 2022/07/13 21:56:44 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:56:44 User left pool
+INFO 2022/07/13 21:56:44 Pool closed: 1
+INFO 2022/07/13 21:56:44 User left pool
+INFO 2022/07/13 21:56:44 Pool closed: 3
+INFO 2022/07/13 21:56:44 User left pool
+INFO 2022/07/13 21:56:44 Pool closed: 4
+INFO 2022/07/13 21:57:08 Getting guilds
+INFO 2022/07/13 21:57:08 Pool created for guild 1
+INFO 2022/07/13 21:57:08 Pool created for guild 3
+INFO 2022/07/13 21:57:08 Pool created for guild 4
+INFO 2022/07/13 21:57:08 Websocket active of [::1]:8090
+WARNING 2022/07/13 21:57:08 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/13 21:57:09 limit: 50, timestamp 1657713429090
+INFO 2022/07/13 21:57:12 Writing to client
+INFO 2022/07/13 21:57:12 Recieved info
+INFO 2022/07/13 21:57:12 Has been pinged
+INFO 2022/07/13 21:57:16 Writing to client
+INFO 2022/07/13 21:57:16 Recieved info
+INFO 2022/07/13 21:57:16 Has been pinged
+INFO 2022/07/13 21:57:20 Writing to client
+INFO 2022/07/13 21:57:20 Recieved info
+INFO 2022/07/13 21:57:20 Has been pinged
+INFO 2022/07/13 21:57:24 Writing to client
+INFO 2022/07/13 21:57:24 Recieved info
+INFO 2022/07/13 21:57:24 Has been pinged
+INFO 2022/07/13 21:57:28 Writing to client
+INFO 2022/07/13 21:57:28 Recieved info
+INFO 2022/07/13 21:57:28 Has been pinged
+INFO 2022/07/13 21:57:32 Writing to client
+INFO 2022/07/13 21:57:32 Recieved info
+INFO 2022/07/13 21:57:32 Has been pinged
+ERROR 2022/07/13 21:57:35 websocket: close 1001 (going away)
+INFO 2022/07/13 21:57:35 Disconnecting websocket
+INFO 2022/07/13 21:57:35 Websocket of [::1]:8090 has been closed
+INFO 2022/07/13 21:57:35 User left pool
+INFO 2022/07/13 21:57:35 Pool closed: 1
+INFO 2022/07/13 21:57:35 User left pool
+INFO 2022/07/13 21:57:35 Pool closed: 3
+INFO 2022/07/13 21:57:35 User left pool
+INFO 2022/07/13 21:57:35 Pool closed: 4
+INFO 2022/07/13 21:57:36 Getting guilds
+INFO 2022/07/13 21:57:36 Pool created for guild 1
+INFO 2022/07/13 21:57:36 Pool created for guild 3
+INFO 2022/07/13 21:57:36 Pool created for guild 4
+INFO 2022/07/13 21:57:36 Websocket active of [::1]:8090
+INFO 2022/07/13 21:57:37 limit: 50, timestamp 1657713457162
+INFO 2022/07/13 21:57:40 Writing to client
+INFO 2022/07/13 21:57:40 Recieved info
+INFO 2022/07/13 21:57:40 Has been pinged
+INFO 2022/07/13 21:57:44 Writing to client
+INFO 2022/07/13 21:57:44 Recieved info
+INFO 2022/07/13 21:57:44 Has been pinged
+INFO 2022/07/13 21:57:48 Writing to client
+INFO 2022/07/13 21:57:48 Recieved info
+INFO 2022/07/13 21:57:48 Has been pinged
+INFO 2022/07/13 21:57:52 Writing to client
+INFO 2022/07/13 21:57:52 Recieved info
+INFO 2022/07/13 21:57:52 Has been pinged
+INFO 2022/07/13 21:57:56 Writing to client
+INFO 2022/07/13 21:57:56 Recieved info
+INFO 2022/07/13 21:57:56 Has been pinged
+INFO 2022/07/13 21:58:00 Writing to client
+INFO 2022/07/13 21:58:00 Recieved info
+INFO 2022/07/13 21:58:00 Has been pinged
+INFO 2022/07/13 21:58:04 Writing to client
+INFO 2022/07/13 21:58:04 Recieved info
+INFO 2022/07/13 21:58:04 Has been pinged
+INFO 2022/07/13 21:58:08 Writing to client
+INFO 2022/07/13 21:58:08 Recieved info
+INFO 2022/07/13 21:58:08 Has been pinged
+INFO 2022/07/13 21:58:12 Writing to client
+INFO 2022/07/13 21:58:12 Recieved info
+INFO 2022/07/13 21:58:12 Has been pinged
+INFO 2022/07/13 21:58:16 Writing to client
+INFO 2022/07/13 21:58:16 Recieved info
+INFO 2022/07/13 21:58:16 Has been pinged
+INFO 2022/07/13 21:58:20 Writing to client
+INFO 2022/07/13 21:58:20 Recieved info
+INFO 2022/07/13 21:58:20 Has been pinged
+INFO 2022/07/13 21:58:24 Writing to client
+INFO 2022/07/13 21:58:24 Recieved info
+INFO 2022/07/13 21:58:24 Has been pinged
+INFO 2022/07/13 21:58:28 Writing to client
+INFO 2022/07/13 21:58:28 Recieved info
+INFO 2022/07/13 21:58:28 Has been pinged
+INFO 2022/07/13 21:58:32 Writing to client
+INFO 2022/07/13 21:58:32 Recieved info
+INFO 2022/07/13 21:58:32 Has been pinged
+INFO 2022/07/13 21:58:36 Writing to client
+INFO 2022/07/13 21:58:36 Recieved info
+INFO 2022/07/13 21:58:36 Has been pinged
+INFO 2022/07/13 21:58:40 Writing to client
+INFO 2022/07/13 21:58:40 Recieved info
+INFO 2022/07/13 21:58:40 Has been pinged
+INFO 2022/07/13 21:58:44 Writing to client
+INFO 2022/07/13 21:58:44 Recieved info
+INFO 2022/07/13 21:58:44 Has been pinged
+INFO 2022/07/13 21:58:48 Writing to client
+INFO 2022/07/13 21:58:48 Recieved info
+INFO 2022/07/13 21:58:48 Has been pinged
+INFO 2022/07/13 21:58:52 Writing to client
+INFO 2022/07/13 21:58:52 Recieved info
+INFO 2022/07/13 21:58:52 Has been pinged
+INFO 2022/07/13 21:58:57 Writing to client
+INFO 2022/07/13 21:58:57 Recieved info
+INFO 2022/07/13 21:58:57 Has been pinged
+INFO 2022/07/13 21:59:01 Writing to client
+INFO 2022/07/13 21:59:01 Recieved info
+INFO 2022/07/13 21:59:01 Has been pinged
+INFO 2022/07/13 21:59:05 Writing to client
+INFO 2022/07/13 21:59:05 Recieved info
+INFO 2022/07/13 21:59:05 Has been pinged
+INFO 2022/07/13 21:59:09 Writing to client
+INFO 2022/07/13 21:59:09 Recieved info
+INFO 2022/07/13 21:59:09 Has been pinged
+INFO 2022/07/13 21:59:13 Writing to client
+INFO 2022/07/13 21:59:13 Recieved info
+INFO 2022/07/13 21:59:13 Has been pinged
+INFO 2022/07/13 21:59:17 Writing to client
+INFO 2022/07/13 21:59:17 Recieved info
+INFO 2022/07/13 21:59:17 Has been pinged
+INFO 2022/07/13 21:59:21 Writing to client
+INFO 2022/07/13 21:59:21 Recieved info
+INFO 2022/07/13 21:59:21 Has been pinged
+INFO 2022/07/13 21:59:25 Writing to client
+INFO 2022/07/13 21:59:25 Recieved info
+INFO 2022/07/13 21:59:25 Has been pinged
+INFO 2022/07/13 21:59:29 Writing to client
+INFO 2022/07/13 21:59:29 Recieved info
+INFO 2022/07/13 21:59:29 Has been pinged
+INFO 2022/07/13 21:59:33 Writing to client
+INFO 2022/07/13 21:59:33 Recieved info
+INFO 2022/07/13 21:59:33 Has been pinged
+INFO 2022/07/13 21:59:37 Writing to client
+INFO 2022/07/13 21:59:37 Recieved info
+INFO 2022/07/13 21:59:37 Has been pinged
+INFO 2022/07/13 21:59:41 Writing to client
+INFO 2022/07/13 21:59:41 Recieved info
+INFO 2022/07/13 21:59:41 Has been pinged
+INFO 2022/07/13 21:59:45 Writing to client
+INFO 2022/07/13 21:59:45 Recieved info
+INFO 2022/07/13 21:59:45 Has been pinged
+INFO 2022/07/13 21:59:49 Writing to client
+INFO 2022/07/13 21:59:49 Recieved info
+INFO 2022/07/13 21:59:49 Has been pinged
+INFO 2022/07/13 21:59:53 Writing to client
+INFO 2022/07/13 21:59:53 Recieved info
+INFO 2022/07/13 21:59:53 Has been pinged
+INFO 2022/07/13 21:59:57 Writing to client
+INFO 2022/07/13 21:59:57 Recieved info
+INFO 2022/07/13 21:59:57 Has been pinged
+INFO 2022/07/13 22:00:01 Writing to client
+INFO 2022/07/13 22:00:01 Recieved info
+INFO 2022/07/13 22:00:01 Has been pinged
+INFO 2022/07/13 22:00:05 Writing to client
+INFO 2022/07/13 22:00:05 Recieved info
+INFO 2022/07/13 22:00:05 Has been pinged
+INFO 2022/07/13 22:00:09 Writing to client
+INFO 2022/07/13 22:00:09 Recieved info
+INFO 2022/07/13 22:00:09 Has been pinged
+INFO 2022/07/13 22:00:13 Writing to client
+INFO 2022/07/13 22:00:13 Recieved info
+INFO 2022/07/13 22:00:13 Has been pinged
+INFO 2022/07/13 22:00:17 Writing to client
+INFO 2022/07/13 22:00:17 Recieved info
+INFO 2022/07/13 22:00:17 Has been pinged
+INFO 2022/07/13 22:00:21 Writing to client
+INFO 2022/07/13 22:00:21 Recieved info
+INFO 2022/07/13 22:00:21 Has been pinged
+INFO 2022/07/13 22:00:25 Writing to client
+INFO 2022/07/13 22:00:25 Recieved info
+INFO 2022/07/13 22:00:25 Has been pinged
+INFO 2022/07/13 22:00:29 Writing to client
+INFO 2022/07/13 22:00:29 Recieved info
+INFO 2022/07/13 22:00:29 Has been pinged
+INFO 2022/07/13 22:00:33 Writing to client
+INFO 2022/07/13 22:00:33 Recieved info
+INFO 2022/07/13 22:00:33 Has been pinged
+INFO 2022/07/13 22:00:37 Writing to client
+INFO 2022/07/13 22:00:37 Recieved info
+INFO 2022/07/13 22:00:37 Has been pinged
+INFO 2022/07/13 22:00:41 Writing to client
+INFO 2022/07/13 22:00:41 Recieved info
+INFO 2022/07/13 22:00:41 Has been pinged
+INFO 2022/07/13 22:00:45 Writing to client
+INFO 2022/07/13 22:00:45 Recieved info
+INFO 2022/07/13 22:00:45 Has been pinged
+INFO 2022/07/13 22:00:49 Writing to client
+INFO 2022/07/13 22:00:49 Recieved info
+INFO 2022/07/13 22:00:49 Has been pinged
+INFO 2022/07/13 22:00:53 Writing to client
+INFO 2022/07/13 22:00:53 Recieved info
+INFO 2022/07/13 22:00:53 Has been pinged
+INFO 2022/07/13 22:00:57 Writing to client
+INFO 2022/07/13 22:00:57 Recieved info
+INFO 2022/07/13 22:00:57 Has been pinged
+INFO 2022/07/13 22:01:01 Writing to client
+INFO 2022/07/13 22:01:01 Recieved info
+INFO 2022/07/13 22:01:01 Has been pinged
+INFO 2022/07/13 22:01:05 Writing to client
+INFO 2022/07/13 22:01:05 Recieved info
+INFO 2022/07/13 22:01:05 Has been pinged
+INFO 2022/07/13 22:01:09 Writing to client
+INFO 2022/07/13 22:01:09 Recieved info
+INFO 2022/07/13 22:01:09 Has been pinged
+INFO 2022/07/13 22:01:13 Writing to client
+INFO 2022/07/13 22:01:13 Recieved info
+INFO 2022/07/13 22:01:13 Has been pinged
+INFO 2022/07/13 22:01:17 Writing to client
+INFO 2022/07/13 22:01:17 Recieved info
+INFO 2022/07/13 22:01:17 Has been pinged
+INFO 2022/07/13 22:01:21 Writing to client
+INFO 2022/07/13 22:01:22 Recieved info
+INFO 2022/07/13 22:01:22 Has been pinged
+INFO 2022/07/13 22:01:26 Writing to client
+INFO 2022/07/13 22:01:26 Recieved info
+INFO 2022/07/13 22:01:26 Has been pinged
+INFO 2022/07/13 22:01:30 Writing to client
+INFO 2022/07/13 22:01:30 Recieved info
+INFO 2022/07/13 22:01:30 Has been pinged
+INFO 2022/07/13 22:01:34 Writing to client
+INFO 2022/07/13 22:01:34 Recieved info
+INFO 2022/07/13 22:01:34 Has been pinged
+INFO 2022/07/13 22:01:38 Writing to client
+INFO 2022/07/13 22:01:38 Recieved info
+INFO 2022/07/13 22:01:38 Has been pinged
+INFO 2022/07/13 22:01:42 Writing to client
+INFO 2022/07/13 22:01:42 Recieved info
+INFO 2022/07/13 22:01:42 Has been pinged
+INFO 2022/07/13 22:01:46 Writing to client
+INFO 2022/07/13 22:01:46 Recieved info
+INFO 2022/07/13 22:01:46 Has been pinged
+INFO 2022/07/13 22:01:50 Writing to client
+INFO 2022/07/13 22:01:50 Recieved info
+INFO 2022/07/13 22:01:50 Has been pinged
+INFO 2022/07/13 22:01:54 Writing to client
+INFO 2022/07/13 22:01:54 Recieved info
+INFO 2022/07/13 22:01:54 Has been pinged
+INFO 2022/07/13 22:01:58 Writing to client
+INFO 2022/07/13 22:01:58 Recieved info
+INFO 2022/07/13 22:01:58 Has been pinged
+INFO 2022/07/13 22:02:02 Writing to client
+INFO 2022/07/13 22:02:02 Recieved info
+INFO 2022/07/13 22:02:02 Has been pinged
+INFO 2022/07/13 22:02:06 Writing to client
+INFO 2022/07/13 22:02:06 Recieved info
+INFO 2022/07/13 22:02:06 Has been pinged
+INFO 2022/07/13 22:02:10 Writing to client
+INFO 2022/07/13 22:02:10 Recieved info
+INFO 2022/07/13 22:02:10 Has been pinged
+INFO 2022/07/13 22:02:14 Writing to client
+INFO 2022/07/13 22:02:14 Recieved info
+INFO 2022/07/13 22:02:14 Has been pinged
+INFO 2022/07/13 22:02:18 Writing to client
+INFO 2022/07/13 22:02:18 Recieved info
+INFO 2022/07/13 22:02:18 Has been pinged
+INFO 2022/07/13 22:02:22 Writing to client
+INFO 2022/07/13 22:02:22 Recieved info
+INFO 2022/07/13 22:02:22 Has been pinged
+INFO 2022/07/13 22:02:26 Writing to client
+INFO 2022/07/13 22:02:26 Recieved info
+INFO 2022/07/13 22:02:26 Has been pinged
+INFO 2022/07/13 22:02:30 Writing to client
+INFO 2022/07/13 22:02:30 Recieved info
+INFO 2022/07/13 22:02:30 Has been pinged
+INFO 2022/07/13 22:02:34 Writing to client
+INFO 2022/07/13 22:02:34 Recieved info
+INFO 2022/07/13 22:02:34 Has been pinged
+INFO 2022/07/13 22:02:38 Writing to client
+INFO 2022/07/13 22:02:38 Recieved info
+INFO 2022/07/13 22:02:38 Has been pinged
+INFO 2022/07/13 22:02:42 Writing to client
+INFO 2022/07/13 22:02:42 Recieved info
+INFO 2022/07/13 22:02:42 Has been pinged
+INFO 2022/07/13 22:02:46 Writing to client
+INFO 2022/07/13 22:02:46 Recieved info
+INFO 2022/07/13 22:02:46 Has been pinged
+INFO 2022/07/13 22:02:50 Writing to client
+INFO 2022/07/13 22:02:50 Recieved info
+INFO 2022/07/13 22:02:50 Has been pinged
+INFO 2022/07/13 22:02:54 Writing to client
+INFO 2022/07/13 22:02:54 Recieved info
+INFO 2022/07/13 22:02:54 Has been pinged
+INFO 2022/07/13 22:02:58 Writing to client
+INFO 2022/07/13 22:02:58 Recieved info
+INFO 2022/07/13 22:02:58 Has been pinged
+INFO 2022/07/13 22:03:02 Writing to client
+INFO 2022/07/13 22:03:02 Recieved info
+INFO 2022/07/13 22:03:02 Has been pinged
+INFO 2022/07/13 22:03:06 Writing to client
+INFO 2022/07/13 22:03:06 Recieved info
+INFO 2022/07/13 22:03:06 Has been pinged
+INFO 2022/07/13 22:03:10 Writing to client
+INFO 2022/07/13 22:03:10 Recieved info
+INFO 2022/07/13 22:03:10 Has been pinged
+INFO 2022/07/13 22:03:14 Writing to client
+INFO 2022/07/13 22:03:14 Recieved info
+INFO 2022/07/13 22:03:14 Has been pinged
+INFO 2022/07/13 22:03:18 Writing to client
+INFO 2022/07/13 22:03:18 Recieved info
+INFO 2022/07/13 22:03:18 Has been pinged
+INFO 2022/07/13 22:03:22 Writing to client
+INFO 2022/07/13 22:03:22 Recieved info
+INFO 2022/07/13 22:03:22 Has been pinged
+INFO 2022/07/13 22:03:26 Writing to client
+INFO 2022/07/13 22:03:26 Recieved info
+INFO 2022/07/13 22:03:26 Has been pinged
+INFO 2022/07/13 22:03:30 Writing to client
+INFO 2022/07/13 22:03:30 Recieved info
+INFO 2022/07/13 22:03:30 Has been pinged
+INFO 2022/07/13 22:03:34 Writing to client
+INFO 2022/07/13 22:03:34 Recieved info
+INFO 2022/07/13 22:03:34 Has been pinged
+INFO 2022/07/13 22:03:38 Writing to client
+INFO 2022/07/13 22:03:38 Recieved info
+INFO 2022/07/13 22:03:38 Has been pinged
+INFO 2022/07/13 22:03:42 Writing to client
+INFO 2022/07/13 22:03:42 Recieved info
+INFO 2022/07/13 22:03:42 Has been pinged
+INFO 2022/07/13 22:03:46 Writing to client
+INFO 2022/07/13 22:03:46 Recieved info
+INFO 2022/07/13 22:03:46 Has been pinged
+INFO 2022/07/13 22:03:50 Writing to client
+INFO 2022/07/13 22:03:50 Recieved info
+INFO 2022/07/13 22:03:50 Has been pinged
+INFO 2022/07/13 22:03:54 Writing to client
+INFO 2022/07/13 22:03:54 Recieved info
+INFO 2022/07/13 22:03:54 Has been pinged
+INFO 2022/07/13 22:03:58 Writing to client
+INFO 2022/07/13 22:03:58 Recieved info
+INFO 2022/07/13 22:03:58 Has been pinged
+INFO 2022/07/13 22:04:02 Writing to client
+INFO 2022/07/13 22:04:02 Recieved info
+INFO 2022/07/13 22:04:02 Has been pinged
+INFO 2022/07/13 22:04:06 Writing to client
+INFO 2022/07/13 22:04:06 Recieved info
+INFO 2022/07/13 22:04:06 Has been pinged
+INFO 2022/07/13 22:04:10 Writing to client
+INFO 2022/07/13 22:04:10 Recieved info
+INFO 2022/07/13 22:04:10 Has been pinged
+INFO 2022/07/13 22:04:14 Writing to client
+INFO 2022/07/13 22:04:14 Recieved info
+INFO 2022/07/13 22:04:14 Has been pinged
+INFO 2022/07/13 22:04:18 Writing to client
+INFO 2022/07/13 22:04:18 Recieved info
+INFO 2022/07/13 22:04:18 Has been pinged
+INFO 2022/07/13 22:04:22 Writing to client
+INFO 2022/07/13 22:04:22 Recieved info
+INFO 2022/07/13 22:04:22 Has been pinged
+INFO 2022/07/13 22:04:26 Writing to client
+INFO 2022/07/13 22:04:26 Recieved info
+INFO 2022/07/13 22:04:26 Has been pinged
+INFO 2022/07/13 22:04:30 Writing to client
+INFO 2022/07/13 22:04:30 Recieved info
+INFO 2022/07/13 22:04:30 Has been pinged
+INFO 2022/07/13 22:04:34 Writing to client
+INFO 2022/07/13 22:04:34 Recieved info
+INFO 2022/07/13 22:04:34 Has been pinged
+INFO 2022/07/13 22:04:38 Writing to client
+INFO 2022/07/13 22:04:38 Recieved info
+INFO 2022/07/13 22:04:38 Has been pinged
+INFO 2022/07/13 22:04:42 Writing to client
+INFO 2022/07/13 22:04:42 Recieved info
+INFO 2022/07/13 22:04:42 Has been pinged
+INFO 2022/07/13 22:04:46 Writing to client
+INFO 2022/07/13 22:04:46 Recieved info
+INFO 2022/07/13 22:04:46 Has been pinged
+INFO 2022/07/13 22:04:50 Writing to client
+INFO 2022/07/13 22:04:50 Recieved info
+INFO 2022/07/13 22:04:50 Has been pinged
+INFO 2022/07/13 22:04:54 Writing to client
+INFO 2022/07/13 22:04:54 Recieved info
+INFO 2022/07/13 22:04:54 Has been pinged
+INFO 2022/07/13 22:04:58 Writing to client
+INFO 2022/07/13 22:04:58 Recieved info
+INFO 2022/07/13 22:04:58 Has been pinged
+INFO 2022/07/13 22:05:02 Writing to client
+INFO 2022/07/13 22:05:02 Recieved info
+INFO 2022/07/13 22:05:02 Has been pinged
+INFO 2022/07/13 22:05:06 Writing to client
+INFO 2022/07/13 22:05:06 Recieved info
+INFO 2022/07/13 22:05:06 Has been pinged
+INFO 2022/07/13 22:05:10 Writing to client
+INFO 2022/07/13 22:05:11 Recieved info
+INFO 2022/07/13 22:05:11 Has been pinged
+INFO 2022/07/13 22:05:15 Writing to client
+INFO 2022/07/13 22:05:15 Recieved info
+INFO 2022/07/13 22:05:15 Has been pinged
+INFO 2022/07/13 22:05:19 Writing to client
+INFO 2022/07/13 22:05:19 Recieved info
+INFO 2022/07/13 22:05:19 Has been pinged
+INFO 2022/07/13 22:05:23 Writing to client
+INFO 2022/07/13 22:05:23 Recieved info
+INFO 2022/07/13 22:05:23 Has been pinged
+INFO 2022/07/13 22:05:27 Writing to client
+INFO 2022/07/13 22:05:27 Recieved info
+INFO 2022/07/13 22:05:27 Has been pinged
+INFO 2022/07/13 22:05:31 Writing to client
+INFO 2022/07/13 22:05:31 Recieved info
+INFO 2022/07/13 22:05:31 Has been pinged
+INFO 2022/07/13 22:05:35 Writing to client
+INFO 2022/07/13 22:05:35 Recieved info
+INFO 2022/07/13 22:05:35 Has been pinged
+INFO 2022/07/13 22:05:39 Writing to client
+INFO 2022/07/13 22:05:39 Recieved info
+INFO 2022/07/13 22:05:39 Has been pinged
+INFO 2022/07/13 22:05:43 Writing to client
+INFO 2022/07/13 22:05:43 Recieved info
+INFO 2022/07/13 22:05:43 Has been pinged
+INFO 2022/07/13 22:05:47 Writing to client
+INFO 2022/07/13 22:05:47 Recieved info
+INFO 2022/07/13 22:05:47 Has been pinged
+INFO 2022/07/13 22:05:51 Writing to client
+INFO 2022/07/13 22:05:51 Recieved info
+INFO 2022/07/13 22:05:51 Has been pinged
+INFO 2022/07/13 22:05:55 Writing to client
+INFO 2022/07/13 22:05:55 Recieved info
+INFO 2022/07/13 22:05:55 Has been pinged
+INFO 2022/07/13 22:05:59 Writing to client
+INFO 2022/07/13 22:05:59 Recieved info
+INFO 2022/07/13 22:05:59 Has been pinged
+INFO 2022/07/13 22:06:03 Writing to client
+INFO 2022/07/13 22:06:03 Recieved info
+INFO 2022/07/13 22:06:03 Has been pinged
+INFO 2022/07/13 22:06:07 Writing to client
+INFO 2022/07/13 22:06:07 Recieved info
+INFO 2022/07/13 22:06:07 Has been pinged
+INFO 2022/07/13 22:06:11 Writing to client
+INFO 2022/07/13 22:06:11 Recieved info
+INFO 2022/07/13 22:06:11 Has been pinged
+INFO 2022/07/13 22:06:15 Writing to client
+INFO 2022/07/13 22:06:15 Recieved info
+INFO 2022/07/13 22:06:15 Has been pinged
+INFO 2022/07/13 22:06:19 Writing to client
+INFO 2022/07/13 22:06:19 Recieved info
+INFO 2022/07/13 22:06:19 Has been pinged
+INFO 2022/07/13 22:06:23 Writing to client
+INFO 2022/07/13 22:06:23 Recieved info
+INFO 2022/07/13 22:06:23 Has been pinged
+INFO 2022/07/13 22:06:27 Writing to client
+INFO 2022/07/13 22:06:27 Recieved info
+INFO 2022/07/13 22:06:27 Has been pinged
+INFO 2022/07/13 22:06:31 Writing to client
+INFO 2022/07/13 22:06:31 Recieved info
+INFO 2022/07/13 22:06:31 Has been pinged
+INFO 2022/07/13 22:06:35 Writing to client
+INFO 2022/07/13 22:06:35 Recieved info
+INFO 2022/07/13 22:06:35 Has been pinged
+INFO 2022/07/13 22:06:39 Writing to client
+INFO 2022/07/13 22:06:39 Recieved info
+INFO 2022/07/13 22:06:39 Has been pinged
+INFO 2022/07/13 22:06:43 Writing to client
+INFO 2022/07/13 22:06:43 Recieved info
+INFO 2022/07/13 22:06:43 Has been pinged
+INFO 2022/07/13 22:06:47 Writing to client
+INFO 2022/07/13 22:06:47 Recieved info
+INFO 2022/07/13 22:06:47 Has been pinged
+INFO 2022/07/13 22:06:51 Writing to client
+INFO 2022/07/13 22:06:51 Recieved info
+INFO 2022/07/13 22:06:51 Has been pinged
+INFO 2022/07/13 22:06:55 Writing to client
+INFO 2022/07/13 22:06:55 Recieved info
+INFO 2022/07/13 22:06:55 Has been pinged
+INFO 2022/07/13 22:06:59 Writing to client
+INFO 2022/07/13 22:06:59 Recieved info
+INFO 2022/07/13 22:06:59 Has been pinged
+INFO 2022/07/13 22:07:03 Writing to client
+INFO 2022/07/13 22:07:03 Recieved info
+INFO 2022/07/13 22:07:03 Has been pinged
+INFO 2022/07/13 22:07:07 Writing to client
+INFO 2022/07/13 22:07:07 Recieved info
+INFO 2022/07/13 22:07:07 Has been pinged
+INFO 2022/07/13 22:07:11 Writing to client
+INFO 2022/07/13 22:07:11 Recieved info
+INFO 2022/07/13 22:07:11 Has been pinged
+INFO 2022/07/13 22:07:15 Writing to client
+INFO 2022/07/13 22:07:15 Recieved info
+INFO 2022/07/13 22:07:15 Has been pinged
+INFO 2022/07/13 22:07:19 Writing to client
+INFO 2022/07/13 22:07:19 Recieved info
+INFO 2022/07/13 22:07:19 Has been pinged
+INFO 2022/07/13 22:07:23 Writing to client
+INFO 2022/07/13 22:07:23 Recieved info
+INFO 2022/07/13 22:07:23 Has been pinged
+INFO 2022/07/13 22:07:27 Writing to client
+INFO 2022/07/13 22:07:27 Recieved info
+INFO 2022/07/13 22:07:27 Has been pinged
+INFO 2022/07/13 22:07:31 Writing to client
+INFO 2022/07/13 22:07:31 Recieved info
+INFO 2022/07/13 22:07:31 Has been pinged
+INFO 2022/07/13 22:07:35 Writing to client
+INFO 2022/07/13 22:07:35 Recieved info
+INFO 2022/07/13 22:07:35 Has been pinged
+INFO 2022/07/13 22:07:39 Writing to client
+INFO 2022/07/13 22:07:39 Recieved info
+INFO 2022/07/13 22:07:39 Has been pinged
+INFO 2022/07/13 22:07:43 Writing to client
+INFO 2022/07/13 22:07:43 Recieved info
+INFO 2022/07/13 22:07:43 Has been pinged
+INFO 2022/07/13 22:07:47 Writing to client
+INFO 2022/07/13 22:07:47 Recieved info
+INFO 2022/07/13 22:07:47 Has been pinged
+INFO 2022/07/13 22:07:51 Writing to client
+INFO 2022/07/13 22:07:51 Recieved info
+INFO 2022/07/13 22:07:51 Has been pinged
+INFO 2022/07/13 22:07:55 Writing to client
+INFO 2022/07/13 22:07:55 Recieved info
+INFO 2022/07/13 22:07:55 Has been pinged
+INFO 2022/07/13 22:07:59 Writing to client
+INFO 2022/07/13 22:08:00 Recieved info
+INFO 2022/07/13 22:08:00 Has been pinged
+INFO 2022/07/13 22:08:04 Writing to client
+INFO 2022/07/13 22:08:04 Recieved info
+INFO 2022/07/13 22:08:04 Has been pinged
+INFO 2022/07/13 22:08:08 Writing to client
+INFO 2022/07/13 22:08:08 Recieved info
+INFO 2022/07/13 22:08:08 Has been pinged
+INFO 2022/07/13 22:08:12 Writing to client
+INFO 2022/07/13 22:08:12 Recieved info
+INFO 2022/07/13 22:08:12 Has been pinged
+INFO 2022/07/13 22:08:16 Writing to client
+INFO 2022/07/13 22:08:16 Recieved info
+INFO 2022/07/13 22:08:16 Has been pinged
+INFO 2022/07/13 22:08:20 Writing to client
+INFO 2022/07/13 22:08:20 Recieved info
+INFO 2022/07/13 22:08:20 Has been pinged
+INFO 2022/07/13 22:08:24 Writing to client
+INFO 2022/07/13 22:08:24 Recieved info
+INFO 2022/07/13 22:08:24 Has been pinged
+INFO 2022/07/13 22:08:28 Writing to client
+INFO 2022/07/13 22:08:28 Recieved info
+INFO 2022/07/13 22:08:28 Has been pinged
+INFO 2022/07/13 22:08:32 Writing to client
+INFO 2022/07/13 22:08:32 Recieved info
+INFO 2022/07/13 22:08:32 Has been pinged
+INFO 2022/07/13 22:08:36 Writing to client
+INFO 2022/07/13 22:08:36 Recieved info
+INFO 2022/07/13 22:08:36 Has been pinged
+INFO 2022/07/13 22:08:40 Writing to client
+INFO 2022/07/13 22:08:40 Recieved info
+INFO 2022/07/13 22:08:40 Has been pinged
+INFO 2022/07/13 22:08:44 Writing to client
+INFO 2022/07/13 22:08:44 Recieved info
+INFO 2022/07/13 22:08:44 Has been pinged
+INFO 2022/07/13 22:08:48 Writing to client
+INFO 2022/07/13 22:08:48 Recieved info
+INFO 2022/07/13 22:08:48 Has been pinged
+INFO 2022/07/13 22:08:52 Writing to client
+INFO 2022/07/13 22:08:52 Recieved info
+INFO 2022/07/13 22:08:52 Has been pinged
+INFO 2022/07/13 22:08:56 Writing to client
+INFO 2022/07/13 22:08:56 Recieved info
+INFO 2022/07/13 22:08:56 Has been pinged
+INFO 2022/07/13 22:09:00 Writing to client
+INFO 2022/07/13 22:09:00 Recieved info
+INFO 2022/07/13 22:09:00 Has been pinged
+INFO 2022/07/13 22:09:04 Writing to client
+INFO 2022/07/13 22:09:04 Recieved info
+INFO 2022/07/13 22:09:04 Has been pinged
+INFO 2022/07/13 22:09:08 Writing to client
+INFO 2022/07/13 22:09:08 Recieved info
+INFO 2022/07/13 22:09:08 Has been pinged
+INFO 2022/07/13 22:09:12 Writing to client
+INFO 2022/07/13 22:09:12 Recieved info
+INFO 2022/07/13 22:09:12 Has been pinged
+INFO 2022/07/13 22:09:16 Writing to client
+INFO 2022/07/13 22:09:16 Recieved info
+INFO 2022/07/13 22:09:16 Has been pinged
+INFO 2022/07/13 22:09:20 Writing to client
+INFO 2022/07/13 22:09:20 Recieved info
+INFO 2022/07/13 22:09:20 Has been pinged
+INFO 2022/07/13 22:09:24 Writing to client
+INFO 2022/07/13 22:09:24 Recieved info
+INFO 2022/07/13 22:09:24 Has been pinged
+INFO 2022/07/13 22:09:28 Writing to client
+INFO 2022/07/13 22:09:28 Recieved info
+INFO 2022/07/13 22:09:28 Has been pinged
+INFO 2022/07/13 22:09:32 Writing to client
+INFO 2022/07/13 22:09:32 Recieved info
+INFO 2022/07/13 22:09:32 Has been pinged
+INFO 2022/07/13 22:09:36 Writing to client
+INFO 2022/07/13 22:09:36 Recieved info
+INFO 2022/07/13 22:09:36 Has been pinged
+INFO 2022/07/13 22:09:40 Writing to client
+INFO 2022/07/13 22:09:40 Recieved info
+INFO 2022/07/13 22:09:40 Has been pinged
+INFO 2022/07/13 22:09:44 Writing to client
+INFO 2022/07/13 22:09:44 Recieved info
+INFO 2022/07/13 22:09:44 Has been pinged
+INFO 2022/07/13 22:09:48 Writing to client
+INFO 2022/07/13 22:09:48 Recieved info
+INFO 2022/07/13 22:09:48 Has been pinged
+INFO 2022/07/13 22:09:52 Writing to client
+INFO 2022/07/13 22:09:52 Recieved info
+INFO 2022/07/13 22:09:52 Has been pinged
+INFO 2022/07/13 22:09:56 Writing to client
+INFO 2022/07/13 22:09:56 Recieved info
+INFO 2022/07/13 22:09:56 Has been pinged
+INFO 2022/07/13 22:10:00 Writing to client
+INFO 2022/07/13 22:10:00 Recieved info
+INFO 2022/07/13 22:10:00 Has been pinged
+INFO 2022/07/13 22:10:04 Writing to client
+INFO 2022/07/13 22:10:04 Recieved info
+INFO 2022/07/13 22:10:04 Has been pinged
+INFO 2022/07/13 22:10:08 Writing to client
+INFO 2022/07/13 22:10:08 Recieved info
+INFO 2022/07/13 22:10:08 Has been pinged
+INFO 2022/07/13 22:10:12 Writing to client
+INFO 2022/07/13 22:10:12 Recieved info
+INFO 2022/07/13 22:10:12 Has been pinged
+INFO 2022/07/13 22:10:16 Writing to client
+INFO 2022/07/13 22:10:16 Recieved info
+INFO 2022/07/13 22:10:16 Has been pinged
+INFO 2022/07/13 22:10:20 Writing to client
+INFO 2022/07/13 22:10:20 Recieved info
+INFO 2022/07/13 22:10:20 Has been pinged
+INFO 2022/07/13 22:10:24 Writing to client
+INFO 2022/07/13 22:10:24 Recieved info
+INFO 2022/07/13 22:10:24 Has been pinged
+INFO 2022/07/13 22:10:28 Writing to client
+INFO 2022/07/13 22:10:28 Recieved info
+INFO 2022/07/13 22:10:28 Has been pinged
+INFO 2022/07/13 22:10:32 Writing to client
+INFO 2022/07/13 22:10:32 Recieved info
+INFO 2022/07/13 22:10:32 Has been pinged
+INFO 2022/07/13 22:10:36 Writing to client
+INFO 2022/07/13 22:10:36 Recieved info
+INFO 2022/07/13 22:10:36 Has been pinged
+INFO 2022/07/13 22:10:40 Writing to client
+INFO 2022/07/13 22:10:40 Recieved info
+INFO 2022/07/13 22:10:40 Has been pinged
+INFO 2022/07/13 22:10:44 Writing to client
+INFO 2022/07/13 22:10:44 Recieved info
+INFO 2022/07/13 22:10:44 Has been pinged
+INFO 2022/07/13 22:10:48 Writing to client
+INFO 2022/07/13 22:10:48 Recieved info
+INFO 2022/07/13 22:10:48 Has been pinged
+INFO 2022/07/13 22:10:52 Writing to client
+INFO 2022/07/13 22:10:52 Recieved info
+INFO 2022/07/13 22:10:52 Has been pinged
+INFO 2022/07/13 22:10:56 Writing to client
+INFO 2022/07/13 22:10:56 Recieved info
+INFO 2022/07/13 22:10:56 Has been pinged
+INFO 2022/07/13 22:11:00 Writing to client
+INFO 2022/07/13 22:11:00 Recieved info
+INFO 2022/07/13 22:11:00 Has been pinged
+INFO 2022/07/13 22:11:04 Writing to client
+INFO 2022/07/13 22:11:04 Recieved info
+INFO 2022/07/13 22:11:04 Has been pinged
+INFO 2022/07/13 22:11:08 Writing to client
+INFO 2022/07/13 22:11:08 Recieved info
+INFO 2022/07/13 22:11:08 Has been pinged
+INFO 2022/07/13 22:11:12 Writing to client
+INFO 2022/07/13 22:11:12 Recieved info
+INFO 2022/07/13 22:11:12 Has been pinged
+INFO 2022/07/13 22:11:16 Writing to client
+INFO 2022/07/13 22:11:16 Recieved info
+INFO 2022/07/13 22:11:16 Has been pinged
+INFO 2022/07/13 22:11:20 Writing to client
+INFO 2022/07/13 22:11:20 Recieved info
+INFO 2022/07/13 22:11:20 Has been pinged
+INFO 2022/07/13 22:11:24 Writing to client
+INFO 2022/07/13 22:11:24 Recieved info
+INFO 2022/07/13 22:11:24 Has been pinged
+INFO 2022/07/13 22:11:28 Writing to client
+INFO 2022/07/13 22:11:28 Recieved info
+INFO 2022/07/13 22:11:28 Has been pinged
+INFO 2022/07/13 22:11:32 Writing to client
+INFO 2022/07/13 22:11:32 Recieved info
+INFO 2022/07/13 22:11:32 Has been pinged
+INFO 2022/07/13 22:11:36 Writing to client
+INFO 2022/07/13 22:11:36 Recieved info
+INFO 2022/07/13 22:11:36 Has been pinged
+INFO 2022/07/13 22:11:40 Writing to client
+INFO 2022/07/13 22:11:40 Recieved info
+INFO 2022/07/13 22:11:40 Has been pinged
+INFO 2022/07/13 22:11:44 Writing to client
+INFO 2022/07/13 22:11:44 Recieved info
+INFO 2022/07/13 22:11:44 Has been pinged
+INFO 2022/07/13 22:11:49 Writing to client
+INFO 2022/07/13 22:11:49 Recieved info
+INFO 2022/07/13 22:11:49 Has been pinged
+INFO 2022/07/13 22:11:53 Writing to client
+INFO 2022/07/13 22:11:53 Recieved info
+INFO 2022/07/13 22:11:53 Has been pinged
+INFO 2022/07/13 22:11:57 Writing to client
+INFO 2022/07/13 22:11:57 Recieved info
+INFO 2022/07/13 22:11:57 Has been pinged
+INFO 2022/07/13 22:12:01 Writing to client
+INFO 2022/07/13 22:12:01 Recieved info
+INFO 2022/07/13 22:12:01 Has been pinged
+INFO 2022/07/13 22:12:05 Writing to client
+INFO 2022/07/13 22:12:05 Recieved info
+INFO 2022/07/13 22:12:05 Has been pinged
+INFO 2022/07/13 22:12:09 Writing to client
+INFO 2022/07/13 22:12:09 Recieved info
+INFO 2022/07/13 22:12:09 Has been pinged
+INFO 2022/07/13 22:12:13 Writing to client
+INFO 2022/07/13 22:12:13 Recieved info
+INFO 2022/07/13 22:12:13 Has been pinged
+INFO 2022/07/13 22:12:17 Writing to client
+INFO 2022/07/13 22:12:17 Recieved info
+INFO 2022/07/13 22:12:17 Has been pinged
+INFO 2022/07/13 22:12:21 Writing to client
+INFO 2022/07/13 22:12:21 Recieved info
+INFO 2022/07/13 22:12:21 Has been pinged
+INFO 2022/07/13 22:12:25 Writing to client
+INFO 2022/07/13 22:12:25 Recieved info
+INFO 2022/07/13 22:12:25 Has been pinged
+INFO 2022/07/13 22:12:29 Writing to client
+INFO 2022/07/13 22:12:29 Recieved info
+INFO 2022/07/13 22:12:29 Has been pinged
+INFO 2022/07/13 22:12:33 Writing to client
+INFO 2022/07/13 22:12:33 Recieved info
+INFO 2022/07/13 22:12:33 Has been pinged
+INFO 2022/07/13 22:12:37 Writing to client
+INFO 2022/07/13 22:12:37 Recieved info
+INFO 2022/07/13 22:12:37 Has been pinged
+INFO 2022/07/13 22:12:41 Writing to client
+INFO 2022/07/13 22:12:41 Recieved info
+INFO 2022/07/13 22:12:41 Has been pinged
+INFO 2022/07/13 22:12:45 Writing to client
+INFO 2022/07/13 22:12:45 Recieved info
+INFO 2022/07/13 22:12:45 Has been pinged
+INFO 2022/07/13 22:12:49 Writing to client
+INFO 2022/07/13 22:12:49 Recieved info
+INFO 2022/07/13 22:12:49 Has been pinged
+INFO 2022/07/13 22:12:53 Writing to client
+INFO 2022/07/13 22:12:53 Recieved info
+INFO 2022/07/13 22:12:53 Has been pinged
+INFO 2022/07/13 22:12:57 Writing to client
+INFO 2022/07/13 22:12:57 Recieved info
+INFO 2022/07/13 22:12:57 Has been pinged
+INFO 2022/07/13 22:13:01 Writing to client
+INFO 2022/07/13 22:13:01 Recieved info
+INFO 2022/07/13 22:13:01 Has been pinged
+INFO 2022/07/13 22:13:05 Writing to client
+INFO 2022/07/13 22:13:05 Recieved info
+INFO 2022/07/13 22:13:05 Has been pinged
+INFO 2022/07/13 22:13:09 Writing to client
+INFO 2022/07/13 22:13:09 Recieved info
+INFO 2022/07/13 22:13:09 Has been pinged
+INFO 2022/07/13 22:13:13 Writing to client
+INFO 2022/07/13 22:13:13 Recieved info
+INFO 2022/07/13 22:13:13 Has been pinged
+INFO 2022/07/13 22:13:17 Writing to client
+INFO 2022/07/13 22:13:17 Recieved info
+INFO 2022/07/13 22:13:17 Has been pinged
+INFO 2022/07/13 22:13:21 Writing to client
+INFO 2022/07/13 22:13:21 Recieved info
+INFO 2022/07/13 22:13:21 Has been pinged
+INFO 2022/07/13 22:13:25 Writing to client
+INFO 2022/07/13 22:13:25 Recieved info
+INFO 2022/07/13 22:13:25 Has been pinged
+INFO 2022/07/13 22:13:29 Writing to client
+INFO 2022/07/13 22:13:29 Recieved info
+INFO 2022/07/13 22:13:29 Has been pinged
+INFO 2022/07/13 22:13:33 Writing to client
+INFO 2022/07/13 22:13:33 Recieved info
+INFO 2022/07/13 22:13:33 Has been pinged
+INFO 2022/07/13 22:13:37 Writing to client
+INFO 2022/07/13 22:13:37 Recieved info
+INFO 2022/07/13 22:13:37 Has been pinged
+INFO 2022/07/13 22:13:41 Writing to client
+INFO 2022/07/13 22:13:41 Recieved info
+INFO 2022/07/13 22:13:41 Has been pinged
+INFO 2022/07/13 22:13:45 Writing to client
+INFO 2022/07/13 22:13:45 Recieved info
+INFO 2022/07/13 22:13:45 Has been pinged
+INFO 2022/07/13 22:13:49 Writing to client
+INFO 2022/07/13 22:13:49 Recieved info
+INFO 2022/07/13 22:13:49 Has been pinged
+INFO 2022/07/13 22:13:53 Writing to client
+INFO 2022/07/13 22:13:53 Recieved info
+INFO 2022/07/13 22:13:53 Has been pinged
+INFO 2022/07/13 22:13:57 Writing to client
+INFO 2022/07/13 22:13:57 Recieved info
+INFO 2022/07/13 22:13:57 Has been pinged
+INFO 2022/07/13 22:14:01 Writing to client
+INFO 2022/07/13 22:14:01 Recieved info
+INFO 2022/07/13 22:14:01 Has been pinged
+INFO 2022/07/13 22:14:05 Writing to client
+INFO 2022/07/13 22:14:05 Recieved info
+INFO 2022/07/13 22:14:05 Has been pinged
+INFO 2022/07/13 22:14:09 Writing to client
+INFO 2022/07/13 22:14:09 Recieved info
+INFO 2022/07/13 22:14:09 Has been pinged
+INFO 2022/07/13 22:14:13 Writing to client
+INFO 2022/07/13 22:14:13 Recieved info
+INFO 2022/07/13 22:14:13 Has been pinged
+INFO 2022/07/13 22:14:17 Writing to client
+INFO 2022/07/13 22:14:17 Recieved info
+INFO 2022/07/13 22:14:17 Has been pinged
+INFO 2022/07/13 22:14:21 Writing to client
+INFO 2022/07/13 22:14:21 Recieved info
+INFO 2022/07/13 22:14:21 Has been pinged
+INFO 2022/07/13 22:14:25 Writing to client
+INFO 2022/07/13 22:14:25 Recieved info
+INFO 2022/07/13 22:14:25 Has been pinged
+INFO 2022/07/13 22:14:29 Writing to client
+INFO 2022/07/13 22:14:29 Recieved info
+INFO 2022/07/13 22:14:29 Has been pinged
+INFO 2022/07/13 22:14:33 Writing to client
+INFO 2022/07/13 22:14:33 Recieved info
+INFO 2022/07/13 22:14:33 Has been pinged
+INFO 2022/07/13 22:14:37 Writing to client
+INFO 2022/07/13 22:14:37 Recieved info
+INFO 2022/07/13 22:14:37 Has been pinged
+INFO 2022/07/13 22:14:41 Writing to client
+INFO 2022/07/13 22:14:41 Recieved info
+INFO 2022/07/13 22:14:41 Has been pinged
+INFO 2022/07/13 22:14:45 Writing to client
+INFO 2022/07/13 22:14:45 Recieved info
+INFO 2022/07/13 22:14:45 Has been pinged
+INFO 2022/07/13 22:14:49 Writing to client
+INFO 2022/07/13 22:14:49 Recieved info
+INFO 2022/07/13 22:14:49 Has been pinged
+INFO 2022/07/13 22:14:53 Writing to client
+INFO 2022/07/13 22:14:53 Recieved info
+INFO 2022/07/13 22:14:53 Has been pinged
+INFO 2022/07/13 22:14:57 Writing to client
+INFO 2022/07/13 22:14:57 Recieved info
+INFO 2022/07/13 22:14:57 Has been pinged
+INFO 2022/07/13 22:15:01 Writing to client
+INFO 2022/07/13 22:15:01 Recieved info
+INFO 2022/07/13 22:15:01 Has been pinged
+INFO 2022/07/13 22:15:05 Writing to client
+INFO 2022/07/13 22:15:05 Recieved info
+INFO 2022/07/13 22:15:05 Has been pinged
+INFO 2022/07/13 22:15:09 Writing to client
+INFO 2022/07/13 22:15:10 Recieved info
+INFO 2022/07/13 22:15:10 Has been pinged
+INFO 2022/07/13 22:15:14 Writing to client
+INFO 2022/07/13 22:15:14 Recieved info
+INFO 2022/07/13 22:15:14 Has been pinged
+INFO 2022/07/13 22:15:18 Writing to client
+INFO 2022/07/13 22:15:18 Recieved info
+INFO 2022/07/13 22:15:18 Has been pinged
+INFO 2022/07/13 22:15:22 Writing to client
+INFO 2022/07/13 22:15:22 Recieved info
+INFO 2022/07/13 22:15:22 Has been pinged
+INFO 2022/07/13 22:15:26 Writing to client
+INFO 2022/07/13 22:15:26 Recieved info
+INFO 2022/07/13 22:15:26 Has been pinged
+INFO 2022/07/13 22:15:30 Writing to client
+INFO 2022/07/13 22:15:30 Recieved info
+INFO 2022/07/13 22:15:30 Has been pinged
+INFO 2022/07/13 22:15:34 Writing to client
+INFO 2022/07/13 22:15:34 Recieved info
+INFO 2022/07/13 22:15:34 Has been pinged
+INFO 2022/07/13 22:15:38 Writing to client
+INFO 2022/07/13 22:15:38 Recieved info
+INFO 2022/07/13 22:15:38 Has been pinged
+INFO 2022/07/13 22:15:42 Writing to client
+INFO 2022/07/13 22:15:42 Recieved info
+INFO 2022/07/13 22:15:42 Has been pinged
+INFO 2022/07/13 22:15:46 Writing to client
+INFO 2022/07/13 22:15:46 Recieved info
+INFO 2022/07/13 22:15:46 Has been pinged
+INFO 2022/07/13 22:15:50 Writing to client
+INFO 2022/07/13 22:15:50 Recieved info
+INFO 2022/07/13 22:15:50 Has been pinged
+INFO 2022/07/13 22:15:54 Writing to client
+INFO 2022/07/13 22:15:54 Recieved info
+INFO 2022/07/13 22:15:54 Has been pinged
+INFO 2022/07/13 22:15:58 Writing to client
+INFO 2022/07/13 22:15:58 Recieved info
+INFO 2022/07/13 22:15:58 Has been pinged
+INFO 2022/07/13 22:16:02 Writing to client
+INFO 2022/07/13 22:16:02 Recieved info
+INFO 2022/07/13 22:16:02 Has been pinged
+INFO 2022/07/13 22:16:06 Writing to client
+INFO 2022/07/13 22:16:06 Recieved info
+INFO 2022/07/13 22:16:06 Has been pinged
+INFO 2022/07/13 22:16:10 Writing to client
+INFO 2022/07/13 22:16:10 Recieved info
+INFO 2022/07/13 22:16:10 Has been pinged
+INFO 2022/07/13 22:16:14 Writing to client
+INFO 2022/07/13 22:16:14 Recieved info
+INFO 2022/07/13 22:16:14 Has been pinged
+INFO 2022/07/13 22:16:18 Writing to client
+INFO 2022/07/13 22:16:18 Recieved info
+INFO 2022/07/13 22:16:18 Has been pinged
+INFO 2022/07/13 22:16:22 Writing to client
+INFO 2022/07/13 22:16:22 Recieved info
+INFO 2022/07/13 22:16:22 Has been pinged
+INFO 2022/07/13 22:16:26 Writing to client
+INFO 2022/07/13 22:16:26 Recieved info
+INFO 2022/07/13 22:16:26 Has been pinged
+INFO 2022/07/13 22:16:30 Writing to client
+INFO 2022/07/13 22:16:30 Recieved info
+INFO 2022/07/13 22:16:30 Has been pinged
+INFO 2022/07/13 22:16:34 Writing to client
+INFO 2022/07/13 22:16:34 Recieved info
+INFO 2022/07/13 22:16:34 Has been pinged
+INFO 2022/07/13 22:16:38 Writing to client
+INFO 2022/07/13 22:16:38 Recieved info
+INFO 2022/07/13 22:16:38 Has been pinged
+INFO 2022/07/13 22:16:42 Writing to client
+INFO 2022/07/13 22:16:42 Recieved info
+INFO 2022/07/13 22:16:42 Has been pinged
+INFO 2022/07/13 22:16:46 Writing to client
+INFO 2022/07/13 22:16:46 Recieved info
+INFO 2022/07/13 22:16:46 Has been pinged
+INFO 2022/07/13 22:16:50 Writing to client
+INFO 2022/07/13 22:16:50 Recieved info
+INFO 2022/07/13 22:16:50 Has been pinged
+INFO 2022/07/13 22:16:54 Writing to client
+INFO 2022/07/13 22:16:54 Recieved info
+INFO 2022/07/13 22:16:54 Has been pinged
+INFO 2022/07/13 22:16:58 Writing to client
+INFO 2022/07/13 22:16:58 Recieved info
+INFO 2022/07/13 22:16:58 Has been pinged
+INFO 2022/07/13 22:17:02 Writing to client
+INFO 2022/07/13 22:17:02 Recieved info
+INFO 2022/07/13 22:17:02 Has been pinged
+INFO 2022/07/13 22:17:06 Writing to client
+INFO 2022/07/13 22:17:06 Recieved info
+INFO 2022/07/13 22:17:06 Has been pinged
+INFO 2022/07/13 22:17:10 Writing to client
+INFO 2022/07/13 22:17:10 Recieved info
+INFO 2022/07/13 22:17:10 Has been pinged
+INFO 2022/07/13 22:17:14 Writing to client
+INFO 2022/07/13 22:17:14 Recieved info
+INFO 2022/07/13 22:17:14 Has been pinged
+INFO 2022/07/13 22:17:18 Writing to client
+INFO 2022/07/13 22:17:18 Recieved info
+INFO 2022/07/13 22:17:18 Has been pinged
+INFO 2022/07/13 22:17:22 Writing to client
+INFO 2022/07/13 22:17:22 Recieved info
+INFO 2022/07/13 22:17:22 Has been pinged
+INFO 2022/07/13 22:17:26 Writing to client
+INFO 2022/07/13 22:17:26 Recieved info
+INFO 2022/07/13 22:17:26 Has been pinged
+INFO 2022/07/13 22:17:30 Writing to client
+INFO 2022/07/13 22:17:30 Recieved info
+INFO 2022/07/13 22:17:30 Has been pinged
+INFO 2022/07/13 22:17:34 Writing to client
+INFO 2022/07/13 22:17:34 Recieved info
+INFO 2022/07/13 22:17:34 Has been pinged
+INFO 2022/07/13 22:17:38 Writing to client
+INFO 2022/07/13 22:17:38 Recieved info
+INFO 2022/07/13 22:17:38 Has been pinged
+INFO 2022/07/13 22:17:42 Writing to client
+INFO 2022/07/13 22:17:42 Recieved info
+INFO 2022/07/13 22:17:42 Has been pinged
+INFO 2022/07/13 22:17:46 Writing to client
+INFO 2022/07/13 22:17:46 Recieved info
+INFO 2022/07/13 22:17:46 Has been pinged
+INFO 2022/07/13 22:17:50 Writing to client
+INFO 2022/07/13 22:17:50 Recieved info
+INFO 2022/07/13 22:17:50 Has been pinged
+INFO 2022/07/13 22:17:54 Writing to client
+INFO 2022/07/13 22:17:54 Recieved info
+INFO 2022/07/13 22:17:54 Has been pinged
+INFO 2022/07/13 22:17:58 Writing to client
+INFO 2022/07/13 22:17:58 Recieved info
+INFO 2022/07/13 22:17:58 Has been pinged
+INFO 2022/07/13 22:18:02 Writing to client
+INFO 2022/07/13 22:18:02 Recieved info
+INFO 2022/07/13 22:18:02 Has been pinged
+INFO 2022/07/13 22:18:06 Writing to client
+INFO 2022/07/13 22:18:06 Recieved info
+INFO 2022/07/13 22:18:06 Has been pinged
+INFO 2022/07/13 22:18:10 Writing to client
+INFO 2022/07/13 22:18:10 Recieved info
+INFO 2022/07/13 22:18:10 Has been pinged
+INFO 2022/07/13 22:18:14 Writing to client
+INFO 2022/07/13 22:18:14 Recieved info
+INFO 2022/07/13 22:18:14 Has been pinged
+INFO 2022/07/13 22:18:18 Writing to client
+INFO 2022/07/13 22:18:18 Recieved info
+INFO 2022/07/13 22:18:18 Has been pinged
+INFO 2022/07/13 22:18:22 Writing to client
+INFO 2022/07/13 22:18:22 Recieved info
+INFO 2022/07/13 22:18:22 Has been pinged
+INFO 2022/07/13 22:18:26 Writing to client
+INFO 2022/07/13 22:18:26 Recieved info
+INFO 2022/07/13 22:18:26 Has been pinged
+INFO 2022/07/13 22:18:30 Writing to client
+INFO 2022/07/13 22:18:30 Recieved info
+INFO 2022/07/13 22:18:30 Has been pinged
+INFO 2022/07/13 22:18:34 Writing to client
+INFO 2022/07/13 22:18:34 Recieved info
+INFO 2022/07/13 22:18:34 Has been pinged
+INFO 2022/07/13 22:18:38 Writing to client
+INFO 2022/07/13 22:18:38 Recieved info
+INFO 2022/07/13 22:18:38 Has been pinged
+INFO 2022/07/13 22:18:42 Writing to client
+INFO 2022/07/13 22:18:42 Recieved info
+INFO 2022/07/13 22:18:42 Has been pinged
+INFO 2022/07/13 22:18:46 Writing to client
+INFO 2022/07/13 22:18:46 Recieved info
+INFO 2022/07/13 22:18:46 Has been pinged
+INFO 2022/07/13 22:18:50 Writing to client
+INFO 2022/07/13 22:18:50 Recieved info
+INFO 2022/07/13 22:18:50 Has been pinged
+INFO 2022/07/13 22:18:54 Writing to client
+INFO 2022/07/13 22:18:54 Recieved info
+INFO 2022/07/13 22:18:54 Has been pinged
+INFO 2022/07/13 22:18:58 Writing to client
+INFO 2022/07/13 22:18:58 Recieved info
+INFO 2022/07/13 22:18:58 Has been pinged
+INFO 2022/07/13 22:19:02 Writing to client
+INFO 2022/07/13 22:19:02 Recieved info
+INFO 2022/07/13 22:19:02 Has been pinged
+INFO 2022/07/13 22:19:06 Writing to client
+INFO 2022/07/13 22:19:06 Recieved info
+INFO 2022/07/13 22:19:06 Has been pinged
+INFO 2022/07/13 22:19:10 Writing to client
+INFO 2022/07/13 22:19:10 Recieved info
+INFO 2022/07/13 22:19:10 Has been pinged
+INFO 2022/07/13 22:19:14 Writing to client
+INFO 2022/07/13 22:19:14 Recieved info
+INFO 2022/07/13 22:19:14 Has been pinged
+INFO 2022/07/13 22:19:18 Writing to client
+INFO 2022/07/13 22:19:18 Recieved info
+INFO 2022/07/13 22:19:18 Has been pinged
+INFO 2022/07/13 22:19:22 Writing to client
+INFO 2022/07/13 22:19:22 Recieved info
+INFO 2022/07/13 22:19:22 Has been pinged
+INFO 2022/07/13 22:19:26 Writing to client
+INFO 2022/07/13 22:19:26 Recieved info
+INFO 2022/07/13 22:19:26 Has been pinged
+INFO 2022/07/13 22:19:30 Writing to client
+INFO 2022/07/13 22:19:30 Recieved info
+INFO 2022/07/13 22:19:30 Has been pinged
+INFO 2022/07/13 22:19:34 Writing to client
+INFO 2022/07/13 22:19:34 Recieved info
+INFO 2022/07/13 22:19:34 Has been pinged
+INFO 2022/07/13 22:19:38 Writing to client
+INFO 2022/07/13 22:19:39 Recieved info
+INFO 2022/07/13 22:19:39 Has been pinged
+INFO 2022/07/13 22:19:43 Writing to client
+INFO 2022/07/13 22:19:43 Recieved info
+INFO 2022/07/13 22:19:43 Has been pinged
+INFO 2022/07/13 22:19:47 Writing to client
+INFO 2022/07/13 22:19:47 Recieved info
+INFO 2022/07/13 22:19:47 Has been pinged
+INFO 2022/07/13 22:19:51 Writing to client
+INFO 2022/07/13 22:19:51 Recieved info
+INFO 2022/07/13 22:19:51 Has been pinged
+INFO 2022/07/13 22:19:55 Writing to client
+INFO 2022/07/13 22:19:55 Recieved info
+INFO 2022/07/13 22:19:55 Has been pinged
+INFO 2022/07/13 22:19:59 Writing to client
+INFO 2022/07/13 22:19:59 Recieved info
+INFO 2022/07/13 22:19:59 Has been pinged
+INFO 2022/07/13 22:20:03 Writing to client
+INFO 2022/07/13 22:20:03 Recieved info
+INFO 2022/07/13 22:20:03 Has been pinged
+INFO 2022/07/13 22:20:07 Writing to client
+INFO 2022/07/13 22:20:07 Recieved info
+INFO 2022/07/13 22:20:07 Has been pinged
+INFO 2022/07/13 22:20:11 Writing to client
+INFO 2022/07/13 22:20:11 Recieved info
+INFO 2022/07/13 22:20:11 Has been pinged
+INFO 2022/07/13 22:20:15 Writing to client
+INFO 2022/07/13 22:20:15 Recieved info
+INFO 2022/07/13 22:20:15 Has been pinged
+INFO 2022/07/13 22:20:19 Writing to client
+INFO 2022/07/13 22:20:19 Recieved info
+INFO 2022/07/13 22:20:19 Has been pinged
+INFO 2022/07/13 22:20:23 Writing to client
+INFO 2022/07/13 22:20:23 Recieved info
+INFO 2022/07/13 22:20:23 Has been pinged
+INFO 2022/07/13 22:20:27 Writing to client
+INFO 2022/07/13 22:20:27 Recieved info
+INFO 2022/07/13 22:20:27 Has been pinged
+INFO 2022/07/13 22:20:31 Writing to client
+INFO 2022/07/13 22:20:31 Recieved info
+INFO 2022/07/13 22:20:31 Has been pinged
+INFO 2022/07/13 22:20:35 Writing to client
+INFO 2022/07/13 22:20:35 Recieved info
+INFO 2022/07/13 22:20:35 Has been pinged
+INFO 2022/07/13 22:20:39 Writing to client
+INFO 2022/07/13 22:20:39 Recieved info
+INFO 2022/07/13 22:20:39 Has been pinged
+INFO 2022/07/13 22:20:43 Writing to client
+INFO 2022/07/13 22:20:43 Recieved info
+INFO 2022/07/13 22:20:43 Has been pinged
+INFO 2022/07/13 22:20:47 Writing to client
+INFO 2022/07/13 22:20:47 Recieved info
+INFO 2022/07/13 22:20:47 Has been pinged
+INFO 2022/07/13 22:20:51 Writing to client
+INFO 2022/07/13 22:20:51 Recieved info
+INFO 2022/07/13 22:20:51 Has been pinged
+INFO 2022/07/13 22:20:55 Writing to client
+INFO 2022/07/13 22:20:55 Recieved info
+INFO 2022/07/13 22:20:55 Has been pinged
+INFO 2022/07/13 22:20:59 Writing to client
+INFO 2022/07/13 22:20:59 Recieved info
+INFO 2022/07/13 22:20:59 Has been pinged
+INFO 2022/07/13 22:21:03 Writing to client
+INFO 2022/07/13 22:21:03 Recieved info
+INFO 2022/07/13 22:21:03 Has been pinged
+INFO 2022/07/13 22:21:07 Writing to client
+INFO 2022/07/13 22:21:07 Recieved info
+INFO 2022/07/13 22:21:07 Has been pinged
+INFO 2022/07/13 22:21:11 Writing to client
+INFO 2022/07/13 22:21:11 Recieved info
+INFO 2022/07/13 22:21:11 Has been pinged
+INFO 2022/07/13 22:21:15 Writing to client
+INFO 2022/07/13 22:21:15 Recieved info
+INFO 2022/07/13 22:21:15 Has been pinged
+INFO 2022/07/13 22:21:19 Writing to client
+INFO 2022/07/13 22:21:19 Recieved info
+INFO 2022/07/13 22:21:19 Has been pinged
+INFO 2022/07/13 22:21:23 Writing to client
+INFO 2022/07/13 22:21:23 Recieved info
+INFO 2022/07/13 22:21:23 Has been pinged
+INFO 2022/07/13 22:21:27 Writing to client
+INFO 2022/07/13 22:21:27 Recieved info
+INFO 2022/07/13 22:21:27 Has been pinged
+INFO 2022/07/13 22:21:31 Writing to client
+INFO 2022/07/13 22:21:31 Recieved info
+INFO 2022/07/13 22:21:31 Has been pinged
+INFO 2022/07/13 22:21:35 Writing to client
+INFO 2022/07/13 22:21:35 Recieved info
+INFO 2022/07/13 22:21:35 Has been pinged
+INFO 2022/07/13 22:21:39 Writing to client
+INFO 2022/07/13 22:21:39 Recieved info
+INFO 2022/07/13 22:21:39 Has been pinged
+INFO 2022/07/13 22:21:43 Writing to client
+INFO 2022/07/13 22:21:43 Recieved info
+INFO 2022/07/13 22:21:43 Has been pinged
+INFO 2022/07/13 22:21:47 Writing to client
+INFO 2022/07/13 22:21:47 Recieved info
+INFO 2022/07/13 22:21:47 Has been pinged
+INFO 2022/07/13 22:21:51 Writing to client
+INFO 2022/07/13 22:21:51 Recieved info
+INFO 2022/07/13 22:21:51 Has been pinged
+INFO 2022/07/13 22:21:55 Writing to client
+INFO 2022/07/13 22:21:55 Recieved info
+INFO 2022/07/13 22:21:55 Has been pinged
+INFO 2022/07/13 22:21:59 Writing to client
+INFO 2022/07/13 22:21:59 Recieved info
+INFO 2022/07/13 22:21:59 Has been pinged
+INFO 2022/07/13 22:22:03 Writing to client
+INFO 2022/07/13 22:22:03 Recieved info
+INFO 2022/07/13 22:22:03 Has been pinged
+INFO 2022/07/13 22:22:07 Writing to client
+INFO 2022/07/13 22:22:07 Recieved info
+INFO 2022/07/13 22:22:07 Has been pinged
+INFO 2022/07/13 22:22:11 Writing to client
+INFO 2022/07/13 22:22:11 Recieved info
+INFO 2022/07/13 22:22:11 Has been pinged
+INFO 2022/07/13 22:22:15 Writing to client
+INFO 2022/07/13 22:22:15 Recieved info
+INFO 2022/07/13 22:22:15 Has been pinged
+INFO 2022/07/13 22:22:19 Writing to client
+INFO 2022/07/13 22:22:19 Recieved info
+INFO 2022/07/13 22:22:19 Has been pinged
+INFO 2022/07/13 22:22:23 Writing to client
+INFO 2022/07/13 22:22:23 Recieved info
+INFO 2022/07/13 22:22:23 Has been pinged
+INFO 2022/07/13 22:22:27 Writing to client
+INFO 2022/07/13 22:22:27 Recieved info
+INFO 2022/07/13 22:22:27 Has been pinged
+INFO 2022/07/13 22:22:31 Writing to client
+INFO 2022/07/13 22:22:31 Recieved info
+INFO 2022/07/13 22:22:31 Has been pinged
+INFO 2022/07/13 22:22:35 Writing to client
+INFO 2022/07/13 22:22:35 Recieved info
+INFO 2022/07/13 22:22:35 Has been pinged
+INFO 2022/07/13 22:22:39 Writing to client
+INFO 2022/07/13 22:22:39 Recieved info
+INFO 2022/07/13 22:22:39 Has been pinged
+INFO 2022/07/13 22:22:43 Writing to client
+INFO 2022/07/13 22:22:43 Recieved info
+INFO 2022/07/13 22:22:43 Has been pinged
+INFO 2022/07/13 22:22:47 Writing to client
+INFO 2022/07/13 22:22:47 Recieved info
+INFO 2022/07/13 22:22:47 Has been pinged
+INFO 2022/07/13 22:22:51 Writing to client
+INFO 2022/07/13 22:22:51 Recieved info
+INFO 2022/07/13 22:22:51 Has been pinged
+INFO 2022/07/13 22:22:55 Writing to client
+INFO 2022/07/13 22:22:55 Recieved info
+INFO 2022/07/13 22:22:55 Has been pinged
+INFO 2022/07/13 22:22:59 Writing to client
+INFO 2022/07/13 22:22:59 Recieved info
+INFO 2022/07/13 22:22:59 Has been pinged
+INFO 2022/07/13 22:23:03 Writing to client
+INFO 2022/07/13 22:23:03 Recieved info
+INFO 2022/07/13 22:23:03 Has been pinged
+INFO 2022/07/13 22:23:07 Writing to client
+INFO 2022/07/13 22:23:07 Recieved info
+INFO 2022/07/13 22:23:07 Has been pinged
+INFO 2022/07/13 22:23:11 Writing to client
+INFO 2022/07/13 22:23:11 Recieved info
+INFO 2022/07/13 22:23:11 Has been pinged
+INFO 2022/07/13 22:23:15 Writing to client
+INFO 2022/07/13 22:23:15 Recieved info
+INFO 2022/07/13 22:23:15 Has been pinged
+INFO 2022/07/13 22:23:19 Writing to client
+INFO 2022/07/13 22:23:20 Recieved info
+INFO 2022/07/13 22:23:20 Has been pinged
+INFO 2022/07/13 22:23:24 Writing to client
+INFO 2022/07/13 22:23:24 Recieved info
+INFO 2022/07/13 22:23:24 Has been pinged
+INFO 2022/07/13 22:23:28 Writing to client
+INFO 2022/07/13 22:23:28 Recieved info
+INFO 2022/07/13 22:23:28 Has been pinged
+INFO 2022/07/13 22:23:32 Writing to client
+INFO 2022/07/13 22:23:32 Recieved info
+INFO 2022/07/13 22:23:32 Has been pinged
+INFO 2022/07/13 22:23:36 Writing to client
+INFO 2022/07/13 22:23:36 Recieved info
+INFO 2022/07/13 22:23:36 Has been pinged
+INFO 2022/07/13 22:23:40 Writing to client
+INFO 2022/07/13 22:23:40 Recieved info
+INFO 2022/07/13 22:23:40 Has been pinged
+INFO 2022/07/13 22:23:44 Writing to client
+INFO 2022/07/13 22:23:44 Recieved info
+INFO 2022/07/13 22:23:44 Has been pinged
+INFO 2022/07/13 22:23:48 Writing to client
+INFO 2022/07/13 22:23:48 Recieved info
+INFO 2022/07/13 22:23:48 Has been pinged
+INFO 2022/07/13 22:23:52 Writing to client
+INFO 2022/07/13 22:23:52 Recieved info
+INFO 2022/07/13 22:23:52 Has been pinged
+INFO 2022/07/13 22:23:56 Writing to client
+INFO 2022/07/13 22:23:56 Recieved info
+INFO 2022/07/13 22:23:56 Has been pinged
+INFO 2022/07/13 22:24:00 Writing to client
+INFO 2022/07/13 22:24:00 Recieved info
+INFO 2022/07/13 22:24:00 Has been pinged
+INFO 2022/07/13 22:24:04 Writing to client
+INFO 2022/07/13 22:24:04 Recieved info
+INFO 2022/07/13 22:24:04 Has been pinged
+INFO 2022/07/13 22:24:08 Writing to client
+INFO 2022/07/13 22:24:08 Recieved info
+INFO 2022/07/13 22:24:08 Has been pinged
+INFO 2022/07/13 22:24:12 Writing to client
+INFO 2022/07/13 22:24:12 Recieved info
+INFO 2022/07/13 22:24:12 Has been pinged
+INFO 2022/07/13 22:24:16 Writing to client
+INFO 2022/07/13 22:24:16 Recieved info
+INFO 2022/07/13 22:24:16 Has been pinged
+INFO 2022/07/13 22:24:20 Writing to client
+INFO 2022/07/13 22:24:20 Recieved info
+INFO 2022/07/13 22:24:20 Has been pinged
+INFO 2022/07/13 22:24:24 Writing to client
+INFO 2022/07/13 22:24:24 Recieved info
+INFO 2022/07/13 22:24:24 Has been pinged
+INFO 2022/07/13 22:24:28 Writing to client
+INFO 2022/07/13 22:24:28 Recieved info
+INFO 2022/07/13 22:24:28 Has been pinged
+INFO 2022/07/13 22:24:32 Writing to client
+INFO 2022/07/13 22:24:32 Recieved info
+INFO 2022/07/13 22:24:32 Has been pinged
+INFO 2022/07/13 22:24:36 Writing to client
+INFO 2022/07/13 22:24:36 Recieved info
+INFO 2022/07/13 22:24:36 Has been pinged
+INFO 2022/07/13 22:24:40 Writing to client
+INFO 2022/07/13 22:24:40 Recieved info
+INFO 2022/07/13 22:24:40 Has been pinged
+INFO 2022/07/13 22:24:44 Writing to client
+INFO 2022/07/13 22:24:44 Recieved info
+INFO 2022/07/13 22:24:44 Has been pinged
+INFO 2022/07/13 22:24:48 Writing to client
+INFO 2022/07/13 22:24:48 Recieved info
+INFO 2022/07/13 22:24:48 Has been pinged
+INFO 2022/07/13 22:24:52 Writing to client
+INFO 2022/07/13 22:24:52 Recieved info
+INFO 2022/07/13 22:24:52 Has been pinged
+INFO 2022/07/13 22:24:56 Writing to client
+INFO 2022/07/13 22:24:56 Recieved info
+INFO 2022/07/13 22:24:56 Has been pinged
+INFO 2022/07/13 22:25:00 Writing to client
+INFO 2022/07/13 22:25:00 Recieved info
+INFO 2022/07/13 22:25:00 Has been pinged
+INFO 2022/07/13 22:25:04 Writing to client
+INFO 2022/07/13 22:25:04 Recieved info
+INFO 2022/07/13 22:25:04 Has been pinged
+INFO 2022/07/13 22:25:08 Writing to client
+INFO 2022/07/13 22:25:08 Recieved info
+INFO 2022/07/13 22:25:08 Has been pinged
+INFO 2022/07/13 22:25:12 Writing to client
+INFO 2022/07/13 22:25:12 Recieved info
+INFO 2022/07/13 22:25:12 Has been pinged
+INFO 2022/07/13 22:25:16 Writing to client
+INFO 2022/07/13 22:25:16 Recieved info
+INFO 2022/07/13 22:25:16 Has been pinged
+INFO 2022/07/13 22:25:20 Writing to client
+INFO 2022/07/13 22:25:20 Recieved info
+INFO 2022/07/13 22:25:20 Has been pinged
+INFO 2022/07/13 22:25:24 Writing to client
+INFO 2022/07/13 22:25:24 Recieved info
+INFO 2022/07/13 22:25:24 Has been pinged
+INFO 2022/07/13 22:25:28 Writing to client
+INFO 2022/07/13 22:25:28 Recieved info
+INFO 2022/07/13 22:25:28 Has been pinged
+INFO 2022/07/13 22:25:32 Writing to client
+INFO 2022/07/13 22:25:32 Recieved info
+INFO 2022/07/13 22:25:32 Has been pinged
+INFO 2022/07/13 22:25:36 Writing to client
+INFO 2022/07/13 22:25:36 Recieved info
+INFO 2022/07/13 22:25:36 Has been pinged
+INFO 2022/07/13 22:25:40 Writing to client
+INFO 2022/07/13 22:25:40 Recieved info
+INFO 2022/07/13 22:25:40 Has been pinged
+INFO 2022/07/13 22:25:44 Writing to client
+INFO 2022/07/13 22:25:44 Recieved info
+INFO 2022/07/13 22:25:44 Has been pinged
+INFO 2022/07/13 22:25:48 Writing to client
+INFO 2022/07/13 22:25:48 Recieved info
+INFO 2022/07/13 22:25:48 Has been pinged
+INFO 2022/07/13 22:25:52 Writing to client
+INFO 2022/07/13 22:25:52 Recieved info
+INFO 2022/07/13 22:25:52 Has been pinged
+INFO 2022/07/13 22:25:56 Writing to client
+INFO 2022/07/13 22:25:56 Recieved info
+INFO 2022/07/13 22:25:56 Has been pinged
+INFO 2022/07/13 22:26:00 Writing to client
+INFO 2022/07/13 22:26:00 Recieved info
+INFO 2022/07/13 22:26:00 Has been pinged
+INFO 2022/07/13 22:26:04 Writing to client
+INFO 2022/07/13 22:26:04 Recieved info
+INFO 2022/07/13 22:26:04 Has been pinged
+INFO 2022/07/13 22:26:08 Writing to client
+INFO 2022/07/13 22:26:08 Recieved info
+INFO 2022/07/13 22:26:08 Has been pinged
+INFO 2022/07/13 22:26:12 Writing to client
+INFO 2022/07/13 22:26:12 Recieved info
+INFO 2022/07/13 22:26:12 Has been pinged
+INFO 2022/07/13 22:26:16 Writing to client
+INFO 2022/07/13 22:26:16 Recieved info
+INFO 2022/07/13 22:26:16 Has been pinged
+INFO 2022/07/13 22:26:20 Writing to client
+INFO 2022/07/13 22:26:20 Recieved info
+INFO 2022/07/13 22:26:20 Has been pinged
+INFO 2022/07/13 22:26:24 Writing to client
+INFO 2022/07/13 22:26:24 Recieved info
+INFO 2022/07/13 22:26:24 Has been pinged
+INFO 2022/07/13 22:26:28 Writing to client
+INFO 2022/07/13 22:26:28 Recieved info
+INFO 2022/07/13 22:26:28 Has been pinged
+INFO 2022/07/13 22:26:32 Writing to client
+INFO 2022/07/13 22:26:32 Recieved info
+INFO 2022/07/13 22:26:32 Has been pinged
+INFO 2022/07/13 22:26:36 Writing to client
+INFO 2022/07/13 22:26:36 Recieved info
+INFO 2022/07/13 22:26:36 Has been pinged
+INFO 2022/07/13 22:26:40 Writing to client
+INFO 2022/07/13 22:26:40 Recieved info
+INFO 2022/07/13 22:26:40 Has been pinged
+INFO 2022/07/13 22:26:44 Writing to client
+INFO 2022/07/13 22:26:44 Recieved info
+INFO 2022/07/13 22:26:44 Has been pinged
+INFO 2022/07/13 22:26:48 Writing to client
+INFO 2022/07/13 22:26:48 Recieved info
+INFO 2022/07/13 22:26:48 Has been pinged
+INFO 2022/07/13 22:26:52 Writing to client
+INFO 2022/07/13 22:26:52 Recieved info
+INFO 2022/07/13 22:26:52 Has been pinged
+INFO 2022/07/13 22:26:56 Writing to client
+INFO 2022/07/13 22:26:56 Recieved info
+INFO 2022/07/13 22:26:56 Has been pinged
+INFO 2022/07/13 22:27:00 Writing to client
+INFO 2022/07/13 22:27:00 Recieved info
+INFO 2022/07/13 22:27:00 Has been pinged
+INFO 2022/07/13 22:27:04 Writing to client
+INFO 2022/07/13 22:27:05 Recieved info
+INFO 2022/07/13 22:27:05 Has been pinged
+INFO 2022/07/13 22:27:09 Writing to client
+INFO 2022/07/13 22:27:09 Recieved info
+INFO 2022/07/13 22:27:09 Has been pinged
+INFO 2022/07/13 22:27:13 Writing to client
+INFO 2022/07/13 22:27:13 Recieved info
+INFO 2022/07/13 22:27:13 Has been pinged
+INFO 2022/07/13 22:27:17 Writing to client
+INFO 2022/07/13 22:27:17 Recieved info
+INFO 2022/07/13 22:27:17 Has been pinged
+INFO 2022/07/13 22:27:21 Writing to client
+INFO 2022/07/13 22:27:21 Recieved info
+INFO 2022/07/13 22:27:21 Has been pinged
+INFO 2022/07/13 22:27:25 Writing to client
+INFO 2022/07/13 22:27:25 Recieved info
+INFO 2022/07/13 22:27:25 Has been pinged
+INFO 2022/07/13 22:27:29 Writing to client
+INFO 2022/07/13 22:27:29 Recieved info
+INFO 2022/07/13 22:27:29 Has been pinged
+INFO 2022/07/13 22:27:33 Writing to client
+INFO 2022/07/13 22:27:33 Recieved info
+INFO 2022/07/13 22:27:33 Has been pinged
+INFO 2022/07/13 22:27:37 Writing to client
+INFO 2022/07/13 22:27:37 Recieved info
+INFO 2022/07/13 22:27:37 Has been pinged
+INFO 2022/07/13 22:27:41 Writing to client
+INFO 2022/07/13 22:27:41 Recieved info
+INFO 2022/07/13 22:27:41 Has been pinged
+INFO 2022/07/13 22:27:45 Writing to client
+INFO 2022/07/13 22:27:45 Recieved info
+INFO 2022/07/13 22:27:45 Has been pinged
+INFO 2022/07/13 22:27:49 Writing to client
+INFO 2022/07/13 22:27:49 Recieved info
+INFO 2022/07/13 22:27:49 Has been pinged
+INFO 2022/07/13 22:27:53 Writing to client
+INFO 2022/07/13 22:27:53 Recieved info
+INFO 2022/07/13 22:27:53 Has been pinged
+INFO 2022/07/13 22:27:57 Writing to client
+INFO 2022/07/13 22:27:57 Recieved info
+INFO 2022/07/13 22:27:57 Has been pinged
+INFO 2022/07/13 22:28:01 Writing to client
+INFO 2022/07/13 22:28:01 Recieved info
+INFO 2022/07/13 22:28:01 Has been pinged
+INFO 2022/07/13 22:28:05 Writing to client
+INFO 2022/07/13 22:28:05 Recieved info
+INFO 2022/07/13 22:28:05 Has been pinged
+INFO 2022/07/13 22:28:09 Writing to client
+INFO 2022/07/13 22:28:09 Recieved info
+INFO 2022/07/13 22:28:09 Has been pinged
+INFO 2022/07/13 22:28:13 Writing to client
+INFO 2022/07/13 22:28:13 Recieved info
+INFO 2022/07/13 22:28:13 Has been pinged
+INFO 2022/07/13 22:28:17 Writing to client
+INFO 2022/07/13 22:28:17 Recieved info
+INFO 2022/07/13 22:28:17 Has been pinged
+INFO 2022/07/13 22:28:21 Writing to client
+INFO 2022/07/13 22:28:21 Recieved info
+INFO 2022/07/13 22:28:21 Has been pinged
+INFO 2022/07/13 22:28:25 Writing to client
+INFO 2022/07/13 22:28:25 Recieved info
+INFO 2022/07/13 22:28:25 Has been pinged
+INFO 2022/07/13 22:28:29 Writing to client
+INFO 2022/07/13 22:28:29 Recieved info
+INFO 2022/07/13 22:28:29 Has been pinged
+INFO 2022/07/13 22:28:33 Writing to client
+INFO 2022/07/13 22:28:33 Recieved info
+INFO 2022/07/13 22:28:33 Has been pinged
+INFO 2022/07/13 22:28:37 Writing to client
+INFO 2022/07/13 22:28:37 Recieved info
+INFO 2022/07/13 22:28:37 Has been pinged
+INFO 2022/07/13 22:28:41 Writing to client
+INFO 2022/07/13 22:28:41 Recieved info
+INFO 2022/07/13 22:28:41 Has been pinged
+INFO 2022/07/13 22:28:45 Writing to client
+INFO 2022/07/13 22:28:45 Recieved info
+INFO 2022/07/13 22:28:45 Has been pinged
+INFO 2022/07/13 22:28:49 Writing to client
+INFO 2022/07/13 22:28:49 Recieved info
+INFO 2022/07/13 22:28:49 Has been pinged
+INFO 2022/07/13 22:28:53 Writing to client
+INFO 2022/07/13 22:28:53 Recieved info
+INFO 2022/07/13 22:28:53 Has been pinged
+INFO 2022/07/13 22:28:57 Writing to client
+INFO 2022/07/13 22:28:57 Recieved info
+INFO 2022/07/13 22:28:57 Has been pinged
+INFO 2022/07/13 22:29:01 Writing to client
+INFO 2022/07/13 22:29:01 Recieved info
+INFO 2022/07/13 22:29:01 Has been pinged
+INFO 2022/07/13 22:29:05 Writing to client
+INFO 2022/07/13 22:29:05 Recieved info
+INFO 2022/07/13 22:29:05 Has been pinged
+INFO 2022/07/13 22:29:09 Writing to client
+INFO 2022/07/13 22:29:09 Recieved info
+INFO 2022/07/13 22:29:09 Has been pinged
+INFO 2022/07/13 22:29:13 Writing to client
+INFO 2022/07/13 22:29:13 Recieved info
+INFO 2022/07/13 22:29:13 Has been pinged
+INFO 2022/07/13 22:29:17 Writing to client
+INFO 2022/07/13 22:29:17 Recieved info
+INFO 2022/07/13 22:29:17 Has been pinged
+INFO 2022/07/13 22:29:21 Writing to client
+INFO 2022/07/13 22:29:21 Recieved info
+INFO 2022/07/13 22:29:21 Has been pinged
+INFO 2022/07/13 22:29:25 Writing to client
+INFO 2022/07/13 22:29:25 Recieved info
+INFO 2022/07/13 22:29:25 Has been pinged
+INFO 2022/07/13 22:29:29 Writing to client
+INFO 2022/07/13 22:29:29 Recieved info
+INFO 2022/07/13 22:29:29 Has been pinged
+INFO 2022/07/13 22:29:33 Writing to client
+INFO 2022/07/13 22:29:33 Recieved info
+INFO 2022/07/13 22:29:33 Has been pinged
+INFO 2022/07/13 22:29:37 Writing to client
+INFO 2022/07/13 22:29:37 Recieved info
+INFO 2022/07/13 22:29:37 Has been pinged
+INFO 2022/07/13 22:29:41 Writing to client
+INFO 2022/07/13 22:29:41 Recieved info
+INFO 2022/07/13 22:29:41 Has been pinged
+INFO 2022/07/13 22:29:45 Writing to client
+INFO 2022/07/13 22:29:45 Recieved info
+INFO 2022/07/13 22:29:45 Has been pinged
+INFO 2022/07/13 22:29:49 Writing to client
+INFO 2022/07/13 22:29:49 Recieved info
+INFO 2022/07/13 22:29:49 Has been pinged
+INFO 2022/07/13 22:29:53 Writing to client
+INFO 2022/07/13 22:29:53 Recieved info
+INFO 2022/07/13 22:29:53 Has been pinged
+INFO 2022/07/13 22:29:57 Writing to client
+INFO 2022/07/13 22:29:57 Recieved info
+INFO 2022/07/13 22:29:57 Has been pinged
+INFO 2022/07/13 22:30:01 Writing to client
+INFO 2022/07/13 22:30:01 Recieved info
+INFO 2022/07/13 22:30:01 Has been pinged
+INFO 2022/07/13 22:30:05 Writing to client
+INFO 2022/07/13 22:30:05 Recieved info
+INFO 2022/07/13 22:30:05 Has been pinged
+INFO 2022/07/13 22:30:09 Writing to client
+INFO 2022/07/13 22:30:09 Recieved info
+INFO 2022/07/13 22:30:09 Has been pinged
+INFO 2022/07/13 22:30:13 Writing to client
+INFO 2022/07/13 22:30:13 Recieved info
+INFO 2022/07/13 22:30:13 Has been pinged
+INFO 2022/07/13 22:30:17 Writing to client
+INFO 2022/07/13 22:30:17 Recieved info
+INFO 2022/07/13 22:30:17 Has been pinged
+INFO 2022/07/13 22:30:21 Writing to client
+INFO 2022/07/13 22:30:21 Recieved info
+INFO 2022/07/13 22:30:21 Has been pinged
+INFO 2022/07/13 22:30:25 Writing to client
+INFO 2022/07/13 22:30:25 Recieved info
+INFO 2022/07/13 22:30:25 Has been pinged
+INFO 2022/07/13 22:30:29 Writing to client
+INFO 2022/07/13 22:30:29 Recieved info
+INFO 2022/07/13 22:30:29 Has been pinged
+INFO 2022/07/13 22:30:33 Writing to client
+INFO 2022/07/13 22:30:33 Recieved info
+INFO 2022/07/13 22:30:33 Has been pinged
+INFO 2022/07/13 22:30:37 Writing to client
+INFO 2022/07/13 22:30:37 Recieved info
+INFO 2022/07/13 22:30:37 Has been pinged
+INFO 2022/07/13 22:30:41 Writing to client
+INFO 2022/07/13 22:30:41 Recieved info
+INFO 2022/07/13 22:30:41 Has been pinged
+INFO 2022/07/13 22:30:45 Writing to client
+INFO 2022/07/13 22:30:46 Recieved info
+INFO 2022/07/13 22:30:46 Has been pinged
+INFO 2022/07/13 22:30:50 Writing to client
+INFO 2022/07/13 22:30:50 Recieved info
+INFO 2022/07/13 22:30:50 Has been pinged
+INFO 2022/07/13 22:30:54 Writing to client
+INFO 2022/07/13 22:30:54 Recieved info
+INFO 2022/07/13 22:30:54 Has been pinged
+INFO 2022/07/13 22:30:58 Writing to client
+INFO 2022/07/13 22:30:58 Recieved info
+INFO 2022/07/13 22:30:58 Has been pinged
+INFO 2022/07/13 22:31:02 Writing to client
+INFO 2022/07/13 22:31:02 Recieved info
+INFO 2022/07/13 22:31:02 Has been pinged
+INFO 2022/07/13 22:31:06 Writing to client
+INFO 2022/07/13 22:31:06 Recieved info
+INFO 2022/07/13 22:31:06 Has been pinged
+INFO 2022/07/13 22:31:10 Writing to client
+INFO 2022/07/13 22:31:10 Recieved info
+INFO 2022/07/13 22:31:10 Has been pinged
+INFO 2022/07/13 22:31:14 Writing to client
+INFO 2022/07/13 22:31:14 Recieved info
+INFO 2022/07/13 22:31:14 Has been pinged
+INFO 2022/07/13 22:31:18 Writing to client
+INFO 2022/07/13 22:31:18 Recieved info
+INFO 2022/07/13 22:31:18 Has been pinged
+INFO 2022/07/13 22:31:22 Writing to client
+INFO 2022/07/13 22:31:22 Recieved info
+INFO 2022/07/13 22:31:22 Has been pinged
+INFO 2022/07/13 22:31:26 Writing to client
+INFO 2022/07/13 22:31:26 Recieved info
+INFO 2022/07/13 22:31:26 Has been pinged
+INFO 2022/07/13 22:31:30 Writing to client
+INFO 2022/07/13 22:31:30 Recieved info
+INFO 2022/07/13 22:31:30 Has been pinged
+INFO 2022/07/13 22:31:34 Writing to client
+INFO 2022/07/13 22:31:34 Recieved info
+INFO 2022/07/13 22:31:34 Has been pinged
+INFO 2022/07/13 22:31:38 Writing to client
+INFO 2022/07/13 22:31:38 Recieved info
+INFO 2022/07/13 22:31:38 Has been pinged
+INFO 2022/07/13 22:31:42 Writing to client
+INFO 2022/07/13 22:31:42 Recieved info
+INFO 2022/07/13 22:31:42 Has been pinged
+INFO 2022/07/13 22:31:46 Writing to client
+INFO 2022/07/13 22:31:46 Recieved info
+INFO 2022/07/13 22:31:46 Has been pinged
+INFO 2022/07/13 22:31:50 Writing to client
+INFO 2022/07/13 22:31:50 Recieved info
+INFO 2022/07/13 22:31:50 Has been pinged
+INFO 2022/07/13 22:31:54 Writing to client
+INFO 2022/07/13 22:31:54 Recieved info
+INFO 2022/07/13 22:31:54 Has been pinged
+INFO 2022/07/13 22:31:58 Writing to client
+INFO 2022/07/13 22:31:58 Recieved info
+INFO 2022/07/13 22:31:58 Has been pinged
+INFO 2022/07/13 22:32:02 Writing to client
+INFO 2022/07/13 22:32:02 Recieved info
+INFO 2022/07/13 22:32:02 Has been pinged
+INFO 2022/07/13 22:32:06 Writing to client
+INFO 2022/07/13 22:32:06 Recieved info
+INFO 2022/07/13 22:32:06 Has been pinged
+INFO 2022/07/13 22:32:10 Writing to client
+INFO 2022/07/13 22:32:10 Recieved info
+INFO 2022/07/13 22:32:10 Has been pinged
+INFO 2022/07/13 22:32:14 Writing to client
+INFO 2022/07/13 22:32:14 Recieved info
+INFO 2022/07/13 22:32:14 Has been pinged
+INFO 2022/07/13 22:32:18 Writing to client
+INFO 2022/07/13 22:32:18 Recieved info
+INFO 2022/07/13 22:32:18 Has been pinged
+INFO 2022/07/13 22:32:22 Writing to client
+INFO 2022/07/13 22:32:22 Recieved info
+INFO 2022/07/13 22:32:22 Has been pinged
+INFO 2022/07/13 22:32:26 Writing to client
+INFO 2022/07/13 22:32:26 Recieved info
+INFO 2022/07/13 22:32:26 Has been pinged
+INFO 2022/07/13 22:32:30 Writing to client
+INFO 2022/07/13 22:32:30 Recieved info
+INFO 2022/07/13 22:32:30 Has been pinged
+INFO 2022/07/13 22:32:34 Writing to client
+INFO 2022/07/13 22:32:34 Recieved info
+INFO 2022/07/13 22:32:34 Has been pinged
+INFO 2022/07/13 22:32:38 Writing to client
+INFO 2022/07/13 22:32:38 Recieved info
+INFO 2022/07/13 22:32:38 Has been pinged
+INFO 2022/07/13 22:32:42 Writing to client
+INFO 2022/07/13 22:32:42 Recieved info
+INFO 2022/07/13 22:32:42 Has been pinged
+INFO 2022/07/13 22:32:46 Writing to client
+INFO 2022/07/13 22:32:46 Recieved info
+INFO 2022/07/13 22:32:46 Has been pinged
+INFO 2022/07/13 22:32:50 Writing to client
+INFO 2022/07/13 22:32:50 Recieved info
+INFO 2022/07/13 22:32:50 Has been pinged
+INFO 2022/07/13 22:32:54 Writing to client
+INFO 2022/07/13 22:32:54 Recieved info
+INFO 2022/07/13 22:32:54 Has been pinged
+INFO 2022/07/13 22:32:58 Writing to client
+INFO 2022/07/13 22:32:58 Recieved info
+INFO 2022/07/13 22:32:58 Has been pinged
+INFO 2022/07/13 22:33:02 Writing to client
+INFO 2022/07/13 22:33:02 Recieved info
+INFO 2022/07/13 22:33:02 Has been pinged
+INFO 2022/07/13 22:33:06 Writing to client
+INFO 2022/07/13 22:33:06 Recieved info
+INFO 2022/07/13 22:33:06 Has been pinged
+INFO 2022/07/13 22:33:10 Writing to client
+INFO 2022/07/13 22:33:10 Recieved info
+INFO 2022/07/13 22:33:10 Has been pinged
+INFO 2022/07/13 22:33:14 Writing to client
+INFO 2022/07/13 22:33:14 Recieved info
+INFO 2022/07/13 22:33:14 Has been pinged
+INFO 2022/07/13 22:33:18 Writing to client
+INFO 2022/07/13 22:33:18 Recieved info
+INFO 2022/07/13 22:33:18 Has been pinged
+INFO 2022/07/13 22:33:22 Writing to client
+INFO 2022/07/13 22:33:22 Recieved info
+INFO 2022/07/13 22:33:22 Has been pinged
+INFO 2022/07/13 22:33:26 Writing to client
+INFO 2022/07/13 22:33:26 Recieved info
+INFO 2022/07/13 22:33:26 Has been pinged
+INFO 2022/07/13 22:33:30 Writing to client
+INFO 2022/07/13 22:33:30 Recieved info
+INFO 2022/07/13 22:33:30 Has been pinged
+INFO 2022/07/13 22:33:34 Writing to client
+INFO 2022/07/13 22:33:34 Recieved info
+INFO 2022/07/13 22:33:34 Has been pinged
+INFO 2022/07/13 22:33:38 Writing to client
+INFO 2022/07/13 22:33:38 Recieved info
+INFO 2022/07/13 22:33:38 Has been pinged
+INFO 2022/07/13 22:33:42 Writing to client
+INFO 2022/07/13 22:33:42 Recieved info
+INFO 2022/07/13 22:33:42 Has been pinged
+INFO 2022/07/13 22:33:46 Writing to client
+INFO 2022/07/13 22:33:46 Recieved info
+INFO 2022/07/13 22:33:46 Has been pinged
+INFO 2022/07/13 22:33:50 Writing to client
+INFO 2022/07/13 22:33:50 Recieved info
+INFO 2022/07/13 22:33:50 Has been pinged
+INFO 2022/07/13 22:33:54 Writing to client
+INFO 2022/07/13 22:33:54 Recieved info
+INFO 2022/07/13 22:33:54 Has been pinged
+INFO 2022/07/13 22:33:58 Writing to client
+INFO 2022/07/13 22:33:58 Recieved info
+INFO 2022/07/13 22:33:58 Has been pinged
+INFO 2022/07/13 22:34:02 Writing to client
+INFO 2022/07/13 22:34:02 Recieved info
+INFO 2022/07/13 22:34:02 Has been pinged
+INFO 2022/07/13 22:34:06 Writing to client
+INFO 2022/07/13 22:34:06 Recieved info
+INFO 2022/07/13 22:34:06 Has been pinged
+INFO 2022/07/13 22:34:10 Writing to client
+INFO 2022/07/13 22:34:10 Recieved info
+INFO 2022/07/13 22:34:10 Has been pinged
+INFO 2022/07/13 22:34:14 Writing to client
+INFO 2022/07/13 22:34:14 Recieved info
+INFO 2022/07/13 22:34:14 Has been pinged
+INFO 2022/07/13 22:34:18 Writing to client
+INFO 2022/07/13 22:34:19 Recieved info
+INFO 2022/07/13 22:34:19 Has been pinged
+INFO 2022/07/13 22:34:23 Writing to client
+INFO 2022/07/13 22:34:23 Recieved info
+INFO 2022/07/13 22:34:23 Has been pinged
+INFO 2022/07/13 22:34:27 Writing to client
+INFO 2022/07/13 22:34:27 Recieved info
+INFO 2022/07/13 22:34:27 Has been pinged
+INFO 2022/07/13 22:34:31 Writing to client
+INFO 2022/07/13 22:34:31 Recieved info
+INFO 2022/07/13 22:34:31 Has been pinged
+INFO 2022/07/13 22:34:35 Writing to client
+INFO 2022/07/13 22:34:35 Recieved info
+INFO 2022/07/13 22:34:35 Has been pinged
+INFO 2022/07/13 22:34:39 Writing to client
+INFO 2022/07/13 22:34:39 Recieved info
+INFO 2022/07/13 22:34:39 Has been pinged
+INFO 2022/07/13 22:34:43 Writing to client
+INFO 2022/07/13 22:34:43 Recieved info
+INFO 2022/07/13 22:34:43 Has been pinged
+INFO 2022/07/13 22:34:47 Writing to client
+INFO 2022/07/13 22:34:47 Recieved info
+INFO 2022/07/13 22:34:47 Has been pinged
+INFO 2022/07/13 22:34:51 Writing to client
+INFO 2022/07/13 22:34:51 Recieved info
+INFO 2022/07/13 22:34:51 Has been pinged
+INFO 2022/07/13 22:34:55 Writing to client
+INFO 2022/07/13 22:34:55 Recieved info
+INFO 2022/07/13 22:34:55 Has been pinged
+INFO 2022/07/13 22:34:59 Writing to client
+INFO 2022/07/13 22:34:59 Recieved info
+INFO 2022/07/13 22:34:59 Has been pinged
+INFO 2022/07/13 22:35:03 Writing to client
+INFO 2022/07/13 22:35:03 Recieved info
+INFO 2022/07/13 22:35:03 Has been pinged
+INFO 2022/07/13 22:35:07 Writing to client
+INFO 2022/07/13 22:35:07 Recieved info
+INFO 2022/07/13 22:35:07 Has been pinged
+INFO 2022/07/13 22:35:11 Writing to client
+INFO 2022/07/13 22:35:11 Recieved info
+INFO 2022/07/13 22:35:11 Has been pinged
+INFO 2022/07/13 22:35:15 Writing to client
+INFO 2022/07/13 22:35:15 Recieved info
+INFO 2022/07/13 22:35:15 Has been pinged
+INFO 2022/07/13 22:35:19 Writing to client
+INFO 2022/07/13 22:35:19 Recieved info
+INFO 2022/07/13 22:35:19 Has been pinged
+INFO 2022/07/13 22:35:23 Writing to client
+INFO 2022/07/13 22:35:23 Recieved info
+INFO 2022/07/13 22:35:23 Has been pinged
+INFO 2022/07/13 22:35:27 Writing to client
+INFO 2022/07/13 22:35:27 Recieved info
+INFO 2022/07/13 22:35:27 Has been pinged
+INFO 2022/07/13 22:35:31 Writing to client
+INFO 2022/07/13 22:35:31 Recieved info
+INFO 2022/07/13 22:35:31 Has been pinged
+INFO 2022/07/13 22:35:35 Writing to client
+INFO 2022/07/13 22:35:35 Recieved info
+INFO 2022/07/13 22:35:35 Has been pinged
+INFO 2022/07/13 22:35:39 Writing to client
+INFO 2022/07/13 22:35:39 Recieved info
+INFO 2022/07/13 22:35:39 Has been pinged
+INFO 2022/07/13 22:35:43 Writing to client
+INFO 2022/07/13 22:35:43 Recieved info
+INFO 2022/07/13 22:35:43 Has been pinged
+INFO 2022/07/13 22:35:47 Writing to client
+INFO 2022/07/13 22:35:47 Recieved info
+INFO 2022/07/13 22:35:47 Has been pinged
+INFO 2022/07/13 22:35:51 Writing to client
+INFO 2022/07/13 22:35:51 Recieved info
+INFO 2022/07/13 22:35:51 Has been pinged
+INFO 2022/07/13 22:35:55 Writing to client
+INFO 2022/07/13 22:35:55 Recieved info
+INFO 2022/07/13 22:35:55 Has been pinged
+INFO 2022/07/13 22:35:59 Writing to client
+INFO 2022/07/13 22:35:59 Recieved info
+INFO 2022/07/13 22:35:59 Has been pinged
+INFO 2022/07/13 22:36:03 Writing to client
+INFO 2022/07/13 22:36:03 Recieved info
+INFO 2022/07/13 22:36:03 Has been pinged
+INFO 2022/07/13 22:36:07 Writing to client
+INFO 2022/07/13 22:36:07 Recieved info
+INFO 2022/07/13 22:36:07 Has been pinged
+INFO 2022/07/13 22:36:11 Writing to client
+INFO 2022/07/13 22:36:11 Recieved info
+INFO 2022/07/13 22:36:11 Has been pinged
+INFO 2022/07/13 22:36:15 Writing to client
+INFO 2022/07/13 22:36:15 Recieved info
+INFO 2022/07/13 22:36:15 Has been pinged
+INFO 2022/07/13 22:36:19 Writing to client
+INFO 2022/07/13 22:36:19 Recieved info
+INFO 2022/07/13 22:36:19 Has been pinged
+INFO 2022/07/13 22:36:23 Writing to client
+INFO 2022/07/13 22:36:23 Recieved info
+INFO 2022/07/13 22:36:23 Has been pinged
+INFO 2022/07/13 22:36:27 Writing to client
+INFO 2022/07/13 22:36:27 Recieved info
+INFO 2022/07/13 22:36:27 Has been pinged
+INFO 2022/07/13 22:36:31 Writing to client
+INFO 2022/07/13 22:36:31 Recieved info
+INFO 2022/07/13 22:36:31 Has been pinged
+INFO 2022/07/13 22:36:35 Writing to client
+INFO 2022/07/13 22:36:35 Recieved info
+INFO 2022/07/13 22:36:35 Has been pinged
+INFO 2022/07/13 22:36:39 Writing to client
+INFO 2022/07/13 22:36:39 Recieved info
+INFO 2022/07/13 22:36:39 Has been pinged
+INFO 2022/07/13 22:36:43 Writing to client
+INFO 2022/07/13 22:36:43 Recieved info
+INFO 2022/07/13 22:36:43 Has been pinged
+INFO 2022/07/13 22:36:47 Writing to client
+INFO 2022/07/13 22:36:47 Recieved info
+INFO 2022/07/13 22:36:47 Has been pinged
+INFO 2022/07/13 22:36:51 Writing to client
+INFO 2022/07/13 22:36:51 Recieved info
+INFO 2022/07/13 22:36:51 Has been pinged
+INFO 2022/07/13 22:36:55 Writing to client
+INFO 2022/07/13 22:36:55 Recieved info
+INFO 2022/07/13 22:36:55 Has been pinged
+INFO 2022/07/13 22:36:59 Writing to client
+INFO 2022/07/13 22:36:59 Recieved info
+INFO 2022/07/13 22:36:59 Has been pinged
+INFO 2022/07/13 22:37:03 Writing to client
+INFO 2022/07/13 22:37:03 Recieved info
+INFO 2022/07/13 22:37:03 Has been pinged
+INFO 2022/07/13 22:37:07 Writing to client
+INFO 2022/07/13 22:37:07 Recieved info
+INFO 2022/07/13 22:37:07 Has been pinged
+INFO 2022/07/13 22:37:11 Writing to client
+INFO 2022/07/13 22:37:11 Recieved info
+INFO 2022/07/13 22:37:11 Has been pinged
+INFO 2022/07/13 22:37:15 Writing to client
+INFO 2022/07/13 22:37:15 Recieved info
+INFO 2022/07/13 22:37:15 Has been pinged
+INFO 2022/07/13 22:37:19 Writing to client
+INFO 2022/07/13 22:37:19 Recieved info
+INFO 2022/07/13 22:37:19 Has been pinged
+INFO 2022/07/13 22:37:23 Writing to client
+INFO 2022/07/13 22:37:23 Recieved info
+INFO 2022/07/13 22:37:23 Has been pinged
+INFO 2022/07/13 22:37:27 Writing to client
+INFO 2022/07/13 22:37:27 Recieved info
+INFO 2022/07/13 22:37:27 Has been pinged
+INFO 2022/07/13 22:37:31 Writing to client
+INFO 2022/07/13 22:37:31 Recieved info
+INFO 2022/07/13 22:37:31 Has been pinged
+INFO 2022/07/13 22:37:35 Writing to client
+INFO 2022/07/13 22:37:36 Recieved info
+INFO 2022/07/13 22:37:36 Has been pinged
+INFO 2022/07/13 22:37:40 Writing to client
+INFO 2022/07/13 22:37:40 Recieved info
+INFO 2022/07/13 22:37:40 Has been pinged
+INFO 2022/07/13 22:37:44 Writing to client
+INFO 2022/07/13 22:37:44 Recieved info
+INFO 2022/07/13 22:37:44 Has been pinged
+INFO 2022/07/13 22:37:48 Writing to client
+INFO 2022/07/13 22:37:48 Recieved info
+INFO 2022/07/13 22:37:48 Has been pinged
+INFO 2022/07/13 22:37:52 Writing to client
+INFO 2022/07/13 22:37:52 Recieved info
+INFO 2022/07/13 22:37:52 Has been pinged
+INFO 2022/07/13 22:37:56 Writing to client
+INFO 2022/07/13 22:37:56 Recieved info
+INFO 2022/07/13 22:37:56 Has been pinged
+INFO 2022/07/13 22:38:00 Writing to client
+INFO 2022/07/13 22:38:00 Recieved info
+INFO 2022/07/13 22:38:00 Has been pinged
+INFO 2022/07/13 22:38:04 Writing to client
+INFO 2022/07/13 22:38:04 Recieved info
+INFO 2022/07/13 22:38:04 Has been pinged
+INFO 2022/07/13 22:38:08 Writing to client
+INFO 2022/07/13 22:38:08 Recieved info
+INFO 2022/07/13 22:38:08 Has been pinged
+INFO 2022/07/13 22:38:12 Writing to client
+INFO 2022/07/13 22:38:12 Recieved info
+INFO 2022/07/13 22:38:12 Has been pinged
+INFO 2022/07/13 22:38:16 Writing to client
+INFO 2022/07/13 22:38:16 Recieved info
+INFO 2022/07/13 22:38:16 Has been pinged
+INFO 2022/07/13 22:38:20 Writing to client
+INFO 2022/07/13 22:38:20 Recieved info
+INFO 2022/07/13 22:38:20 Has been pinged
+INFO 2022/07/13 22:38:24 Writing to client
+INFO 2022/07/13 22:38:24 Recieved info
+INFO 2022/07/13 22:38:24 Has been pinged
+INFO 2022/07/13 22:38:28 Writing to client
+INFO 2022/07/13 22:38:28 Recieved info
+INFO 2022/07/13 22:38:28 Has been pinged
+INFO 2022/07/13 22:38:32 Writing to client
+INFO 2022/07/13 22:38:32 Recieved info
+INFO 2022/07/13 22:38:32 Has been pinged
+INFO 2022/07/13 22:38:36 Writing to client
+INFO 2022/07/13 22:38:36 Recieved info
+INFO 2022/07/13 22:38:36 Has been pinged
+INFO 2022/07/13 22:38:40 Writing to client
+INFO 2022/07/13 22:38:40 Recieved info
+INFO 2022/07/13 22:38:40 Has been pinged
+INFO 2022/07/13 22:38:44 Writing to client
+INFO 2022/07/13 22:38:44 Recieved info
+INFO 2022/07/13 22:38:44 Has been pinged
+INFO 2022/07/13 22:38:48 Writing to client
+INFO 2022/07/13 22:38:48 Recieved info
+INFO 2022/07/13 22:38:48 Has been pinged
+INFO 2022/07/13 22:38:52 Writing to client
+INFO 2022/07/13 22:38:52 Recieved info
+INFO 2022/07/13 22:38:52 Has been pinged
+INFO 2022/07/13 22:38:56 Writing to client
+INFO 2022/07/13 22:38:56 Recieved info
+INFO 2022/07/13 22:38:56 Has been pinged
+INFO 2022/07/13 22:39:00 Writing to client
+INFO 2022/07/13 22:39:00 Recieved info
+INFO 2022/07/13 22:39:00 Has been pinged
+INFO 2022/07/13 22:39:04 Writing to client
+INFO 2022/07/13 22:39:04 Recieved info
+INFO 2022/07/13 22:39:04 Has been pinged
+INFO 2022/07/17 10:16:27 Handling requests
+INFO 2022/07/17 10:16:30 Getting guilds
+INFO 2022/07/17 10:16:30 Pool created for guild 1
+INFO 2022/07/17 10:16:30 Pool created for guild 3
+INFO 2022/07/17 10:16:30 Pool created for guild 4
+INFO 2022/07/17 10:16:30 Websocket active of [::1]:8090
+INFO 2022/07/17 10:16:30 limit: 50, timestamp 1658016990310
+INFO 2022/07/17 10:16:34 Writing to client
+WARNING 2022/07/17 10:16:34 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/17 10:16:38 Writing to client
+WARNING 2022/07/17 10:16:38 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+ERROR 2022/07/17 10:16:40 read tcp [::1]:8090->[::1]:60560: i/o timeout
+INFO 2022/07/17 10:16:40 Disconnecting websocket
+INFO 2022/07/17 10:16:40 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 10:16:40 User left pool
+INFO 2022/07/17 10:16:40 Pool closed: 1
+INFO 2022/07/17 10:16:40 User left pool
+INFO 2022/07/17 10:16:40 Pool closed: 3
+INFO 2022/07/17 10:16:40 User left pool
+INFO 2022/07/17 10:16:40 Pool closed: 4
+INFO 2022/07/17 10:19:20 Handling requests
+INFO 2022/07/17 10:19:24 Getting guilds
+INFO 2022/07/17 10:19:24 Pool created for guild 1
+INFO 2022/07/17 10:19:24 Pool created for guild 3
+INFO 2022/07/17 10:19:24 Pool created for guild 4
+INFO 2022/07/17 10:19:24 Websocket active of [::1]:8090
+INFO 2022/07/17 10:19:24 limit: 50, timestamp 1658017164589
+INFO 2022/07/17 10:19:28 Writing to client
+INFO 2022/07/17 10:19:28 string json:"{\"dataType\":0,\"data\":{\"Data\":\"ping\"}}"
+WARNING 2022/07/17 10:19:28 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+INFO 2022/07/17 10:19:32 Writing to client
+INFO 2022/07/17 10:19:32 string json:"{\"dataType\":0,\"data\":{\"Data\":\"ping\"}}"
+WARNING 2022/07/17 10:19:32 an error occured during unmarshalling with websocket: [::1]:8090: json: cannot unmarshal string into Go value of type main.sendDataType
+ERROR 2022/07/17 10:19:34 read tcp [::1]:8090->[::1]:52166: i/o timeout
+INFO 2022/07/17 10:19:34 Disconnecting websocket
+INFO 2022/07/17 10:19:34 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 10:19:34 User left pool
+INFO 2022/07/17 10:19:34 Pool closed: 1
+INFO 2022/07/17 10:19:34 User left pool
+INFO 2022/07/17 10:19:34 Pool closed: 3
+INFO 2022/07/17 10:19:34 User left pool
+INFO 2022/07/17 10:19:34 Pool closed: 4
+INFO 2022/07/17 10:20:23 Pool created for guild 1
+INFO 2022/07/17 10:20:23 Pool created for guild 3
+INFO 2022/07/17 10:20:23 Pool created for guild 4
+INFO 2022/07/17 10:20:23 Websocket active of 127.0.0.1:8090
+INFO 2022/07/17 10:20:27 Writing to client
+INFO 2022/07/17 10:20:31 Writing to client
+ERROR 2022/07/17 10:20:33 read tcp 127.0.0.1:8090->127.0.0.1:49748: i/o timeout
+INFO 2022/07/17 10:20:33 Disconnecting websocket
+INFO 2022/07/17 10:20:33 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/17 10:20:33 User left pool
+INFO 2022/07/17 10:20:33 Pool closed: 1
+INFO 2022/07/17 10:20:33 User left pool
+INFO 2022/07/17 10:20:33 Pool closed: 3
+INFO 2022/07/17 10:20:33 User left pool
+INFO 2022/07/17 10:20:33 Pool closed: 4
+INFO 2022/07/17 10:21:01 Pool created for guild 1
+INFO 2022/07/17 10:21:01 Pool created for guild 3
+INFO 2022/07/17 10:21:01 Pool created for guild 4
+INFO 2022/07/17 10:21:01 Websocket active of 127.0.0.1:8090
+INFO 2022/07/17 10:21:05 Writing to client
+INFO 2022/07/17 10:21:06 string json:{"dataType" : 0, "data" : {"Data" : "ping"}}
+INFO 2022/07/17 10:21:06 Recieved info
+INFO 2022/07/17 10:21:06 Has been pinged
+INFO 2022/07/17 10:21:10 Writing to client
+INFO 2022/07/17 10:21:13 string json:{"dataType" : 0, "data" : {"Data" : "ping"}}
+INFO 2022/07/17 10:21:13 Recieved info
+INFO 2022/07/17 10:21:13 Has been pinged
+INFO 2022/07/17 10:21:17 Writing to client
+ERROR 2022/07/17 10:21:18 websocket: close 1000 (normal)
+INFO 2022/07/17 10:21:18 Disconnecting websocket
+INFO 2022/07/17 10:21:18 Websocket of 127.0.0.1:8090 has been closed
+INFO 2022/07/17 10:21:18 User left pool
+INFO 2022/07/17 10:21:18 Pool closed: 1
+INFO 2022/07/17 10:21:18 User left pool
+INFO 2022/07/17 10:21:18 Pool closed: 3
+INFO 2022/07/17 10:21:18 User left pool
+INFO 2022/07/17 10:21:18 Pool closed: 4
+INFO 2022/07/17 10:21:33 Getting guilds
+INFO 2022/07/17 10:21:33 Pool created for guild 1
+INFO 2022/07/17 10:21:33 Pool created for guild 3
+INFO 2022/07/17 10:21:33 Pool created for guild 4
+INFO 2022/07/17 10:21:33 Websocket active of [::1]:8090
+INFO 2022/07/17 10:21:33 limit: 50, timestamp 1658017293514
+INFO 2022/07/17 10:21:37 Writing to client
+INFO 2022/07/17 10:21:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:37 Recieved info
+INFO 2022/07/17 10:21:37 Has been pinged
+INFO 2022/07/17 10:21:41 Writing to client
+INFO 2022/07/17 10:21:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:41 Recieved info
+INFO 2022/07/17 10:21:41 Has been pinged
+INFO 2022/07/17 10:21:45 Writing to client
+INFO 2022/07/17 10:21:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:45 Recieved info
+INFO 2022/07/17 10:21:45 Has been pinged
+INFO 2022/07/17 10:21:49 Writing to client
+INFO 2022/07/17 10:21:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:49 Recieved info
+INFO 2022/07/17 10:21:49 Has been pinged
+INFO 2022/07/17 10:21:53 Writing to client
+INFO 2022/07/17 10:21:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:53 Recieved info
+INFO 2022/07/17 10:21:53 Has been pinged
+INFO 2022/07/17 10:21:57 Writing to client
+INFO 2022/07/17 10:21:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:21:57 Recieved info
+INFO 2022/07/17 10:21:57 Has been pinged
+INFO 2022/07/17 10:22:01 Writing to client
+INFO 2022/07/17 10:22:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:01 Recieved info
+INFO 2022/07/17 10:22:01 Has been pinged
+INFO 2022/07/17 10:22:05 Writing to client
+INFO 2022/07/17 10:22:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:05 Recieved info
+INFO 2022/07/17 10:22:05 Has been pinged
+INFO 2022/07/17 10:22:09 Writing to client
+INFO 2022/07/17 10:22:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:09 Recieved info
+INFO 2022/07/17 10:22:09 Has been pinged
+INFO 2022/07/17 10:22:13 Writing to client
+INFO 2022/07/17 10:22:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:13 Recieved info
+INFO 2022/07/17 10:22:13 Has been pinged
+INFO 2022/07/17 10:22:17 Writing to client
+INFO 2022/07/17 10:22:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:17 Recieved info
+INFO 2022/07/17 10:22:17 Has been pinged
+INFO 2022/07/17 10:22:21 Writing to client
+INFO 2022/07/17 10:22:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:21 Recieved info
+INFO 2022/07/17 10:22:21 Has been pinged
+INFO 2022/07/17 10:22:25 Writing to client
+INFO 2022/07/17 10:22:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:25 Recieved info
+INFO 2022/07/17 10:22:25 Has been pinged
+INFO 2022/07/17 10:22:29 Writing to client
+INFO 2022/07/17 10:22:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:29 Recieved info
+INFO 2022/07/17 10:22:29 Has been pinged
+INFO 2022/07/17 10:22:33 Writing to client
+INFO 2022/07/17 10:22:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:33 Recieved info
+INFO 2022/07/17 10:22:33 Has been pinged
+INFO 2022/07/17 10:22:37 Writing to client
+INFO 2022/07/17 10:22:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:37 Recieved info
+INFO 2022/07/17 10:22:37 Has been pinged
+INFO 2022/07/17 10:22:41 Writing to client
+INFO 2022/07/17 10:22:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:41 Recieved info
+INFO 2022/07/17 10:22:41 Has been pinged
+INFO 2022/07/17 10:22:45 Writing to client
+INFO 2022/07/17 10:22:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:45 Recieved info
+INFO 2022/07/17 10:22:45 Has been pinged
+INFO 2022/07/17 10:22:49 Writing to client
+INFO 2022/07/17 10:22:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:49 Recieved info
+INFO 2022/07/17 10:22:49 Has been pinged
+INFO 2022/07/17 10:22:53 Writing to client
+INFO 2022/07/17 10:22:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:53 Recieved info
+INFO 2022/07/17 10:22:53 Has been pinged
+INFO 2022/07/17 10:22:57 Writing to client
+INFO 2022/07/17 10:22:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:22:57 Recieved info
+INFO 2022/07/17 10:22:57 Has been pinged
+INFO 2022/07/17 10:23:01 Writing to client
+INFO 2022/07/17 10:23:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:01 Recieved info
+INFO 2022/07/17 10:23:01 Has been pinged
+INFO 2022/07/17 10:23:05 Writing to client
+INFO 2022/07/17 10:23:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:05 Recieved info
+INFO 2022/07/17 10:23:05 Has been pinged
+INFO 2022/07/17 10:23:09 Writing to client
+INFO 2022/07/17 10:23:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:09 Recieved info
+INFO 2022/07/17 10:23:09 Has been pinged
+INFO 2022/07/17 10:23:13 Writing to client
+INFO 2022/07/17 10:23:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:13 Recieved info
+INFO 2022/07/17 10:23:13 Has been pinged
+INFO 2022/07/17 10:23:17 Writing to client
+INFO 2022/07/17 10:23:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:17 Recieved info
+INFO 2022/07/17 10:23:17 Has been pinged
+INFO 2022/07/17 10:23:21 Writing to client
+INFO 2022/07/17 10:23:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:21 Recieved info
+INFO 2022/07/17 10:23:21 Has been pinged
+INFO 2022/07/17 10:23:25 Writing to client
+INFO 2022/07/17 10:23:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:25 Recieved info
+INFO 2022/07/17 10:23:25 Has been pinged
+INFO 2022/07/17 10:23:29 Writing to client
+INFO 2022/07/17 10:23:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:29 Recieved info
+INFO 2022/07/17 10:23:29 Has been pinged
+INFO 2022/07/17 10:23:33 Writing to client
+INFO 2022/07/17 10:23:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:33 Recieved info
+INFO 2022/07/17 10:23:33 Has been pinged
+INFO 2022/07/17 10:23:37 Writing to client
+INFO 2022/07/17 10:23:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:23:37 Recieved info
+INFO 2022/07/17 10:23:37 Has been pinged
+ERROR 2022/07/17 10:23:38 websocket: close 1001 (going away)
+INFO 2022/07/17 10:23:38 Disconnecting websocket
+INFO 2022/07/17 10:23:38 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 10:23:38 User left pool
+INFO 2022/07/17 10:23:38 Pool closed: 1
+INFO 2022/07/17 10:23:38 User left pool
+INFO 2022/07/17 10:23:38 Pool closed: 3
+INFO 2022/07/17 10:23:38 User left pool
+INFO 2022/07/17 10:23:38 Pool closed: 4
+INFO 2022/07/17 10:24:14 Getting guilds
+INFO 2022/07/17 10:24:14 Pool created for guild 1
+INFO 2022/07/17 10:24:14 Pool created for guild 3
+INFO 2022/07/17 10:24:14 Pool created for guild 4
+INFO 2022/07/17 10:24:14 Websocket active of [::1]:8090
+INFO 2022/07/17 10:24:14 limit: 50, timestamp 1658017454236
+INFO 2022/07/17 10:24:18 Writing to client
+INFO 2022/07/17 10:24:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:18 Recieved info
+INFO 2022/07/17 10:24:18 Has been pinged
+INFO 2022/07/17 10:24:22 Writing to client
+INFO 2022/07/17 10:24:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:22 Recieved info
+INFO 2022/07/17 10:24:22 Has been pinged
+INFO 2022/07/17 10:24:26 Writing to client
+INFO 2022/07/17 10:24:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:26 Recieved info
+INFO 2022/07/17 10:24:26 Has been pinged
+INFO 2022/07/17 10:24:31 Handling requests
+INFO 2022/07/17 10:24:32 Getting guilds
+INFO 2022/07/17 10:24:32 Pool created for guild 1
+INFO 2022/07/17 10:24:32 Pool created for guild 3
+INFO 2022/07/17 10:24:32 Pool created for guild 4
+INFO 2022/07/17 10:24:32 Websocket active of [::1]:8090
+INFO 2022/07/17 10:24:32 limit: 50, timestamp 1658017472971
+INFO 2022/07/17 10:24:40 Writing to client
+INFO 2022/07/17 10:24:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:40 Recieved info
+INFO 2022/07/17 10:24:40 Has been pinged
+INFO 2022/07/17 10:24:48 Writing to client
+INFO 2022/07/17 10:24:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:48 Recieved info
+INFO 2022/07/17 10:24:48 Has been pinged
+INFO 2022/07/17 10:24:56 Writing to client
+INFO 2022/07/17 10:24:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:24:56 Recieved info
+INFO 2022/07/17 10:24:56 Has been pinged
+INFO 2022/07/17 10:25:04 Writing to client
+INFO 2022/07/17 10:25:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:25:04 Recieved info
+INFO 2022/07/17 10:25:04 Has been pinged
+INFO 2022/07/17 10:25:12 Writing to client
+INFO 2022/07/17 10:25:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 10:25:12 Recieved info
+INFO 2022/07/17 10:25:12 Has been pinged
+INFO 2022/07/17 12:54:41 Handling requests
+INFO 2022/07/17 12:59:08 Handling requests
+INFO 2022/07/17 13:00:17 Handling requests
+INFO 2022/07/17 13:01:10 Pool created for guild 1
+INFO 2022/07/17 13:01:10 Pool created for guild 3
+INFO 2022/07/17 13:01:10 Getting guilds
+INFO 2022/07/17 13:01:10 Pool created for guild 4
+INFO 2022/07/17 13:01:10 Websocket active of [::1]:8090
+INFO 2022/07/17 13:01:10 limit: 50, timestamp 1658026870971
+INFO 2022/07/17 13:01:18 Writing to client
+INFO 2022/07/17 13:01:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:18 Recieved info
+INFO 2022/07/17 13:01:18 Has been pinged
+INFO 2022/07/17 13:01:26 Writing to client
+INFO 2022/07/17 13:01:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:26 Recieved info
+INFO 2022/07/17 13:01:26 Has been pinged
+INFO 2022/07/17 13:01:34 Writing to client
+INFO 2022/07/17 13:01:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:34 Recieved info
+INFO 2022/07/17 13:01:34 Has been pinged
+INFO 2022/07/17 13:01:42 Writing to client
+INFO 2022/07/17 13:01:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:42 Recieved info
+INFO 2022/07/17 13:01:42 Has been pinged
+INFO 2022/07/17 13:01:50 Writing to client
+INFO 2022/07/17 13:01:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:50 Recieved info
+INFO 2022/07/17 13:01:50 Has been pinged
+INFO 2022/07/17 13:01:58 Writing to client
+INFO 2022/07/17 13:01:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:01:58 Recieved info
+INFO 2022/07/17 13:01:58 Has been pinged
+INFO 2022/07/17 13:02:06 Writing to client
+INFO 2022/07/17 13:02:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:06 Recieved info
+INFO 2022/07/17 13:02:06 Has been pinged
+INFO 2022/07/17 13:02:14 Writing to client
+INFO 2022/07/17 13:02:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:14 Recieved info
+INFO 2022/07/17 13:02:14 Has been pinged
+INFO 2022/07/17 13:02:22 Writing to client
+INFO 2022/07/17 13:02:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:22 Recieved info
+INFO 2022/07/17 13:02:22 Has been pinged
+INFO 2022/07/17 13:02:30 Writing to client
+INFO 2022/07/17 13:02:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:31 Recieved info
+INFO 2022/07/17 13:02:31 Has been pinged
+INFO 2022/07/17 13:02:39 Writing to client
+INFO 2022/07/17 13:02:39 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:39 Recieved info
+INFO 2022/07/17 13:02:39 Has been pinged
+INFO 2022/07/17 13:02:47 Writing to client
+INFO 2022/07/17 13:02:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:47 Recieved info
+INFO 2022/07/17 13:02:47 Has been pinged
+INFO 2022/07/17 13:02:55 Writing to client
+INFO 2022/07/17 13:02:55 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:02:55 Recieved info
+INFO 2022/07/17 13:02:55 Has been pinged
+INFO 2022/07/17 13:03:03 Writing to client
+INFO 2022/07/17 13:03:03 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:03 Recieved info
+INFO 2022/07/17 13:03:03 Has been pinged
+INFO 2022/07/17 13:03:11 Writing to client
+INFO 2022/07/17 13:03:11 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:11 Recieved info
+INFO 2022/07/17 13:03:11 Has been pinged
+INFO 2022/07/17 13:03:19 Writing to client
+INFO 2022/07/17 13:03:19 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:19 Recieved info
+INFO 2022/07/17 13:03:19 Has been pinged
+INFO 2022/07/17 13:03:27 Writing to client
+INFO 2022/07/17 13:03:27 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:27 Recieved info
+INFO 2022/07/17 13:03:27 Has been pinged
+INFO 2022/07/17 13:03:35 Writing to client
+INFO 2022/07/17 13:03:35 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:35 Recieved info
+INFO 2022/07/17 13:03:35 Has been pinged
+INFO 2022/07/17 13:03:43 Writing to client
+INFO 2022/07/17 13:03:43 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:43 Recieved info
+INFO 2022/07/17 13:03:43 Has been pinged
+INFO 2022/07/17 13:03:51 Writing to client
+INFO 2022/07/17 13:03:51 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:51 Recieved info
+INFO 2022/07/17 13:03:51 Has been pinged
+INFO 2022/07/17 13:03:59 Writing to client
+INFO 2022/07/17 13:03:59 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:03:59 Recieved info
+INFO 2022/07/17 13:03:59 Has been pinged
+INFO 2022/07/17 13:04:07 Writing to client
+INFO 2022/07/17 13:04:07 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:07 Recieved info
+INFO 2022/07/17 13:04:07 Has been pinged
+INFO 2022/07/17 13:04:15 Writing to client
+INFO 2022/07/17 13:04:15 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:15 Recieved info
+INFO 2022/07/17 13:04:15 Has been pinged
+INFO 2022/07/17 13:04:23 Writing to client
+INFO 2022/07/17 13:04:23 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:23 Recieved info
+INFO 2022/07/17 13:04:23 Has been pinged
+INFO 2022/07/17 13:04:31 Writing to client
+INFO 2022/07/17 13:04:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:31 Recieved info
+INFO 2022/07/17 13:04:31 Has been pinged
+INFO 2022/07/17 13:04:39 Writing to client
+INFO 2022/07/17 13:04:39 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:39 Recieved info
+INFO 2022/07/17 13:04:39 Has been pinged
+INFO 2022/07/17 13:04:47 Writing to client
+INFO 2022/07/17 13:04:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:47 Recieved info
+INFO 2022/07/17 13:04:47 Has been pinged
+INFO 2022/07/17 13:04:55 Writing to client
+INFO 2022/07/17 13:04:55 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:04:55 Recieved info
+INFO 2022/07/17 13:04:55 Has been pinged
+INFO 2022/07/17 13:05:03 Writing to client
+INFO 2022/07/17 13:05:03 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:03 Recieved info
+INFO 2022/07/17 13:05:03 Has been pinged
+INFO 2022/07/17 13:05:11 Writing to client
+INFO 2022/07/17 13:05:11 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:11 Recieved info
+INFO 2022/07/17 13:05:11 Has been pinged
+INFO 2022/07/17 13:05:19 Writing to client
+INFO 2022/07/17 13:05:19 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:19 Recieved info
+INFO 2022/07/17 13:05:19 Has been pinged
+INFO 2022/07/17 13:05:27 Writing to client
+INFO 2022/07/17 13:05:27 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:27 Recieved info
+INFO 2022/07/17 13:05:27 Has been pinged
+INFO 2022/07/17 13:05:35 Writing to client
+INFO 2022/07/17 13:05:35 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:35 Recieved info
+INFO 2022/07/17 13:05:35 Has been pinged
+INFO 2022/07/17 13:05:43 Writing to client
+INFO 2022/07/17 13:05:43 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:43 Recieved info
+INFO 2022/07/17 13:05:43 Has been pinged
+INFO 2022/07/17 13:05:51 Writing to client
+INFO 2022/07/17 13:05:51 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:51 Recieved info
+INFO 2022/07/17 13:05:51 Has been pinged
+INFO 2022/07/17 13:05:59 Writing to client
+INFO 2022/07/17 13:05:59 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:05:59 Recieved info
+INFO 2022/07/17 13:05:59 Has been pinged
+INFO 2022/07/17 13:06:07 Writing to client
+INFO 2022/07/17 13:06:07 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:06:07 Recieved info
+INFO 2022/07/17 13:06:07 Has been pinged
+INFO 2022/07/17 13:06:15 Writing to client
+INFO 2022/07/17 13:06:15 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:06:15 Recieved info
+INFO 2022/07/17 13:06:15 Has been pinged
+INFO 2022/07/17 13:07:11 Handling requests
+INFO 2022/07/17 13:07:26 Pool created for guild 1
+INFO 2022/07/17 13:07:26 Pool created for guild 3
+INFO 2022/07/17 13:07:26 Pool created for guild 4
+INFO 2022/07/17 13:07:26 Websocket active of [::1]:8090
+INFO 2022/07/17 13:07:26 Getting guilds
+INFO 2022/07/17 13:07:27 limit: 50, timestamp 1658027247069
+INFO 2022/07/17 13:07:34 Writing to client
+INFO 2022/07/17 13:07:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:07:34 Recieved info
+INFO 2022/07/17 13:07:34 Has been pinged
+INFO 2022/07/17 13:07:42 Writing to client
+INFO 2022/07/17 13:07:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:07:42 Recieved info
+INFO 2022/07/17 13:07:42 Has been pinged
+INFO 2022/07/17 13:07:50 Writing to client
+INFO 2022/07/17 13:07:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:07:50 Recieved info
+INFO 2022/07/17 13:07:50 Has been pinged
+ERROR 2022/07/17 13:07:54 websocket: close 1001 (going away)
+INFO 2022/07/17 13:07:54 Disconnecting websocket
+INFO 2022/07/17 13:07:54 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 13:07:54 User left pool
+INFO 2022/07/17 13:07:54 Pool closed: 1
+INFO 2022/07/17 13:07:54 User left pool
+INFO 2022/07/17 13:07:54 Pool closed: 3
+INFO 2022/07/17 13:07:54 User left pool
+INFO 2022/07/17 13:07:54 Pool closed: 4
+INFO 2022/07/17 13:10:38 Shutting down server
+FATAL 2022/07/17 13:10:38 http: Server closed
+INFO 2022/07/17 13:10:50 Handling requests
+INFO 2022/07/17 13:10:57 Pool created for guild 1
+INFO 2022/07/17 13:10:57 Pool created for guild 3
+INFO 2022/07/17 13:10:57 Pool created for guild 4
+INFO 2022/07/17 13:10:57 Websocket active of [::1]:8090
+INFO 2022/07/17 13:10:57 Getting guilds
+INFO 2022/07/17 13:10:57 limit: 50, timestamp 1658027457721
+INFO 2022/07/17 13:11:05 Writing to client
+INFO 2022/07/17 13:11:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:11:05 Recieved info
+INFO 2022/07/17 13:11:05 Has been pinged
+INFO 2022/07/17 13:11:13 Writing to client
+INFO 2022/07/17 13:11:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:11:13 Recieved info
+INFO 2022/07/17 13:11:13 Has been pinged
+INFO 2022/07/17 13:11:21 Writing to client
+INFO 2022/07/17 13:11:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:11:21 Recieved info
+INFO 2022/07/17 13:11:21 Has been pinged
+INFO 2022/07/17 13:11:29 Writing to client
+INFO 2022/07/17 13:11:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:11:29 Recieved info
+INFO 2022/07/17 13:11:29 Has been pinged
+INFO 2022/07/17 13:11:31 Shutting down server
+FATAL 2022/07/17 13:11:31 http: Server closed

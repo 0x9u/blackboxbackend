@@ -19,6 +19,8 @@
 - Add machine learning
 
 # Currently doing
+- **!!CRITICAL!!** Something is causing high cpu usage when websockets are running 
+    - possibly for loop?
 - implement websocket pool for better efficency - done
     - gather websockets associated with a guild - done (Needs more testing)
 - Restructure the token to use sql database instead of ram - done

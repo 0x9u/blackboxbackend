@@ -37,15 +37,14 @@ func (p *pool) run() {
 		case id := <-p.Remove:
 			log.WriteLog(logger.INFO, "User left pool")
 			delete(p.clients, id)
+			if len(p.clients) == 0 { //quit if no clients left in pool
+				return
+			}
 		case data := <-p.Add:
 			p.clients[data.Id] = data.Ch
 		case data := <-p.Broadcast:
 			for _, ch := range p.clients {
 				ch <- data
-			}
-		default:
-			if len(p.clients) == 0 { //quit if no clients left in pool
-				return
 			}
 		}
 	}

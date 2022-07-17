@@ -37,7 +37,7 @@ type pingpong struct {
 var lock sync.Mutex
 
 const (
-	pingDelay    = 10 * time.Second
+	pingDelay    = 20 * time.Second
 	messageLimit = 2 << 7 //256
 	pongDelay    = (pingDelay * 2) / 5
 )
@@ -112,6 +112,7 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.INFO, "Disconnecting websocket")
 			break
 		}
+		log.WriteLog(logger.INFO, "string json:"+string(message))
 		var recieved sendDataType
 		err = json.Unmarshal(message, &recieved)
 		if err != nil {
