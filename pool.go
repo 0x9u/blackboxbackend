@@ -27,8 +27,8 @@ type pool struct {
 func (p *pool) run() {
 	defer func() {
 		log.WriteLog(logger.INFO, fmt.Sprintf("Pool closed: %d", p.guild))
-		delete(pools, p.guild)
-		close(p.Broadcast)
+		delete(pools, p.guild) //race condition here need FIX ASAP
+		close(p.Broadcast)     //with pool:30 and client:73
 		close(p.Remove)
 		close(p.Add)
 	}() //gracefully remove the pool when done

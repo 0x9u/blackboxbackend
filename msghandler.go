@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/logger"
@@ -74,6 +75,9 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 
+	//Remove any newlines in beginning of message or any stupid ass text
+	datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
+
 	row = db.QueryRow("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4) RETURNING id", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time)
 	if err = row.Err(); err != nil {
 		reportError(http.StatusBadRequest, w, err)
@@ -129,9 +133,9 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 	rows, err := db.Query(
 		`SELECT m.*, u.username
 		FROM messages m INNER JOIN users u 
-		ON u.id = m.id 
+		ON u.id = m.user_id 
 		WHERE time <= $1 AND guild_id = $2 
-		ORDER BY time DESC LIMIT $3`,
+		ORDER BY time LIMIT $3`,
 		timestamp, guild, limit)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)

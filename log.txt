@@ -7181,3 +7181,1835 @@ INFO 2022/07/17 13:11:29 Recieved info
 INFO 2022/07/17 13:11:29 Has been pinged
 INFO 2022/07/17 13:11:31 Shutting down server
 FATAL 2022/07/17 13:11:31 http: Server closed
+INFO 2022/07/17 13:12:48 Handling requests
+INFO 2022/07/17 13:12:51 Getting guilds
+INFO 2022/07/17 13:12:51 Pool created for guild 1
+INFO 2022/07/17 13:12:51 Pool created for guild 3
+INFO 2022/07/17 13:12:51 Pool created for guild 4
+INFO 2022/07/17 13:12:51 Websocket active of [::1]:8090
+INFO 2022/07/17 13:12:52 limit: 50, timestamp 1658027572180
+INFO 2022/07/17 13:12:59 Writing to client
+INFO 2022/07/17 13:12:59 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 13:12:59 Recieved info
+INFO 2022/07/17 13:12:59 Has been pinged
+ERROR 2022/07/17 13:13:03 websocket: close 1001 (going away)
+INFO 2022/07/17 13:13:03 Disconnecting websocket
+INFO 2022/07/17 13:13:03 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 13:13:03 User left pool
+INFO 2022/07/17 13:13:03 Pool closed: 1
+INFO 2022/07/17 13:13:03 User left pool
+INFO 2022/07/17 13:13:03 Pool closed: 3
+INFO 2022/07/17 13:13:03 User left pool
+INFO 2022/07/17 13:13:03 Pool closed: 4
+INFO 2022/07/17 15:16:03 Shutting down server
+FATAL 2022/07/17 15:16:03 http: Server closed
+INFO 2022/07/17 15:16:11 Handling requests
+INFO 2022/07/17 21:43:51 Handling requests
+INFO 2022/07/17 21:44:00 Pool created for guild 1
+INFO 2022/07/17 21:44:00 Pool created for guild 3
+INFO 2022/07/17 21:44:00 Pool created for guild 4
+INFO 2022/07/17 21:44:00 Getting guilds
+INFO 2022/07/17 21:44:00 Websocket active of [::1]:8090
+INFO 2022/07/17 21:44:00 limit: 50, timestamp 1658058240451
+INFO 2022/07/17 21:44:08 Writing to client
+INFO 2022/07/17 21:44:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:08 Recieved info
+INFO 2022/07/17 21:44:08 Has been pinged
+INFO 2022/07/17 21:44:16 Writing to client
+INFO 2022/07/17 21:44:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:16 Recieved info
+INFO 2022/07/17 21:44:16 Has been pinged
+INFO 2022/07/17 21:44:24 Writing to client
+INFO 2022/07/17 21:44:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:24 Recieved info
+INFO 2022/07/17 21:44:24 Has been pinged
+INFO 2022/07/17 21:44:32 Writing to client
+INFO 2022/07/17 21:44:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:32 Recieved info
+INFO 2022/07/17 21:44:32 Has been pinged
+INFO 2022/07/17 21:44:40 Writing to client
+INFO 2022/07/17 21:44:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:40 Recieved info
+INFO 2022/07/17 21:44:40 Has been pinged
+INFO 2022/07/17 21:44:48 Writing to client
+INFO 2022/07/17 21:44:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:48 Recieved info
+INFO 2022/07/17 21:44:48 Has been pinged
+INFO 2022/07/17 21:44:56 Writing to client
+INFO 2022/07/17 21:44:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:44:56 Recieved info
+INFO 2022/07/17 21:44:56 Has been pinged
+INFO 2022/07/17 21:45:04 Writing to client
+INFO 2022/07/17 21:45:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:04 Recieved info
+INFO 2022/07/17 21:45:04 Has been pinged
+INFO 2022/07/17 21:45:12 Writing to client
+INFO 2022/07/17 21:45:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:12 Recieved info
+INFO 2022/07/17 21:45:12 Has been pinged
+INFO 2022/07/17 21:45:20 Writing to client
+INFO 2022/07/17 21:45:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:20 Recieved info
+INFO 2022/07/17 21:45:20 Has been pinged
+INFO 2022/07/17 21:45:28 Writing to client
+INFO 2022/07/17 21:45:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:28 Recieved info
+INFO 2022/07/17 21:45:28 Has been pinged
+INFO 2022/07/17 21:45:36 Writing to client
+INFO 2022/07/17 21:45:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:36 Recieved info
+INFO 2022/07/17 21:45:36 Has been pinged
+INFO 2022/07/17 21:45:44 Writing to client
+INFO 2022/07/17 21:45:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:44 Recieved info
+INFO 2022/07/17 21:45:44 Has been pinged
+INFO 2022/07/17 21:45:52 Writing to client
+INFO 2022/07/17 21:45:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:45:52 Recieved info
+INFO 2022/07/17 21:45:52 Has been pinged
+INFO 2022/07/17 21:46:00 Writing to client
+INFO 2022/07/17 21:46:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:00 Recieved info
+INFO 2022/07/17 21:46:00 Has been pinged
+INFO 2022/07/17 21:46:08 Writing to client
+INFO 2022/07/17 21:46:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:08 Recieved info
+INFO 2022/07/17 21:46:08 Has been pinged
+INFO 2022/07/17 21:46:16 Writing to client
+INFO 2022/07/17 21:46:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:16 Recieved info
+INFO 2022/07/17 21:46:16 Has been pinged
+INFO 2022/07/17 21:46:24 Writing to client
+INFO 2022/07/17 21:46:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:24 Recieved info
+INFO 2022/07/17 21:46:24 Has been pinged
+INFO 2022/07/17 21:46:32 Writing to client
+INFO 2022/07/17 21:46:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:32 Recieved info
+INFO 2022/07/17 21:46:32 Has been pinged
+INFO 2022/07/17 21:46:40 Writing to client
+INFO 2022/07/17 21:46:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:40 Recieved info
+INFO 2022/07/17 21:46:40 Has been pinged
+INFO 2022/07/17 21:46:48 Writing to client
+INFO 2022/07/17 21:46:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:48 Recieved info
+INFO 2022/07/17 21:46:48 Has been pinged
+INFO 2022/07/17 21:46:56 Writing to client
+INFO 2022/07/17 21:46:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:46:56 Recieved info
+INFO 2022/07/17 21:46:56 Has been pinged
+INFO 2022/07/17 21:47:04 Writing to client
+INFO 2022/07/17 21:47:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:04 Recieved info
+INFO 2022/07/17 21:47:04 Has been pinged
+INFO 2022/07/17 21:47:12 Writing to client
+INFO 2022/07/17 21:47:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:12 Recieved info
+INFO 2022/07/17 21:47:12 Has been pinged
+ERROR 2022/07/17 21:47:13 websocket: close 1001 (going away)
+INFO 2022/07/17 21:47:13 Disconnecting websocket
+INFO 2022/07/17 21:47:13 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:47:13 User left pool
+INFO 2022/07/17 21:47:13 Pool closed: 4
+INFO 2022/07/17 21:47:13 User left pool
+INFO 2022/07/17 21:47:13 Pool closed: 1
+INFO 2022/07/17 21:47:13 User left pool
+INFO 2022/07/17 21:47:13 Pool closed: 3
+INFO 2022/07/17 21:47:14 Getting guilds
+INFO 2022/07/17 21:47:14 Pool created for guild 1
+INFO 2022/07/17 21:47:14 Pool created for guild 3
+INFO 2022/07/17 21:47:14 Pool created for guild 4
+INFO 2022/07/17 21:47:14 Websocket active of [::1]:8090
+INFO 2022/07/17 21:47:15 limit: 50, timestamp 1658058435146
+INFO 2022/07/17 21:47:22 Writing to client
+INFO 2022/07/17 21:47:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:22 Recieved info
+INFO 2022/07/17 21:47:22 Has been pinged
+INFO 2022/07/17 21:47:30 Writing to client
+INFO 2022/07/17 21:47:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:30 Recieved info
+INFO 2022/07/17 21:47:30 Has been pinged
+ERROR 2022/07/17 21:47:38 websocket: close 1001 (going away)
+INFO 2022/07/17 21:47:38 Disconnecting websocket
+INFO 2022/07/17 21:47:38 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:47:38 User left pool
+INFO 2022/07/17 21:47:38 Pool closed: 4
+INFO 2022/07/17 21:47:38 User left pool
+INFO 2022/07/17 21:47:38 Pool closed: 1
+INFO 2022/07/17 21:47:38 User left pool
+INFO 2022/07/17 21:47:38 Pool closed: 3
+INFO 2022/07/17 21:47:39 Getting guilds
+INFO 2022/07/17 21:47:39 Pool created for guild 1
+INFO 2022/07/17 21:47:39 Pool created for guild 3
+INFO 2022/07/17 21:47:39 Pool created for guild 4
+INFO 2022/07/17 21:47:39 Websocket active of [::1]:8090
+INFO 2022/07/17 21:47:40 limit: 50, timestamp 1658058460544
+INFO 2022/07/17 21:47:42 {"msg":"asdasdasdas","guild":1}
+INFO 2022/07/17 21:47:42 Message recieved 
+INFO 2022/07/17 21:47:47 Writing to client
+INFO 2022/07/17 21:47:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:47 Recieved info
+INFO 2022/07/17 21:47:47 Has been pinged
+INFO 2022/07/17 21:47:55 Writing to client
+INFO 2022/07/17 21:47:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:47:56 Recieved info
+INFO 2022/07/17 21:47:56 Has been pinged
+INFO 2022/07/17 21:48:04 Writing to client
+INFO 2022/07/17 21:48:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:04 Recieved info
+INFO 2022/07/17 21:48:04 Has been pinged
+INFO 2022/07/17 21:48:12 Writing to client
+INFO 2022/07/17 21:48:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:12 Recieved info
+INFO 2022/07/17 21:48:12 Has been pinged
+INFO 2022/07/17 21:48:20 Writing to client
+INFO 2022/07/17 21:48:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:20 Recieved info
+INFO 2022/07/17 21:48:20 Has been pinged
+INFO 2022/07/17 21:48:28 Writing to client
+INFO 2022/07/17 21:48:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:28 Recieved info
+INFO 2022/07/17 21:48:28 Has been pinged
+ERROR 2022/07/17 21:48:32 websocket: close 1001 (going away)
+INFO 2022/07/17 21:48:32 Disconnecting websocket
+INFO 2022/07/17 21:48:32 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:48:32 User left pool
+INFO 2022/07/17 21:48:32 Pool closed: 4
+INFO 2022/07/17 21:48:32 User left pool
+INFO 2022/07/17 21:48:32 Pool closed: 1
+INFO 2022/07/17 21:48:32 User left pool
+INFO 2022/07/17 21:48:32 Pool closed: 3
+INFO 2022/07/17 21:48:33 Getting guilds
+INFO 2022/07/17 21:48:33 Pool created for guild 1
+INFO 2022/07/17 21:48:33 Pool created for guild 3
+INFO 2022/07/17 21:48:33 Pool created for guild 4
+INFO 2022/07/17 21:48:33 Websocket active of [::1]:8090
+INFO 2022/07/17 21:48:34 limit: 50, timestamp 1658058514309
+INFO 2022/07/17 21:48:41 Writing to client
+INFO 2022/07/17 21:48:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:41 Recieved info
+INFO 2022/07/17 21:48:41 Has been pinged
+INFO 2022/07/17 21:48:49 Writing to client
+INFO 2022/07/17 21:48:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:49 Recieved info
+INFO 2022/07/17 21:48:49 Has been pinged
+INFO 2022/07/17 21:48:50 {"msg":"sadasd","guild":1}
+INFO 2022/07/17 21:48:50 Message recieved 
+INFO 2022/07/17 21:48:57 Writing to client
+INFO 2022/07/17 21:48:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:48:57 Recieved info
+INFO 2022/07/17 21:48:57 Has been pinged
+INFO 2022/07/17 21:49:05 Writing to client
+INFO 2022/07/17 21:49:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:05 Recieved info
+INFO 2022/07/17 21:49:05 Has been pinged
+INFO 2022/07/17 21:49:13 Writing to client
+INFO 2022/07/17 21:49:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:13 Recieved info
+INFO 2022/07/17 21:49:13 Has been pinged
+INFO 2022/07/17 21:49:21 Writing to client
+INFO 2022/07/17 21:49:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:21 Recieved info
+INFO 2022/07/17 21:49:21 Has been pinged
+INFO 2022/07/17 21:49:29 Writing to client
+INFO 2022/07/17 21:49:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:30 Recieved info
+INFO 2022/07/17 21:49:30 Has been pinged
+INFO 2022/07/17 21:49:38 Writing to client
+INFO 2022/07/17 21:49:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:38 Recieved info
+INFO 2022/07/17 21:49:38 Has been pinged
+INFO 2022/07/17 21:49:46 Writing to client
+INFO 2022/07/17 21:49:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:46 Recieved info
+INFO 2022/07/17 21:49:46 Has been pinged
+INFO 2022/07/17 21:49:54 Writing to client
+INFO 2022/07/17 21:49:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:49:54 Recieved info
+INFO 2022/07/17 21:49:54 Has been pinged
+INFO 2022/07/17 21:50:02 Writing to client
+INFO 2022/07/17 21:50:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:02 Recieved info
+INFO 2022/07/17 21:50:02 Has been pinged
+INFO 2022/07/17 21:50:10 Writing to client
+INFO 2022/07/17 21:50:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:10 Recieved info
+INFO 2022/07/17 21:50:10 Has been pinged
+INFO 2022/07/17 21:50:18 Writing to client
+INFO 2022/07/17 21:50:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:18 Recieved info
+INFO 2022/07/17 21:50:18 Has been pinged
+INFO 2022/07/17 21:50:26 Writing to client
+INFO 2022/07/17 21:50:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:26 Recieved info
+INFO 2022/07/17 21:50:26 Has been pinged
+ERROR 2022/07/17 21:50:28 websocket: close 1001 (going away)
+INFO 2022/07/17 21:50:28 Disconnecting websocket
+INFO 2022/07/17 21:50:28 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:50:28 User left pool
+INFO 2022/07/17 21:50:28 Pool closed: 4
+INFO 2022/07/17 21:50:28 User left pool
+INFO 2022/07/17 21:50:28 Pool closed: 1
+INFO 2022/07/17 21:50:28 User left pool
+INFO 2022/07/17 21:50:28 Pool closed: 3
+INFO 2022/07/17 21:50:29 Getting guilds
+INFO 2022/07/17 21:50:29 Pool created for guild 1
+INFO 2022/07/17 21:50:29 Pool created for guild 3
+INFO 2022/07/17 21:50:29 Pool created for guild 4
+INFO 2022/07/17 21:50:29 Websocket active of [::1]:8090
+INFO 2022/07/17 21:50:29 limit: 50, timestamp 1658058629438
+INFO 2022/07/17 21:50:37 Writing to client
+INFO 2022/07/17 21:50:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:37 Recieved info
+INFO 2022/07/17 21:50:37 Has been pinged
+INFO 2022/07/17 21:50:45 Writing to client
+INFO 2022/07/17 21:50:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:45 Recieved info
+INFO 2022/07/17 21:50:45 Has been pinged
+INFO 2022/07/17 21:50:53 Writing to client
+INFO 2022/07/17 21:50:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:50:53 Recieved info
+INFO 2022/07/17 21:50:53 Has been pinged
+INFO 2022/07/17 21:51:01 Writing to client
+INFO 2022/07/17 21:51:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:01 Recieved info
+INFO 2022/07/17 21:51:01 Has been pinged
+INFO 2022/07/17 21:51:09 Writing to client
+INFO 2022/07/17 21:51:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:09 Recieved info
+INFO 2022/07/17 21:51:09 Has been pinged
+INFO 2022/07/17 21:51:17 Writing to client
+INFO 2022/07/17 21:51:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:17 Recieved info
+INFO 2022/07/17 21:51:17 Has been pinged
+INFO 2022/07/17 21:51:25 Writing to client
+INFO 2022/07/17 21:51:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:25 Recieved info
+INFO 2022/07/17 21:51:25 Has been pinged
+INFO 2022/07/17 21:51:33 Writing to client
+INFO 2022/07/17 21:51:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:33 Recieved info
+INFO 2022/07/17 21:51:33 Has been pinged
+INFO 2022/07/17 21:51:41 Writing to client
+INFO 2022/07/17 21:51:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:41 Recieved info
+INFO 2022/07/17 21:51:41 Has been pinged
+INFO 2022/07/17 21:51:49 Writing to client
+INFO 2022/07/17 21:51:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:49 Recieved info
+INFO 2022/07/17 21:51:49 Has been pinged
+INFO 2022/07/17 21:51:57 Writing to client
+INFO 2022/07/17 21:51:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:51:57 Recieved info
+INFO 2022/07/17 21:51:57 Has been pinged
+INFO 2022/07/17 21:52:05 Writing to client
+INFO 2022/07/17 21:52:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:52:05 Recieved info
+INFO 2022/07/17 21:52:05 Has been pinged
+ERROR 2022/07/17 21:52:08 websocket: close 1001 (going away)
+INFO 2022/07/17 21:52:08 Disconnecting websocket
+INFO 2022/07/17 21:52:08 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:52:08 User left pool
+INFO 2022/07/17 21:52:08 Pool closed: 1
+INFO 2022/07/17 21:52:08 User left pool
+INFO 2022/07/17 21:52:08 Pool closed: 4
+INFO 2022/07/17 21:52:08 User left pool
+INFO 2022/07/17 21:52:08 Pool closed: 3
+INFO 2022/07/17 21:52:09 Pool created for guild 1
+INFO 2022/07/17 21:52:09 Pool created for guild 3
+INFO 2022/07/17 21:52:09 Pool created for guild 4
+INFO 2022/07/17 21:52:09 Websocket active of [::1]:8090
+INFO 2022/07/17 21:52:09 Getting guilds
+INFO 2022/07/17 21:52:10 limit: 50, timestamp 1658058730011
+INFO 2022/07/17 21:52:17 Writing to client
+INFO 2022/07/17 21:52:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:52:17 Recieved info
+INFO 2022/07/17 21:52:17 Has been pinged
+INFO 2022/07/17 21:52:25 Writing to client
+INFO 2022/07/17 21:52:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:52:25 Recieved info
+INFO 2022/07/17 21:52:25 Has been pinged
+INFO 2022/07/17 21:52:26 {"content":"Hello this is the first message sent by blackbox creator","guild":1}
+INFO 2022/07/17 21:52:26 Message recieved Hello this is the first message sent by blackbox creator
+ERROR 2022/07/17 21:52:30 websocket: close 1001 (going away)
+INFO 2022/07/17 21:52:30 Disconnecting websocket
+INFO 2022/07/17 21:52:30 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:52:30 User left pool
+INFO 2022/07/17 21:52:30 Pool closed: 1
+INFO 2022/07/17 21:52:30 User left pool
+INFO 2022/07/17 21:52:30 Pool closed: 4
+INFO 2022/07/17 21:52:30 User left pool
+INFO 2022/07/17 21:52:30 Pool closed: 3
+INFO 2022/07/17 21:52:31 Getting guilds
+INFO 2022/07/17 21:52:31 Pool created for guild 1
+INFO 2022/07/17 21:52:31 Pool created for guild 3
+INFO 2022/07/17 21:52:31 Pool created for guild 4
+INFO 2022/07/17 21:52:31 Websocket active of [::1]:8090
+INFO 2022/07/17 21:52:31 limit: 50, timestamp 1658058751499
+INFO 2022/07/17 21:52:39 Writing to client
+INFO 2022/07/17 21:52:39 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:52:39 Recieved info
+INFO 2022/07/17 21:52:39 Has been pinged
+INFO 2022/07/17 21:52:47 Writing to client
+INFO 2022/07/17 21:52:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:52:47 Recieved info
+INFO 2022/07/17 21:52:47 Has been pinged
+ERROR 2022/07/17 21:52:52 websocket: close 1001 (going away)
+INFO 2022/07/17 21:52:52 Disconnecting websocket
+INFO 2022/07/17 21:52:52 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:52:52 User left pool
+INFO 2022/07/17 21:52:52 Pool closed: 4
+INFO 2022/07/17 21:52:52 User left pool
+INFO 2022/07/17 21:52:52 Pool closed: 1
+INFO 2022/07/17 21:52:52 User left pool
+INFO 2022/07/17 21:52:52 Pool closed: 3
+INFO 2022/07/17 21:52:53 Getting guilds
+INFO 2022/07/17 21:52:53 Pool created for guild 1
+INFO 2022/07/17 21:52:53 Pool created for guild 3
+INFO 2022/07/17 21:52:53 Pool created for guild 4
+INFO 2022/07/17 21:52:53 Websocket active of [::1]:8090
+INFO 2022/07/17 21:52:53 limit: 50, timestamp 1658058773410
+INFO 2022/07/17 21:53:01 Writing to client
+INFO 2022/07/17 21:53:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:01 Recieved info
+INFO 2022/07/17 21:53:01 Has been pinged
+INFO 2022/07/17 21:53:09 Writing to client
+INFO 2022/07/17 21:53:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:09 Recieved info
+INFO 2022/07/17 21:53:09 Has been pinged
+INFO 2022/07/17 21:53:17 Writing to client
+INFO 2022/07/17 21:53:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:17 Recieved info
+INFO 2022/07/17 21:53:17 Has been pinged
+INFO 2022/07/17 21:53:19 {"content":"Hello!","guild":1}
+INFO 2022/07/17 21:53:19 Message recieved Hello!
+ERROR 2022/07/17 21:53:21 websocket: close 1001 (going away)
+INFO 2022/07/17 21:53:21 Disconnecting websocket
+INFO 2022/07/17 21:53:21 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 21:53:21 User left pool
+INFO 2022/07/17 21:53:21 Pool closed: 4
+INFO 2022/07/17 21:53:21 User left pool
+INFO 2022/07/17 21:53:21 Pool closed: 1
+INFO 2022/07/17 21:53:21 User left pool
+INFO 2022/07/17 21:53:21 Pool closed: 3
+INFO 2022/07/17 21:53:21 Getting guilds
+INFO 2022/07/17 21:53:21 Pool created for guild 1
+INFO 2022/07/17 21:53:21 Pool created for guild 3
+INFO 2022/07/17 21:53:21 Pool created for guild 4
+INFO 2022/07/17 21:53:21 Websocket active of [::1]:8090
+INFO 2022/07/17 21:53:22 limit: 50, timestamp 1658058802225
+INFO 2022/07/17 21:53:29 Writing to client
+INFO 2022/07/17 21:53:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:29 Recieved info
+INFO 2022/07/17 21:53:29 Has been pinged
+INFO 2022/07/17 21:53:37 Writing to client
+INFO 2022/07/17 21:53:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:37 Recieved info
+INFO 2022/07/17 21:53:37 Has been pinged
+INFO 2022/07/17 21:53:45 Writing to client
+INFO 2022/07/17 21:53:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:45 Recieved info
+INFO 2022/07/17 21:53:45 Has been pinged
+INFO 2022/07/17 21:53:53 Writing to client
+INFO 2022/07/17 21:53:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:53:54 Recieved info
+INFO 2022/07/17 21:53:54 Has been pinged
+INFO 2022/07/17 21:54:02 Writing to client
+INFO 2022/07/17 21:54:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:02 Recieved info
+INFO 2022/07/17 21:54:02 Has been pinged
+INFO 2022/07/17 21:54:10 Writing to client
+INFO 2022/07/17 21:54:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:10 Recieved info
+INFO 2022/07/17 21:54:10 Has been pinged
+INFO 2022/07/17 21:54:18 Writing to client
+INFO 2022/07/17 21:54:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:18 Recieved info
+INFO 2022/07/17 21:54:18 Has been pinged
+INFO 2022/07/17 21:54:26 Writing to client
+INFO 2022/07/17 21:54:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:26 Recieved info
+INFO 2022/07/17 21:54:26 Has been pinged
+INFO 2022/07/17 21:54:34 Writing to client
+INFO 2022/07/17 21:54:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:34 Recieved info
+INFO 2022/07/17 21:54:34 Has been pinged
+INFO 2022/07/17 21:54:42 Writing to client
+INFO 2022/07/17 21:54:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:42 Recieved info
+INFO 2022/07/17 21:54:42 Has been pinged
+INFO 2022/07/17 21:54:50 Writing to client
+INFO 2022/07/17 21:54:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:50 Recieved info
+INFO 2022/07/17 21:54:50 Has been pinged
+INFO 2022/07/17 21:54:58 Writing to client
+INFO 2022/07/17 21:54:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:54:58 Recieved info
+INFO 2022/07/17 21:54:58 Has been pinged
+INFO 2022/07/17 21:55:06 Writing to client
+INFO 2022/07/17 21:55:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:06 Recieved info
+INFO 2022/07/17 21:55:06 Has been pinged
+INFO 2022/07/17 21:55:14 Writing to client
+INFO 2022/07/17 21:55:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:14 Recieved info
+INFO 2022/07/17 21:55:14 Has been pinged
+INFO 2022/07/17 21:55:22 Writing to client
+INFO 2022/07/17 21:55:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:22 Recieved info
+INFO 2022/07/17 21:55:22 Has been pinged
+INFO 2022/07/17 21:55:30 Writing to client
+INFO 2022/07/17 21:55:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:30 Recieved info
+INFO 2022/07/17 21:55:30 Has been pinged
+INFO 2022/07/17 21:55:38 Writing to client
+INFO 2022/07/17 21:55:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:38 Recieved info
+INFO 2022/07/17 21:55:38 Has been pinged
+INFO 2022/07/17 21:55:46 Writing to client
+INFO 2022/07/17 21:55:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:46 Recieved info
+INFO 2022/07/17 21:55:46 Has been pinged
+INFO 2022/07/17 21:55:54 Writing to client
+INFO 2022/07/17 21:55:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:55:54 Recieved info
+INFO 2022/07/17 21:55:54 Has been pinged
+INFO 2022/07/17 21:56:02 Writing to client
+INFO 2022/07/17 21:56:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:02 Recieved info
+INFO 2022/07/17 21:56:02 Has been pinged
+INFO 2022/07/17 21:56:10 Handling requests
+INFO 2022/07/17 21:56:14 Getting guilds
+INFO 2022/07/17 21:56:14 Pool created for guild 1
+INFO 2022/07/17 21:56:14 Pool created for guild 3
+INFO 2022/07/17 21:56:14 Pool created for guild 4
+INFO 2022/07/17 21:56:14 Websocket active of [::1]:8090
+INFO 2022/07/17 21:56:14 limit: 50, timestamp 1658058974780
+INFO 2022/07/17 21:56:22 Writing to client
+INFO 2022/07/17 21:56:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:22 Recieved info
+INFO 2022/07/17 21:56:22 Has been pinged
+INFO 2022/07/17 21:56:30 Writing to client
+INFO 2022/07/17 21:56:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:30 Recieved info
+INFO 2022/07/17 21:56:30 Has been pinged
+INFO 2022/07/17 21:56:38 Writing to client
+INFO 2022/07/17 21:56:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:38 Recieved info
+INFO 2022/07/17 21:56:38 Has been pinged
+INFO 2022/07/17 21:56:46 Writing to client
+INFO 2022/07/17 21:56:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:46 Recieved info
+INFO 2022/07/17 21:56:46 Has been pinged
+INFO 2022/07/17 21:56:54 Writing to client
+INFO 2022/07/17 21:56:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:56:54 Recieved info
+INFO 2022/07/17 21:56:54 Has been pinged
+INFO 2022/07/17 21:57:02 Writing to client
+INFO 2022/07/17 21:57:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:02 Recieved info
+INFO 2022/07/17 21:57:02 Has been pinged
+INFO 2022/07/17 21:57:10 Writing to client
+INFO 2022/07/17 21:57:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:10 Recieved info
+INFO 2022/07/17 21:57:10 Has been pinged
+INFO 2022/07/17 21:57:18 Writing to client
+INFO 2022/07/17 21:57:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:18 Recieved info
+INFO 2022/07/17 21:57:18 Has been pinged
+INFO 2022/07/17 21:57:26 Writing to client
+INFO 2022/07/17 21:57:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:26 Recieved info
+INFO 2022/07/17 21:57:26 Has been pinged
+INFO 2022/07/17 21:57:34 Writing to client
+INFO 2022/07/17 21:57:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:34 Recieved info
+INFO 2022/07/17 21:57:34 Has been pinged
+INFO 2022/07/17 21:57:42 Writing to client
+INFO 2022/07/17 21:57:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:42 Recieved info
+INFO 2022/07/17 21:57:42 Has been pinged
+INFO 2022/07/17 21:57:50 Writing to client
+INFO 2022/07/17 21:57:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:50 Recieved info
+INFO 2022/07/17 21:57:50 Has been pinged
+INFO 2022/07/17 21:57:58 Writing to client
+INFO 2022/07/17 21:57:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:57:58 Recieved info
+INFO 2022/07/17 21:57:58 Has been pinged
+INFO 2022/07/17 21:58:06 Writing to client
+INFO 2022/07/17 21:58:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:06 Recieved info
+INFO 2022/07/17 21:58:06 Has been pinged
+INFO 2022/07/17 21:58:14 Writing to client
+INFO 2022/07/17 21:58:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:14 Recieved info
+INFO 2022/07/17 21:58:14 Has been pinged
+INFO 2022/07/17 21:58:22 Writing to client
+INFO 2022/07/17 21:58:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:22 Recieved info
+INFO 2022/07/17 21:58:22 Has been pinged
+INFO 2022/07/17 21:58:30 Writing to client
+INFO 2022/07/17 21:58:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:31 Recieved info
+INFO 2022/07/17 21:58:31 Has been pinged
+INFO 2022/07/17 21:58:38 Handling requests
+INFO 2022/07/17 21:58:41 Getting guilds
+INFO 2022/07/17 21:58:42 Pool created for guild 1
+INFO 2022/07/17 21:58:42 Pool created for guild 3
+INFO 2022/07/17 21:58:42 Pool created for guild 4
+INFO 2022/07/17 21:58:42 Websocket active of [::1]:8090
+INFO 2022/07/17 21:58:42 limit: 50, timestamp 1658059122310
+INFO 2022/07/17 21:58:50 Writing to client
+INFO 2022/07/17 21:58:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:50 Recieved info
+INFO 2022/07/17 21:58:50 Has been pinged
+INFO 2022/07/17 21:58:50 {"content":"Hi there how yall going man?","guild":1}
+INFO 2022/07/17 21:58:50 Message recieved Hi there how yall going man?
+INFO 2022/07/17 21:58:50 Sending info of type 1
+INFO 2022/07/17 21:58:58 Writing to client
+INFO 2022/07/17 21:58:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:58:58 Recieved info
+INFO 2022/07/17 21:58:58 Has been pinged
+INFO 2022/07/17 21:59:06 Writing to client
+INFO 2022/07/17 21:59:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:06 Recieved info
+INFO 2022/07/17 21:59:06 Has been pinged
+INFO 2022/07/17 21:59:14 Writing to client
+INFO 2022/07/17 21:59:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:14 Recieved info
+INFO 2022/07/17 21:59:14 Has been pinged
+INFO 2022/07/17 21:59:22 Writing to client
+INFO 2022/07/17 21:59:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:22 Recieved info
+INFO 2022/07/17 21:59:22 Has been pinged
+INFO 2022/07/17 21:59:30 Writing to client
+INFO 2022/07/17 21:59:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:30 Recieved info
+INFO 2022/07/17 21:59:30 Has been pinged
+INFO 2022/07/17 21:59:38 Writing to client
+INFO 2022/07/17 21:59:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:38 Recieved info
+INFO 2022/07/17 21:59:38 Has been pinged
+INFO 2022/07/17 21:59:46 Writing to client
+INFO 2022/07/17 21:59:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:46 Recieved info
+INFO 2022/07/17 21:59:46 Has been pinged
+INFO 2022/07/17 21:59:54 Writing to client
+INFO 2022/07/17 21:59:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 21:59:54 Recieved info
+INFO 2022/07/17 21:59:54 Has been pinged
+INFO 2022/07/17 22:00:02 Writing to client
+INFO 2022/07/17 22:00:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:02 Recieved info
+INFO 2022/07/17 22:00:02 Has been pinged
+INFO 2022/07/17 22:00:10 Writing to client
+INFO 2022/07/17 22:00:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:10 Recieved info
+INFO 2022/07/17 22:00:10 Has been pinged
+INFO 2022/07/17 22:00:18 Writing to client
+INFO 2022/07/17 22:00:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:18 Recieved info
+INFO 2022/07/17 22:00:18 Has been pinged
+INFO 2022/07/17 22:00:26 Writing to client
+INFO 2022/07/17 22:00:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:26 Recieved info
+INFO 2022/07/17 22:00:26 Has been pinged
+INFO 2022/07/17 22:00:34 Writing to client
+INFO 2022/07/17 22:00:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:34 Recieved info
+INFO 2022/07/17 22:00:34 Has been pinged
+ERROR 2022/07/17 22:00:38 websocket: close 1001 (going away)
+INFO 2022/07/17 22:00:38 Disconnecting websocket
+INFO 2022/07/17 22:00:38 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:00:38 User left pool
+INFO 2022/07/17 22:00:38 Pool closed: 4
+INFO 2022/07/17 22:00:38 User left pool
+INFO 2022/07/17 22:00:38 Pool closed: 1
+INFO 2022/07/17 22:00:38 User left pool
+INFO 2022/07/17 22:00:38 Pool closed: 3
+INFO 2022/07/17 22:00:39 Getting guilds
+INFO 2022/07/17 22:00:39 Pool created for guild 1
+INFO 2022/07/17 22:00:39 Pool created for guild 3
+INFO 2022/07/17 22:00:39 Pool created for guild 4
+INFO 2022/07/17 22:00:39 Websocket active of [::1]:8090
+INFO 2022/07/17 22:00:40 limit: 50, timestamp 1658059240281
+INFO 2022/07/17 22:00:47 Writing to client
+INFO 2022/07/17 22:00:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:47 Recieved info
+INFO 2022/07/17 22:00:47 Has been pinged
+INFO 2022/07/17 22:00:49 {"content":"foo bar these nuts","guild":1}
+INFO 2022/07/17 22:00:49 Message recieved foo bar these nuts
+INFO 2022/07/17 22:00:49 Sending info of type 1
+INFO 2022/07/17 22:00:55 Writing to client
+INFO 2022/07/17 22:00:55 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:00:55 Recieved info
+INFO 2022/07/17 22:00:55 Has been pinged
+INFO 2022/07/17 22:01:03 Writing to client
+INFO 2022/07/17 22:01:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:04 Recieved info
+INFO 2022/07/17 22:01:04 Has been pinged
+INFO 2022/07/17 22:01:12 Writing to client
+INFO 2022/07/17 22:01:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:12 Recieved info
+INFO 2022/07/17 22:01:12 Has been pinged
+INFO 2022/07/17 22:01:20 Writing to client
+INFO 2022/07/17 22:01:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:20 Recieved info
+INFO 2022/07/17 22:01:20 Has been pinged
+INFO 2022/07/17 22:01:28 Writing to client
+INFO 2022/07/17 22:01:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:28 Recieved info
+INFO 2022/07/17 22:01:28 Has been pinged
+ERROR 2022/07/17 22:01:28 websocket: close 1001 (going away)
+INFO 2022/07/17 22:01:28 Disconnecting websocket
+INFO 2022/07/17 22:01:28 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:01:28 User left pool
+INFO 2022/07/17 22:01:28 Pool closed: 4
+INFO 2022/07/17 22:01:28 User left pool
+INFO 2022/07/17 22:01:28 Pool closed: 1
+INFO 2022/07/17 22:01:28 User left pool
+INFO 2022/07/17 22:01:28 Pool closed: 3
+INFO 2022/07/17 22:01:30 Getting guilds
+INFO 2022/07/17 22:01:30 Pool created for guild 1
+INFO 2022/07/17 22:01:30 Pool created for guild 3
+INFO 2022/07/17 22:01:30 Pool created for guild 4
+INFO 2022/07/17 22:01:30 Websocket active of [::1]:8090
+INFO 2022/07/17 22:01:30 limit: 50, timestamp 1658059290720
+INFO 2022/07/17 22:01:33 {"content":"sadasd","guild":1}
+INFO 2022/07/17 22:01:33 Message recieved sadasd
+INFO 2022/07/17 22:01:33 Sending info of type 1
+INFO 2022/07/17 22:01:38 Writing to client
+INFO 2022/07/17 22:01:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:38 Recieved info
+INFO 2022/07/17 22:01:38 Has been pinged
+INFO 2022/07/17 22:01:46 Writing to client
+INFO 2022/07/17 22:01:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:46 Recieved info
+INFO 2022/07/17 22:01:46 Has been pinged
+INFO 2022/07/17 22:01:54 Writing to client
+INFO 2022/07/17 22:01:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:01:54 Recieved info
+INFO 2022/07/17 22:01:54 Has been pinged
+INFO 2022/07/17 22:02:02 Writing to client
+INFO 2022/07/17 22:02:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:02 Recieved info
+INFO 2022/07/17 22:02:02 Has been pinged
+ERROR 2022/07/17 22:02:05 websocket: close 1001 (going away)
+INFO 2022/07/17 22:02:05 Disconnecting websocket
+INFO 2022/07/17 22:02:05 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:02:05 User left pool
+INFO 2022/07/17 22:02:05 Pool closed: 4
+INFO 2022/07/17 22:02:05 User left pool
+INFO 2022/07/17 22:02:05 Pool closed: 1
+INFO 2022/07/17 22:02:05 User left pool
+INFO 2022/07/17 22:02:05 Pool closed: 3
+INFO 2022/07/17 22:02:06 Getting guilds
+INFO 2022/07/17 22:02:06 Pool created for guild 1
+INFO 2022/07/17 22:02:06 Pool created for guild 3
+INFO 2022/07/17 22:02:06 Pool created for guild 4
+INFO 2022/07/17 22:02:06 Websocket active of [::1]:8090
+INFO 2022/07/17 22:02:06 limit: 50, timestamp 1658059326700
+INFO 2022/07/17 22:02:10 {"content":"asdatesting ","guild":1}
+INFO 2022/07/17 22:02:10 Message recieved asdatesting 
+INFO 2022/07/17 22:02:10 Sending info of type 1
+INFO 2022/07/17 22:02:14 Writing to client
+INFO 2022/07/17 22:02:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:14 Recieved info
+INFO 2022/07/17 22:02:14 Has been pinged
+INFO 2022/07/17 22:02:22 Writing to client
+INFO 2022/07/17 22:02:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:22 Recieved info
+INFO 2022/07/17 22:02:22 Has been pinged
+INFO 2022/07/17 22:02:30 Writing to client
+INFO 2022/07/17 22:02:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:30 Recieved info
+INFO 2022/07/17 22:02:30 Has been pinged
+INFO 2022/07/17 22:02:38 Writing to client
+INFO 2022/07/17 22:02:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:38 Recieved info
+INFO 2022/07/17 22:02:38 Has been pinged
+INFO 2022/07/17 22:02:46 Writing to client
+INFO 2022/07/17 22:02:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:46 Recieved info
+INFO 2022/07/17 22:02:46 Has been pinged
+INFO 2022/07/17 22:02:54 Writing to client
+INFO 2022/07/17 22:02:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:02:54 Recieved info
+INFO 2022/07/17 22:02:54 Has been pinged
+ERROR 2022/07/17 22:02:55 websocket: close 1001 (going away)
+INFO 2022/07/17 22:02:55 Disconnecting websocket
+INFO 2022/07/17 22:02:55 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:02:55 User left pool
+INFO 2022/07/17 22:02:55 Pool closed: 4
+INFO 2022/07/17 22:02:55 User left pool
+INFO 2022/07/17 22:02:55 Pool closed: 1
+INFO 2022/07/17 22:02:55 User left pool
+INFO 2022/07/17 22:02:55 Pool closed: 3
+INFO 2022/07/17 22:02:56 Getting guilds
+INFO 2022/07/17 22:02:56 Pool created for guild 1
+INFO 2022/07/17 22:02:56 Pool created for guild 3
+INFO 2022/07/17 22:02:56 Pool created for guild 4
+INFO 2022/07/17 22:02:56 Websocket active of [::1]:8090
+INFO 2022/07/17 22:02:57 limit: 50, timestamp 1658059377172
+INFO 2022/07/17 22:03:04 {"content":"I SAID WORK GODAMN IT FUCK","guild":1}
+INFO 2022/07/17 22:03:04 Message recieved I SAID WORK GODAMN IT FUCK
+INFO 2022/07/17 22:03:04 Sending info of type 1
+INFO 2022/07/17 22:03:04 Writing to client
+INFO 2022/07/17 22:03:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:04 Recieved info
+INFO 2022/07/17 22:03:04 Has been pinged
+INFO 2022/07/17 22:03:12 Writing to client
+INFO 2022/07/17 22:03:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:12 Recieved info
+INFO 2022/07/17 22:03:12 Has been pinged
+INFO 2022/07/17 22:03:20 Writing to client
+INFO 2022/07/17 22:03:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:20 Recieved info
+INFO 2022/07/17 22:03:20 Has been pinged
+INFO 2022/07/17 22:03:28 Writing to client
+INFO 2022/07/17 22:03:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:28 Recieved info
+INFO 2022/07/17 22:03:28 Has been pinged
+INFO 2022/07/17 22:03:36 Writing to client
+INFO 2022/07/17 22:03:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:36 Recieved info
+INFO 2022/07/17 22:03:36 Has been pinged
+ERROR 2022/07/17 22:03:41 websocket: close 1001 (going away)
+INFO 2022/07/17 22:03:41 Disconnecting websocket
+INFO 2022/07/17 22:03:41 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:03:41 User left pool
+INFO 2022/07/17 22:03:41 Pool closed: 4
+INFO 2022/07/17 22:03:41 User left pool
+INFO 2022/07/17 22:03:41 Pool closed: 1
+INFO 2022/07/17 22:03:41 User left pool
+INFO 2022/07/17 22:03:41 Pool closed: 3
+INFO 2022/07/17 22:03:42 Getting guilds
+INFO 2022/07/17 22:03:42 Pool created for guild 1
+INFO 2022/07/17 22:03:42 Pool created for guild 3
+INFO 2022/07/17 22:03:42 Pool created for guild 4
+INFO 2022/07/17 22:03:42 Websocket active of [::1]:8090
+INFO 2022/07/17 22:03:42 limit: 50, timestamp 1658059422951
+INFO 2022/07/17 22:03:49 {"content":"FUCKING HELL WORK PIECE OF SHIT\n","guild":1}
+INFO 2022/07/17 22:03:49 Message recieved FUCKING HELL WORK PIECE OF SHIT
+
+INFO 2022/07/17 22:03:49 Sending info of type 1
+INFO 2022/07/17 22:03:50 Writing to client
+INFO 2022/07/17 22:03:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:50 Recieved info
+INFO 2022/07/17 22:03:50 Has been pinged
+INFO 2022/07/17 22:03:58 Writing to client
+INFO 2022/07/17 22:03:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:03:58 Recieved info
+INFO 2022/07/17 22:03:58 Has been pinged
+INFO 2022/07/17 22:04:06 Writing to client
+INFO 2022/07/17 22:04:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:06 Recieved info
+INFO 2022/07/17 22:04:06 Has been pinged
+INFO 2022/07/17 22:04:14 Writing to client
+INFO 2022/07/17 22:04:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:14 Recieved info
+INFO 2022/07/17 22:04:14 Has been pinged
+INFO 2022/07/17 22:04:22 Writing to client
+INFO 2022/07/17 22:04:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:22 Recieved info
+INFO 2022/07/17 22:04:22 Has been pinged
+ERROR 2022/07/17 22:04:23 websocket: close 1001 (going away)
+INFO 2022/07/17 22:04:23 Disconnecting websocket
+INFO 2022/07/17 22:04:23 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:04:23 User left pool
+INFO 2022/07/17 22:04:23 Pool closed: 4
+INFO 2022/07/17 22:04:23 User left pool
+INFO 2022/07/17 22:04:23 Pool closed: 1
+INFO 2022/07/17 22:04:23 User left pool
+INFO 2022/07/17 22:04:23 Pool closed: 3
+INFO 2022/07/17 22:04:25 Getting guilds
+INFO 2022/07/17 22:04:25 Pool created for guild 1
+INFO 2022/07/17 22:04:25 Pool created for guild 3
+INFO 2022/07/17 22:04:25 Pool created for guild 4
+INFO 2022/07/17 22:04:25 Websocket active of [::1]:8090
+INFO 2022/07/17 22:04:25 limit: 50, timestamp 1658059465575
+INFO 2022/07/17 22:04:30 {"content":"ok work now","guild":1}
+INFO 2022/07/17 22:04:30 Message recieved ok work now
+INFO 2022/07/17 22:04:30 Sending info of type 1
+INFO 2022/07/17 22:04:33 Writing to client
+INFO 2022/07/17 22:04:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:33 Recieved info
+INFO 2022/07/17 22:04:33 Has been pinged
+INFO 2022/07/17 22:04:41 Writing to client
+INFO 2022/07/17 22:04:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:41 Recieved info
+INFO 2022/07/17 22:04:41 Has been pinged
+INFO 2022/07/17 22:04:44 {"content":"bruh","guild":1}
+INFO 2022/07/17 22:04:44 Message recieved bruh
+INFO 2022/07/17 22:04:44 Sending info of type 1
+INFO 2022/07/17 22:04:49 Writing to client
+INFO 2022/07/17 22:04:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:49 Recieved info
+INFO 2022/07/17 22:04:49 Has been pinged
+INFO 2022/07/17 22:04:52 {"content":"this fucking shit is finally working","guild":1}
+INFO 2022/07/17 22:04:52 Message recieved this fucking shit is finally working
+INFO 2022/07/17 22:04:52 Sending info of type 1
+INFO 2022/07/17 22:04:57 Writing to client
+INFO 2022/07/17 22:04:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:04:57 Recieved info
+INFO 2022/07/17 22:04:57 Has been pinged
+INFO 2022/07/17 22:04:59 {"content":"LETS FUCKING GO BITCH","guild":1}
+INFO 2022/07/17 22:04:59 Message recieved LETS FUCKING GO BITCH
+INFO 2022/07/17 22:04:59 Sending info of type 1
+INFO 2022/07/17 22:05:05 Writing to client
+INFO 2022/07/17 22:05:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:05 Recieved info
+INFO 2022/07/17 22:05:05 Has been pinged
+INFO 2022/07/17 22:05:13 Writing to client
+INFO 2022/07/17 22:05:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:13 Recieved info
+INFO 2022/07/17 22:05:13 Has been pinged
+INFO 2022/07/17 22:05:21 Writing to client
+INFO 2022/07/17 22:05:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:21 Recieved info
+INFO 2022/07/17 22:05:21 Has been pinged
+INFO 2022/07/17 22:05:29 Writing to client
+INFO 2022/07/17 22:05:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:29 Recieved info
+INFO 2022/07/17 22:05:29 Has been pinged
+INFO 2022/07/17 22:05:37 Writing to client
+INFO 2022/07/17 22:05:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:37 Recieved info
+INFO 2022/07/17 22:05:37 Has been pinged
+INFO 2022/07/17 22:05:40 Handling requests
+INFO 2022/07/17 22:05:42 Getting guilds
+INFO 2022/07/17 22:05:42 Pool created for guild 1
+INFO 2022/07/17 22:05:42 Pool created for guild 3
+INFO 2022/07/17 22:05:42 Pool created for guild 4
+INFO 2022/07/17 22:05:42 Websocket active of [::1]:8090
+INFO 2022/07/17 22:05:43 limit: 50, timestamp 1658059543152
+INFO 2022/07/17 22:05:50 Writing to client
+INFO 2022/07/17 22:05:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:50 Recieved info
+INFO 2022/07/17 22:05:50 Has been pinged
+INFO 2022/07/17 22:05:58 Writing to client
+INFO 2022/07/17 22:05:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:05:58 Recieved info
+INFO 2022/07/17 22:05:58 Has been pinged
+INFO 2022/07/17 22:05:59 {"content":"Ok guys this is fucking epic\n","guild":1}
+INFO 2022/07/17 22:05:59 Message recieved Ok guys this is fucking epic
+
+INFO 2022/07/17 22:05:59 Sending info of type 1
+INFO 2022/07/17 22:06:06 {"content":"It finally works brah","guild":1}
+INFO 2022/07/17 22:06:06 Message recieved It finally works brah
+INFO 2022/07/17 22:06:06 Sending info of type 1
+INFO 2022/07/17 22:06:06 Writing to client
+INFO 2022/07/17 22:06:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:06 Recieved info
+INFO 2022/07/17 22:06:06 Has been pinged
+INFO 2022/07/17 22:06:14 Writing to client
+INFO 2022/07/17 22:06:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:14 Recieved info
+INFO 2022/07/17 22:06:14 Has been pinged
+INFO 2022/07/17 22:06:19 {"content":"After months and months of research\n","guild":1}
+INFO 2022/07/17 22:06:19 Message recieved After months and months of research
+
+INFO 2022/07/17 22:06:19 Sending info of type 1
+INFO 2022/07/17 22:06:22 Writing to client
+INFO 2022/07/17 22:06:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:22 Recieved info
+INFO 2022/07/17 22:06:22 Has been pinged
+INFO 2022/07/17 22:06:26 {"content":"it fucking works bitch\n\n","guild":1}
+INFO 2022/07/17 22:06:26 Message recieved it fucking works bitch
+
+
+INFO 2022/07/17 22:06:26 Sending info of type 1
+INFO 2022/07/17 22:06:30 Writing to client
+INFO 2022/07/17 22:06:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:30 Recieved info
+INFO 2022/07/17 22:06:30 Has been pinged
+INFO 2022/07/17 22:06:38 Writing to client
+INFO 2022/07/17 22:06:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:38 Recieved info
+INFO 2022/07/17 22:06:38 Has been pinged
+INFO 2022/07/17 22:06:46 Writing to client
+INFO 2022/07/17 22:06:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:06:46 Recieved info
+INFO 2022/07/17 22:06:46 Has been pinged
+ERROR 2022/07/17 22:06:51 websocket: close 1001 (going away)
+INFO 2022/07/17 22:06:51 Disconnecting websocket
+INFO 2022/07/17 22:06:51 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:06:51 User left pool
+INFO 2022/07/17 22:06:51 Pool closed: 4
+INFO 2022/07/17 22:06:51 User left pool
+INFO 2022/07/17 22:06:51 Pool closed: 1
+INFO 2022/07/17 22:06:51 User left pool
+INFO 2022/07/17 22:06:51 Pool closed: 3
+INFO 2022/07/17 22:06:52 Getting guilds
+INFO 2022/07/17 22:06:52 Pool created for guild 1
+INFO 2022/07/17 22:06:52 Pool created for guild 3
+INFO 2022/07/17 22:06:52 Pool created for guild 4
+INFO 2022/07/17 22:06:52 Websocket active of [::1]:8090
+INFO 2022/07/17 22:06:52 limit: 50, timestamp 1658059612398
+INFO 2022/07/17 22:07:00 Writing to client
+INFO 2022/07/17 22:07:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:00 Recieved info
+INFO 2022/07/17 22:07:00 Has been pinged
+INFO 2022/07/17 22:07:08 Writing to client
+INFO 2022/07/17 22:07:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:08 Recieved info
+INFO 2022/07/17 22:07:08 Has been pinged
+INFO 2022/07/17 22:07:16 Writing to client
+INFO 2022/07/17 22:07:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:16 Recieved info
+INFO 2022/07/17 22:07:16 Has been pinged
+INFO 2022/07/17 22:07:24 Writing to client
+INFO 2022/07/17 22:07:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:24 Recieved info
+INFO 2022/07/17 22:07:24 Has been pinged
+INFO 2022/07/17 22:07:32 Writing to client
+INFO 2022/07/17 22:07:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:32 Recieved info
+INFO 2022/07/17 22:07:32 Has been pinged
+INFO 2022/07/17 22:07:40 Writing to client
+INFO 2022/07/17 22:07:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:40 Recieved info
+INFO 2022/07/17 22:07:40 Has been pinged
+INFO 2022/07/17 22:07:48 Writing to client
+INFO 2022/07/17 22:07:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:07:48 Recieved info
+INFO 2022/07/17 22:07:48 Has been pinged
+INFO 2022/07/17 22:07:59 Handling requests
+INFO 2022/07/17 22:10:37 Getting guilds
+INFO 2022/07/17 22:10:37 limit: 50, timestamp 1658059837691
+INFO 2022/07/17 22:11:34 Getting guilds
+INFO 2022/07/17 22:11:34 limit: 50, timestamp 1658059894690
+INFO 2022/07/17 22:17:09 Getting guilds
+INFO 2022/07/17 22:17:10 limit: 50, timestamp 1658060230221
+INFO 2022/07/17 22:17:37 Getting guilds
+INFO 2022/07/17 22:17:37 Pool created for guild 1
+INFO 2022/07/17 22:17:37 Pool created for guild 3
+INFO 2022/07/17 22:17:37 Pool created for guild 4
+INFO 2022/07/17 22:17:37 Websocket active of [::1]:8090
+INFO 2022/07/17 22:17:38 limit: 50, timestamp 1658060258247
+ERROR 2022/07/17 22:17:40 websocket: close 1001 (going away)
+INFO 2022/07/17 22:17:40 Disconnecting websocket
+INFO 2022/07/17 22:17:40 Websocket of [::1]:8090 has been closed
+INFO 2022/07/17 22:17:40 User left pool
+INFO 2022/07/17 22:17:40 Pool closed: 4
+INFO 2022/07/17 22:17:40 User left pool
+INFO 2022/07/17 22:17:40 Pool closed: 1
+INFO 2022/07/17 22:17:40 User left pool
+INFO 2022/07/17 22:17:40 Pool closed: 3
+INFO 2022/07/17 22:17:41 Pool created for guild 1
+INFO 2022/07/17 22:17:41 Pool created for guild 3
+INFO 2022/07/17 22:17:41 Pool created for guild 4
+INFO 2022/07/17 22:17:41 Websocket active of [::1]:8090
+INFO 2022/07/17 22:17:41 Getting guilds
+INFO 2022/07/17 22:17:41 limit: 50, timestamp 1658060261905
+INFO 2022/07/17 22:17:48 {"content":"Hello","guild":1}
+INFO 2022/07/17 22:17:48 Message recieved Hello
+INFO 2022/07/17 22:17:48 Sending info of type 1
+INFO 2022/07/17 22:17:49 Writing to client
+INFO 2022/07/17 22:17:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:17:49 Recieved info
+INFO 2022/07/17 22:17:49 Has been pinged
+INFO 2022/07/17 22:17:57 Writing to client
+INFO 2022/07/17 22:17:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:17:57 Recieved info
+INFO 2022/07/17 22:17:57 Has been pinged
+INFO 2022/07/17 22:18:00 {"content":"Bruh lmao it works","guild":1}
+INFO 2022/07/17 22:18:00 Message recieved Bruh lmao it works
+INFO 2022/07/17 22:18:00 Sending info of type 1
+INFO 2022/07/17 22:18:05 Writing to client
+INFO 2022/07/17 22:18:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:05 Recieved info
+INFO 2022/07/17 22:18:05 Has been pinged
+INFO 2022/07/17 22:18:06 {"content":"I cant believe it","guild":1}
+INFO 2022/07/17 22:18:06 Message recieved I cant believe it
+INFO 2022/07/17 22:18:06 Sending info of type 1
+INFO 2022/07/17 22:18:13 Writing to client
+INFO 2022/07/17 22:18:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:13 Recieved info
+INFO 2022/07/17 22:18:13 Has been pinged
+INFO 2022/07/17 22:18:21 Writing to client
+INFO 2022/07/17 22:18:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:21 Recieved info
+INFO 2022/07/17 22:18:21 Has been pinged
+INFO 2022/07/17 22:18:21 {"content":"hi bitvh","guild":1}
+INFO 2022/07/17 22:18:21 Message recieved hi bitvh
+INFO 2022/07/17 22:18:21 Sending info of type 1
+INFO 2022/07/17 22:18:29 Writing to client
+INFO 2022/07/17 22:18:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:29 Recieved info
+INFO 2022/07/17 22:18:29 Has been pinged
+INFO 2022/07/17 22:18:37 Writing to client
+INFO 2022/07/17 22:18:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:37 Recieved info
+INFO 2022/07/17 22:18:37 Has been pinged
+INFO 2022/07/17 22:18:45 Writing to client
+INFO 2022/07/17 22:18:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:45 Recieved info
+INFO 2022/07/17 22:18:45 Has been pinged
+INFO 2022/07/17 22:18:52 Websocket active of [::1]:8090
+INFO 2022/07/17 22:18:52 Getting guilds
+INFO 2022/07/17 22:18:52 limit: 50, timestamp 1658060332221
+INFO 2022/07/17 22:18:53 Writing to client
+INFO 2022/07/17 22:18:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:18:53 Recieved info
+INFO 2022/07/17 22:18:53 Has been pinged
+INFO 2022/07/17 22:19:00 Writing to client
+INFO 2022/07/17 22:19:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:00 Recieved info
+INFO 2022/07/17 22:19:00 Has been pinged
+INFO 2022/07/17 22:19:01 Writing to client
+INFO 2022/07/17 22:19:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:01 Recieved info
+INFO 2022/07/17 22:19:01 Has been pinged
+INFO 2022/07/17 22:19:08 Writing to client
+INFO 2022/07/17 22:19:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:08 Recieved info
+INFO 2022/07/17 22:19:08 Has been pinged
+INFO 2022/07/17 22:19:09 Writing to client
+INFO 2022/07/17 22:19:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:09 Recieved info
+INFO 2022/07/17 22:19:09 Has been pinged
+INFO 2022/07/17 22:19:16 Writing to client
+INFO 2022/07/17 22:19:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:16 Recieved info
+INFO 2022/07/17 22:19:16 Has been pinged
+INFO 2022/07/17 22:19:17 Writing to client
+INFO 2022/07/17 22:19:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:17 Recieved info
+INFO 2022/07/17 22:19:17 Has been pinged
+INFO 2022/07/17 22:19:23 Getting guilds
+INFO 2022/07/17 22:19:23 Websocket active of [::1]:8090
+INFO 2022/07/17 22:19:23 limit: 50, timestamp 1658060363639
+INFO 2022/07/17 22:19:24 Writing to client
+INFO 2022/07/17 22:19:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:24 Recieved info
+INFO 2022/07/17 22:19:24 Has been pinged
+INFO 2022/07/17 22:19:25 Writing to client
+INFO 2022/07/17 22:19:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:25 Recieved info
+INFO 2022/07/17 22:19:25 Has been pinged
+INFO 2022/07/17 22:19:31 Writing to client
+INFO 2022/07/17 22:19:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:31 Recieved info
+INFO 2022/07/17 22:19:31 Has been pinged
+INFO 2022/07/17 22:19:32 Writing to client
+INFO 2022/07/17 22:19:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:32 Recieved info
+INFO 2022/07/17 22:19:32 Has been pinged
+INFO 2022/07/17 22:19:33 Writing to client
+INFO 2022/07/17 22:19:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:33 Recieved info
+INFO 2022/07/17 22:19:33 Has been pinged
+INFO 2022/07/17 22:19:39 Writing to client
+INFO 2022/07/17 22:19:39 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:39 Recieved info
+INFO 2022/07/17 22:19:39 Has been pinged
+INFO 2022/07/17 22:19:40 Writing to client
+INFO 2022/07/17 22:19:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:40 Recieved info
+INFO 2022/07/17 22:19:40 Has been pinged
+INFO 2022/07/17 22:19:41 Writing to client
+INFO 2022/07/17 22:19:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:41 Recieved info
+INFO 2022/07/17 22:19:41 Has been pinged
+INFO 2022/07/17 22:19:47 {"content":"Testing 123","guild":1}
+INFO 2022/07/17 22:19:47 Message recieved Testing 123
+INFO 2022/07/17 22:19:47 Sending info of type 1
+INFO 2022/07/17 22:19:47 Writing to client
+INFO 2022/07/17 22:19:47 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:47 Recieved info
+INFO 2022/07/17 22:19:47 Has been pinged
+INFO 2022/07/17 22:19:48 Writing to client
+INFO 2022/07/17 22:19:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:48 Recieved info
+INFO 2022/07/17 22:19:48 Has been pinged
+INFO 2022/07/17 22:19:49 Writing to client
+INFO 2022/07/17 22:19:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:49 Recieved info
+INFO 2022/07/17 22:19:49 Has been pinged
+INFO 2022/07/17 22:19:55 Writing to client
+INFO 2022/07/17 22:19:55 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:55 Recieved info
+INFO 2022/07/17 22:19:55 Has been pinged
+INFO 2022/07/17 22:19:56 Writing to client
+INFO 2022/07/17 22:19:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:56 Recieved info
+INFO 2022/07/17 22:19:56 Has been pinged
+INFO 2022/07/17 22:19:57 Writing to client
+INFO 2022/07/17 22:19:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:19:57 Recieved info
+INFO 2022/07/17 22:19:57 Has been pinged
+INFO 2022/07/17 22:20:03 Writing to client
+INFO 2022/07/17 22:20:03 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:03 Recieved info
+INFO 2022/07/17 22:20:03 Has been pinged
+INFO 2022/07/17 22:20:04 Writing to client
+INFO 2022/07/17 22:20:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:04 Recieved info
+INFO 2022/07/17 22:20:04 Has been pinged
+INFO 2022/07/17 22:20:05 Writing to client
+INFO 2022/07/17 22:20:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:05 Recieved info
+INFO 2022/07/17 22:20:05 Has been pinged
+INFO 2022/07/17 22:20:11 Writing to client
+INFO 2022/07/17 22:20:11 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:11 Recieved info
+INFO 2022/07/17 22:20:11 Has been pinged
+INFO 2022/07/17 22:20:12 Writing to client
+INFO 2022/07/17 22:20:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:12 Recieved info
+INFO 2022/07/17 22:20:12 Has been pinged
+INFO 2022/07/17 22:20:13 Writing to client
+INFO 2022/07/17 22:20:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:13 Recieved info
+INFO 2022/07/17 22:20:13 Has been pinged
+INFO 2022/07/17 22:20:19 Writing to client
+INFO 2022/07/17 22:20:19 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:19 Recieved info
+INFO 2022/07/17 22:20:19 Has been pinged
+INFO 2022/07/17 22:20:20 Writing to client
+INFO 2022/07/17 22:20:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:20 Recieved info
+INFO 2022/07/17 22:20:20 Has been pinged
+INFO 2022/07/17 22:20:21 Writing to client
+INFO 2022/07/17 22:20:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:21 Recieved info
+INFO 2022/07/17 22:20:21 Has been pinged
+INFO 2022/07/17 22:20:27 Writing to client
+INFO 2022/07/17 22:20:27 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:27 Recieved info
+INFO 2022/07/17 22:20:27 Has been pinged
+INFO 2022/07/17 22:20:28 Writing to client
+INFO 2022/07/17 22:20:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:28 Recieved info
+INFO 2022/07/17 22:20:28 Has been pinged
+INFO 2022/07/17 22:20:29 Writing to client
+INFO 2022/07/17 22:20:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:29 Recieved info
+INFO 2022/07/17 22:20:29 Has been pinged
+INFO 2022/07/17 22:20:35 Writing to client
+INFO 2022/07/17 22:20:35 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:35 Recieved info
+INFO 2022/07/17 22:20:35 Has been pinged
+INFO 2022/07/17 22:20:36 Writing to client
+INFO 2022/07/17 22:20:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:36 Recieved info
+INFO 2022/07/17 22:20:36 Has been pinged
+INFO 2022/07/17 22:20:37 Writing to client
+INFO 2022/07/17 22:20:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:37 Recieved info
+INFO 2022/07/17 22:20:37 Has been pinged
+INFO 2022/07/17 22:20:40 {"content":"a\n","guild":1}
+INFO 2022/07/17 22:20:40 Message recieved a
+
+INFO 2022/07/17 22:20:40 Sending info of type 1
+INFO 2022/07/17 22:20:43 Writing to client
+INFO 2022/07/17 22:20:43 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:43 Recieved info
+INFO 2022/07/17 22:20:43 Has been pinged
+INFO 2022/07/17 22:20:44 Writing to client
+INFO 2022/07/17 22:20:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:44 Recieved info
+INFO 2022/07/17 22:20:44 Has been pinged
+INFO 2022/07/17 22:20:45 Writing to client
+INFO 2022/07/17 22:20:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:45 Recieved info
+INFO 2022/07/17 22:20:45 Has been pinged
+INFO 2022/07/17 22:20:51 Writing to client
+INFO 2022/07/17 22:20:51 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:51 Recieved info
+INFO 2022/07/17 22:20:51 Has been pinged
+INFO 2022/07/17 22:20:52 Writing to client
+INFO 2022/07/17 22:20:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:52 Recieved info
+INFO 2022/07/17 22:20:52 Has been pinged
+INFO 2022/07/17 22:20:53 Writing to client
+INFO 2022/07/17 22:20:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:20:53 Recieved info
+INFO 2022/07/17 22:20:53 Has been pinged
+ERROR 2022/07/17 22:20:58 websocket: close 1001 (going away)
+INFO 2022/07/17 22:20:58 Disconnecting websocket
+INFO 2022/07/17 22:20:58 Websocket of [::1]:8090 has been closed
+ERROR 2022/07/17 22:20:58 read tcp [::1]:8090->[::1]:56008: use of closed network connection
+INFO 2022/07/17 22:20:58 Disconnecting websocket
+ERROR 2022/07/17 22:20:58 read tcp [::1]:8090->[::1]:54046: use of closed network connection
+INFO 2022/07/17 22:20:58 Disconnecting websocket
+INFO 2022/07/17 22:20:58 User left pool
+INFO 2022/07/17 22:20:58 Pool closed: 4
+INFO 2022/07/17 22:20:58 User left pool
+INFO 2022/07/17 22:20:58 Pool closed: 1
+INFO 2022/07/17 22:20:58 User left pool
+INFO 2022/07/17 22:20:58 Pool closed: 3
+INFO 2022/07/17 22:20:59 Getting guilds
+INFO 2022/07/17 22:20:59 Pool created for guild 1
+INFO 2022/07/17 22:20:59 Pool created for guild 3
+INFO 2022/07/17 22:20:59 Pool created for guild 4
+INFO 2022/07/17 22:20:59 Websocket active of [::1]:8090
+INFO 2022/07/17 22:21:00 limit: 50, timestamp 1658060460297
+INFO 2022/07/17 22:21:07 Writing to client
+INFO 2022/07/17 22:21:07 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:07 Recieved info
+INFO 2022/07/17 22:21:07 Has been pinged
+INFO 2022/07/17 22:21:15 Writing to client
+INFO 2022/07/17 22:21:15 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:15 Recieved info
+INFO 2022/07/17 22:21:15 Has been pinged
+INFO 2022/07/17 22:21:23 Writing to client
+INFO 2022/07/17 22:21:23 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:23 Recieved info
+INFO 2022/07/17 22:21:23 Has been pinged
+INFO 2022/07/17 22:21:31 Writing to client
+INFO 2022/07/17 22:21:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:31 Recieved info
+INFO 2022/07/17 22:21:31 Has been pinged
+INFO 2022/07/17 22:21:39 Writing to client
+INFO 2022/07/17 22:21:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:40 Recieved info
+INFO 2022/07/17 22:21:40 Has been pinged
+INFO 2022/07/17 22:21:48 Writing to client
+INFO 2022/07/17 22:21:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:48 Recieved info
+INFO 2022/07/17 22:21:48 Has been pinged
+INFO 2022/07/17 22:21:56 Writing to client
+INFO 2022/07/17 22:21:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:21:56 Recieved info
+INFO 2022/07/17 22:21:56 Has been pinged
+INFO 2022/07/17 22:22:04 Writing to client
+INFO 2022/07/17 22:22:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:04 Recieved info
+INFO 2022/07/17 22:22:04 Has been pinged
+INFO 2022/07/17 22:22:12 Writing to client
+INFO 2022/07/17 22:22:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:12 Recieved info
+INFO 2022/07/17 22:22:12 Has been pinged
+INFO 2022/07/17 22:22:20 Writing to client
+INFO 2022/07/17 22:22:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:20 Recieved info
+INFO 2022/07/17 22:22:20 Has been pinged
+INFO 2022/07/17 22:22:28 Writing to client
+INFO 2022/07/17 22:22:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:28 Recieved info
+INFO 2022/07/17 22:22:28 Has been pinged
+INFO 2022/07/17 22:22:36 Writing to client
+INFO 2022/07/17 22:22:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:36 Recieved info
+INFO 2022/07/17 22:22:36 Has been pinged
+INFO 2022/07/17 22:22:44 Writing to client
+INFO 2022/07/17 22:22:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:44 Recieved info
+INFO 2022/07/17 22:22:44 Has been pinged
+INFO 2022/07/17 22:22:52 Writing to client
+INFO 2022/07/17 22:22:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:22:52 Recieved info
+INFO 2022/07/17 22:22:52 Has been pinged
+INFO 2022/07/17 22:23:00 Writing to client
+INFO 2022/07/17 22:23:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:00 Recieved info
+INFO 2022/07/17 22:23:00 Has been pinged
+INFO 2022/07/17 22:23:08 Writing to client
+INFO 2022/07/17 22:23:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:08 Recieved info
+INFO 2022/07/17 22:23:08 Has been pinged
+INFO 2022/07/17 22:23:16 Writing to client
+INFO 2022/07/17 22:23:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:16 Recieved info
+INFO 2022/07/17 22:23:16 Has been pinged
+INFO 2022/07/17 22:23:24 Writing to client
+INFO 2022/07/17 22:23:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:24 Recieved info
+INFO 2022/07/17 22:23:24 Has been pinged
+INFO 2022/07/17 22:23:32 Writing to client
+INFO 2022/07/17 22:23:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:32 Recieved info
+INFO 2022/07/17 22:23:32 Has been pinged
+INFO 2022/07/17 22:23:40 Writing to client
+INFO 2022/07/17 22:23:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:40 Recieved info
+INFO 2022/07/17 22:23:40 Has been pinged
+INFO 2022/07/17 22:23:48 Writing to client
+INFO 2022/07/17 22:23:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:48 Recieved info
+INFO 2022/07/17 22:23:48 Has been pinged
+INFO 2022/07/17 22:23:56 Writing to client
+INFO 2022/07/17 22:23:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:23:56 Recieved info
+INFO 2022/07/17 22:23:56 Has been pinged
+INFO 2022/07/17 22:24:04 Writing to client
+INFO 2022/07/17 22:24:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:04 Recieved info
+INFO 2022/07/17 22:24:04 Has been pinged
+ERROR 2022/07/17 22:24:09 token is invalid
+INFO 2022/07/17 22:24:12 Writing to client
+INFO 2022/07/17 22:24:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:12 Recieved info
+INFO 2022/07/17 22:24:12 Has been pinged
+INFO 2022/07/17 22:24:20 Sending info of type 5
+INFO 2022/07/17 22:24:20 Writing to client
+INFO 2022/07/17 22:24:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:20 Recieved info
+INFO 2022/07/17 22:24:20 Has been pinged
+INFO 2022/07/17 22:24:28 Writing to client
+INFO 2022/07/17 22:24:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:28 Recieved info
+INFO 2022/07/17 22:24:28 Has been pinged
+INFO 2022/07/17 22:24:36 Writing to client
+INFO 2022/07/17 22:24:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:36 Recieved info
+INFO 2022/07/17 22:24:36 Has been pinged
+INFO 2022/07/17 22:24:44 Getting user
+INFO 2022/07/17 22:24:44 Generating token
+INFO 2022/07/17 22:24:44 Writing to client
+INFO 2022/07/17 22:24:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:44 Recieved info
+INFO 2022/07/17 22:24:44 Has been pinged
+ERROR 2022/07/17 22:24:44 token is invalid
+ERROR 2022/07/17 22:24:44 token is not provided
+ERROR 2022/07/17 22:24:44 token is invalid
+ERROR 2022/07/17 22:24:45 token is invalid
+ERROR 2022/07/17 22:24:45 token is invalid
+ERROR 2022/07/17 22:24:46 token is invalid
+ERROR 2022/07/17 22:24:46 token is invalid
+ERROR 2022/07/17 22:24:46 token is invalid
+ERROR 2022/07/17 22:24:46 token is invalid
+INFO 2022/07/17 22:24:52 Writing to client
+INFO 2022/07/17 22:24:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:24:52 Recieved info
+INFO 2022/07/17 22:24:52 Has been pinged
+INFO 2022/07/17 22:25:00 Writing to client
+INFO 2022/07/17 22:25:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:00 Recieved info
+INFO 2022/07/17 22:25:00 Has been pinged
+INFO 2022/07/17 22:25:08 Writing to client
+INFO 2022/07/17 22:25:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:08 Recieved info
+INFO 2022/07/17 22:25:08 Has been pinged
+INFO 2022/07/17 22:25:16 Writing to client
+INFO 2022/07/17 22:25:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:16 Recieved info
+INFO 2022/07/17 22:25:16 Has been pinged
+INFO 2022/07/17 22:25:24 Writing to client
+INFO 2022/07/17 22:25:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:24 Recieved info
+INFO 2022/07/17 22:25:24 Has been pinged
+INFO 2022/07/17 22:25:32 Writing to client
+INFO 2022/07/17 22:25:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:33 Recieved info
+INFO 2022/07/17 22:25:33 Has been pinged
+INFO 2022/07/17 22:25:41 Writing to client
+INFO 2022/07/17 22:25:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:41 Recieved info
+INFO 2022/07/17 22:25:41 Has been pinged
+INFO 2022/07/17 22:25:49 Writing to client
+INFO 2022/07/17 22:25:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:49 Recieved info
+INFO 2022/07/17 22:25:49 Has been pinged
+INFO 2022/07/17 22:25:57 Writing to client
+INFO 2022/07/17 22:25:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:25:57 Recieved info
+INFO 2022/07/17 22:25:57 Has been pinged
+INFO 2022/07/17 22:26:05 Writing to client
+INFO 2022/07/17 22:26:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:05 Recieved info
+INFO 2022/07/17 22:26:05 Has been pinged
+INFO 2022/07/17 22:26:13 Writing to client
+INFO 2022/07/17 22:26:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:13 Recieved info
+INFO 2022/07/17 22:26:13 Has been pinged
+INFO 2022/07/17 22:26:18 Getting guilds
+INFO 2022/07/17 22:26:18 Websocket active of [::1]:8090
+INFO 2022/07/17 22:26:18 limit: 50, timestamp 1658060778880
+INFO 2022/07/17 22:26:21 Writing to client
+INFO 2022/07/17 22:26:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:21 Recieved info
+INFO 2022/07/17 22:26:21 Has been pinged
+INFO 2022/07/17 22:26:26 Writing to client
+INFO 2022/07/17 22:26:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:26 Recieved info
+INFO 2022/07/17 22:26:26 Has been pinged
+INFO 2022/07/17 22:26:29 Writing to client
+INFO 2022/07/17 22:26:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:29 Recieved info
+INFO 2022/07/17 22:26:29 Has been pinged
+INFO 2022/07/17 22:26:34 Writing to client
+INFO 2022/07/17 22:26:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:34 Recieved info
+INFO 2022/07/17 22:26:34 Has been pinged
+INFO 2022/07/17 22:26:37 Writing to client
+INFO 2022/07/17 22:26:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:37 Recieved info
+INFO 2022/07/17 22:26:37 Has been pinged
+INFO 2022/07/17 22:26:42 Writing to client
+INFO 2022/07/17 22:26:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:42 Recieved info
+INFO 2022/07/17 22:26:42 Has been pinged
+INFO 2022/07/17 22:26:45 Writing to client
+INFO 2022/07/17 22:26:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/17 22:26:45 Recieved info
+INFO 2022/07/17 22:26:45 Has been pinged
+INFO 2022/07/18 07:46:30 Handling requests
+INFO 2022/07/18 07:46:35 Getting guilds
+INFO 2022/07/18 07:46:35 Pool created for guild 1
+INFO 2022/07/18 07:46:35 Pool created for guild 3
+INFO 2022/07/18 07:46:35 Pool created for guild 4
+INFO 2022/07/18 07:46:35 Websocket active of [::1]:8090
+INFO 2022/07/18 07:46:36 limit: 50, timestamp 1658094396032
+INFO 2022/07/18 07:46:43 Writing to client
+INFO 2022/07/18 07:46:43 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:46:43 Recieved info
+INFO 2022/07/18 07:46:43 Has been pinged
+INFO 2022/07/18 07:46:43 {"content":"testing again\n","guild":1}
+INFO 2022/07/18 07:46:43 Message recieved testing again
+
+INFO 2022/07/18 07:46:43 Sending info of type 1
+INFO 2022/07/18 07:46:51 Writing to client
+INFO 2022/07/18 07:46:51 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:46:51 Recieved info
+INFO 2022/07/18 07:46:51 Has been pinged
+INFO 2022/07/18 07:46:59 Writing to client
+INFO 2022/07/18 07:46:59 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:46:59 Recieved info
+INFO 2022/07/18 07:46:59 Has been pinged
+INFO 2022/07/18 07:47:03 Getting user
+INFO 2022/07/18 07:47:03 Generating token
+ERROR 2022/07/18 07:47:04 token is not provided
+ERROR 2022/07/18 07:47:04 token is invalid
+ERROR 2022/07/18 07:47:04 token is invalid
+ERROR 2022/07/18 07:47:04 token is invalid
+ERROR 2022/07/18 07:47:04 token is invalid
+ERROR 2022/07/18 07:47:05 token is invalid
+ERROR 2022/07/18 07:47:05 token is invalid
+ERROR 2022/07/18 07:47:05 token is invalid
+ERROR 2022/07/18 07:47:05 token is invalid
+INFO 2022/07/18 07:47:07 Writing to client
+INFO 2022/07/18 07:47:07 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:07 Recieved info
+INFO 2022/07/18 07:47:07 Has been pinged
+INFO 2022/07/18 07:47:15 Writing to client
+INFO 2022/07/18 07:47:15 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:15 Recieved info
+INFO 2022/07/18 07:47:15 Has been pinged
+INFO 2022/07/18 07:47:23 Writing to client
+INFO 2022/07/18 07:47:23 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:23 Recieved info
+INFO 2022/07/18 07:47:23 Has been pinged
+INFO 2022/07/18 07:47:31 Writing to client
+INFO 2022/07/18 07:47:31 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:31 Recieved info
+INFO 2022/07/18 07:47:31 Has been pinged
+INFO 2022/07/18 07:47:39 Writing to client
+INFO 2022/07/18 07:47:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:40 Recieved info
+INFO 2022/07/18 07:47:40 Has been pinged
+INFO 2022/07/18 07:47:48 Writing to client
+INFO 2022/07/18 07:47:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:48 Recieved info
+INFO 2022/07/18 07:47:48 Has been pinged
+INFO 2022/07/18 07:47:56 Writing to client
+INFO 2022/07/18 07:47:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:47:56 Recieved info
+INFO 2022/07/18 07:47:56 Has been pinged
+INFO 2022/07/18 07:48:04 Writing to client
+INFO 2022/07/18 07:48:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:04 Recieved info
+INFO 2022/07/18 07:48:04 Has been pinged
+INFO 2022/07/18 07:48:12 Writing to client
+INFO 2022/07/18 07:48:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:12 Recieved info
+INFO 2022/07/18 07:48:12 Has been pinged
+INFO 2022/07/18 07:48:20 Writing to client
+INFO 2022/07/18 07:48:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:20 Recieved info
+INFO 2022/07/18 07:48:20 Has been pinged
+INFO 2022/07/18 07:48:28 Writing to client
+INFO 2022/07/18 07:48:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:28 Recieved info
+INFO 2022/07/18 07:48:28 Has been pinged
+INFO 2022/07/18 07:48:36 Writing to client
+INFO 2022/07/18 07:48:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:36 Recieved info
+INFO 2022/07/18 07:48:36 Has been pinged
+INFO 2022/07/18 07:48:44 Writing to client
+INFO 2022/07/18 07:48:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:44 Recieved info
+INFO 2022/07/18 07:48:44 Has been pinged
+INFO 2022/07/18 07:48:52 Writing to client
+INFO 2022/07/18 07:48:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:48:52 Recieved info
+INFO 2022/07/18 07:48:52 Has been pinged
+INFO 2022/07/18 07:49:00 Writing to client
+INFO 2022/07/18 07:49:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:00 Recieved info
+INFO 2022/07/18 07:49:00 Has been pinged
+INFO 2022/07/18 07:49:08 Writing to client
+INFO 2022/07/18 07:49:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:08 Recieved info
+INFO 2022/07/18 07:49:08 Has been pinged
+INFO 2022/07/18 07:49:16 Writing to client
+INFO 2022/07/18 07:49:16 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:16 Recieved info
+INFO 2022/07/18 07:49:16 Has been pinged
+INFO 2022/07/18 07:49:24 Writing to client
+INFO 2022/07/18 07:49:24 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:24 Recieved info
+INFO 2022/07/18 07:49:24 Has been pinged
+INFO 2022/07/18 07:49:32 Writing to client
+INFO 2022/07/18 07:49:32 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:32 Recieved info
+INFO 2022/07/18 07:49:32 Has been pinged
+INFO 2022/07/18 07:49:40 Writing to client
+INFO 2022/07/18 07:49:40 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:40 Recieved info
+INFO 2022/07/18 07:49:40 Has been pinged
+INFO 2022/07/18 07:49:48 Writing to client
+INFO 2022/07/18 07:49:48 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:48 Recieved info
+INFO 2022/07/18 07:49:48 Has been pinged
+INFO 2022/07/18 07:49:56 Writing to client
+INFO 2022/07/18 07:49:56 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:49:56 Recieved info
+INFO 2022/07/18 07:49:56 Has been pinged
+INFO 2022/07/18 07:50:04 Writing to client
+INFO 2022/07/18 07:50:04 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:04 Recieved info
+INFO 2022/07/18 07:50:04 Has been pinged
+INFO 2022/07/18 07:50:12 Writing to client
+INFO 2022/07/18 07:50:12 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:12 Recieved info
+INFO 2022/07/18 07:50:12 Has been pinged
+INFO 2022/07/18 07:50:20 Writing to client
+INFO 2022/07/18 07:50:20 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:20 Recieved info
+INFO 2022/07/18 07:50:20 Has been pinged
+INFO 2022/07/18 07:50:28 Writing to client
+INFO 2022/07/18 07:50:28 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:28 Recieved info
+INFO 2022/07/18 07:50:28 Has been pinged
+INFO 2022/07/18 07:50:36 Writing to client
+INFO 2022/07/18 07:50:36 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:36 Recieved info
+INFO 2022/07/18 07:50:36 Has been pinged
+INFO 2022/07/18 07:50:44 Writing to client
+INFO 2022/07/18 07:50:44 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:44 Recieved info
+INFO 2022/07/18 07:50:44 Has been pinged
+INFO 2022/07/18 07:50:52 Writing to client
+INFO 2022/07/18 07:50:52 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:50:52 Recieved info
+INFO 2022/07/18 07:50:52 Has been pinged
+INFO 2022/07/18 07:51:00 Writing to client
+INFO 2022/07/18 07:51:00 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:00 Recieved info
+INFO 2022/07/18 07:51:00 Has been pinged
+INFO 2022/07/18 07:51:08 Writing to client
+INFO 2022/07/18 07:51:08 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:08 Recieved info
+INFO 2022/07/18 07:51:08 Has been pinged
+INFO 2022/07/18 07:51:16 Writing to client
+INFO 2022/07/18 07:51:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:17 Recieved info
+INFO 2022/07/18 07:51:17 Has been pinged
+INFO 2022/07/18 07:51:25 Writing to client
+INFO 2022/07/18 07:51:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:25 Recieved info
+INFO 2022/07/18 07:51:25 Has been pinged
+INFO 2022/07/18 07:51:33 Writing to client
+INFO 2022/07/18 07:51:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:33 Recieved info
+INFO 2022/07/18 07:51:33 Has been pinged
+INFO 2022/07/18 07:51:41 Writing to client
+INFO 2022/07/18 07:51:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:41 Recieved info
+INFO 2022/07/18 07:51:41 Has been pinged
+INFO 2022/07/18 07:51:49 Writing to client
+INFO 2022/07/18 07:51:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:49 Recieved info
+INFO 2022/07/18 07:51:49 Has been pinged
+INFO 2022/07/18 07:51:57 Writing to client
+INFO 2022/07/18 07:51:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:51:57 Recieved info
+INFO 2022/07/18 07:51:57 Has been pinged
+INFO 2022/07/18 07:52:05 Writing to client
+INFO 2022/07/18 07:52:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:05 Recieved info
+INFO 2022/07/18 07:52:05 Has been pinged
+INFO 2022/07/18 07:52:13 Writing to client
+INFO 2022/07/18 07:52:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:13 Recieved info
+INFO 2022/07/18 07:52:13 Has been pinged
+INFO 2022/07/18 07:52:21 Writing to client
+INFO 2022/07/18 07:52:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:21 Recieved info
+INFO 2022/07/18 07:52:21 Has been pinged
+INFO 2022/07/18 07:52:29 Writing to client
+INFO 2022/07/18 07:52:29 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:29 Recieved info
+INFO 2022/07/18 07:52:29 Has been pinged
+INFO 2022/07/18 07:52:33 {"content":"I want to kill myself","guild":1}
+INFO 2022/07/18 07:52:33 Message recieved I want to kill myself
+INFO 2022/07/18 07:52:33 Sending info of type 1
+INFO 2022/07/18 07:52:37 Writing to client
+INFO 2022/07/18 07:52:37 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:37 Recieved info
+INFO 2022/07/18 07:52:37 Has been pinged
+INFO 2022/07/18 07:52:45 Writing to client
+INFO 2022/07/18 07:52:45 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:45 Recieved info
+INFO 2022/07/18 07:52:45 Has been pinged
+INFO 2022/07/18 07:52:53 Writing to client
+INFO 2022/07/18 07:52:53 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:52:53 Recieved info
+INFO 2022/07/18 07:52:53 Has been pinged
+INFO 2022/07/18 07:53:01 Writing to client
+INFO 2022/07/18 07:53:01 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:01 Recieved info
+INFO 2022/07/18 07:53:01 Has been pinged
+INFO 2022/07/18 07:53:09 Writing to client
+INFO 2022/07/18 07:53:09 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:09 Recieved info
+INFO 2022/07/18 07:53:09 Has been pinged
+INFO 2022/07/18 07:53:17 Writing to client
+INFO 2022/07/18 07:53:17 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:17 Recieved info
+INFO 2022/07/18 07:53:17 Has been pinged
+INFO 2022/07/18 07:53:25 Writing to client
+INFO 2022/07/18 07:53:25 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:25 Recieved info
+INFO 2022/07/18 07:53:25 Has been pinged
+INFO 2022/07/18 07:53:33 Writing to client
+INFO 2022/07/18 07:53:33 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:33 Recieved info
+INFO 2022/07/18 07:53:33 Has been pinged
+INFO 2022/07/18 07:53:41 Writing to client
+INFO 2022/07/18 07:53:41 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:41 Recieved info
+INFO 2022/07/18 07:53:41 Has been pinged
+INFO 2022/07/18 07:53:49 Writing to client
+INFO 2022/07/18 07:53:49 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:49 Recieved info
+INFO 2022/07/18 07:53:49 Has been pinged
+INFO 2022/07/18 07:53:57 Writing to client
+INFO 2022/07/18 07:53:57 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:53:57 Recieved info
+INFO 2022/07/18 07:53:57 Has been pinged
+INFO 2022/07/18 07:54:05 Writing to client
+INFO 2022/07/18 07:54:05 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:05 Recieved info
+INFO 2022/07/18 07:54:05 Has been pinged
+INFO 2022/07/18 07:54:13 Writing to client
+INFO 2022/07/18 07:54:13 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:13 Recieved info
+INFO 2022/07/18 07:54:13 Has been pinged
+INFO 2022/07/18 07:54:21 Writing to client
+INFO 2022/07/18 07:54:21 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:21 Recieved info
+INFO 2022/07/18 07:54:21 Has been pinged
+INFO 2022/07/18 07:54:29 Writing to client
+INFO 2022/07/18 07:54:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:30 Recieved info
+INFO 2022/07/18 07:54:30 Has been pinged
+INFO 2022/07/18 07:54:38 Writing to client
+INFO 2022/07/18 07:54:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:38 Recieved info
+INFO 2022/07/18 07:54:38 Has been pinged
+INFO 2022/07/18 07:54:46 Writing to client
+INFO 2022/07/18 07:54:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:46 Recieved info
+INFO 2022/07/18 07:54:46 Has been pinged
+INFO 2022/07/18 07:54:54 Writing to client
+INFO 2022/07/18 07:54:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:54:54 Recieved info
+INFO 2022/07/18 07:54:54 Has been pinged
+INFO 2022/07/18 07:55:02 Writing to client
+INFO 2022/07/18 07:55:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:02 Recieved info
+INFO 2022/07/18 07:55:02 Has been pinged
+INFO 2022/07/18 07:55:10 Writing to client
+INFO 2022/07/18 07:55:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:10 Recieved info
+INFO 2022/07/18 07:55:10 Has been pinged
+INFO 2022/07/18 07:55:18 Writing to client
+INFO 2022/07/18 07:55:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:18 Recieved info
+INFO 2022/07/18 07:55:18 Has been pinged
+INFO 2022/07/18 07:55:26 Writing to client
+INFO 2022/07/18 07:55:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:26 Recieved info
+INFO 2022/07/18 07:55:26 Has been pinged
+INFO 2022/07/18 07:55:34 Writing to client
+INFO 2022/07/18 07:55:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:34 Recieved info
+INFO 2022/07/18 07:55:34 Has been pinged
+INFO 2022/07/18 07:55:42 Writing to client
+INFO 2022/07/18 07:55:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:42 Recieved info
+INFO 2022/07/18 07:55:42 Has been pinged
+INFO 2022/07/18 07:55:50 Writing to client
+INFO 2022/07/18 07:55:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:50 Recieved info
+INFO 2022/07/18 07:55:50 Has been pinged
+INFO 2022/07/18 07:55:58 Writing to client
+INFO 2022/07/18 07:55:58 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:55:58 Recieved info
+INFO 2022/07/18 07:55:58 Has been pinged
+INFO 2022/07/18 07:56:06 Writing to client
+INFO 2022/07/18 07:56:06 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:06 Recieved info
+INFO 2022/07/18 07:56:06 Has been pinged
+INFO 2022/07/18 07:56:14 Writing to client
+INFO 2022/07/18 07:56:14 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:14 Recieved info
+INFO 2022/07/18 07:56:14 Has been pinged
+INFO 2022/07/18 07:56:22 Writing to client
+INFO 2022/07/18 07:56:22 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:22 Recieved info
+INFO 2022/07/18 07:56:22 Has been pinged
+INFO 2022/07/18 07:56:30 Writing to client
+INFO 2022/07/18 07:56:30 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:30 Recieved info
+INFO 2022/07/18 07:56:30 Has been pinged
+INFO 2022/07/18 07:56:38 Writing to client
+INFO 2022/07/18 07:56:38 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:38 Recieved info
+INFO 2022/07/18 07:56:38 Has been pinged
+INFO 2022/07/18 07:56:46 Writing to client
+INFO 2022/07/18 07:56:46 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:46 Recieved info
+INFO 2022/07/18 07:56:46 Has been pinged
+INFO 2022/07/18 07:56:54 Writing to client
+INFO 2022/07/18 07:56:54 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:56:54 Recieved info
+INFO 2022/07/18 07:56:54 Has been pinged
+INFO 2022/07/18 07:57:02 Writing to client
+INFO 2022/07/18 07:57:02 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:02 Recieved info
+INFO 2022/07/18 07:57:02 Has been pinged
+INFO 2022/07/18 07:57:10 Writing to client
+INFO 2022/07/18 07:57:10 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:10 Recieved info
+INFO 2022/07/18 07:57:10 Has been pinged
+INFO 2022/07/18 07:57:18 Writing to client
+INFO 2022/07/18 07:57:18 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:18 Recieved info
+INFO 2022/07/18 07:57:18 Has been pinged
+INFO 2022/07/18 07:57:26 Writing to client
+INFO 2022/07/18 07:57:26 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:26 Recieved info
+INFO 2022/07/18 07:57:26 Has been pinged
+INFO 2022/07/18 07:57:34 Writing to client
+INFO 2022/07/18 07:57:34 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:34 Recieved info
+INFO 2022/07/18 07:57:34 Has been pinged
+INFO 2022/07/18 07:57:42 Writing to client
+INFO 2022/07/18 07:57:42 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:42 Recieved info
+INFO 2022/07/18 07:57:42 Has been pinged
+INFO 2022/07/18 07:57:50 Writing to client
+INFO 2022/07/18 07:57:50 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:50 Recieved info
+INFO 2022/07/18 07:57:50 Has been pinged
+INFO 2022/07/18 07:57:58 Writing to client
+INFO 2022/07/18 07:57:59 string json:{"dataType":0,"data":{"Data":"ping"}}
+INFO 2022/07/18 07:57:59 Recieved info
+INFO 2022/07/18 07:57:59 Has been pinged

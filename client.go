@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -70,7 +71,7 @@ func (c *client) run() {
 					continue
 				}
 			*/
-			pools[guildId].Remove <- c.id
+			pools[guildId].Remove <- c.id //RACE CONDITION SEE pool.go:30
 		}
 	}()
 	log.WriteLog(logger.INFO, "Websocket active of "+c.ws.LocalAddr().String())
@@ -80,7 +81,7 @@ func (c *client) run() {
 		select {
 		//recieve messages
 		case data, ok := <-clients[c.id]:
-			if !ok {
+			if !ok { //idk if this is needed or not
 				c.quitFunc() //call cancel but never actually recieve it
 				return       //the channel has been closed get out of here
 			}
@@ -146,6 +147,7 @@ func (c *client) eventCheck(data interface{}) {
 		DataType: dataType,
 		Data:     data,
 	}
+	log.WriteLog(logger.INFO, "Sending info of type "+strconv.Itoa(dataType))
 	err := c.ws.WriteJSON(sendData)
 	if err != nil {
 		log.WriteLog(logger.ERROR, err.Error())
@@ -249,7 +251,7 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 */
 
 func broadcastClient(id int, data interface{}) (statusCode int, err error) {
-	client := clients[id]
+	client := clients[id] //problem if two websockets of same user exist only of those two will be sent
 	if client == nil {
 		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
 	}
