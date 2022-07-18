@@ -8,20 +8,20 @@ import (
 )
 
 type addClientData struct {
-	Id int
-	Ch brcastEvents
+	UniqueId string
+	Ch       brcastEvents
 }
 
 type poolBrcastEvents chan interface{}
-type removeClient chan int
+type removeClient chan string
 type addClient chan addClientData
 
 type pool struct {
 	guild     int
-	clients   map[int]brcastEvents //channel of clients
-	Remove    removeClient         //channel to broadcast which client to remove
-	Add       addClient            //channel to broadcast which client to add
-	Broadcast poolBrcastEvents     //broadcast to all clients
+	clients   map[string]brcastEvents //channel of clients
+	Remove    removeClient            //channel to broadcast which client to remove
+	Add       addClient               //channel to broadcast which client to add
+	Broadcast poolBrcastEvents        //broadcast to all clients
 }
 
 func (p *pool) run() {
@@ -41,7 +41,7 @@ func (p *pool) run() {
 				return
 			}
 		case data := <-p.Add:
-			p.clients[data.Id] = data.Ch
+			p.clients[data.UniqueId] = data.Ch
 		case data := <-p.Broadcast:
 			for _, ch := range p.clients {
 				ch <- data
@@ -62,7 +62,7 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 func createPool(guild int) {
 	p := &pool{
 		guild:     guild,
-		clients:   make(map[int]brcastEvents),
+		clients:   make(map[string]brcastEvents),
 		Remove:    make(removeClient),
 		Add:       make(addClient),
 		Broadcast: make(poolBrcastEvents),

@@ -18,7 +18,8 @@ type brcastEvents chan interface{}
 type client struct {
 	ws        *websocket.Conn
 	id        int
-	guilds    []int //not used might remove later
+	uniqueId  string //since some guys might be using multiple connections on one account
+	guilds    []int  //not used might remove later
 	timer     *time.Ticker
 	broadcast brcastEvents
 	quit      context.Context //chan bool //also temporary maybe use contexts later
@@ -35,7 +36,10 @@ type pingpong struct {
 	Data string //probably include more stuff maybe idk
 }
 
-var lock sync.Mutex
+var (
+	lock      sync.Mutex
+	lockAlias sync.Mutex
+)
 
 const (
 	pingDelay    = 20 * time.Second
@@ -49,8 +53,16 @@ func (c *client) run() {
 		if err != nil {
 			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when leaving websocket %v", err).Error())
 		}
-		close(clients[c.id])
-		delete(clients, c.id)
+		close(clients[c.uniqueId]) //close of nil channel error occurs here sometimes
+		delete(clients, c.uniqueId)
+		delete(clientAlias[c.id], c.uniqueId)
+
+		lockAlias.Lock()
+		if len(clientAlias[c.id]) == 0 {
+			delete(clientAlias, c.id)
+		}
+		lockAlias.Unlock()
+
 		log.WriteLog(logger.INFO, "Websocket of "+c.ws.LocalAddr().String()+" has been closed")
 		//leaves the guild pools
 		rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id = $1", c.id)
@@ -58,7 +70,7 @@ func (c *client) run() {
 			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
 			return
 		}
-		for rows.Next() {
+		for rows.Next() { //should be using guilds array instead lol
 			var guildId int
 			err = rows.Scan(&guildId)
 			if err != nil {
@@ -71,7 +83,7 @@ func (c *client) run() {
 					continue
 				}
 			*/
-			pools[guildId].Remove <- c.id //RACE CONDITION SEE pool.go:30
+			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30
 		}
 	}()
 	log.WriteLog(logger.INFO, "Websocket active of "+c.ws.LocalAddr().String())
@@ -80,7 +92,7 @@ func (c *client) run() {
 	for {
 		select {
 		//recieve messages
-		case data, ok := <-clients[c.id]:
+		case data, ok := <-c.broadcast:
 			if !ok { //idk if this is needed or not
 				c.quitFunc() //call cancel but never actually recieve it
 				return       //the channel has been closed get out of here
@@ -181,6 +193,8 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 	}
 	var guilds []int
 	broadcastChannel := make(brcastEvents)
+	uniqueId := generateRandString(32)
+
 	for rows.Next() {
 		var guild int
 		rows.Scan(&guild)
@@ -189,8 +203,8 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		//only implementing to prevent data races
 		guildPool, ok := pools[guild]
 		clientData := addClientData{
-			Id: user.Id,
-			Ch: broadcastChannel,
+			UniqueId: uniqueId,
+			Ch:       broadcastChannel,
 		}
 		if !ok {
 			createPool(guild)
@@ -208,13 +222,20 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 	instanceuser := client{
 		ws:        ws,
 		id:        user.Id, //broadcast to all clients
+		uniqueId:  uniqueId,
 		guilds:    guilds,
 		timer:     time.NewTicker(pongDelay),
 		broadcast: broadcastChannel,
 		quit:      quit,
 		quitFunc:  quitFunc,
 	}
-	clients[user.Id] = instanceuser.broadcast
+	clients[uniqueId] = instanceuser.broadcast
+	lockAlias.Lock() //prevents datarace
+	if _, ok := clientAlias[user.Id]; !ok {
+		clientAlias[user.Id] = make(map[string]brcastEvents)
+	}
+	lockAlias.Unlock()
+	clientAlias[user.Id][uniqueId] = instanceuser.broadcast
 	instanceuser.run()
 
 }
@@ -251,10 +272,12 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 */
 
 func broadcastClient(id int, data interface{}) (statusCode int, err error) {
-	client := clients[id] //problem if two websockets of same user exist only of those two will be sent
-	if client == nil {
+	clientList, ok := clientAlias[id] //problem if two websockets of same user exist only of those two will be sent
+	if !ok {
 		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
 	}
-	client <- data
+	for _, client := range clientList {
+		client <- data
+	}
 	return 0, nil
 }

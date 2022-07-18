@@ -22,12 +22,13 @@ import (
 )
 
 var (
-	log        *logger.Logger
-	db         *sql.DB
-	upgrader   websocket.Upgrader
-	clients    = make(map[int]brcastEvents) // id : channel
-	pools      = make(map[int]*pool)        //guild id : guild channel
-	characters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	log         *logger.Logger
+	db          *sql.DB
+	upgrader    websocket.Upgrader
+	clients     = make(map[string]brcastEvents)         // string (unique id) : channel
+	clientAlias = make(map[int]map[string]brcastEvents) // alias (string) : id : channel
+	pools       = make(map[int]*pool)                   //guild id : guild channel
+	characters  = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 )
 
 const ( //settings
