@@ -22,12 +22,14 @@
 - **!!CRITICAL!!** Something is causing high cpu usage when websockets are running - FIXED
     - possibly for loop?
 - **!!CRITICAL!!** If the same user were to open multiple clients the client map will be overwritten therefore
-    only one of the clients will be able to get the data
+    only one of the clients will be able to get the data - (Possibly fixed needs further testing)
 - implement websocket pool for better efficency - done
     - gather websockets associated with a guild - done (Needs more testing)
 - Restructure the token to use sql database instead of ram - done
     - make a monthly checkup to remove expired tokens
     - encrypt the tokens with sha256 no salt no pepper since tokens are random af - Cancelled
+
+**AFTER FINISHED EVERYTHING**
 - Implement rate limiting
     - store in ram in a map of ips pointing to timers
     - 500 ms rate limit

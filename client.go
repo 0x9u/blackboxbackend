@@ -125,16 +125,16 @@ func (c *client) heartBeat() {
 			log.WriteLog(logger.INFO, "Disconnecting websocket")
 			break
 		}
-		log.WriteLog(logger.INFO, "string json:"+string(message))
+		//		log.WriteLog(logger.INFO, "string json:"+string(message))
 		var recieved sendDataType
 		err = json.Unmarshal(message, &recieved)
 		if err != nil {
 			log.WriteLog(logger.WARN, "an error occured during unmarshalling with websocket: "+c.ws.LocalAddr().String()+": "+err.Error())
 			continue
 		}
-		log.WriteLog(logger.INFO, "Recieved info")
+		//		log.WriteLog(logger.INFO, "Recieved info")
 		if recieved.DataType == 0 {
-			log.WriteLog(logger.INFO, "Has been pinged")
+			//			log.WriteLog(logger.INFO, "Has been pinged")
 			c.ws.SetReadDeadline(time.Now().Add(pingDelay)) //screw handlers
 			c.timer.Reset(pongDelay)                        //just in case if client pings in multiple intervals
 		}
