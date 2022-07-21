@@ -106,7 +106,7 @@ func (c *client) run() {
 				Data:     pingpong{Data: "pong"},
 			}
 			message, _ := json.Marshal(data)
-			log.WriteLog(logger.INFO, "Writing to client")
+			//log.WriteLog(logger.INFO, "Writing to client")
 			if err := c.ws.WriteMessage(websocket.TextMessage, message); err != nil {
 				c.quitFunc()
 			}
