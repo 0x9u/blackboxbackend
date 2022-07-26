@@ -219,13 +219,32 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 			return
 		}
 	case 1:
-		_, err = db.Exec("UPDATE users SET email=$1 WHERE id=$2", change.NewData, user.Id)
+		row := db.QueryRow("SELECT EXISTS(SELECT email FROM users WHERE email=$1)", change.NewData)
+		var taken bool
+		if err := row.Scan(&taken); err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+		}
+		if taken {
+			reportError(http.StatusBadRequest, w, errorEmailExists)
+			return
+		}
+		_, err := db.Exec("UPDATE users SET email=$1 WHERE id=$2", change.NewData, user.Id)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
 		}
 
 	case 2:
+		row := db.QueryRow("SELECT EXISTS(SELECT username FROM users WHERE username=$1)", change.NewData) //check if username already exists
+		var taken bool
+		if err := row.Scan(&taken); err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		if taken {
+			reportError(http.StatusBadRequest, w, errorUsernameExists)
+			return
+		}
 		_, err = db.Exec("UPDATE users SET username=$1 WHERE id=$2", change.NewData, user.Id)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)

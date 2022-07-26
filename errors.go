@@ -8,6 +8,7 @@ var (
 	errorExpiredToken      = errors.New("token has expired")
 	errorNotInGuild        = errors.New("user is not in guild")
 	errorUsernameExists    = errors.New("username already exists")
+	errorEmailExists       = errors.New("email already exists")
 	errorInvalidChange     = errors.New("invalid change option")
 	errorGuildNotProvided  = errors.New("guild is not provided")
 	errorNotGuildOwner     = errors.New("user is not owner")
@@ -16,4 +17,5 @@ var (
 	errorGuildPoolNotExist = errors.New("guild pool does not exist")
 	errorInvalidEmail      = errors.New("invalid email")
 	errorInvalidDetails    = errors.New("invalid details")
+	errorNoMsgContent      = errors.New("no msg content")
 )

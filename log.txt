@@ -22371,3 +22371,219 @@ INFO 2022/07/21 15:00:27 Writing to client
 INFO 2022/07/21 15:00:35 Writing to client
 INFO 2022/07/21 15:00:43 Writing to client
 INFO 2022/07/21 15:00:51 Writing to client
+INFO 2022/07/21 15:02:35 Handling requests
+INFO 2022/07/26 16:10:49 Handling requests
+INFO 2022/07/26 16:10:57 Getting guilds
+INFO 2022/07/26 16:10:57 Pool created for guild 1
+INFO 2022/07/26 16:10:57 Pool created for guild 3
+INFO 2022/07/26 16:10:57 Pool created for guild 4
+INFO 2022/07/26 16:10:57 Websocket active of [::1]:8090
+INFO 2022/07/26 16:11:00 limit: 50, timestamp 1658815860906
+INFO 2022/07/26 16:11:02 limit: 50, timestamp 1658815862119
+INFO 2022/07/26 16:11:13 {"content":"","guild":1}
+INFO 2022/07/26 16:11:13 Message recieved 
+INFO 2022/07/26 16:11:13 Sending info of type 1
+INFO 2022/07/26 16:11:14 {"content":"","guild":1}
+INFO 2022/07/26 16:11:14 Message recieved 
+INFO 2022/07/26 16:11:14 Sending info of type 1
+INFO 2022/07/26 16:11:15 {"content":"","guild":1}
+INFO 2022/07/26 16:11:15 Message recieved 
+INFO 2022/07/26 16:11:15 Sending info of type 1
+INFO 2022/07/26 16:11:15 {"content":"","guild":1}
+INFO 2022/07/26 16:11:15 Message recieved 
+INFO 2022/07/26 16:11:15 Sending info of type 1
+INFO 2022/07/26 16:11:18 {"content":"","guild":1}
+INFO 2022/07/26 16:11:18 Message recieved 
+INFO 2022/07/26 16:11:18 Sending info of type 1
+INFO 2022/07/26 16:11:19 {"content":"","guild":1}
+INFO 2022/07/26 16:11:19 Message recieved 
+INFO 2022/07/26 16:11:19 Sending info of type 1
+INFO 2022/07/26 16:14:02 Handling requests
+INFO 2022/07/26 16:14:04 Pool created for guild 1
+INFO 2022/07/26 16:14:04 Pool created for guild 3
+INFO 2022/07/26 16:14:04 Pool created for guild 4
+INFO 2022/07/26 16:14:04 Websocket active of [::1]:8090
+INFO 2022/07/26 16:14:04 Getting guilds
+INFO 2022/07/26 16:14:04 limit: 50, timestamp 1658816044204
+INFO 2022/07/26 16:14:07 {"content":"","guild":1}
+INFO 2022/07/26 16:14:07 Message recieved 
+ERROR 2022/07/26 16:14:07 no msg content
+INFO 2022/07/26 16:14:07 Sending info of type 1
+INFO 2022/07/26 16:14:37 Handling requests
+INFO 2022/07/26 16:14:39 Pool created for guild 1
+INFO 2022/07/26 16:14:39 Pool created for guild 3
+INFO 2022/07/26 16:14:39 Pool created for guild 4
+INFO 2022/07/26 16:14:39 Websocket active of [::1]:8090
+INFO 2022/07/26 16:14:39 Getting guilds
+INFO 2022/07/26 16:14:39 limit: 50, timestamp 1658816079568
+INFO 2022/07/26 16:14:46 {"content":"","guild":1}
+INFO 2022/07/26 16:14:46 Message recieved 
+INFO 2022/07/26 16:14:46 
+ERROR 2022/07/26 16:14:46 no msg content
+INFO 2022/07/26 16:14:46 Sending info of type 1
+INFO 2022/07/26 16:14:57 Handling requests
+INFO 2022/07/26 16:14:58 Getting guilds
+INFO 2022/07/26 16:14:58 Pool created for guild 1
+INFO 2022/07/26 16:14:58 Pool created for guild 3
+INFO 2022/07/26 16:14:58 Pool created for guild 4
+INFO 2022/07/26 16:14:58 Websocket active of [::1]:8090
+INFO 2022/07/26 16:14:58 limit: 50, timestamp 1658816098277
+INFO 2022/07/26 16:15:00 {"content":"","guild":1}
+INFO 2022/07/26 16:15:00 Message recieved 
+INFO 2022/07/26 16:15:00 
+ERROR 2022/07/26 16:15:00 no msg content
+INFO 2022/07/26 16:15:00 {"content":"","guild":1}
+INFO 2022/07/26 16:15:00 Message recieved 
+INFO 2022/07/26 16:15:00 
+ERROR 2022/07/26 16:15:00 no msg content
+INFO 2022/07/26 16:15:01 {"content":"","guild":1}
+INFO 2022/07/26 16:15:01 Message recieved 
+INFO 2022/07/26 16:15:01 
+ERROR 2022/07/26 16:15:01 no msg content
+INFO 2022/07/26 16:15:01 {"content":"","guild":1}
+INFO 2022/07/26 16:15:01 Message recieved 
+INFO 2022/07/26 16:15:01 
+ERROR 2022/07/26 16:15:01 no msg content
+INFO 2022/07/26 16:15:02 {"content":"","guild":1}
+INFO 2022/07/26 16:15:02 Message recieved 
+INFO 2022/07/26 16:15:02 
+ERROR 2022/07/26 16:15:02 no msg content
+INFO 2022/07/26 16:15:02 {"content":"","guild":1}
+INFO 2022/07/26 16:15:02 Message recieved 
+INFO 2022/07/26 16:15:02 
+ERROR 2022/07/26 16:15:02 no msg content
+INFO 2022/07/26 16:15:02 {"content":"","guild":1}
+INFO 2022/07/26 16:15:02 Message recieved 
+INFO 2022/07/26 16:15:02 
+ERROR 2022/07/26 16:15:02 no msg content
+INFO 2022/07/26 16:15:02 {"content":"","guild":1}
+INFO 2022/07/26 16:15:02 Message recieved 
+INFO 2022/07/26 16:15:02 
+ERROR 2022/07/26 16:15:02 no msg content
+INFO 2022/07/26 16:15:03 {"content":"","guild":1}
+INFO 2022/07/26 16:15:03 Message recieved 
+INFO 2022/07/26 16:15:03 
+ERROR 2022/07/26 16:15:03 no msg content
+INFO 2022/07/26 16:15:03 {"content":"","guild":1}
+INFO 2022/07/26 16:15:03 Message recieved 
+INFO 2022/07/26 16:15:03 
+ERROR 2022/07/26 16:15:03 no msg content
+INFO 2022/07/26 16:15:03 {"content":"","guild":1}
+INFO 2022/07/26 16:15:03 Message recieved 
+INFO 2022/07/26 16:15:03 
+ERROR 2022/07/26 16:15:03 no msg content
+INFO 2022/07/26 16:15:04 {"content":"","guild":1}
+INFO 2022/07/26 16:15:04 Message recieved 
+INFO 2022/07/26 16:15:04 
+ERROR 2022/07/26 16:15:04 no msg content
+INFO 2022/07/26 16:15:04 {"content":"","guild":1}
+INFO 2022/07/26 16:15:04 Message recieved 
+INFO 2022/07/26 16:15:04 
+ERROR 2022/07/26 16:15:04 no msg content
+INFO 2022/07/26 16:15:04 {"content":"","guild":1}
+INFO 2022/07/26 16:15:04 Message recieved 
+INFO 2022/07/26 16:15:04 
+ERROR 2022/07/26 16:15:04 no msg content
+INFO 2022/07/26 16:15:04 {"content":"","guild":1}
+INFO 2022/07/26 16:15:04 Message recieved 
+INFO 2022/07/26 16:15:04 
+ERROR 2022/07/26 16:15:04 no msg content
+INFO 2022/07/26 16:15:05 {"content":"","guild":1}
+INFO 2022/07/26 16:15:05 Message recieved 
+INFO 2022/07/26 16:15:05 
+ERROR 2022/07/26 16:15:05 no msg content
+INFO 2022/07/26 16:15:05 {"content":"","guild":1}
+INFO 2022/07/26 16:15:05 Message recieved 
+INFO 2022/07/26 16:15:05 
+ERROR 2022/07/26 16:15:05 no msg content
+INFO 2022/07/26 16:15:06 {"content":"","guild":1}
+INFO 2022/07/26 16:15:06 Message recieved 
+INFO 2022/07/26 16:15:06 
+ERROR 2022/07/26 16:15:06 no msg content
+INFO 2022/07/26 16:15:06 {"content":"","guild":1}
+INFO 2022/07/26 16:15:06 Message recieved 
+INFO 2022/07/26 16:15:06 
+ERROR 2022/07/26 16:15:06 no msg content
+ERROR 2022/07/26 16:40:44 websocket: close 1001 (going away)
+INFO 2022/07/26 16:40:44 Disconnecting websocket
+INFO 2022/07/26 16:40:44 Websocket of [::1]:8090 has been closed
+INFO 2022/07/26 16:40:44 User left pool
+INFO 2022/07/26 16:40:44 Pool closed: 1
+INFO 2022/07/26 16:40:44 User left pool
+INFO 2022/07/26 16:40:44 Pool closed: 4
+INFO 2022/07/26 16:40:44 User left pool
+INFO 2022/07/26 16:40:44 Pool closed: 3
+INFO 2022/07/26 16:40:44 Getting guilds
+INFO 2022/07/26 16:40:44 Pool created for guild 1
+INFO 2022/07/26 16:40:44 Pool created for guild 3
+INFO 2022/07/26 16:40:44 Pool created for guild 4
+INFO 2022/07/26 16:40:44 Websocket active of [::1]:8090
+INFO 2022/07/26 16:40:45 limit: 50, timestamp 1658817645105
+ERROR 2022/07/26 16:41:42 websocket: close 1001 (going away)
+INFO 2022/07/26 16:41:42 Disconnecting websocket
+INFO 2022/07/26 16:41:42 Websocket of [::1]:8090 has been closed
+INFO 2022/07/26 16:41:42 User left pool
+INFO 2022/07/26 16:41:42 Pool closed: 4
+INFO 2022/07/26 16:41:42 User left pool
+INFO 2022/07/26 16:41:42 Pool closed: 1
+INFO 2022/07/26 16:41:42 User left pool
+INFO 2022/07/26 16:41:42 Pool closed: 3
+INFO 2022/07/26 16:41:52 Handling requests
+INFO 2022/07/26 16:41:54 Getting guilds
+INFO 2022/07/26 16:41:54 Pool created for guild 1
+INFO 2022/07/26 16:41:54 Pool created for guild 3
+INFO 2022/07/26 16:41:54 Pool created for guild 4
+INFO 2022/07/26 16:41:54 Websocket active of [::1]:8090
+INFO 2022/07/26 16:41:55 limit: 50, timestamp 1658817715020
+ERROR 2022/07/26 16:45:00 websocket: close 1001 (going away)
+INFO 2022/07/26 16:45:00 Disconnecting websocket
+INFO 2022/07/26 16:45:00 Websocket of [::1]:8090 has been closed
+INFO 2022/07/26 16:45:00 User left pool
+INFO 2022/07/26 16:45:00 Pool closed: 4
+INFO 2022/07/26 16:45:00 User left pool
+INFO 2022/07/26 16:45:00 Pool closed: 1
+INFO 2022/07/26 16:45:00 User left pool
+INFO 2022/07/26 16:45:00 Pool closed: 3
+INFO 2022/07/26 16:45:00 Getting guilds
+INFO 2022/07/26 16:45:00 Pool created for guild 1
+INFO 2022/07/26 16:45:00 Pool created for guild 3
+INFO 2022/07/26 16:45:00 Pool created for guild 4
+INFO 2022/07/26 16:45:00 Websocket active of [::1]:8090
+INFO 2022/07/26 16:45:01 limit: 50, timestamp 1658817901151
+ERROR 2022/07/26 16:46:32 websocket: close 1001 (going away)
+INFO 2022/07/26 16:46:32 Disconnecting websocket
+INFO 2022/07/26 16:46:32 Websocket of [::1]:8090 has been closed
+INFO 2022/07/26 16:46:32 User left pool
+INFO 2022/07/26 16:46:32 Pool closed: 4
+INFO 2022/07/26 16:46:32 User left pool
+INFO 2022/07/26 16:46:32 Pool closed: 1
+INFO 2022/07/26 16:46:32 User left pool
+INFO 2022/07/26 16:46:32 Pool closed: 3
+INFO 2022/07/26 16:46:33 Pool created for guild 1
+INFO 2022/07/26 16:46:33 Pool created for guild 3
+INFO 2022/07/26 16:46:33 Pool created for guild 4
+INFO 2022/07/26 16:46:33 Websocket active of [::1]:8090
+INFO 2022/07/26 16:46:33 Getting guilds
+INFO 2022/07/26 16:46:33 limit: 50, timestamp 1658817993379
+INFO 2022/07/26 16:48:18 Handling requests
+INFO 2022/07/26 16:48:21 Getting guilds
+INFO 2022/07/26 16:48:21 Pool created for guild 1
+INFO 2022/07/26 16:48:21 Pool created for guild 3
+INFO 2022/07/26 16:48:21 Pool created for guild 4
+INFO 2022/07/26 16:48:21 Websocket active of [::1]:8090
+INFO 2022/07/26 16:48:22 limit: 50, timestamp 1658818102136
+ERROR 2022/07/26 16:49:03 websocket: close 1001 (going away)
+INFO 2022/07/26 16:49:03 Disconnecting websocket
+INFO 2022/07/26 16:49:03 Websocket of [::1]:8090 has been closed
+INFO 2022/07/26 16:49:03 User left pool
+INFO 2022/07/26 16:49:03 Pool closed: 4
+INFO 2022/07/26 16:49:03 User left pool
+INFO 2022/07/26 16:49:03 Pool closed: 1
+INFO 2022/07/26 16:49:03 User left pool
+INFO 2022/07/26 16:49:03 Pool closed: 3
+INFO 2022/07/26 16:49:04 Getting guilds
+INFO 2022/07/26 16:49:04 Pool created for guild 1
+INFO 2022/07/26 16:49:04 Pool created for guild 3
+INFO 2022/07/26 16:49:04 Pool created for guild 4
+INFO 2022/07/26 16:49:04 Websocket active of [::1]:8090
+INFO 2022/07/26 16:49:04 limit: 50, timestamp 1658818144516

@@ -180,8 +180,9 @@ func main() {
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 15,
 		Handler: handlers.CORS(
-			handlers.AllowedHeaders([]string{"content-type", "Auth-Token"}), //took some time to figure out middleware problem
+			handlers.AllowedHeaders([]string{"content-type", "Auth-Token", ""}), //took some time to figure out middleware problem
 			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"}),
 			handlers.AllowCredentials(),
 		)(r),
 	}

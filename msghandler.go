@@ -77,6 +77,11 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 
 	//Remove any newlines in beginning of message or any stupid ass text
 	datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
+	log.WriteLog(logger.INFO, datamsg.Content)
+	if len(datamsg.Content) == 0 {
+		reportError(http.StatusBadRequest, w, errorNoMsgContent)
+		return
+	}
 
 	row = db.QueryRow("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4) RETURNING id", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time)
 	if err = row.Err(); err != nil {
