@@ -202,10 +202,12 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 	row.Scan(&username)
 	checkPass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
 	row = db.QueryRow("SELECT EXISTS (SELECT id FROM users WHERE password=$1)", checkPass)
-	if err := row.Err(); err != nil && err != sql.ErrNoRows {
+	var check bool
+	if err := row.Scan(&check); err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
-	} else if err == sql.ErrNoRows {
+	}
+	if !check {
 		reportError(http.StatusBadRequest, w, errorInvalidDetails)
 		return
 	}
@@ -213,7 +215,8 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 	switch change.Change {
 	case 0:
 		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.NewData+username)))
-		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, change.Password)
+		oldhashedpass := fmt.Sprintf("%x", sha256.Sum256(([]byte(change.Password + username))))
+		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, oldhashedpass)
 		if err != nil {
 			reportError(http.StatusBadRequest, w, err)
 			return
@@ -248,6 +251,13 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 		_, err = db.Exec("UPDATE users SET username=$1 WHERE id=$2", change.NewData, user.Id)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		//update
+		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
+		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, change.Password)
+		if err != nil {
+			reportError(http.StatusBadRequest, w, err)
 			return
 		}
 	default:

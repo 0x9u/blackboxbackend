@@ -77,6 +77,7 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 
 	//Remove any newlines in beginning of message or any stupid ass text
 	datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
+	datamsg.Content = strings.Replace(datamsg.Content, "\t", "", -1)
 	log.WriteLog(logger.INFO, datamsg.Content)
 	if len(datamsg.Content) == 0 {
 		reportError(http.StatusBadRequest, w, errorNoMsgContent)

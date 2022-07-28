@@ -28,9 +28,9 @@ func (p *pool) run() {
 	defer func() {
 		log.WriteLog(logger.INFO, fmt.Sprintf("Pool closed: %d", p.guild))
 		delete(pools, p.guild) //race condition here need FIX ASAP
-		close(p.Broadcast)     //with pool:30 and client:73
-		close(p.Remove)
-		close(p.Add)
+		close(p.Broadcast)     //with pool:30 and client:86
+		close(p.Remove)        //Knew it there is a panic that occurs sometimes when last user disconnects guild
+		close(p.Add)           // this will bloody cause some nil pointer issue since i already closed da channel
 	}() //gracefully remove the pool when done
 	for {
 		select { //pretty sure a data race is impossible here

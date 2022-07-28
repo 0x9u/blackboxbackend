@@ -37,7 +37,7 @@ type pingpong struct {
 }
 
 var (
-	lock      sync.Mutex
+	lockPool  sync.Mutex
 	lockAlias sync.Mutex
 )
 
@@ -152,8 +152,14 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 3
 	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
 		dataType = 4
-	case userGuild: //means send invite message (P.S invite messages are not saved as of yet)
+	case joinGuildData: //join guild from user
 		dataType = 5
+	case leaveGuild: //user banned/kicked
+		dataType = 6
+	case userInfoData: //update user list
+		dataType = 7
+	case userGuild: // i forgot what this does
+		dataType = 8
 	}
 	sendData := sendDataType{
 		DataType: dataType,
@@ -199,7 +205,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		var guild int
 		rows.Scan(&guild)
 		guilds = append(guilds, guild)
-		lock.Lock() //slow needs fix
+		lockPool.Lock() //slow needs fix
 		//only implementing to prevent data races
 		guildPool, ok := pools[guild]
 		clientData := addClientData{
@@ -212,7 +218,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		} else {
 			guildPool.Add <- clientData
 		}
-		lock.Unlock()
+		lockPool.Unlock()
 		fmt.Println("successful")
 	}
 	//get all the guilds the user is in
