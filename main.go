@@ -29,7 +29,7 @@ var (
 	clientAlias = make(map[int]map[string]brcastEvents) // alias (string) : id : channel
 	pools       = make(map[int]*pool)                   //guild id : guild channel
 	characters  = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-)
+) // convert or look more into the sync map in golang
 
 const ( //settings
 	host       = "localhost"

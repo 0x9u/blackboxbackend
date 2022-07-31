@@ -36,7 +36,7 @@ func (p *pool) run() {
 		select { //pretty sure a data race is impossible here
 		case id := <-p.Remove:
 			log.WriteLog(logger.INFO, "User left pool")
-			delete(p.clients, id)
+			delete(p.clients, id)    //id is unique id
 			if len(p.clients) == 0 { //quit if no clients left in pool
 				return
 			}

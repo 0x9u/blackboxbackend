@@ -37,8 +37,9 @@ type pingpong struct {
 }
 
 var (
-	lockPool  sync.Mutex
-	lockAlias sync.Mutex
+	lockPool  sync.Mutex // to be replaced with mutex map
+	lockAlias sync.Mutex //to be replace with mutex map
+	//slow ass code yuck
 )
 
 const (
@@ -156,9 +157,9 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 5
 	case leaveGuild: //user banned/kicked
 		dataType = 6
-	case userInfoData: //update user list
+	case userGuild: // Updates the user List (APPEND)
 		dataType = 7
-	case userGuild: // i forgot what this does
+	case userGuildRemove:
 		dataType = 8
 	}
 	sendData := sendDataType{

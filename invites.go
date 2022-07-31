@@ -24,8 +24,18 @@ func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
 		Invite: generateRandString(10),
 		Guild:  guild,
 	}
+	row := db.QueryRow("SELECT COUNT(*) FROM invites WHERE guild_id=$1", guild)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if count > 9 {
+		reportError(http.StatusBadRequest, w, errorInviteLimitReached)
+		return
+	}
 	if _, err := db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, invite.Guild); err != nil {
-		reportError(http.StatusBadRequest, w, err)
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
 	bodyBytes, err := json.Marshal(invite)

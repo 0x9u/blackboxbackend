@@ -48,9 +48,13 @@ type changeGuild struct {
 */
 
 type userGuild struct {
-	Username string
-	Id       int
-	Icon     int
+	Username string `json:"Username"`
+	Id       int    `json:"Id"`
+	Icon     int    `json:"Icon"`
+}
+
+type userGuildRemove struct {
+	Id int `json:"Id"` //Id to remove user
 }
 
 type infoGuild struct {
@@ -367,6 +371,12 @@ func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	broadcastClient(userId, leaveGuild{Guild: guild})
+	broadcastGuild(guild, userGuildRemove{Id: userId})
+	lockAlias.Lock()
+	for uniqueId := range clientAlias[user.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
+		pools[guild].Remove <- uniqueId
+	} //removes all instances of the client alias from the pool to avoid exploits
+	lockAlias.Unlock()
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -399,5 +409,11 @@ func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	broadcastClient(userId, leaveGuild{Guild: guild})
+	broadcastGuild(guild, userGuildRemove{Id: userId})
+	lockAlias.Lock()
+	for uniqueId := range clientAlias[user.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
+		pools[guild].Remove <- uniqueId
+	} //removes all instances of the client alias from the pool to avoid exploits
+	lockAlias.Unlock()
 	w.WriteHeader(http.StatusOK)
 }
