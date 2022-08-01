@@ -76,8 +76,11 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 
 	//Remove any newlines in beginning of message or any stupid ass text
-	datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
-	datamsg.Content = strings.Replace(datamsg.Content, "\t", "", -1)
+	/*
+		datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
+		datamsg.Content = strings.Replace(datamsg.Content, "\t", "", -1)
+	*/ //gay
+	datamsg.Content = strings.TrimSpace(datamsg.Content)
 	log.WriteLog(logger.INFO, datamsg.Content)
 	if len(datamsg.Content) == 0 {
 		reportError(http.StatusBadRequest, w, errorNoMsgContent)
@@ -141,7 +144,7 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 		FROM messages m INNER JOIN users u 
 		ON u.id = m.user_id 
 		WHERE time <= $1 AND guild_id = $2 
-		ORDER BY time LIMIT $3`,
+		ORDER BY time DESC LIMIT $3`, //wtf?
 		timestamp, guild, limit)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)

@@ -150,6 +150,8 @@ func main() {
 	api.HandleFunc("/guild/users", middleWare(getGuildUsers)).Methods("GET")
 	api.HandleFunc("/guild/join", middleWare(joinGuild)).Methods("POST")
 	api.HandleFunc("/guild/ban", middleWare(banGuildUser)).Methods("POST")
+	api.HandleFunc("/guild/ban", middleWare(unbanUser)).Methods("PUT")     //unban
+	api.HandleFunc("/guild/ban", middleWare(getBannedList)).Methods("GET") //get all banned users
 	api.HandleFunc("/guild/kick", middleWare(kickGuildUser)).Methods("POST")
 
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")

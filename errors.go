@@ -7,6 +7,8 @@ var (
 	errorInvalidToken       = errors.New("token is invalid")
 	errorExpiredToken       = errors.New("token has expired")
 	errorNotInGuild         = errors.New("user is not in guild")
+	errorAlreadyInGuild     = errors.New("user is already in guild or is banned")
+	errorCantKickBanSelf    = errors.New("you can't kick or ban yourself")
 	errorUsernameExists     = errors.New("username already exists")
 	errorEmailExists        = errors.New("email already exists")
 	errorInvalidChange      = errors.New("invalid change option")

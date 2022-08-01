@@ -157,10 +157,14 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 5
 	case leaveGuild: //user banned/kicked
 		dataType = 6
-	case userGuild: // Updates the user List (APPEND)
+	case userGuildAdd: // Updates the user List (APPEND)
 		dataType = 7
 	case userGuildRemove:
 		dataType = 8
+	case userBannedAdd:
+		dataType = 9
+	case userBannedRemove:
+		dataType = 10
 	}
 	sendData := sendDataType{
 		DataType: dataType,
@@ -279,6 +283,7 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 */
 
 func broadcastClient(id int, data interface{}) (statusCode int, err error) {
+	lockAlias.Lock()
 	clientList, ok := clientAlias[id] //problem if two websockets of same user exist only of those two will be sent
 	if !ok {
 		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
@@ -286,5 +291,6 @@ func broadcastClient(id int, data interface{}) (statusCode int, err error) {
 	for _, client := range clientList {
 		client <- data
 	}
+	lockAlias.Unlock()
 	return 0, nil
 }

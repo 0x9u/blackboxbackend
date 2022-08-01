@@ -53,12 +53,22 @@ type userGuild struct {
 	Icon     int    `json:"Icon"`
 }
 
-type userGuildRemove struct {
-	Id int `json:"Id"` //Id to remove user
+type userGuildAdd struct {
+	Guild int       `json:"Guild"`
+	User  userGuild `json:"User"`
 }
 
+type userBannedAdd userGuildAdd
+
+type userGuildRemove struct {
+	Guild int `json:"Guild"`
+	Id    int `json:"Id"` //Id to remove user
+}
+
+type userBannedRemove userGuildRemove
+
 type infoGuild struct {
-	Owner bool   `json:"Owner"`
+	Owner int    `json:"Owner"`
 	Id    int    `json:"Id"`
 	Name  string `json:"Name"`
 	Icon  int    `json:"Icon"`
@@ -69,6 +79,13 @@ type joinGuildData infoGuild
 type leaveGuild struct {
 	Guild int `json:"Guild"`
 }
+
+type kickBanUserData struct {
+	Id    int `json:"Id"`
+	Guild int `json:"Guild"`
+}
+
+type unbanUserData kickBanUserData
 
 func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 
@@ -104,7 +121,7 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	broadcastClient(user.Id, joinGuildData{
 		Id:    guild_id,
-		Owner: true,
+		Owner: user.Id,
 		Name:  guild.Name,
 		Icon:  guild.Icon,
 	})
@@ -173,7 +190,7 @@ func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	log.WriteLog(logger.INFO, "Getting guilds")
 	rows, err := db.Query(
 		`
-		SELECT g.id, g.name, g.icon, g.owner_id = $1 AS owner
+		SELECT g.id, g.name, g.icon, g.owner_id
 		FROM userguilds u 
 		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1`,
 		user.Id,
@@ -220,7 +237,7 @@ func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, errorNotInGuild)
 		return
 	}
-	rows, err := db.Query("SELECT users.username, users.id FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1", guild)
+	rows, err := db.Query("SELECT users.username, users.id FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guild)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
@@ -267,8 +284,11 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		newSettings.Guild,
 		user.Id,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		reportError(http.StatusBadRequest, w, err)
+		return
+	} else if err == sql.ErrNoRows {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
 	broadcastGuild(newSettings.Guild, newSettings)
@@ -295,7 +315,7 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	row := db.QueryRow(
 		`
-		SELECT i.guild_id, g.name, g.icon 
+		SELECT i.guild_id, g.name, g.icon, g.owner_id 
 		FROM invites i INNER JOIN guilds g ON g.id = i.guild_id 
 		WHERE i.invite = $1`,
 		invite.Invite)
@@ -307,8 +327,26 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	var guild joinGuildData
-	row.Scan(&guild.Id, &guild.Name, &guild.Icon)
-	guild.Owner = false //user joining shouldnt be owner obviously
+	row.Scan(&guild.Id, &guild.Name, &guild.Icon, &guild.Owner)
+
+	row = db.QueryRow(
+		`
+		SELECT EXISTS (SELECT * FROM userguilds WHERE user_id=$1 AND guild_id=$2)
+		`,
+		user.Id,
+		guild.Id,
+	)
+
+	var check bool
+
+	if err := row.Scan(&check); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if check {
+		reportError(http.StatusBadRequest, w, errorAlreadyInGuild)
+		return
+	}
 	_, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2) ", guild.Id, user.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
@@ -338,24 +376,36 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		pools[guild.Id].Add <- clientData
 	}
 	lockAlias.Unlock()
-	broadcastGuild(guild.Id, userGuild{Username: username, Id: user.Id})
+	broadcastGuild(guild.Id, userGuildAdd{Guild: guild.Id, User: userGuild{Username: username, Id: user.Id}})
 	w.WriteHeader(http.StatusOK)
 }
 
 func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
-	params := r.URL.Query()
-	guild, err := strconv.Atoi(params.Get("guild"))
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	userId, err := strconv.Atoi(params.Get("user"))
+	var kick kickBanUserData
+	err = json.Unmarshal(bodyBytes, &kick)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if kick.Id == 0 {
+		reportError(http.StatusBadRequest, w, errorNotInGuild)
+		return
+	}
+	if kick.Id == user.Id {
+		reportError(http.StatusBadRequest, w, errorCantKickBanSelf)
+		return
+	}
+	if kick.Guild == 0 {
+		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
 		return
 	}
 	var valid bool
-	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", kick.Guild, user.Id)
 	if row.Err() != nil {
 		reportError(http.StatusInternalServerError, w, row.Err())
 		return
@@ -365,35 +415,51 @@ func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
-	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guild, userId)
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", kick.Guild, kick.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastClient(userId, leaveGuild{Guild: guild})
-	broadcastGuild(guild, userGuildRemove{Id: userId})
+	broadcastClient(kick.Id, leaveGuild{Guild: kick.Guild})
+	broadcastGuild(kick.Guild, userGuildRemove{Guild: kick.Guild, Id: kick.Id})
 	lockAlias.Lock()
-	for uniqueId := range clientAlias[user.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
-		pools[guild].Remove <- uniqueId
+	for uniqueId := range clientAlias[kick.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
+		pools[kick.Guild].Remove <- uniqueId
 	} //removes all instances of the client alias from the pool to avoid exploits
 	lockAlias.Unlock()
 	w.WriteHeader(http.StatusOK)
 }
 
 func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
-	params := r.URL.Query()
-	guild, err := strconv.Atoi(params.Get("guild"))
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	userId, err := strconv.Atoi(params.Get("user"))
+	var ban kickBanUserData
+	err = json.Unmarshal(bodyBytes, &ban)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
+
+	if ban.Guild == 0 {
+		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
+		return
+	}
+
+	if ban.Id == 0 {
+		reportError(http.StatusBadRequest, w, errorNotInGuild)
+		return
+	}
+
+	if ban.Id == user.Id { //failsafe or something
+		reportError(http.StatusBadRequest, w, errorCantKickBanSelf)
+		return
+	}
+
 	var valid bool
-	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", ban.Guild, user.Id)
 	if row.Err() != nil {
 		reportError(http.StatusInternalServerError, w, row.Err())
 		return
@@ -403,17 +469,113 @@ func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
-	_, err = db.Exec("UPDATE userguilds SET banned=true WHERE guild_id=$1 AND user_id=$2", guild, userId)
+	_, err = db.Exec("UPDATE userguilds SET banned=true WHERE guild_id=$1 AND user_id=$2", ban.Guild, ban.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastClient(userId, leaveGuild{Guild: guild})
-	broadcastGuild(guild, userGuildRemove{Id: userId})
+	broadcastClient(ban.Id, leaveGuild{Guild: ban.Guild})
+	broadcastGuild(ban.Guild, userGuildRemove{Guild: ban.Guild, Id: ban.Id})
 	lockAlias.Lock()
-	for uniqueId := range clientAlias[user.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
-		pools[guild].Remove <- uniqueId
+	for uniqueId := range clientAlias[ban.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
+		pools[ban.Guild].Remove <- uniqueId
 	} //removes all instances of the client alias from the pool to avoid exploits
 	lockAlias.Unlock()
+
+	row = db.QueryRow("SELECT username, id FROM users WHERE id=$1", ban.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, row.Err())
+		return
+	}
+	var userban userBannedAdd
+	row.Scan(&userban.User.Username, &userban.User.Id)
+	userban.User.Icon = 0             //temp
+	broadcastClient(user.Id, userban) //update banned user list
+	w.WriteHeader(http.StatusOK)
+}
+
+func getBannedList(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+
+	var valid bool
+
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+
+	rows, err := db.Query(
+		`
+		SELECT u.id, u.username
+		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
+		WHERE g.banned = true AND g.guild_id = $1`,
+		guild,
+	)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	userlist := []userGuild{}
+	for rows.Next() {
+		var user userGuild
+		user.Icon = 0 //temp
+		err = rows.Scan(&user.Id, &user.Username)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		userlist = append(userlist, user)
+	}
+	bodyBytes, err := json.Marshal(userlist)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
+}
+
+func unbanUser(w http.ResponseWriter, r *http.Request, user *session) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var unban unbanUserData
+	err = json.Unmarshal(bodyBytes, &unban)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", unban.Guild, user.Id)
+
+	var valid bool
+
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", unban.Guild, unban.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	broadcastClient(user.Id, userBannedRemove{Guild: unban.Guild, Id: unban.Id})
 	w.WriteHeader(http.StatusOK)
 }
