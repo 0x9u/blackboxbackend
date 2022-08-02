@@ -27,11 +27,6 @@ type joinGuildUploadData struct { //same to you join guild
 	Invite string `json:"Invite"`
 }
 
-type sendInvite struct {
-	Invite string `json:"Invite"`
-	Guild  int    `json:"Guild"`
-}
-
 //small but keep it like that for now
 type changeGuild struct {
 	Guild       int    `json:"Guild"`
@@ -40,12 +35,6 @@ type changeGuild struct {
 	Name        string `json:"Name"`
 	Icon        int    `json:"Icon"`
 }
-
-/*
-0 = ownerCreate (user automatically knows its owner)
-1 = userJoin (user joins guild)
-2 = userleave (user leaves guild (for ban or kick))
-*/
 
 type userGuild struct {
 	Username string `json:"Username"`
@@ -76,7 +65,7 @@ type infoGuild struct {
 
 type joinGuildData infoGuild
 
-type leaveGuild struct {
+type leaveGuildData struct {
 	Guild int `json:"Guild"`
 }
 
@@ -102,19 +91,17 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	var guild_id int
 	row := db.QueryRow("INSERT INTO guilds (name, icon, owner_id) VALUES ($1, $2, $3) RETURNING id", guild.Name, guild.Icon, user.Id)
 	row.Scan(&guild_id)
-	invite := sendInvite{
+	invite := inviteAdded{
 		Invite: generateRandString(10),
-		Guild:  guild_id,
 	}
 	if _, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild_id, user.Id); err != nil { //cleanup if failed later
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	if _, err = db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, invite.Guild); err != nil {
+	if _, err = db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, guild_id); err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	bodyBytes, err = json.Marshal(invite)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -127,19 +114,11 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	})
 	//shit i forgot to create a pool
 	createPool(guild_id)
-	lockAlias.Lock()
-	for uniqueId, broadcastChannel := range clientAlias[user.Id] {
-		clientData := addClientData{
-			UniqueId: uniqueId,
-			Ch:       broadcastChannel,
-		}
-		pools[guild_id].Add <- clientData
-	}
-	lockAlias.Unlock()
+	addUserToPool(guild_id, user.Id)
+	broadcastGuild(guild_id, invite)
 	//possible race condition but shouldnt be possible since sql does it by queue
 	w.WriteHeader(http.StatusOK) //writing this code at nearly 12 am gotta keep the grind up
 	//WORKS BABAY FUCK YEAH WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoo
-	w.Write(bodyBytes)
 }
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
@@ -180,7 +159,7 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastGuild(guild, leaveGuild{
+	broadcastGuild(guild, leaveGuildData{
 		Guild: guild,
 	}) // kick everyone out of the guild
 	w.WriteHeader(http.StatusOK)
@@ -361,21 +340,14 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	//create pool if doesnt exist
+
 	lockPool.Lock()
 	_, ok := pools[guild.Id]
 	if !ok {
 		createPool(guild.Id)
 	}
 	lockPool.Unlock()
-	lockAlias.Lock() //possibly slow
-	for uniqueId, broadcastChannel := range clientAlias[user.Id] {
-		clientData := addClientData{
-			UniqueId: uniqueId,
-			Ch:       broadcastChannel,
-		}
-		pools[guild.Id].Add <- clientData
-	}
-	lockAlias.Unlock()
+	addUserToPool(guild.Id, user.Id)
 	broadcastGuild(guild.Id, userGuildAdd{Guild: guild.Id, User: userGuild{Username: username, Id: user.Id}})
 	w.WriteHeader(http.StatusOK)
 }
@@ -420,13 +392,9 @@ func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastClient(kick.Id, leaveGuild{Guild: kick.Guild})
+	broadcastClient(kick.Id, leaveGuildData{Guild: kick.Guild})
+	removeUserFromPool(kick.Guild, kick.Id)
 	broadcastGuild(kick.Guild, userGuildRemove{Guild: kick.Guild, Id: kick.Id})
-	lockAlias.Lock()
-	for uniqueId := range clientAlias[kick.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
-		pools[kick.Guild].Remove <- uniqueId
-	} //removes all instances of the client alias from the pool to avoid exploits
-	lockAlias.Unlock()
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -474,13 +442,9 @@ func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastClient(ban.Id, leaveGuild{Guild: ban.Guild})
+	broadcastClient(ban.Id, leaveGuildData{Guild: ban.Guild})
+	removeUserFromPool(ban.Guild, ban.Id)
 	broadcastGuild(ban.Guild, userGuildRemove{Guild: ban.Guild, Id: ban.Id})
-	lockAlias.Lock()
-	for uniqueId := range clientAlias[ban.Id] { // basically for uniqueId, _ := range clientAlias[user.Id]
-		pools[ban.Guild].Remove <- uniqueId
-	} //removes all instances of the client alias from the pool to avoid exploits
-	lockAlias.Unlock()
 
 	row = db.QueryRow("SELECT username, id FROM users WHERE id=$1", ban.Id)
 	if row.Err() != nil {
@@ -577,5 +541,51 @@ func unbanUser(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	broadcastClient(user.Id, userBannedRemove{Guild: unban.Guild, Id: unban.Id})
+	w.WriteHeader(http.StatusOK)
+}
+
+func leaveGuild(w http.ResponseWriter, r *http.Request, user *session) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	var leave leaveGuildData
+	err = json.Unmarshal(bodyBytes, &leave)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", leave.Guild, user.Id)
+
+	var valid bool
+
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if valid {
+		reportError(http.StatusBadRequest, w, errorCantLeaveOwnGuild)
+		return
+	}
+
+	row = db.QueryRow("SELECT EXISTS(SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned = false)", leave.Guild, user.Id)
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotInGuild)
+		return
+	}
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", leave.Guild, user.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	broadcastClient(user.Id, leaveGuildData{Guild: leave.Guild})
+	removeUserFromPool(leave.Guild, user.Id)
+	broadcastGuild(leave.Guild, userGuildRemove{Guild: leave.Guild, Id: user.Id})
 	w.WriteHeader(http.StatusOK)
 }

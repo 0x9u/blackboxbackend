@@ -153,6 +153,7 @@ func main() {
 	api.HandleFunc("/guild/ban", middleWare(unbanUser)).Methods("PUT")     //unban
 	api.HandleFunc("/guild/ban", middleWare(getBannedList)).Methods("GET") //get all banned users
 	api.HandleFunc("/guild/kick", middleWare(kickGuildUser)).Methods("POST")
+	api.HandleFunc("/guild/leave", middleWare(leaveGuild)).Methods("POST") //leave guild
 
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(getGuildInvite)).Methods("GET")
@@ -184,7 +185,7 @@ func main() {
 		Handler: handlers.CORS(
 			handlers.AllowedHeaders([]string{"content-type", "Auth-Token", ""}), //took some time to figure out middleware problem
 			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"}),
+			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"}),
 			handlers.AllowCredentials(),
 		)(r),
 	}

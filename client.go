@@ -84,7 +84,9 @@ func (c *client) run() {
 					continue
 				}
 			*/
+			lockPool.Lock()
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30
+			lockPool.Unlock()
 		}
 	}()
 	log.WriteLog(logger.INFO, "Websocket active of "+c.ws.LocalAddr().String())
@@ -155,7 +157,7 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 4
 	case joinGuildData: //join guild from user
 		dataType = 5
-	case leaveGuild: //user banned/kicked
+	case leaveGuildData: //user banned/kicked
 		dataType = 6
 	case userGuildAdd: // Updates the user List (APPEND)
 		dataType = 7
@@ -165,6 +167,13 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 9
 	case userBannedRemove:
 		dataType = 10
+	case inviteAdded:
+		dataType = 11
+	case inviteRemoved:
+		dataType = 12
+	default:
+		log.WriteLog(logger.WARN, fmt.Sprintf("Invalid data type recieved: %v", data))
+		return
 	}
 	sendData := sendDataType{
 		DataType: dataType,
@@ -224,7 +233,6 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 			guildPool.Add <- clientData
 		}
 		lockPool.Unlock()
-		fmt.Println("successful")
 	}
 	//get all the guilds the user is in
 	rows.Close()
