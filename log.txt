@@ -1,3 +1,0 @@
-INFO 2022/08/04 23:11:32 Websocket active of 127.0.0.1:8090
-INFO 2022/08/04 23:11:32 Getting guilds
-INFO 2022/08/04 23:11:32 limit: 50, timestamp 1659618692359

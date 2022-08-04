@@ -69,6 +69,8 @@ type leaveGuildData struct {
 	Guild int `json:"Guild"`
 }
 
+type deleteGuildData leaveGuildData
+
 type kickBanUserData struct {
 	Id    int `json:"Id"`
 	Guild int `json:"Guild"`
@@ -122,14 +124,15 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	params := r.URL.Query()
-	guild, err := strconv.Atoi(params.Get("guild"))
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	var guild deleteGuildData
+	err = json.Unmarshal(bodyBytes, &guild)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
 	var valid bool
-	row := db.QueryRow("SELECT EXISTS (SELECT id FROM guilds WHERE id=$1 AND owner_id=$2)", guild, user.Id)
+	row := db.QueryRow("SELECT EXISTS (SELECT id FROM guilds WHERE id=$1 AND owner_id=$2)", guild.Guild, user.Id)
 	if row.Err() != nil {
 		reportError(http.StatusInternalServerError, w, row.Err())
 		return
@@ -139,29 +142,27 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
-	_, err = db.Exec("DELETE FROM messages WHERE guild_id=$1", guild) //start deleting
+	_, err = db.Exec("DELETE FROM messages WHERE guild_id=$1", guild.Guild) //start deleting
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild) //delete all existing invites
+	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild.Guild) //delete all existing invites
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild) //delete from users guilds
+	_, err = db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guild.Guild) //delete from users guilds
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild)
+	_, err = db.Exec("DELETE FROM guilds WHERE id=$1", guild.Guild)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	broadcastGuild(guild, leaveGuildData{
-		Guild: guild,
-	}) // kick everyone out of the guild
+	broadcastGuild(guild.Guild, leaveGuildData(guild)) // kick everyone out of the guild
 	w.WriteHeader(http.StatusOK)
 }
 
