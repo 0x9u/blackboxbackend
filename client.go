@@ -66,7 +66,7 @@ func (c *client) run() {
 
 		log.WriteLog(logger.INFO, "Websocket of "+c.ws.LocalAddr().String()+" has been closed")
 		//leaves the guild pools
-		rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id = $1", c.id)
+		rows, err := db.Query("SELECT guild_id FROM userguilds WHERE user_id = $1 AND banned = false", c.id)
 		if err != nil {
 			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
 			return
@@ -78,12 +78,10 @@ func (c *client) run() {
 				log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
 				return
 			}
-			/*
-				_, ok := pools[guildId]
-				if !ok {// shouldnt happen but just in case
-					continue
-				}
-			*/
+			_, ok := pools[guildId]
+			if !ok { // shouldnt happen but just in case
+				continue
+			}
 			lockPool.Lock()
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30
 			lockPool.Unlock()

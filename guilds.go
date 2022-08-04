@@ -171,14 +171,14 @@ func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		`
 		SELECT g.id, g.name, g.icon, g.owner_id
 		FROM userguilds u 
-		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1`,
+		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1 AND u.banned = false`,
 		user.Id,
 	)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	var guilds []infoGuild
+	guilds := []infoGuild{}
 	for rows.Next() {
 		var guild infoGuild
 		err = rows.Scan(&guild.Id, &guild.Name, &guild.Icon, &guild.Owner)
@@ -453,6 +453,7 @@ func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	var userban userBannedAdd
 	row.Scan(&userban.User.Username, &userban.User.Id)
+	userban.Guild = ban.Guild
 	userban.User.Icon = 0             //temp
 	broadcastClient(user.Id, userban) //update banned user list
 	w.WriteHeader(http.StatusOK)
