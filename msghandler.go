@@ -65,21 +65,14 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 	//broadcast msg to all connections to websocket
 	var valid bool
 	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", datamsg.Guild, user.Id)
-	if err := row.Err(); err != nil {
-		reportError(http.StatusBadRequest, w, err)
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	row.Scan(&valid)
 	if !valid {
 		reportError(http.StatusBadRequest, w, errorNotInGuild)
 		return
 	}
-
-	//Remove any newlines in beginning of message or any stupid ass text
-	/*
-		datamsg.Content = strings.Replace(datamsg.Content, "\n", "", -1)
-		datamsg.Content = strings.Replace(datamsg.Content, "\t", "", -1)
-	*/ //gay
 	datamsg.Content = strings.TrimSpace(datamsg.Content)
 	log.WriteLog(logger.INFO, datamsg.Content)
 	if len(datamsg.Content) == 0 {
@@ -87,12 +80,22 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 
-	row = db.QueryRow("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4) RETURNING id", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time)
-	if err = row.Err(); err != nil {
-		reportError(http.StatusBadRequest, w, err)
+	//check if guild has chat messages save turned on
+	row = db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", datamsg.Guild)
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	row.Scan(&datamsg.Id)
+
+	datamsg.Id = 0 //just there to make it obvious
+
+	if valid {
+		row = db.QueryRow("INSERT INTO messages (content, user_id, guild_id, time) VALUES ($1, $2, $3, $4) RETURNING id", datamsg.Content, user.Id, datamsg.Guild, datamsg.Time)
+		if err := row.Scan(&datamsg.Id); err != nil {
+			reportError(http.StatusBadRequest, w, err)
+			return
+		}
+	}
 	var authorData author
 	db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorData.Username)
 	authorData.Id = user.Id

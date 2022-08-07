@@ -147,6 +147,7 @@ func main() {
 	api.HandleFunc("/guild", middleWare(deleteGuild)).Methods("DELETE")
 	api.HandleFunc("/guild", middleWare(getGuild)).Methods("GET") //might send guilds to client through websocket
 	api.HandleFunc("/guild", middleWare(editGuild)).Methods("PUT")
+	api.HandleFunc("/guild/setting", middleWare(getGuildSettings)).Methods("GET")
 	api.HandleFunc("/guild/users", middleWare(getGuildUsers)).Methods("GET")
 	api.HandleFunc("/guild/join", middleWare(joinGuild)).Methods("POST")
 	api.HandleFunc("/guild/ban", middleWare(banGuildUser)).Methods("POST")

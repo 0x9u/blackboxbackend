@@ -19,8 +19,13 @@ Invites table
 invite VARCHAR(10) | guild_id INT | ExpireDate (IMPLEMENT THIS LATER ON) INT64
 */
 type createGuildUploadData struct { //use annoymous structs next time
-	Icon int    `json:"Icon"` // if icon none its zero assume no icon
-	Name string `json:"Name"`
+	Icon     int    `json:"Icon"` // if icon none its zero assume no icon
+	Name     string `json:"Name"`
+	SaveChat bool   `json:"SaveChat"`
+}
+
+type getGuildSettingData struct { //implement settings a normal user is unable to see
+	SaveChat bool `json:"SaveChat"`
 }
 
 type joinGuildUploadData struct { //same to you join guild
@@ -29,11 +34,16 @@ type joinGuildUploadData struct { //same to you join guild
 
 //small but keep it like that for now
 type changeGuild struct {
-	Guild       int    `json:"Guild"`
-	Public      bool   `json:"Public"`
-	KeepHistory bool   `json:"KeepHistory"`
-	Name        string `json:"Name"`
-	Icon        int    `json:"Icon"`
+	Guild    int    `json:"Guild"`
+	SaveChat bool   `json:"SaveChat"`
+	Name     string `json:"Name"`
+	Icon     int    `json:"Icon"`
+}
+
+type changeGuildUser struct { //for the users not the owner
+	Name  string
+	Guild int
+	Icon  int
 }
 
 type userGuild struct {
@@ -91,7 +101,7 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	var guild_id int
-	row := db.QueryRow("INSERT INTO guilds (name, icon, owner_id) VALUES ($1, $2, $3) RETURNING id", guild.Name, guild.Icon, user.Id)
+	row := db.QueryRow("INSERT INTO guilds (name, icon, owner_id, save_chat) VALUES ($1, $2, $3, $4) RETURNING id", guild.Name, guild.Icon, user.Id, guild.SaveChat)
 	row.Scan(&guild_id)
 	invite := inviteAdded{
 		Invite: generateRandString(10),
@@ -125,6 +135,10 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
 	var guild deleteGuildData
 	err = json.Unmarshal(bodyBytes, &guild)
 	if err != nil {
@@ -133,11 +147,10 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	var valid bool
 	row := db.QueryRow("SELECT EXISTS (SELECT id FROM guilds WHERE id=$1 AND owner_id=$2)", guild.Guild, user.Id)
-	if row.Err() != nil {
-		reportError(http.StatusInternalServerError, w, row.Err())
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	row.Scan(&valid)
 	if !valid { //user is a fraud
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
@@ -208,11 +221,10 @@ func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
 
 	var valid bool
 	row := db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guild, user.Id)
-	if row.Err() != nil {
-		reportError(http.StatusInternalServerError, w, row.Err())
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	row.Scan(&valid)
 	if !valid {
 		reportError(http.StatusInternalServerError, w, errorNotInGuild)
 		return
@@ -256,9 +268,8 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	_, err = db.Exec(
-		"UPDATE guilds SET public=$1, KeepHistory=$2, name=$3, icon=$4 WHERE id=$5 AND owner_id=$6",
-		newSettings.Public,
-		newSettings.KeepHistory,
+		"UPDATE guilds SET save_chat=$1, name=$2, icon=$3 WHERE id=$4 AND owner_id=$5",
+		newSettings.SaveChat,
 		newSettings.Name,
 		newSettings.Icon,
 		newSettings.Guild,
@@ -271,7 +282,8 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
 	}
-	broadcastGuild(newSettings.Guild, newSettings)
+
+	broadcastGuild(newSettings.Guild, changeGuildUser{Guild: newSettings.Guild, Icon: newSettings.Icon, Name: newSettings.Name})
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -379,11 +391,10 @@ func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	var valid bool
 	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id=$2)", kick.Guild, user.Id)
-	if row.Err() != nil {
-		reportError(http.StatusInternalServerError, w, row.Err())
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	row.Scan(&valid)
 	if !valid {
 		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 		return
@@ -448,12 +459,11 @@ func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 	broadcastGuild(ban.Guild, userGuildRemove{Guild: ban.Guild, Id: ban.Id})
 
 	row = db.QueryRow("SELECT username, id FROM users WHERE id=$1", ban.Id)
-	if row.Err() != nil {
-		reportError(http.StatusInternalServerError, w, row.Err())
+	var userban userBannedAdd
+	if err := row.Scan(&userban.User.Username, &userban.User.Id); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
-	var userban userBannedAdd
-	row.Scan(&userban.User.Username, &userban.User.Id)
 	userban.Guild = ban.Guild
 	userban.User.Icon = 0             //temp
 	broadcastClient(user.Id, userban) //update banned user list
@@ -495,8 +505,7 @@ func getBannedList(w http.ResponseWriter, r *http.Request, user *session) {
 	for rows.Next() {
 		var user userGuild
 		user.Icon = 0 //temp
-		err = rows.Scan(&user.Id, &user.Username)
-		if err != nil {
+		if err := rows.Scan(&user.Id, &user.Username); err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
 		}
@@ -590,4 +599,37 @@ func leaveGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	removeUserFromPool(leave.Guild, user.Id)
 	broadcastGuild(leave.Guild, userGuildRemove{Guild: leave.Guild, Id: user.Id})
 	w.WriteHeader(http.StatusOK)
+}
+
+func getGuildSettings(w http.ResponseWriter, r *http.Request, user *session) {
+	params := r.URL.Query()
+	guild, err := strconv.Atoi(params.Get("guild"))
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE owner_id=$1 AND id=$2)", user.Id, guild)
+	if err := row.Scan(&valid); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	row = db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guild)
+	var guildData getGuildSettingData
+	if err := row.Scan(&guildData.SaveChat); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	bodyBytes, err := json.Marshal(guildData)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bodyBytes)
 }

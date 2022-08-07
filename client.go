@@ -78,11 +78,11 @@ func (c *client) run() {
 				log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
 				return
 			}
+			lockPool.Lock()
 			_, ok := pools[guildId]
 			if !ok { // shouldnt happen but just in case
 				continue
 			}
-			lockPool.Lock()
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30
 			lockPool.Unlock()
 		}
@@ -151,7 +151,7 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 2
 	case editMsg:
 		dataType = 3
-	case changeGuild: //implement files soon or something idk guild change ban or kick whatever
+	case changeGuildUser: //implement files soon or something idk guild change ban or kick whatever
 		dataType = 4
 	case joinGuildData: //join guild from user
 		dataType = 5
