@@ -44,6 +44,12 @@ type dataChange struct {
 	NewData  string `json:"NewData"`
 }
 
+//prepared output data to send to clients no password
+type clientDataChange struct {
+	Change  int    `json:"Change"` // 0 for password, 1 for email, 2 for username
+	NewData string `json:"NewData"`
+}
+
 const expireTime = 60 * 24 * time.Hour //token will expire in 2 months
 
 func checkToken(token string) (*session, error) {
@@ -215,7 +221,7 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 	switch change.Change {
 	case 0:
 		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.NewData+username)))
-		oldhashedpass := fmt.Sprintf("%x", sha256.Sum256(([]byte(change.Password + username))))
+		oldhashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
 		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, oldhashedpass)
 		if err != nil {
 			reportError(http.StatusBadRequest, w, err)
@@ -254,15 +260,19 @@ func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
 			return
 		}
 		//update
-		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
-		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, change.Password)
+		hashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+change.NewData)))
+		oldhashedpass := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Password+username)))
+		_, err = db.Exec("UPDATE users SET password=$1 WHERE id=$2 AND password=$3", hashedpass, user.Id, oldhashedpass)
 		if err != nil {
-			reportError(http.StatusBadRequest, w, err)
+			reportError(http.StatusInternalServerError, w, err)
 			return
 		}
 	default:
 		reportError(http.StatusBadRequest, w, errorInvalidChange)
 		return
+	}
+	if change.Change != 0 { //we do not want to send the new password to clients!
+		broadcastClient(user.Id, clientDataChange{Change: change.Change, NewData: change.NewData})
 	}
 	w.WriteHeader(http.StatusAccepted)
 }

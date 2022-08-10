@@ -23,6 +23,8 @@
     - possibly for loop?
 - **!!CRITICAL!!** If the same user were to open multiple clients the client map will be overwritten therefore
     only one of the clients will be able to get the data - (Possibly fixed needs further testing)
+- **!!CRITICAL!!** WEIRD WEBSOCKET BUG
+    - The websocket handler will not work randomly
 - implement websocket pool for better efficency - done
     - gather websockets associated with a guild - done (Needs more testing)
 - Restructure the token to use sql database instead of ram - done

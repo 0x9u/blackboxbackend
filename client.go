@@ -152,7 +152,7 @@ func (c *client) eventCheck(data interface{}) {
 	case editMsg:
 		dataType = 3
 	case changeGuildUser: //implement files soon or something idk guild change ban or kick whatever
-		dataType = 4
+		dataType = 4 //change guild info for users
 	case joinGuildData: //join guild from user
 		dataType = 5
 	case leaveGuildData: //user banned/kicked
@@ -169,6 +169,10 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 11
 	case inviteRemoved:
 		dataType = 12
+	case clientDataChange: //when the client decides to change their password username or email
+		dataType = 13
+	case updateGuildSettingData:
+		dataType = 14
 	default:
 		log.WriteLog(logger.WARN, fmt.Sprintf("Invalid data type recieved: %v", data))
 		return

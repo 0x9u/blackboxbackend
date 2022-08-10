@@ -28,6 +28,11 @@ type getGuildSettingData struct { //implement settings a normal user is unable t
 	SaveChat bool `json:"SaveChat"`
 }
 
+type updateGuildSettingData struct { //implement settings a normal user is unable to see
+	Guild    int                 `json:"Guild"`
+	Settings getGuildSettingData `json:"Settings"`
+}
+
 type joinGuildUploadData struct { //same to you join guild
 	Invite string `json:"Invite"`
 }
@@ -284,6 +289,7 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 
 	broadcastGuild(newSettings.Guild, changeGuildUser{Guild: newSettings.Guild, Icon: newSettings.Icon, Name: newSettings.Name})
+	broadcastClient(user.Id, updateGuildSettingData{Guild: newSettings.Guild, Settings: getGuildSettingData{SaveChat: newSettings.SaveChat}}) //update private settings
 	w.WriteHeader(http.StatusOK)
 }
 
