@@ -83,7 +83,7 @@ func (c *client) run() {
 			if !ok { // shouldnt happen but just in case
 				continue
 			}
-			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30
+			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30 This may be the cause of the websockets being stopped
 			lockPool.Unlock()
 		}
 	}()
@@ -221,7 +221,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		var guild int
 		rows.Scan(&guild)
 		guilds = append(guilds, guild)
-		lockPool.Lock() //slow needs fix
+		lockPool.Lock() //slow needs fix (THIS IS CAUSING WEBSOCKET BUG)
 		//only implementing to prevent data races
 		guildPool, ok := pools[guild]
 		clientData := addClientData{

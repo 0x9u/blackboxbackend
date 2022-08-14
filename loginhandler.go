@@ -69,7 +69,12 @@ func checkToken(token string) (*session, error) {
 
 func genToken(id int) (sessionToken, error) {
 	var authData sessionToken
-	err := db.QueryRow("SELECT token, token_expires FROM tokens WHERE user_id=$1", id).Scan(&authData.Token, &authData.Expires)
+	//delete token if expired
+	_, err := db.Exec("DELETE FROM tokens WHERE user_id=$1 AND token_expires < $2", id, time.Now().UnixMilli())
+	if err != nil {
+		return authData, err
+	}
+	err = db.QueryRow("SELECT token, token_expires FROM tokens WHERE user_id=$1", id).Scan(&authData.Token, &authData.Expires)
 	if err != nil && err != sql.ErrNoRows {
 		return authData, err
 	} else if err == sql.ErrNoRows {

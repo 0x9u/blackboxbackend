@@ -25,6 +25,7 @@
     only one of the clients will be able to get the data - (Possibly fixed needs further testing)
 - **!!CRITICAL!!** WEIRD WEBSOCKET BUG
     - The websocket handler will not work randomly
+    - Most likely is the mutex lock which is causing this
 - implement websocket pool for better efficency - done
     - gather websockets associated with a guild - done (Needs more testing)
 - Restructure the token to use sql database instead of ram - done
