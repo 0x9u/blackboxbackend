@@ -26,7 +26,7 @@ type pool struct {
 
 func (p *pool) run() {
 	defer func() {
-		lockPool.Lock()
+		lockPool.Lock() //THIS IS THE CAUSE
 		delete(pools, p.guild) //race condition here need FIX ASAP
 		close(p.Broadcast)     //with pool:30 and client:86
 		close(p.Remove)        //Knew it there is a panic that occurs sometimes when last user disconnects guild

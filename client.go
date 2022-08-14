@@ -81,6 +81,7 @@ func (c *client) run() {
 			lockPool.Lock()
 			_, ok := pools[guildId]
 			if !ok { // shouldnt happen but just in case
+				lockPool.Unlock()
 				continue
 			}
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30 This may be the cause of the websockets being stopped
