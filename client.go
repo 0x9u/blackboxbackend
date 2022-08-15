@@ -54,7 +54,6 @@ func (c *client) run() {
 		if err != nil {
 			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when leaving websocket %v", err).Error())
 		}
-		close(clients[c.uniqueId]) //close of nil channel error occurs here sometimes
 		delete(clients, c.uniqueId)
 		delete(clientAlias[c.id], c.uniqueId)
 
@@ -87,6 +86,8 @@ func (c *client) run() {
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30 This may be the cause of the websockets being stopped
 			lockPool.Unlock()
 		}
+		//moved line here to stop close channel errors
+		close(c.broadcast) //close of nil channel error occurs here sometimes
 	}()
 	log.WriteLog(logger.INFO, "Websocket active of "+c.ws.LocalAddr().String())
 	go c.heartBeat()
