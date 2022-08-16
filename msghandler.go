@@ -80,6 +80,11 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 
+	if len(datamsg.Content) > 1024 {
+		reportError(http.StatusBadRequest, w, errorMsgTooLong)
+		return
+	}
+
 	//check if guild has chat messages save turned on
 	row = db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", datamsg.Guild)
 	if err := row.Scan(&valid); err != nil {

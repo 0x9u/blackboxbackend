@@ -22,4 +22,5 @@ var (
 	errorInvalidEmail       = errors.New("invalid email")
 	errorInvalidDetails     = errors.New("invalid details")
 	errorNoMsgContent       = errors.New("no msg content")
+	errorMsgTooLong         = errors.New("msg too long")
 )
