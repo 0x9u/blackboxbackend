@@ -28,9 +28,9 @@ type author struct {
 
 type deleteMsg struct {
 	Id     int `json:"Id"`
-	Author int `json:"Author"`
-	Guild  int `json:"Guild"`
-	Time   int `json:"Time"` //delete messages up to timestamp
+	Author int `json:"Author"` //delete all messages from author
+	Guild  int `json:"Guild"`  //delete all messages from guild
+	Time   int `json:"Time"`   //delete messages up to timestamp
 }
 
 type editMsg struct {
@@ -193,15 +193,11 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	if datamsg.Guild == 0 {
-		reportError(http.StatusBadRequest, w, err)
+	if datamsg.Id == 0 && datamsg.Author == 0 {
+		reportError(http.StatusBadRequest, w, errorInvalidDetails)
 		return
-	}
-	if datamsg.Author == 0 { //if no author is specified then assume its the users
-		_, err = db.Exec("DELETE FROM messages WHERE time <= $1 AND guild_id = $2 AND user_id = $3", datamsg.Time, datamsg.Guild, user.Id)
-	} else if datamsg.Id == 0 {
-		reportError(http.StatusBadRequest, w, err)
-		return
+	} else if datamsg.Guild == 0 {
+		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
 	} else {
 		var valid bool
 		row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id = $2)", datamsg.Guild, user.Id)
@@ -214,7 +210,17 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 			reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 			return
 		}
-		_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, user.Id)
+		if datamsg.Id != 0 {
+			_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, user.Id)
+		} else {
+			var deleteMsgUser int
+			if datamsg.Author != 0 {
+				deleteMsgUser = user.Id
+			} else {
+				deleteMsgUser = datamsg.Author
+			}
+			_, err = db.Exec("DELETE FROM messages WHERE time <= $1 AND guild_id = $2 AND user_id = $3", datamsg.Time, datamsg.Guild, deleteMsgUser)
+		}
 	}
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
