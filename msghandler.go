@@ -206,7 +206,7 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 			return
 		}
 		row.Scan(&valid)
-		if !valid {
+		if !valid && datamsg.Id != 0 && datamsg.Author != user.Id {
 			reportError(http.StatusBadRequest, w, errorNotGuildOwner)
 			return
 		}
