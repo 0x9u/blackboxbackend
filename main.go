@@ -134,6 +134,13 @@ func main() {
 	}
 	defer db.Close()
 
+	defer func() { //logs fatal panics
+		if r := recover(); r != nil {
+			log.WriteLog(logger.FATAL, fmt.Sprintf("%v", r))
+			os.Exit(1)
+		}
+	}()
+
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api").Subrouter()
 	r.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
