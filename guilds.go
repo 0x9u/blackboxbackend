@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -37,7 +37,7 @@ type joinGuildUploadData struct { //same to you join guild
 	Invite string `json:"Invite"`
 }
 
-//small but keep it like that for now
+// small but keep it like that for now
 type changeGuild struct {
 	Guild    int    `json:"Guild"`
 	SaveChat bool   `json:"SaveChat"`
@@ -95,7 +95,7 @@ type unbanUserData kickBanUserData
 
 func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -139,7 +139,7 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -261,7 +261,7 @@ func getGuildUsers(w http.ResponseWriter, r *http.Request, user *session) {
 
 func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	var newSettings changeGuild
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -296,7 +296,7 @@ func editGuild(w http.ResponseWriter, r *http.Request, user *session) {
 func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	//params := r.URL.Query()
 	//invite := params.Get("invite")
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -372,7 +372,7 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -417,7 +417,7 @@ func kickGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func banGuildUser(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -527,7 +527,7 @@ func getBannedList(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func unbanUser(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -562,7 +562,7 @@ func unbanUser(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func leaveGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return

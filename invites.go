@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -18,7 +18,7 @@ type inviteAdded inviteUploadData
 type inviteRemoved inviteUploadData
 
 func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
-	bytes, err := ioutil.ReadAll(r.Body)
+	bytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -58,7 +58,7 @@ func genGuildInvite(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 func deleteInvGuild(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return

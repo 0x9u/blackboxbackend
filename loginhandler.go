@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/mail"
 	"regexp"
@@ -44,7 +44,7 @@ type dataChange struct {
 	NewData  string `json:"NewData"`
 }
 
-//prepared output data to send to clients no password
+// prepared output data to send to clients no password
 type clientDataChange struct {
 	Change  int    `json:"Change"` // 0 for password, 1 for email, 2 for username
 	NewData string `json:"NewData"`
@@ -92,7 +92,7 @@ func genToken(id int) (sessionToken, error) {
 
 }
 
-//make email validation
+// make email validation
 func validateEmail(email string) bool {
 	_, err := mail.ParseAddress(email)
 	return err == nil
@@ -132,7 +132,7 @@ func userlogin(w http.ResponseWriter, r *http.Request) {
 func createuser(w http.ResponseWriter, r *http.Request) {
 	log.WriteLog(logger.INFO, "Creating User")
 	var acc account
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -191,7 +191,7 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 }
 
 func changeDetails(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return

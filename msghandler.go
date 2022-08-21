@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -46,7 +46,7 @@ type content struct {
 */
 
 func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -183,7 +183,7 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 
 func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //deletes message
 	var datamsg deleteMsg
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
@@ -236,7 +236,7 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 
 func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
 	var datamsg editMsg
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		reportError(http.StatusBadRequest, w, err)
 		return
