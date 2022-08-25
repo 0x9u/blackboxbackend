@@ -19,6 +19,7 @@ type msg struct {
 	Guild    int    `json:"Guild"`   // Chat id
 	Time     int64  `json:"Time"`
 	MsgSaved bool   `json:"MsgSaved"` //shows if the message is saved or not
+	Edited   bool   `json:"Edited"`   //shows if msg has been edited
 }
 
 type author struct {
@@ -168,7 +169,7 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 		message := msg{}
 		authorData := author{}
 		err := rows.Scan(&message.Id, &message.Content, &authorData.Id,
-			&message.Guild, &message.Time, &authorData.Username)
+			&message.Guild, &message.Time, &message.Edited, &authorData.Username)
 		authorData.Icon = 0 //placeholder
 		message.Author = authorData
 		if err != nil {
@@ -256,7 +257,7 @@ func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	_, err = db.Exec("UPDATE messages SET content = $1 WHERE id = $2 AND user_id = $3 AND guild_id=$4", datamsg.Content, datamsg.Id, user.Id, datamsg.Guild)
+	_, err = db.Exec("UPDATE messages SET content = $1, edited = true WHERE id = $2 AND user_id = $3 AND guild_id=$4", datamsg.Content, datamsg.Id, user.Id, datamsg.Guild)
 	if err == sql.ErrNoRows {
 		reportError(http.StatusBadRequest, w, err)
 		return
