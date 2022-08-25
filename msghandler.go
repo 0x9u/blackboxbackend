@@ -13,11 +13,12 @@ import (
 )
 
 type msg struct {
-	Id      int    `json:"Id"`
-	Author  author `json:"Author"`  // author id aka user id
-	Content string `json:"Content"` // message content
-	Guild   int    `json:"Guild"`   // Chat id
-	Time    int64  `json:"Time"`
+	Id       int    `json:"Id"`
+	Author   author `json:"Author"`  // author id aka user id
+	Content  string `json:"Content"` // message content
+	Guild    int    `json:"Guild"`   // Chat id
+	Time     int64  `json:"Time"`
+	MsgSaved bool   `json:"MsgSaved"` //shows if the message is saved or not
 }
 
 type author struct {
@@ -34,7 +35,8 @@ type deleteMsg struct {
 }
 
 type editMsg struct {
-	Id      int    `json:"Id"`      //msg id
+	Id      int    `json:"Id"` //msg id
+	Guild   int    `json:"Guild"`
 	Content string `json:"Content"` //new msg content
 }
 
@@ -101,6 +103,9 @@ func msgRecieve(w http.ResponseWriter, r *http.Request, user *session) {
 			return
 		}
 	}
+
+	datamsg.MsgSaved = valid //false not saved | true saved
+
 	var authorData author
 	db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorData.Username)
 	authorData.Id = user.Id
@@ -170,6 +175,7 @@ func msgHistory(w http.ResponseWriter, r *http.Request, user *session) { //sends
 			reportError(http.StatusInternalServerError, w, err)
 			return
 		}
+		message.MsgSaved = true
 		messages = append(messages, message)
 	}
 	result, err := json.Marshal(messages)
@@ -246,16 +252,21 @@ func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	if datamsg.Id == 0 || datamsg.Content == "" {
+	if datamsg.Id == 0 || datamsg.Content == "" || datamsg.Guild == 0 {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	}
-	_, err = db.Exec("UPDATE messages SET content = $1 WHERE id = $2 AND user_id = $3", datamsg.Content, datamsg.Id, user.Id)
+	_, err = db.Exec("UPDATE messages SET content = $1 WHERE id = $2 AND user_id = $3 AND guild_id=$4", datamsg.Content, datamsg.Id, user.Id, datamsg.Guild)
 	if err == sql.ErrNoRows {
 		reportError(http.StatusBadRequest, w, err)
 		return
 	} else if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
+	if err != nil {
+		reportError(statusCode, w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
