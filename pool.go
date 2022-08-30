@@ -71,9 +71,11 @@ func (p *pool) run() {
 		case data := <-p.Add:
 			p.clients[data.UniqueId] = data.Ch
 		case data := <-p.Broadcast:
+			lockAlias.Lock()
 			for _, ch := range p.clients {
 				ch <- data //closed channel fatal error FIX NOW
 			}
+			lockAlias.Unlock()
 		}
 	}
 }
