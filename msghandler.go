@@ -13,13 +13,14 @@ import (
 )
 
 type msg struct {
-	Id       int    `json:"Id"`
-	Author   author `json:"Author"`  // author id aka user id
-	Content  string `json:"Content"` // message content
-	Guild    int    `json:"Guild"`   // Chat id
-	Time     int64  `json:"Time"`
-	MsgSaved bool   `json:"MsgSaved"` //shows if the message is saved or not
-	Edited   bool   `json:"Edited"`   //shows if msg has been edited
+	Id        int    `json:"Id"`
+	Author    author `json:"Author"`  // author id aka user id
+	Content   string `json:"Content"` // message content
+	Guild     int    `json:"Guild"`   // Chat id
+	Time      int64  `json:"Time"`
+	MsgSaved  bool   `json:"MsgSaved"`  //shows if the message is saved or not
+	Edited    bool   `json:"Edited"`    //shows if msg has been edited
+	RequestId string `json:"RequestId"` //only important for the sender
 }
 
 type author struct {
