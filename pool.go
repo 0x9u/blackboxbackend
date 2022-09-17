@@ -71,18 +71,18 @@ func (p *pool) run() {
 		case data := <-p.Add:
 			p.clients[data.UniqueId] = data.Ch
 		case data := <-p.Broadcast:
-			lockAlias.Lock()
+			lockAlias.RLock()
 			for _, ch := range p.clients {
 				ch <- data //closed channel fatal error FIX NOW
 			}
-			lockAlias.Unlock()
+			lockAlias.RUnlock()
 		}
 	}
 }
 
 func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
-	lockPool.Lock() //prevents datarace
-	defer lockPool.Unlock()
+	lockPool.RLock() //prevents datarace
+	defer lockPool.RUnlock()
 	guildPool, ok := pools[guild]
 	if !ok {
 		return http.StatusBadRequest, errorGuildPoolNotExist
@@ -108,10 +108,10 @@ func createPool(guild int) {
 }
 
 func addUserToPool(guildId int, userId int) {
-	lockPool.Lock()
-	defer lockPool.Unlock()
-	lockAlias.Lock()
-	defer lockAlias.Unlock()
+	lockPool.RLock()
+	defer lockPool.RUnlock()
+	lockAlias.RLock()
+	defer lockAlias.RUnlock()
 	if _, ok := pools[guildId]; !ok {
 		log.WriteLog(logger.INFO, fmt.Sprintf("Canceled adding user %d to %d", userId, guildId))
 		return
@@ -129,10 +129,10 @@ func addUserToPool(guildId int, userId int) {
 }
 
 func removeUserFromPool(guildId int, userId int) { //most likely occurs here (WEBSOCKET BUG)
-	lockPool.Lock()
-	defer lockPool.Unlock()
-	lockAlias.Lock()
-	defer lockAlias.Unlock()
+	lockPool.RLock()
+	defer lockPool.RUnlock()
+	lockAlias.RLock()
+	defer lockAlias.RUnlock()
 	if _, ok := pools[guildId]; !ok {
 		log.WriteLog(logger.INFO, fmt.Sprintf("Canceled removing user %d to %d", userId, guildId))
 		return

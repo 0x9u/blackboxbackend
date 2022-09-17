@@ -37,8 +37,8 @@ type pingpong struct {
 }
 
 var (
-	lockPool  sync.Mutex // to be replaced with mutex map
-	lockAlias sync.Mutex //to be replace with mutex map
+	lockPool  sync.RWMutex // to be replaced with mutex map
+	lockAlias sync.RWMutex //to be replace with mutex map
 	//slow ass code yuck
 )
 
@@ -54,10 +54,11 @@ func (c *client) run() {
 		if err != nil {
 			log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when leaving websocket %v", err).Error())
 		}
+		lockAlias.Lock()
+
 		delete(clients, c.uniqueId)
 		delete(clientAlias[c.id], c.uniqueId)
 
-		lockAlias.Lock()
 		if len(clientAlias[c.id]) == 0 {
 			delete(clientAlias, c.id)
 		}
@@ -77,14 +78,14 @@ func (c *client) run() {
 				log.WriteLog(logger.ERROR, fmt.Errorf("an error occured when getting guilds of user %v", err).Error())
 				return
 			}
-			lockPool.Lock()
+			lockPool.RLock()
 			_, ok := pools[guildId]
 			if !ok { // shouldnt happen but just in case
-				lockPool.Unlock()
+				lockPool.RUnlock()
 				continue
 			}
 			pools[guildId].Remove <- c.uniqueId //RACE CONDITION SEE pool.go:30 This may be the cause of the websockets being stopped
-			lockPool.Unlock()
+			lockPool.RUnlock()
 		}
 		//moved line here to stop close channel errors
 		close(c.broadcast) //close of nil channel error occurs here sometimes
@@ -295,7 +296,8 @@ func broadcastGuild(guild int, data interface{}) (statusCode int, err error) {
 */
 
 func broadcastClient(id int, data interface{}) (statusCode int, err error) {
-	lockAlias.Lock()
+	lockAlias.RLock()
+	defer lockAlias.RUnlock()
 	clientList, ok := clientAlias[id] //problem if two websockets of same user exist only of those two will be sent
 	if !ok {
 		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
@@ -303,6 +305,5 @@ func broadcastClient(id int, data interface{}) (statusCode int, err error) {
 	for _, client := range clientList {
 		client <- data
 	}
-	lockAlias.Unlock()
 	return 0, nil
 }
