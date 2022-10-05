@@ -183,6 +183,12 @@ func main() {
 
 	// \A\/[^api](.*) is a regex that matches everything except api
 	//r.HandleFunc(`\A\/[^api](.*)`, )
+	//buildHandler := http.FileServer(http.Dir("build"))
+	//r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/"))))
+
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Subrouter().NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./build/index.html")
+	})
 
 	srv := &http.Server{ //server settings
 		Addr: "0.0.0.0:8090",
