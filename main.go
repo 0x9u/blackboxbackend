@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"time"
 
 	_ "net/http/pprof"
@@ -84,6 +85,24 @@ func msgReset(w http.ResponseWriter, r *http.Request) { //dangerous remove when 
 		log.WriteLog(logger.ERROR, err.Error())
 		return
 	}
+}
+
+func staticFiles(w http.ResponseWriter, r *http.Request) {
+	path, err := filepath.Abs(r.URL.Path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	path = filepath.Join("build", path)
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		http.ServeFile(w, r, filepath.Join("build", "index.html"))
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.FileServer(http.Dir("build")).ServeHTTP(w, r)
 }
 
 func showStatus(w http.ResponseWriter, r *http.Request) { //debugging
@@ -186,9 +205,11 @@ func main() {
 	//buildHandler := http.FileServer(http.Dir("build"))
 	//r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/"))))
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Subrouter().NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./build/index.html")
-	})
+	//r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Subrouter().NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//	http.ServeFile(w, r, "./build/index.html")
+	//})
+
+	r.PathPrefix("/").HandlerFunc(staticFiles)
 
 	srv := &http.Server{ //server settings
 		Addr: "0.0.0.0:8090",
