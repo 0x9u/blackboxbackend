@@ -1,5 +1,13 @@
 # What to do left
 - Allow typing states in backend
+- Add pinging
+- Add notifications
+- Add clear messages button
+- Add clear messages from specific user button (put it in settings)
+- clear messages on save chat off
+- Add delete account
+
+- Remove 6 character limit
 - Have file support
 - Have captcha on backend
 - Have games support (single player)

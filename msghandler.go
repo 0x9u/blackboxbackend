@@ -36,6 +36,15 @@ type deleteMsg struct {
 	Time   int `json:"Time"`   //delete messages up to timestamp
 }
 
+type clearUserMsgData struct {
+	Id    int `json:"Id"`
+	Guild int `json:"Guild"`
+}
+
+type clearGuildMsgData struct {
+	Guild int `json:"Guild"`
+}
+
 type editMsg struct {
 	Id      int    `json:"Id"` //msg id
 	Guild   int    `json:"Guild"`
@@ -219,8 +228,8 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 			return
 		}
 		if datamsg.Id != 0 {
-			_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, user.Id)
-		} else {
+			_, err = db.Exec("DELETE FROM messages where id = $1 AND guild_id = $2 AND user_id = $3", datamsg.Id, datamsg.Guild, datamsg.Author)
+		} else { //deprecated make sure it gets its own function too dangerous for api requests
 			var deleteMsgUser int
 			if datamsg.Author != 0 {
 				deleteMsgUser = user.Id
@@ -235,6 +244,7 @@ func msgDelete(w http.ResponseWriter, r *http.Request, user *session) { //delete
 		return
 	}
 	statusCode, err := broadcastGuild(datamsg.Guild, datamsg)
+	//wont work if time option is picked
 	if err != nil {
 		reportError(statusCode, w, err)
 		return
@@ -270,6 +280,82 @@ func msgEdit(w http.ResponseWriter, r *http.Request, user *session) {
 	if err != nil {
 		reportError(statusCode, w, err)
 		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func clearGuildMsg(w http.ResponseWriter, r *http.Request, user *session) {
+	var datamsg struct { //this type only used in two functions and not important therefore annoymous struct
+		Id int `json:"id"`
+	}
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &datamsg)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if datamsg.Id == 0 {
+		reportError(http.StatusBadRequest, w, errorGuildNotProvided)
+		return
+	}
+	var valid bool
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1 AND owner_id = $2)", datamsg.Id, user.Id)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotGuildOwner)
+		return
+	}
+	_, err = db.Exec("DELETE FROM messages WHERE guild_id = $1", datamsg.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	statusCode, err := broadcastGuild(datamsg.Id, datamsg)
+	if err != nil {
+		reportError(statusCode, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func clearUserMsg(w http.ResponseWriter, r *http.Request, user *session) {
+	rows, err := db.Query("SELECT DISTINCT guild_id FROM messages WHERE user_id = $1", user.Id)
+
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM messages WHERE user_id = $2", user.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+
+	for rows.Next() {
+		var guildId int
+		err = rows.Scan(&guildId)
+		if err != nil {
+			reportError(http.StatusInternalServerError, w, err)
+			return
+		}
+		clearMsg := clearUserMsgData{
+			Id:    user.Id,
+			Guild: guildId,
+		}
+		statusCode, err := broadcastGuild(clearMsg.Guild, clearMsg)
+		if err != nil {
+			reportError(statusCode, w, err)
+			return
+		}
 	}
 	w.WriteHeader(http.StatusOK)
 }

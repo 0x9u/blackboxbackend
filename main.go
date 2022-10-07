@@ -181,6 +181,7 @@ func main() {
 	api.HandleFunc("/guild/ban", middleWare(getBannedList)).Methods("GET") //get all banned users
 	api.HandleFunc("/guild/kick", middleWare(kickGuildUser)).Methods("POST")
 	api.HandleFunc("/guild/leave", middleWare(leaveGuild)).Methods("POST") //leave guild
+	api.HandleFunc("/guild/deletemsg", middleWare(clearGuildMsg)).Methods("DELETE")
 
 	api.HandleFunc("/invite", middleWare(genGuildInvite)).Methods("POST")
 	api.HandleFunc("/invite", middleWare(getGuildInvite)).Methods("GET")
@@ -193,6 +194,7 @@ func main() {
 	api.HandleFunc("/user", createuser).Methods("POST")
 	api.HandleFunc("/user", middleWare(changeDetails)).Methods("PUT")
 	api.HandleFunc("/user/info", middleWare(userInfo)).Methods("GET")
+	api.HandleFunc("/user/deletemsg", middleWare(clearUserMsg)).Methods("DELETE")
 
 	api.HandleFunc("/status", showStatus).Methods("GET")
 	//make some function that grabs the images and videos based on "/files/*(put a random int here) format timestamp_(user_id)"

@@ -176,6 +176,10 @@ func (c *client) eventCheck(data interface{}) {
 		dataType = 13
 	case updateGuildSettingData:
 		dataType = 14
+	case clearGuildMsgData:
+		dataType = 15
+	case clearUserMsgData:
+		dataType = 16
 	default:
 		log.WriteLog(logger.WARN, fmt.Sprintf("Invalid data type recieved: %v", data))
 		return
