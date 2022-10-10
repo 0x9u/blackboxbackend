@@ -14,6 +14,7 @@ var (
 	errorEmailExists        = errors.New("email already exists")
 	errorInvalidChange      = errors.New("invalid change option")
 	errorGuildNotProvided   = errors.New("guild is not provided")
+	errorGuildSaveChatOn    = errors.New("guild save chat is on")
 	errorNotGuildOwner      = errors.New("user is not owner")
 	errorNoInvite           = errors.New("no invite provided")
 	errorInvalidInvite      = errors.New("invalid invite provided")
