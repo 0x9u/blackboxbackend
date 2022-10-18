@@ -212,7 +212,7 @@ func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		SELECT g.id, g.name, g.icon, g.owner_id, un.message_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.message_id) AS unread_msgs, un.time
 		FROM userguilds u 
 		INNER JOIN guilds g ON g.id = u.guild_id 
-		INNER JOIN unreadmessages un ON un.guild_id = u.guild_id 
+		INNER JOIN unreadmessages un ON un.guild_id = u.guild_id and un.user_id = u.user_id
 		LEFT JOIN messages m ON m.guild_id = un.guild_id 
 		WHERE u.user_id=$1 AND u.banned = false
 		GROUP BY g.id, g.name, g.icon, g.owner_id, un.message_id, un.time, u.*
