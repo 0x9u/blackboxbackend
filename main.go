@@ -73,6 +73,8 @@ func generateRandString(l int) string { //copied from stackoverflow
 	return string(b)
 }
 
+/*
+
 func msgReset(w http.ResponseWriter, r *http.Request) { //dangerous remove when finished
 	q := `
 		DELETE FROM messages;
@@ -86,6 +88,8 @@ func msgReset(w http.ResponseWriter, r *http.Request) { //dangerous remove when 
 		return
 	}
 }
+
+*/
 
 func staticFiles(w http.ResponseWriter, r *http.Request) {
 	path, err := filepath.Abs(r.URL.Path)
@@ -168,6 +172,8 @@ func main() {
 	api.HandleFunc("/msg", middleWare(msgEdit)).Methods("PUT")
 	api.HandleFunc("/msg", middleWare(msgHistory)).Methods("GET")
 	api.HandleFunc("/msg", middleWare(msgDelete)).Methods("DELETE")
+	//api.HandleFunc("/msg/unread", middleWare(msgUnread)).Methods("GET")
+	api.HandleFunc("/msg/read", middleWare(msgRead)).Methods("POST")
 
 	api.HandleFunc("/guild", middleWare(createGuild)).Methods("POST")
 	api.HandleFunc("/guild", middleWare(deleteGuild)).Methods("DELETE")
@@ -187,8 +193,8 @@ func main() {
 	api.HandleFunc("/invite", middleWare(getGuildInvite)).Methods("GET")
 	api.HandleFunc("/invite", middleWare(deleteInvGuild)).Methods("DELETE")
 
-	api.HandleFunc("/ws", webSocket)   //make middleware later for token validation
-	api.HandleFunc("/reset", msgReset) //dangerous
+	api.HandleFunc("/ws", webSocket) //make middleware later for token validation
+	//api.HandleFunc("/reset", msgReset) //dangerous
 
 	api.HandleFunc("/user", userlogin).Methods("GET")
 	api.HandleFunc("/user", createuser).Methods("POST")

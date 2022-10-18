@@ -1,0 +1,12 @@
+CREATE TABLE unreadmessages(guild_id INT, user_id INT, message_id INT, time INT);
+ALTER TABLE unreadmessages ADD CONSTRAINT fk_unreadmessage_guild FOREIGN KEY (guild_id) REFERENCES guilds(id);
+ALTER TABLE unreadmessages ADD CONSTRAINT fk_unreadmessage_user FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE unreadmessages ALTER message_id SET DEFAULT 0;
+ALTER TABLE unreadmessages ALTER time SET DEFAULT 0;
+		SELECT g.id, g.name, g.icon, g.owner_id, un.message_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.message_id OR un.message_id = 0) AS unread_msgs 
+		FROM userguilds u 
+		INNER JOIN guilds g ON g.id = u.guild_id 
+		INNER JOIN unreadmessages un ON un.guild_id = u.guild_id 
+		LEFT JOIN messages m ON m.guild_id = un.guild_id 
+		WHERE u.user_id=6 AND u.banned = false
+		GROUP BY g.id, g.name, g.icon, g.owner_id, un.message_id

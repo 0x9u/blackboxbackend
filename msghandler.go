@@ -373,6 +373,88 @@ func clearUserMsg(w http.ResponseWriter, r *http.Request, user *session) {
 }
 
 /*
+func msgUnread(w http.ResponseWriter, r *http.Request, user *session) {
+	guild := r.URL.Query().Get("guild")
+
+	row := db.QueryRow("SELECT COUNT(*), b.message_id FROM messages a INNER JOIN unreadmessages b ON b.guild_id=a.guild_id AND b.guild_id=$1 AND b.user_id=$2 AND a.id > b.message_id GROUP BY message_id", guild, user.Id)
+	if err := row.Err(); err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var unreadMsgData unreadMsg
+	err := row.Scan(&unreadMsgData.Count, &unreadMsgData.Id)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	result, err := json.Marshal(unreadMsgData)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+
+	w.Write(result)
+	w.WriteHeader(http.StatusOK)
+
+}
+*/
+
+// figure out alternative ways to acknowledge read messages
+func msgRead(w http.ResponseWriter, r *http.Request, user *session) {
+	var datamsg struct {
+		Guild int `json:"guild"`
+	}
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	err = json.Unmarshal(bodyBytes, &datamsg)
+	if err != nil {
+		reportError(http.StatusBadRequest, w, err)
+		return
+	}
+	if datamsg.Guild == 0 {
+		reportError(http.StatusBadRequest, w, errorInvalidDetails)
+		return
+	}
+	row := db.QueryRow("SELECT EXISTS (SELECT * FROM guilds WHERE id=$1)", datamsg.Guild)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var valid bool
+	row.Scan(&valid)
+	if !valid {
+		reportError(http.StatusBadRequest, w, errorNotInGuild)
+		return
+	}
+
+	row = db.QueryRow("SELECT MAX(id) FROM messages WHERE guild_id = $1", datamsg.Guild)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var lastMsgId int
+	row.Scan(&lastMsgId)
+
+	row = db.QueryRow("SELECT time FROM messages WHERE id = (SELECT MAX(id) FROM messages where guild_id = $1)", datamsg.Guild)
+	if row.Err() != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	var lastMsgTime int
+	row.Scan(&lastMsgTime)
+
+	_, err = db.Exec("UPDATE unreadmessages SET message_id = $3, time = $4 WHERE user_id = $2 AND guild_id = $1", datamsg.Guild, user.Id, lastMsgId, lastMsgTime)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+/*
 func msgTyping(w http.ResponseWriter, r *http.Request) {
 
 	token, ok := r.Header["Auth-Token"]

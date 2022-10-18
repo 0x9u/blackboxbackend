@@ -71,11 +71,18 @@ type userGuildRemove struct {
 
 type userBannedRemove userGuildRemove
 
+type unreadMsg struct {
+	Id    int `json:"Id"`    //message last read Id
+	Count int `json:"Count"` //number of unread messages
+	Time  int `json:"Time"`
+}
+
 type infoGuild struct {
-	Owner int    `json:"Owner"`
-	Id    int    `json:"Id"`
-	Name  string `json:"Name"`
-	Icon  int    `json:"Icon"`
+	Owner  int       `json:"Owner"`
+	Id     int       `json:"Id"`
+	Name   string    `json:"Name"`
+	Icon   int       `json:"Icon"`
+	Unread unreadMsg `json:"Unread"`
 }
 
 type joinGuildData infoGuild
@@ -110,6 +117,10 @@ func createGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	row.Scan(&guild_id)
 	invite := inviteAdded{
 		Invite: generateRandString(10),
+	}
+	if _, err = db.Exec("INSERT INTO unreadmessages (guild_id, user_id) VALUES ($1, $2)", guild_id, user.Id); err != nil { //cleanup if failed later
+		reportError(http.StatusBadRequest, w, err)
+		return
 	}
 	if _, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild_id, user.Id); err != nil { //cleanup if failed later
 		reportError(http.StatusBadRequest, w, err)
@@ -165,6 +176,11 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	_, err = db.Exec("DELETE FROM unreadmessages WHERE guild_id=$1", guild.Guild)
+	if err != nil {
+		reportError(http.StatusInternalServerError, w, err)
+		return
+	}
 	_, err = db.Exec("DELETE FROM invites WHERE guild_id=$1", guild.Guild) //delete all existing invites
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
@@ -187,10 +203,21 @@ func deleteGuild(w http.ResponseWriter, r *http.Request, user *session) {
 func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	log.WriteLog(logger.INFO, "Getting guilds")
 	rows, err := db.Query(
-		`
+		/*`
 		SELECT g.id, g.name, g.icon, g.owner_id
+		FROM userguilds u
+		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1 AND u.banned = false`,*/
+		/* long goofy aaaaa code*/
+		`
+		SELECT g.id, g.name, g.icon, g.owner_id, un.message_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.message_id) AS unread_msgs, un.time
 		FROM userguilds u 
-		INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1 AND u.banned = false`,
+		INNER JOIN guilds g ON g.id = u.guild_id 
+		INNER JOIN unreadmessages un ON un.guild_id = u.guild_id 
+		LEFT JOIN messages m ON m.guild_id = un.guild_id 
+		WHERE u.user_id=$1 AND u.banned = false
+		GROUP BY g.id, g.name, g.icon, g.owner_id, un.message_id, un.time, u.*
+		ORDER BY u
+		`,
 		user.Id,
 	)
 	if err != nil {
@@ -200,7 +227,7 @@ func getGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	guilds := []infoGuild{}
 	for rows.Next() {
 		var guild infoGuild
-		err = rows.Scan(&guild.Id, &guild.Name, &guild.Icon, &guild.Owner)
+		err = rows.Scan(&guild.Id, &guild.Name, &guild.Icon, &guild.Owner, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
 		if err != nil {
 			reportError(http.StatusInternalServerError, w, err)
 			return
@@ -343,6 +370,10 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 	}
 	if check {
 		reportError(http.StatusBadRequest, w, errorAlreadyInGuild)
+		return
+	}
+	if _, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.Id, user.Id); err != nil { //cleanup if failed later
+		reportError(http.StatusBadRequest, w, err)
 		return
 	}
 	_, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2) ", guild.Id, user.Id)
