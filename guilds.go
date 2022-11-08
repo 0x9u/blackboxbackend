@@ -373,14 +373,16 @@ func joinGuild(w http.ResponseWriter, r *http.Request, user *session) {
 		return
 	}
 	if _, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.Id, user.Id); err != nil { //cleanup if failed later
-		reportError(http.StatusBadRequest, w, err)
+		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	/* //wtf is this?
 	_, err = db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2) ", guild.Id, user.Id)
 	if err != nil {
 		reportError(http.StatusInternalServerError, w, err)
 		return
 	}
+	*/
 	broadcastClient(user.Id, guild)
 
 	var username string
