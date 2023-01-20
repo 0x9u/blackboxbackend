@@ -1,0 +1,872 @@
+INFO:	2023/01/03 16:52:22 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 16:55:23 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:55:23 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:55:23 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:55:23 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:55:23 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:55:23 cooldown.go:15: [::1]:43782
+DEBUG:	2023/01/03 16:55:23 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 16:55:23 guildpool.go:124: creating pools
+DEBUG:	2023/01/03 16:55:43 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 16:55:55 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:55:55 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:55:55 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:55:55 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:55:55 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:55:55 cooldown.go:15: [::1]:40490
+INFO:	2023/01/03 16:55:55 getguilds.go:26: Getting guilds
+DEBUG:	2023/01/03 16:56:23 cooldown.go:34: Stopped limiter
+INFO:	2023/01/03 16:56:50 main.go:32: Shutting down server
+FATAL:	2023/01/03 16:56:50 main.go:24: http: Server closed
+INFO:	2023/01/03 16:56:53 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 16:56:55 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:56:55 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:56:55 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:56:55 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:56:55 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:56:55 cooldown.go:15: [::1]:32796
+INFO:	2023/01/03 16:56:55 getguilds.go:26: Getting guilds
+INFO:	2023/01/03 16:57:12 main.go:32: Shutting down server
+FATAL:	2023/01/03 16:57:12 main.go:24: http: Server closed
+INFO:	2023/01/03 16:57:49 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 16:57:50 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:57:50 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:57:50 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:57:50 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:57:50 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:57:50 cooldown.go:15: [::1]:46844
+INFO:	2023/01/03 16:57:50 getguilds.go:26: Getting guilds
+DEBUG:	2023/01/03 16:58:11 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:58:11 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:58:11 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:58:11 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:58:11 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:58:11 cooldown.go:15: 127.0.0.1:44924
+INFO:	2023/01/03 16:58:11 wsclient.go:58: Websocket active of 127.0.0.1:8080
+DEBUG:	2023/01/03 16:58:11 wspipe.go:58: worked?
+DEBUG:	2023/01/03 16:58:11 wspipe.go:67: worked?
+INFO:	2023/01/03 16:58:11 wsclient.go:68: deadline passed
+INFO:	2023/01/03 16:58:11 wsclient.go:74: deadline passed end
+DEBUG:	2023/01/03 16:58:11 guildpool.go:151: bruh 20s 
+DEBUG:	2023/01/03 16:58:11 guildpool.go:152: wtf &{{10 2000 20s} {10 5s 1440h0m0s} {0.0.0.0 8080 {15s 15s 15s 15s} {4096 4096}}} 
+DEBUG:	2023/01/03 16:58:11 guildpool.go:151: bruh 20s 
+DEBUG:	2023/01/03 16:58:11 guildpool.go:152: wtf &{{10 2000 20s} {10 5s 1440h0m0s} {0.0.0.0 8080 {15s 15s 15s 15s} {4096 4096}}} 
+INFO:	2023/01/03 16:58:11 wspipe.go:115: added to client pool
+DEBUG:	2023/01/03 16:58:13 wspipe.go:58: worked?
+ERROR:	2023/01/03 16:58:19 wspipe.go:18: websocket: close 1000 (normal)
+INFO:	2023/01/03 16:58:19 wspipe.go:21: Disconnecting websocket
+DEBUG:	2023/01/03 16:58:19 clientpool.go:33: apple pie map[] 
+INFO:	2023/01/03 16:58:19 wsclient.go:37: Websocket of 127.0.0.1:8080 has been closed
+DEBUG:	2023/01/03 16:58:23 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 16:58:23 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 16:58:23 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 16:58:23 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 16:58:23 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 16:58:23 cooldown.go:15: [::1]:36024
+DEBUG:	2023/01/03 16:58:23 guildpool.go:69: Stopped guild pool
+INFO:	2023/01/03 17:00:32 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 17:00:35 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:00:35 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:00:35 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:00:35 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:00:35 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:00:35 cooldown.go:15: [::1]:46560
+DEBUG:	2023/01/03 17:00:35 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 17:00:35 guildpool.go:124: creating pools
+DEBUG:	2023/01/03 17:00:42 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:00:42 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:00:42 cooldown.go:15: [::1]:46560
+DEBUG:	2023/01/03 17:00:42 cooldown.go:41: received a msg to add
+INFO:	2023/01/03 17:00:42 getguilds.go:26: Getting guilds
+DEBUG:	2023/01/03 17:00:51 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:00:51 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:00:51 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:00:51 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:00:51 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:00:51 cooldown.go:15: 127.0.0.1:57918
+INFO:	2023/01/03 17:00:51 wsclient.go:59: Websocket active of 127.0.0.1:8080
+DEBUG:	2023/01/03 17:00:51 wspipe.go:58: worked?
+DEBUG:	2023/01/03 17:00:51 wspipe.go:67: worked?
+INFO:	2023/01/03 17:00:51 wsclient.go:69: deadline passed
+INFO:	2023/01/03 17:00:51 wsclient.go:75: deadline passed end
+DEBUG:	2023/01/03 17:00:51 guildpool.go:151: bruh 20s 
+DEBUG:	2023/01/03 17:00:51 guildpool.go:152: wtf &{{10 2000 20s} {10 5s 1440h0m0s} {0.0.0.0 8080 {15s 15s 15s 15s} {4096 4096}}} 
+INFO:	2023/01/03 17:00:51 wspipe.go:115: added to client pool
+ERROR:	2023/01/03 17:00:52 wspipe.go:18: websocket: close 1000 (normal)
+INFO:	2023/01/03 17:00:52 wspipe.go:21: Disconnecting websocket
+DEBUG:	2023/01/03 17:00:52 clientpool.go:33: apple pie map[] 
+INFO:	2023/01/03 17:00:52 wsclient.go:37: Websocket of 127.0.0.1:8080 has been closed
+DEBUG:	2023/01/03 17:00:52 wsclient.go:57: wsclient ended
+DEBUG:	2023/01/03 17:01:04 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:01:04 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:01:04 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:01:04 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:01:04 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:01:04 cooldown.go:15: [::1]:46180
+DEBUG:	2023/01/03 17:01:04 guildpool.go:69: Stopped guild pool
+INFO:	2023/01/03 17:05:33 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 17:05:43 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:05:43 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:05:43 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:05:43 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:05:43 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:05:43 cooldown.go:15: [::1]:55546
+DEBUG:	2023/01/03 17:05:43 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 17:05:43 guildpool.go:124: creating pools
+DEBUG:	2023/01/03 17:05:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:05:48 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:05:48 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:05:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:05:48 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:05:48 cooldown.go:15: 127.0.0.1:56210
+INFO:	2023/01/03 17:05:48 wsclient.go:58: Websocket active of 127.0.0.1:8080
+DEBUG:	2023/01/03 17:05:49 wspipe.go:58: worked?
+DEBUG:	2023/01/03 17:05:49 wspipe.go:67: worked?
+INFO:	2023/01/03 17:05:49 wsclient.go:68: deadline passed
+DEBUG:	2023/01/03 17:05:49 guildpool.go:151: bruh 20s 
+DEBUG:	2023/01/03 17:05:49 guildpool.go:152: wtf &{{10 2000 20s} {10 5s 1440h0m0s} {0.0.0.0 8080 {15s 15s 15s 15s} {4096 4096}}} 
+INFO:	2023/01/03 17:05:49 wsclient.go:74: deadline passed end
+INFO:	2023/01/03 17:05:49 wspipe.go:115: added to client pool
+ERROR:	2023/01/03 17:05:51 wspipe.go:18: websocket: close 1000 (normal)
+INFO:	2023/01/03 17:05:51 wspipe.go:21: Disconnecting websocket
+INFO:	2023/01/03 17:05:51 wsclient.go:35: Websocket of 127.0.0.1:8080 has been closed
+INFO:	2023/01/03 17:05:51 guildpool.go:200: Removed user from pool RNY3QEzJATzx5fYAdHmS2XR1kufAPb73
+INFO:	2023/01/03 17:05:51 guildpool.go:200: Removed user from pool RNY3QEzJATzx5fYAdHmS2XR1kufAPb73
+DEBUG:	2023/01/03 17:05:51 clientpool.go:33: apple pie map[] 
+DEBUG:	2023/01/03 17:05:51 wsclient.go:56: wsclient ended
+DEBUG:	2023/01/03 17:06:02 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:06:02 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:06:02 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:06:02 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:06:02 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:06:02 cooldown.go:15: [::1]:34242
+INFO:	2023/01/03 17:06:02 getguilds.go:26: Getting guilds
+DEBUG:	2023/01/03 17:06:03 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 17:06:07 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:06:07 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:06:07 cooldown.go:15: [::1]:34242
+DEBUG:	2023/01/03 17:06:07 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:06:09 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 17:06:43 cooldown.go:34: Stopped limiter
+DEBUG:	2023/01/03 17:06:48 cooldown.go:34: Stopped limiter
+DEBUG:	2023/01/03 17:07:07 cooldown.go:34: Stopped limiter
+INFO:	2023/01/03 17:07:51 main.go:32: Shutting down server
+FATAL:	2023/01/03 17:07:51 main.go:24: http: Server closed
+INFO:	2023/01/03 17:07:54 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+DEBUG:	2023/01/03 17:10:27 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:10:27 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:10:27 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:10:27 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:10:27 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:10:27 cooldown.go:15: [::1]:49836
+DEBUG:	2023/01/03 17:10:27 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 17:10:27 guildpool.go:124: creating pools
+DEBUG:	2023/01/03 17:10:47 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 17:11:22 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:11:22 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:11:22 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:11:22 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:11:22 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:11:22 cooldown.go:15: [::1]:46132
+DEBUG:	2023/01/03 17:11:27 cooldown.go:34: Stopped limiter
+DEBUG:	2023/01/03 17:11:59 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:11:59 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:11:59 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:11:59 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:11:59 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:11:59 cooldown.go:15: [::1]:43160
+DEBUG:	2023/01/03 17:11:59 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 17:11:59 guildpool.go:124: creating pools
+DEBUG:	2023/01/03 17:12:05 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:12:05 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:12:05 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:12:05 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:12:05 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:12:05 cooldown.go:15: 127.0.0.1:40884
+INFO:	2023/01/03 17:12:05 wsclient.go:60: Websocket active of 127.0.0.1:8080
+DEBUG:	2023/01/03 17:12:05 wspipe.go:58: worked?
+DEBUG:	2023/01/03 17:12:05 wspipe.go:67: worked?
+INFO:	2023/01/03 17:12:05 wsclient.go:70: deadline passed
+INFO:	2023/01/03 17:12:05 wsclient.go:76: deadline passed end
+DEBUG:	2023/01/03 17:12:05 guildpool.go:151: bruh 20s 
+DEBUG:	2023/01/03 17:12:05 guildpool.go:152: wtf &{{10 2000 20s} {10 5s 1440h0m0s} {0.0.0.0 8080 {15s 15s 15s 15s} {4096 4096}}} 
+INFO:	2023/01/03 17:12:05 wspipe.go:115: added to client pool
+DEBUG:	2023/01/03 17:12:07 wspipe.go:58: worked?
+DEBUG:	2023/01/03 17:12:22 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:12:22 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:12:22 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:12:22 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:12:22 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:12:22 cooldown.go:15: [::1]:54720
+ERROR:	2023/01/03 17:12:22 leave.go:71: guild: user is not in guild
+DEBUG:	2023/01/03 17:12:22 cooldown.go:34: Stopped limiter
+ERROR:	2023/01/03 17:12:27 wspipe.go:18: read tcp 127.0.0.1:8080->127.0.0.1:40884: i/o timeout
+INFO:	2023/01/03 17:12:27 wspipe.go:21: Disconnecting websocket
+INFO:	2023/01/03 17:12:27 wsclient.go:34: Websocket of 127.0.0.1:8080 has been closed
+INFO:	2023/01/03 17:12:27 guildpool.go:200: Removed user from pool 2HndN6iKYWFclEaRBZHwwxolcAifHb2e
+INFO:	2023/01/03 17:12:27 guildpool.go:200: Removed user from pool 2HndN6iKYWFclEaRBZHwwxolcAifHb2e
+DEBUG:	2023/01/03 17:12:27 wsclient.go:58: wsclient ended
+DEBUG:	2023/01/03 17:12:33 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:12:33 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:12:33 cooldown.go:15: [::1]:54720
+DEBUG:	2023/01/03 17:12:33 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:12:33 clientpool.go:57: bad shit
+DEBUG:	2023/01/03 17:12:39 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 17:12:45 guildpool.go:69: Stopped guild pool
+DEBUG:	2023/01/03 17:12:59 cooldown.go:34: Stopped limiter
+DEBUG:	2023/01/03 17:13:05 cooldown.go:34: Stopped limiter
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:21 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:13:21 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:21 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:13:21 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:13:21 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:21 cooldown.go:15: [::1]:33012
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:22 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:22 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:22 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:22 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:23 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:23 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:23 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:23 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:24 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:24 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:24 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:24 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:25 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:25 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:25 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:25 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:25 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:25 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:25 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:25 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:26 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:26 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:26 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:26 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:27 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:27 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:27 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:27 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:28 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:28 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:28 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:28 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:28 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:28 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:28 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:28 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:29 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:29 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:29 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:29 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:30 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:30 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:30 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:30 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:31 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:31 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:31 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:31 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:31 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:31 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:31 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:31 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:13:33 cooldown.go:34: Stopped limiter
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:36 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:36 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:36 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:36 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:38 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:38 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:38 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:38 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:38 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:38 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:38 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:38 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:39 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:39 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:39 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:39 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:40 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:40 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:40 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:40 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:41 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:41 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:41 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:41 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:13:42 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:13:42 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:13:42 cooldown.go:15: [::1]:33012
+DEBUG:	2023/01/03 17:13:42 cooldown.go:41: received a msg to add
+INFO:	2023/01/03 17:13:44 main.go:32: Shutting down server
+FATAL:	2023/01/03 17:13:44 main.go:24: http: Server closed
+INFO:	2023/01/03 17:14:06 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:08 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:14:08 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:08 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:14:08 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:14:08 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:08 cooldown.go:15: [::1]:46870
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:09 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:09 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:09 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:09 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:10 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:10 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:10 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:10 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:11 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:11 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:11 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:11 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:12 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:12 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:12 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:12 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:13 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:13 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:13 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:13 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:14 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:14 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:14 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:14 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:15 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:15 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:15 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:15 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:16 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:16 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:16 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:16 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:17 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:17 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:17 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:17 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:17 cooldown.go:15: [::1]:46870
+ERROR:	2023/01/03 17:14:17 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:23 cooldown.go:15: [::1]:46870
+ERROR:	2023/01/03 17:14:23 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:27 cooldown.go:15: [::1]:46870
+ERROR:	2023/01/03 17:14:27 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:32 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:32 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:32 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:32 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:41 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:41 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:41 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:41 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:42 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:42 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:42 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:42 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:43 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:43 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:43 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:43 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:43 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:43 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:43 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:43 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:44 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:44 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:44 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:44 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:45 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:45 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:45 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:45 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:46 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:46 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:46 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:46 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:47 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:47 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:47 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:47 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:47 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:47 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:47 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:47 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:48 cooldown.go:15: [::1]:46870
+ERROR:	2023/01/03 17:14:48 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:49 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:49 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:49 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:49 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:14:50 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:14:50 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:14:50 cooldown.go:15: [::1]:46870
+DEBUG:	2023/01/03 17:14:50 cooldown.go:41: received a msg to add
+INFO:	2023/01/03 17:14:58 main.go:32: Shutting down server
+FATAL:	2023/01/03 17:14:58 main.go:24: http: Server closed
+INFO:	2023/01/03 17:15:00 main.go:16: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/settings --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getSettings (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/members/:userId/owner --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.ChangeOwner (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] DELETE /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (3 handlers)
+[GIN-debug] DELETE /api/users/msgs           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (3 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (3 handlers)
+[GIN-debug] GET    /api/users/@me            --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] GET    /api/users/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (5 handlers)
+[GIN-debug] DELETE /api/users/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (6 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:02 cooldown.go:65: Created new limiter
+DEBUG:	2023/01/03 17:15:02 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:02 cooldown.go:37: Started limiter
+DEBUG:	2023/01/03 17:15:02 cooldown.go:41: received a msg to add
+DEBUG:	2023/01/03 17:15:02 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:02 cooldown.go:15: [::1]:54314
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:04 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:04 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:04 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:04 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:04 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:04 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:04 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:04 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:05 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:05 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:05 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:05 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:06 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:06 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:06 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:06 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:07 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:07 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:07 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:07 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:08 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:08 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:08 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:08 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:09 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:09 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:09 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:09 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:09 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:09 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:09 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:09 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:10 cooldown.go:72: before send chan
+DEBUG:	2023/01/03 17:15:10 cooldown.go:74: after send chan
+DEBUG:	2023/01/03 17:15:10 cooldown.go:15: [::1]:54314
+DEBUG:	2023/01/03 17:15:10 cooldown.go:41: received a msg to add
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:10 cooldown.go:15: [::1]:54314
+ERROR:	2023/01/03 17:15:10 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:11 cooldown.go:15: [::1]:54314
+ERROR:	2023/01/03 17:15:11 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:12 cooldown.go:15: [::1]:54314
+ERROR:	2023/01/03 17:15:12 cooldown.go:17: cooldown: cooldown is active
+[GIN-debug] redirecting request 301: /api/status/ --> /api/status/
+DEBUG:	2023/01/03 17:15:13 cooldown.go:15: [::1]:54314
+ERROR:	2023/01/03 17:15:13 cooldown.go:17: cooldown: cooldown is active
+DEBUG:	2023/01/03 17:16:13 cooldown.go:34: Stopped limiter

@@ -1,0 +1,54 @@
+package errors
+
+type StatusCode int
+
+const (
+	StatusInternalError StatusCode = iota
+	StatusBadJSON
+
+	StatusAbsentToken
+	StatusInvalidToken
+	StatusExpiredToken
+
+	StatusInvalidGuildName
+
+	StatusNotInGuild
+	StatusAlreadyInGuild
+	StatusCantKickBanSelf
+	StatusAlreadyBanned
+	StatusUserNotBanned
+	StatusCantLeaveOwnGuild
+	StatusNotGuildOwner
+
+	StatusGuildSaveChatOn
+	StatusGuildNotProvided
+	StatusGuildPoolNotExist
+	StatusGuildNotExist
+
+	StatusUsernameExists
+	StatusEmailExists
+	StatusInvalidEmail
+	StatusInvalidPass
+	StatusInvalidUsername
+	StatusUserNotFound
+
+	StatusNoInvite
+	StatusInvalidInvite
+	StatusInviteLimitReached
+
+	StatusNoMsgContent
+	StatusMsgTooLong
+
+	StatusAllFieldsEmpty
+	StatusInvalidDetails
+	StatusNotExists
+
+	StatusCooldownActive
+
+	StatusIpBanned
+
+	StatusRouteParamNotInt
+	StatusRouteParamNotString
+
+	StatusNotAuthorised
+)

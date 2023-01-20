@@ -1,25 +1,33 @@
 # What to do left
-- Allow typing states in backend
-- Add pinging
-- Add notifications
-- Add clear messages button
-- Add clear messages from specific user button (put it in settings)
-- clear messages on save chat off
-- Add delete account
+- Allow typing states in backend - done
+- Add pinging - done
+- Add notifications - done
+- Add clear messages button - done
+- Add clear messages from specific user button (put it in settings) - done
+- clear messages on save chat off - done
+- Add delete account - done
+- Add badges for users
 
-- Remove 6 character limit
+- Remove 6 character limit - done
 - Have file support
 - Have captcha on backend
 - Have games support (single player)
 - multiplayer games
-- Shorten authentication using middleware
+- Shorten authentication using middleware - done
 - Make a failsafe for same invite code
-- ADd some guild shit (edit settings) 
+- ADd some guild shit (edit settings) - done
 - Add some tests (Im not bothered to do this so I need to be on something probs)
-- Modulize the backend (Not too sure yet how I should handle the global variables)
-    - make global variables its own module
+- Modulize the backend (Not too sure yet how I should handle the global variables) - done
+    - make global variables its own module - cancelled
         - possible bad practice so research more into it
         - modulize each file and split long lengthy functions into files in a folder
+# PRIORITY
+- Clean up sql database
+  - Rename tables to fit standard e.g roles -> role, userguilds -> user_has_guild
+- CONVERT THIS INTO GIN (ASAP) - done
+  - mux is archived so for maintainbility purposes this will have to be migrated into the gin lib
+  - estimated probs 1-2 hours (ended as 4 hours)
+- combine multiple queries together and create auto clean up if there is a failure 
 
 # MAYBES
 - Learn C# and program in unity in WASM (make games)
@@ -39,9 +47,9 @@
 - Restructure the token to use sql database instead of ram - done
     - make a monthly checkup to remove expired tokens
     - encrypt the tokens with sha256 no salt no pepper since tokens are random af - Cancelled
-
+- 
 **AFTER FINISHED EVERYTHING**
-- Implement rate limiting
+- Implement rate limiting - implementing it done sorta havent tested
     - store in ram in a map of ips pointing to timers
-    - 500 ms rate limit
+    - 500 ms rate limit - done
 - Implement email checking so theres no duplicate emails

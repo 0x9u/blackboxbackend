@@ -1,0 +1,25 @@
+-- do this in order
+INSERT INTO roles (name) VALUEs ('user'); -- should be id 1
+INSERT INTO roles (name) VALUES ('admin'); --id 2
+INSERT INTO roles (name) VALUES ('moderator'); --id 3
+
+-- perms
+INSERT INTO permissions (name) VALUES ('admin');
+INSERT INTO permissions (name) values ('banip');
+INSERT INTO permissions (name) VALUES ('users_get');
+INSERT INTO permissions (name) VALUES ('users_edit');
+INSERT INTO permissions (name) VALUES ('users_delete');
+INSERT INTO permissions (name) VALUES ('guilds_get');
+INSERT INTO permissions (name) VALUES ('guilds_edit');
+INSERT INTO permissions (name) VALUES ('guilds_delete');
+
+--relations
+INSERT INTO rolepermissions VALUES (2, 1); -- admin
+
+INSERT INTO rolepermissions VALUES (3, 3); -- moderator
+INSERT INTO rolepermissions VALUES (3, 4);
+INSERT INTO rolepermissions VALUES (3, 5);
+INSERT INTO rolepermissions VALUES (3, 6);
+INSERT INTO rolepermissions VALUES (3, 7);
+INSERT INTO rolepermissions VALUES (3, 8);
+

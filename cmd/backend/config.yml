@@ -1,0 +1,19 @@
+guild:
+    maxInvites: 10
+    maxMsgLength: 2000
+    timeout: 20s
+user:
+    maxGuildsPerUser: 10
+    coolDownLength: 60s
+    tokenExpireTime: 1440h0m0s
+server:
+    host: 0.0.0.0
+    port: "8080"
+    timeout:
+        server: 15s
+        write: 15s
+        read: 15s
+        idle: 15s
+    bufferSize:
+        read: 4096
+        write: 4096
