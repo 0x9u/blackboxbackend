@@ -2,6 +2,8 @@ package msgs
 
 import (
 	"net/http"
+	"regexp"
+	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -12,10 +14,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
-
-type createMsgBody struct {
-	RecipientId int `json:"recipientId"`
-}
 
 func CreateDM(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
@@ -29,18 +27,34 @@ func CreateDM(c *gin.Context) {
 		return
 	}
 
-	var body createMsgBody
-
-	if err := c.ShouldBindJSON(&body); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
+		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusInternalError,
+		})
+		return
+	} else if !match {
+		logger.Error.Println(errors.ErrRouteParamInvalid)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO userdirectmsgs (sender_id, receiver_id) VALUES ($1, $2)", user.Id, body.RecipientId); err != nil {
+	intUserId, err := strconv.Atoi(userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec("INSERT INTO userdirectmsgs (sender_id, receiver_id) VALUES ($1, $2)", user.Id, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -63,7 +77,7 @@ func CreateDM(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: body.RecipientId,
+			UserId: intUserId,
 			Name:   username,
 			Icon:   0,
 		},

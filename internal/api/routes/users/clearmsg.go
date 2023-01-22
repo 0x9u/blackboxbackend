@@ -25,7 +25,7 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT DISTINCT guild_id FROM messages WHERE user_id = $1", user.Id)
+	guildRows, err := db.Db.Query("SELECT DISTINCT guild_id FROM msgs WHERE user_id = $1", user.Id)
 
 	if err != nil {
 		logger.Error.Println(err)
@@ -36,9 +36,9 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	defer rows.Close()
+	defer guildRows.Close()
 
-	if _, err = db.Db.Exec("DELETE FROM messages WHERE user_id = $1", user.Id); err != nil {
+	if _, err = db.Db.Exec("DELETE FROM msgs WHERE user_id = $1", user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -47,9 +47,11 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	for rows.Next() {
+	userRows, err := db.Db.Query("SELECT DISTINCT receiver_id FROM directmsgs WHERE sender_id = $1", user.Id)
+
+	for guildRows.Next() {
 		var guildId int
-		err = rows.Scan(&guildId)
+		err = guildRows.Scan(&guildId)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -78,5 +80,46 @@ func clearUserMsg(c *gin.Context) {
 			return
 		}
 	}
-	c.Status(http.StatusOK)
+
+	for userRows.Next() {
+		var receiverId int
+		err = userRows.Scan(&receiverId)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		clearMsg := events.Msg{
+			Author: events.User{
+				UserId: user.Id,
+			},
+			UserId: receiverId,
+		}
+		res := wsclient.DataFrame{
+			Op:    wsclient.TYPE_DISPATCH,
+			Data:  clearMsg,
+			Event: events.CLEAR_USER_DM_MESSAGES,
+		}
+		if err := wsclient.Pools.BroadcastClient(receiverId, res); err != nil && err != errors.ErrUserClientNotExist {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if err := wsclient.Pools.BroadcastClient(user.Id, res); err != nil && err != errors.ErrUserClientNotExist {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+	}
+
+	c.Status(http.StatusNoContent)
 }

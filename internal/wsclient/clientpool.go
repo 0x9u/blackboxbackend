@@ -1,9 +1,7 @@
 package wsclient
 
 import (
-	"fmt"
-	"net/http"
-
+	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 )
@@ -49,18 +47,18 @@ func (p *pools) DisconnectUserFromClientPool(id int) {
 	} //will automatically delete itself from defer funciton in wsclient through RemoveUserUIDFromClientPool
 }
 
-func (p *pools) BroadcastClient(id int, data DataFrame) (statusCode int, err error) {
+func (p *pools) BroadcastClient(id int, data DataFrame) error {
 	p.clientsMutex.RLock()
 	defer p.clientsMutex.RUnlock()
 	clientList, ok := p.clients[id] //problem if two websockets of same user exist only of those two will be sent
 	if !ok {
 		logger.Debug.Println("bad shit")
-		return http.StatusBadRequest, fmt.Errorf("client %d does not exist", id)
+		return errors.ErrUserClientNotExist
 	}
 	for _, client := range clientList {
 		client <- data
 	}
-	return 0, nil
+	return nil
 }
 
 func (p *pools) BroadcastClientUIDMap(clients map[string]brcastEvents, data DataFrame) {

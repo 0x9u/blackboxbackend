@@ -41,12 +41,13 @@ var (
 
 	//USER
 
-	ErrUsernameExists  = errors.New("user: username already exists")
-	ErrEmailExists     = errors.New("user: email already exists")
-	ErrInvalidEmail    = errors.New("user: invalid email")
-	ErrInvalidPass     = errors.New("user: invalid password")
-	ErrInvalidUsername = errors.New("user: invalid username")
-	ErrUserNotFound    = errors.New("user: user not found")
+	ErrUsernameExists     = errors.New("user: username already exists")
+	ErrEmailExists        = errors.New("user: email already exists")
+	ErrInvalidEmail       = errors.New("user: invalid email")
+	ErrInvalidPass        = errors.New("user: invalid password")
+	ErrInvalidUsername    = errors.New("user: invalid username")
+	ErrUserNotFound       = errors.New("user: user not found")
+	ErrUserClientNotExist = errors.New("user: client does not exist")
 
 	//INVITE
 
