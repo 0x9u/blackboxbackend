@@ -21,6 +21,12 @@
     - make global variables its own module - cancelled
         - possible bad practice so research more into it
         - modulize each file and split long lengthy functions into files in a folder
+
+- Add direct messages
+    - Make new tables - done
+- add friend requests
+
+
 # PRIORITY
 - Clean up sql database
   - Rename tables to fit standard e.g roles -> role, userguilds -> user_has_guild

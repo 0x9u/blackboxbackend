@@ -19,7 +19,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//expects
+// expects
 // content : string
 func Send(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
@@ -42,10 +42,10 @@ func Send(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -126,7 +126,7 @@ func Send(c *gin.Context) {
 	msg.MsgId = 0 //just there to make it obvious
 
 	if isChatSaveOn {
-		if err := db.Db.QueryRow("INSERT INTO messages (content, user_id, guild_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, guildId, msg.Created).Scan(&msg.MsgId); err != nil {
+		if err := db.Db.QueryRow("INSERT INTO msgs (content, user_id, guild_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, guildId, msg.Created).Scan(&msg.MsgId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

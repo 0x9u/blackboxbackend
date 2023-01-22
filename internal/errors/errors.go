@@ -35,6 +35,10 @@ var (
 	ErrGuildPoolNotExist = errors.New("guild: pool does not exist")
 	ErrGuildNotExist     = errors.New("guild: doesn't exist")
 
+	//DM
+
+	ErrDMNotOpened = errors.New("dm: not opened")
+
 	//USER
 
 	ErrUsernameExists  = errors.New("user: username already exists")
@@ -69,8 +73,7 @@ var (
 	ErrIpBanned = errors.New("ip: banned")
 
 	//ROUTES
-	ErrRouteParamNotInt    = errors.New("route: not int")
-	ErrRouteParamNotString = errors.New("route: not string")
+	ErrRouteParamInvalid = errors.New("route: invalid param")
 
 	//SESSION
 	ErrNotAuthorised     = errors.New("session: not authorised")

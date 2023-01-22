@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//todo put check where owner cant make themself owner
+// todo put check where owner cant make themself owner
 func ChangeOwner(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
@@ -36,10 +36,10 @@ func ChangeOwner(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -53,10 +53,10 @@ func ChangeOwner(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}

@@ -1,9 +1,12 @@
-package invites
+package msgs
 
 import (
+	"html"
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/config"
@@ -16,7 +19,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Create(c *gin.Context) {
+func Send(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -28,8 +31,8 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -45,53 +48,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	var count int
-	var isInGuild bool
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id=$1)", user.Id).Scan(&isInGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isInGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
-		return
-	}
-	if err := db.Db.QueryRow("SELECT COUNT(*) FROM invites WHERE guild_id=$1", guildId).Scan(&count); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if count > config.Config.Guild.MaxInvites {
-		logger.Error.Println(errors.ErrInviteLimitReached)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrInviteLimitReached.Error(),
-			Status: errors.StatusInviteLimitReached,
-		})
-		return
-	}
-
-	invite := session.GenerateRandString(10)
-
-	if _, err := db.Db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite, guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	intGuildId, err := strconv.Atoi(guildId)
+	intUserId, err := strconv.Atoi(userId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -101,17 +58,65 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	inviteBody := events.Invite{
-		Invite:  invite,
-		GuildId: intGuildId,
+	var msg events.Msg
+	if err := c.ShouldBindJSON(&msg); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusBadJSON,
+		})
+		return
 	}
 
-	res := wsclient.DataFrame{
+	msg.Content = strings.TrimSpace(msg.Content)
+	//screw off html
+	msg.Content = html.EscapeString(msg.Content) //prevents xss attacks
+	msg.Created = time.Now().UnixMilli()
+	logger.Debug.Printf("Message recieved %s\n", msg.Content)
+	if len(msg.Content) == 0 {
+		logger.Error.Println(errors.ErrNoMsgContent)
+		c.JSON(http.StatusUnprocessableEntity, errors.Body{
+			Error:  errors.ErrNoMsgContent.Error(),
+			Status: errors.StatusNoMsgContent,
+		})
+		return
+	}
+
+	if len(msg.Content) > config.Config.Guild.MaxMsgLength {
+		logger.Error.Println(errors.ErrMsgTooLong)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrMsgTooLong.Error(),
+			Status: errors.StatusMsgTooLong,
+		})
+		return
+	}
+
+	if err := db.Db.QueryRow("INSERT INTO directmsgs (content, sender_id, receiver_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, userId, msg.Created).Scan(&msg.MsgId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var authorBody events.User
+	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	authorBody.UserId = user.Id
+	authorBody.Icon = 0 //placeholder
+	msg.Author = authorBody
+
+	wsclient.Pools.BroadcastClient(intUserId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
-		Data:  inviteBody,
-		Event: events.CREATE_INVITE,
-	}
-
-	wsclient.Pools.BroadcastGuild(intGuildId, res)
-	c.JSON(http.StatusOK, inviteBody)
+		Data:  msg,
+		Event: events.CREATE_DM_MESSAGE,
+	})
+	c.Status(http.StatusNoContent)
 }

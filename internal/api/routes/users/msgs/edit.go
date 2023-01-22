@@ -1,9 +1,10 @@
-package members
+package msgs
 
 import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -15,7 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Kick(c *gin.Context) {
+func Edit(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -27,8 +28,8 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	msgId := c.Param("msgId")
+	if match, err := regexp.MatchString("^[0-9]+$", msgId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -40,6 +41,15 @@ func Kick(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrRouteParamInvalid.Error(),
 			Status: errors.StatusRouteParamInvalid,
+		})
+		return
+	}
+	intMsgId, err := strconv.Atoi(msgId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
 		})
 		return
 	}
@@ -61,15 +71,6 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
 	intUserId, err := strconv.Atoi(userId)
 	if err != nil {
 		logger.Error.Println(err)
@@ -80,18 +81,28 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	if intUserId == user.Id {
-		logger.Error.Println(errors.ErrCantKickBanSelf)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrCantKickBanSelf.Error(),
-			Status: errors.StatusCantKickBanSelf,
+	var msg events.Msg
+
+	if err := c.ShouldBindJSON(&msg); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusBadJSON,
 		})
 		return
 	}
 
-	var isOwner bool
+	if msg.Content == "" {
+		logger.Error.Println(errors.ErrInvalidDetails)
+		c.JSON(http.StatusUnprocessableEntity, errors.Body{
+			Error:  errors.ErrInvalidDetails.Error(),
+			Status: errors.StatusInvalidDetails,
+		})
+		return
+	}
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	var msgExists bool
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM directmsgs WHERE id = $1 AND sender_id = $2 AND receiver_id=$3)", msgId, user.Id, userId).Scan(&msgExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -99,16 +110,19 @@ func Kick(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+
+	if !msgExists {
+		logger.Error.Println(errors.ErrNotExists)
+		c.JSON(http.StatusNotFound, errors.Body{
+			Error:  errors.ErrNotExists.Error(),
+			Status: errors.StatusNotExists,
 		})
 		return
 	}
 
-	if _, err = db.Db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
+	timestamp := time.Now().UnixMilli()
+
+	if _, err = db.Db.Exec("UPDATE directmsgs SET content = $1, modified = $2 WHERE id = $3 AND sender_id = $4 AND receiver_id=$5", msg.Content, timestamp, msgId, user.Id, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -116,23 +130,21 @@ func Kick(c *gin.Context) {
 		})
 		return
 	}
-	kickRes := wsclient.DataFrame{
+
+	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Guild{
-			GuildId: intGuildId,
+		Data: events.Msg{
+			MsgId:    intMsgId,
+			UserId:   intUserId,
+			Content:  msg.Content,
+			Modified: timestamp,
+			Author: events.User{
+				UserId: user.Id,
+			},
 		},
-		Event: events.DELETE_GUILD,
+		Event: events.UPDATE_MESSAGE,
 	}
-	guildRes := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
-			UserId:  intUserId,
-			GuildId: intGuildId,
-		},
-		Event: events.REMOVE_USER_GUILDLIST,
-	}
-	wsclient.Pools.BroadcastClient(intUserId, kickRes)
-	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, intUserId)
-	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
+	wsclient.Pools.BroadcastClient(user.Id, res)
+	wsclient.Pools.BroadcastClient(intUserId, res)
 	c.Status(http.StatusNoContent)
 }

@@ -1,8 +1,10 @@
-package bans
+package msgs
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -25,8 +27,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -42,9 +44,21 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
+	urlVars := c.Request.URL.Query()
+	limit := urlVars.Get("limit")
+	timestamp := urlVars.Get("time")
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	if timestamp == "" {
+		timestamp = fmt.Sprintf("%v", time.Now().UnixMilli())
+	}
+
+	if limit == "" {
+		limit = "50"
+	}
+
+	var openDM bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userdirectmsgs WHERE sender_id=$1 AND receiver_id=$2)", userId, user.Id).Scan(&openDM); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -52,22 +66,23 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+	if !openDM {
+		logger.Error.Println(errors.ErrDMNotOpened)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrDMNotOpened.Error(),
+			Status: errors.StatusDMNotOpened,
 		})
 		return
 	}
 
+	logger.Debug.Printf("limit: %v, timestamp %v\n", limit, timestamp)
 	rows, err := db.Db.Query(
-		`
-		SELECT u.id, u.username
-		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
-		WHERE g.banned = true AND g.guild_id = $1`,
-		guildId,
-	)
+		`SELECT m.*, u.username
+	FROM directmsgs m INNER JOIN users u 
+	ON u.sender_id = m.user_id 
+	WHERE created < $1 AND (receiver_id = $2 AND sender_id = $3 OR receiver_id = $3 AND sender_id = $2) 
+	ORDER BY created DESC LIMIT $4`,
+		timestamp, userId, user.Id, limit)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -76,11 +91,17 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	userlist := []events.User{}
+	defer rows.Close()
+	messages := []events.Msg{}
 	for rows.Next() {
-		var user events.User
-		user.Icon = 0 //temp
-		if err := rows.Scan(&user.UserId, &user.Name); err != nil {
+		message := events.Msg{}
+		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
+			&message.UserId, &message.Created, &message.Modified, &message.Author.Name)
+		if message.Modified == 0 { //to make it show in json
+			message.Modified = -1
+		}
+		message.Author.Icon = 0 //placeholder
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -88,7 +109,8 @@ func Get(c *gin.Context) {
 			})
 			return
 		}
-		userlist = append(userlist, user)
+		message.MsgSaved = true
+		messages = append(messages, message)
 	}
-	c.JSON(http.StatusOK, userlist)
+	c.JSON(http.StatusOK, messages)
 }

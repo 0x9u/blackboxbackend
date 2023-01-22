@@ -34,10 +34,10 @@ func Read(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -63,7 +63,7 @@ func Read(c *gin.Context) {
 	}
 
 	var lastMsgId int
-	if err := db.Db.QueryRow("SELECT MAX(id) FROM messages WHERE guild_id = $1", guildId).Scan(&lastMsgId); err != nil {
+	if err := db.Db.QueryRow("SELECT MAX(id) FROM msgs WHERE guild_id = $1", guildId).Scan(&lastMsgId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -73,7 +73,7 @@ func Read(c *gin.Context) {
 	}
 
 	var lastMsgTime int
-	if err := db.Db.QueryRow("SELECT created FROM messages WHERE id = (SELECT MAX(id) FROM messages where guild_id = $1)", guildId).Scan(&lastMsgTime); err != nil {
+	if err := db.Db.QueryRow("SELECT created FROM msgs WHERE id = (SELECT MAX(id) FROM msgs where guild_id = $1)", guildId).Scan(&lastMsgTime); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -82,7 +82,7 @@ func Read(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("UPDATE unreadmessages SET message_id = $3, time = $4 WHERE user_id = $2 AND guild_id = $1", guildId, user.Id, lastMsgId, lastMsgTime); err != nil {
+	if _, err := db.Db.Exec("UPDATE unreadmsgs SET msg_id = $3, time = $4 WHERE user_id = $2 AND guild_id = $1", guildId, user.Id, lastMsgId, lastMsgTime); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

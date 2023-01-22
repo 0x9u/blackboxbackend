@@ -36,10 +36,10 @@ func deleteGuild(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -63,7 +63,7 @@ func deleteGuild(c *gin.Context) {
 	}
 
 	//start deleting
-	if _, err := db.Db.Exec("DELETE FROM messages WHERE guild_id=$1", guildId); err != nil {
+	if _, err := db.Db.Exec("DELETE FROM msgs WHERE guild_id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -71,7 +71,7 @@ func deleteGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("DELETE FROM unreadmessages WHERE guild_id=$1", guildId); err != nil {
+	if _, err := db.Db.Exec("DELETE FROM unreadmsgs WHERE guild_id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

@@ -1,7 +1,6 @@
 package msgs
 
 import (
-	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -17,7 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//expects msg:content
+// expects msg:content
 func Edit(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
@@ -30,7 +29,8 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	msgId := c.Param("msgId")
+	var isRequestId bool
+	msgId := c.Param("msgId") //fix request id bug
 	if match, err := regexp.MatchString("^[0-9]+$", msgId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -39,24 +39,23 @@ func Edit(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
-		})
-		return
+		if match, err := regexp.MatchString("^[a-zA-Z0-9]+$", msgId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		} else if !match {
+			logger.Error.Println(errors.ErrRouteParamInvalid)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrRouteParamInvalid.Error(),
+				Status: errors.StatusRouteParamInvalid,
+			})
+			return
+		}
+		isRequestId = true
 	}
-	intMsgId, err := strconv.Atoi(msgId)
-	var isRequestId bool
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	isRequestId = err != nil
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
@@ -67,10 +66,10 @@ func Edit(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -107,16 +106,28 @@ func Edit(c *gin.Context) {
 
 	timestamp := time.Now().UnixMilli()
 
-	if !isRequestId {
+	if isRequestId {
 
-		if _, err = db.Db.Exec("UPDATE messages SET content = $1, modified = $2 WHERE id = $3 AND user_id = $4 AND guild_id=$5", msg.Content, timestamp, msgId, user.Id, guildId); err == sql.ErrNoRows {
+		var msgExists bool
+		if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2 AND guild_id=$3)", msgId, user.Id, guildId).Scan(&msgExists); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		if !msgExists {
 			logger.Error.Println(errors.ErrNotExists)
 			c.JSON(http.StatusNotFound, errors.Body{
 				Error:  errors.ErrNotExists.Error(),
 				Status: errors.StatusNotExists,
 			})
 			return
-		} else if err != nil {
+		}
+
+		if _, err = db.Db.Exec("UPDATE msgs SET content = $1, modified = $2 WHERE id = $3 AND user_id = $4 AND guild_id=$5", msg.Content, timestamp, msgId, user.Id, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -127,10 +138,21 @@ func Edit(c *gin.Context) {
 	}
 
 	var requestId string
+	var intMsgId int
 	if isRequestId {
 		requestId = msgId
+		intMsgId = 0
 	} else {
 		requestId = "" //there for readabilty
+		intMsgId, err = strconv.Atoi(msgId)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
 
 	res := wsclient.DataFrame{

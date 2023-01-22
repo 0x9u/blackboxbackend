@@ -8,9 +8,10 @@ type UnreadMsg struct {
 
 type Msg struct { //id and request id not omitted for checking purposes
 	MsgId     int    `json:"id"`
-	Author    User   `json:"author,omitempty"` // author id aka user id
-	Content   string `json:"content"`          // message content
-	GuildId   int    `json:"guildId"`          // Chat id
+	Author    User   `json:"author,omitempty"`  // author id aka user id
+	Content   string `json:"content"`           // message content
+	GuildId   int    `json:"guildId,omitempty"` // Chat id
+	UserId    int    `json:"userId,omitempty"`  // User id
 	Created   int64  `json:"created,omitempty"`
 	Modified  int64  `json:"modified,omitempty"`
 	MsgSaved  bool   `json:"msgSaved,omitempty"` //shows if the message is saved or not

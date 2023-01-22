@@ -1,4 +1,4 @@
-package users
+package msgs
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getSelfGuilds(c *gin.Context) {
+func GetDM(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -23,21 +23,10 @@ func getSelfGuilds(c *gin.Context) {
 			})
 		return
 	}
-	logger.Info.Println("Getting guilds")
-	rows, err := db.Db.Query(
-		/* long goofy aaaaa code*/
-		`
-		SELECT g.id, g.name, g.icon, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
-		FROM userguilds u 
-		INNER JOIN guilds g ON g.id = u.guild_id 
-		INNER JOIN unreadmsgs un ON un.guild_id = u.guild_id and un.user_id = u.user_id
-		LEFT JOIN msgs m ON m.guild_id = un.guild_id 
-		WHERE u.user_id=$1 AND u.banned = false
-		GROUP BY g.id, g.name, g.icon, owner_id, un.msg_id, un.time, u.*
-		ORDER BY u
-		`,
-		user.Id,
-	)
+
+	var userList []events.User
+
+	rows, err := db.Db.Query("SELECT u.id, u.username FROM userdirectmsgs ud INNER JOIN users ON ud.receiver_id = u.id WHERE ud.sender_id = $1", user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -46,12 +35,9 @@ func getSelfGuilds(c *gin.Context) {
 		})
 		return
 	}
-	guilds := []events.Guild{}
 	for rows.Next() {
-		var guild events.Guild
-		guild.Unread = &events.UnreadMsg{}
-		err = rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
-		if err != nil {
+		var user events.User
+		if err := rows.Scan(&user.UserId, &user.Name); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -59,8 +45,8 @@ func getSelfGuilds(c *gin.Context) {
 			})
 			return
 		}
-		guilds = append(guilds, guild)
+		userList = append(userList, user)
 	}
+	c.JSON(http.StatusOK, userList)
 
-	c.JSON(http.StatusOK, guilds)
 }

@@ -25,6 +25,8 @@ const (
 	StatusGuildPoolNotExist
 	StatusGuildNotExist
 
+	StatusDMNotOpened
+
 	StatusUsernameExists
 	StatusEmailExists
 	StatusInvalidEmail
@@ -47,8 +49,7 @@ const (
 
 	StatusIpBanned
 
-	StatusRouteParamNotInt
-	StatusRouteParamNotString
+	StatusRouteParamInvalid
 
 	StatusNotAuthorised
 )

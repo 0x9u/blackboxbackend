@@ -1,18 +1,21 @@
-package guilds
+package msgs
 
 import (
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
+	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
 
-func Delete(c *gin.Context) {
+func DeleteDM(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -23,17 +26,9 @@ func Delete(c *gin.Context) {
 			})
 		return
 	}
-	if !user.Perms.Admin && !user.Perms.Guilds.Delete {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
-		return
-	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -49,39 +44,8 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("DELETE FROM invites WHERE guild_id = $1", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if _, err := db.Db.Exec("DELETE FROM userguilds WHERE guild_id = $1", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if _, err := db.Db.Exec("DELETE FROM messages WHERE guild_id = $1", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if _, err := db.Db.Exec("DELETE FROM unreadmessages WHERE guild_id = $1", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if _, err := db.Db.Exec("DELETE FROM guilds WHERE id = $1", guildId); err != nil {
+	intUserId, err := strconv.Atoi(userId)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -90,6 +54,55 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	//TODO broadcast delete to guild pool
+	var dmExists bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2)", user.Id, intUserId).Scan(&dmExists); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if !dmExists {
+		logger.Error.Println(errors.ErrDMNotOpened)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrDMNotOpened.Error(),
+			Status: errors.StatusDMNotOpened,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec("DELETE FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2", user.Id, userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var username string
+
+	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	res := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intUserId,
+			Name:   username,
+			Icon:   0,
+		},
+		Event: events.DELETE_DM,
+	}
+	wsclient.Pools.BroadcastClient(user.Id, res)
 	c.Status(http.StatusNoContent)
 }

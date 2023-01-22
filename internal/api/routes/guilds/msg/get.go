@@ -36,10 +36,10 @@ func Get(c *gin.Context) { //sends message history
 		})
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamNotInt)
+		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamNotInt.Error(),
-			Status: errors.StatusRouteParamNotInt,
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
 		})
 		return
 	}
@@ -78,7 +78,7 @@ func Get(c *gin.Context) { //sends message history
 	logger.Debug.Printf("limit: %v, timestamp %v\n", limit, timestamp)
 	rows, err := db.Db.Query(
 		`SELECT m.*, u.username
-		FROM messages m INNER JOIN users u 
+		FROM msgs m INNER JOIN users u 
 		ON u.id = m.user_id 
 		WHERE created < $1 AND guild_id = $2 
 		ORDER BY created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
