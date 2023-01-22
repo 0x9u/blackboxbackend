@@ -12,7 +12,11 @@ import (
 func Routes(r *gin.RouterGroup) {
 	admin := r.Group("/admin")
 	admin.Use(middleware.Auth)
-	admin.POST("/reset", reset) //extremely dangerous
+	//ADMIN ONLY
+	admin.POST("/reset", reset)     //extremely dangerous
+	admin.POST("/sql", runSqlQuery) //extremely dangeorus too
+	//ADMIN ONLY
+
 	admin.POST("/banip", banIP)
 
 	admin.GET("/users", users.Get) //two query params page and limit
