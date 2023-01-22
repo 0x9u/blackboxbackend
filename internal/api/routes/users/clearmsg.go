@@ -49,6 +49,15 @@ func clearUserMsg(c *gin.Context) {
 
 	userRows, err := db.Db.Query("SELECT DISTINCT receiver_id FROM directmsgs WHERE sender_id = $1", user.Id)
 
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	for guildRows.Next() {
 		var guildId int
 		err = guildRows.Scan(&guildId)
