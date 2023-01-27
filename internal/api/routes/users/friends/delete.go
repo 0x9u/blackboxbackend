@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Create(c *gin.Context) {
+func Delete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -43,7 +43,6 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-
 	intUserId, err := strconv.Atoi(userId)
 	if err != nil {
 		logger.Error.Println(err)
@@ -55,13 +54,10 @@ func Create(c *gin.Context) {
 	}
 
 	var isBlocked bool
-	var isAlreadyFriends bool
-	var isRequested bool
-
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
 		 OR 
-		EXISTS (SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
+		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
 		`, user.Id, userId).Scan(&isBlocked); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -78,30 +74,10 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-
-	if err := db.Db.QueryRow(`
-	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
-	`, userId, user.Id).Scan(&isRequested); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if isRequested {
-		logger.Error.Println(errors.ErrFriendAlreadyRequested)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyRequested.Error(),
-			Status: errors.StatusFriendAlreadyRequested,
-		})
-		return
-	}
-
+	var friendExists bool
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
-		`, user.Id, userId).Scan(&isAlreadyFriends); err != nil {
+		`, user.Id, userId).Scan(&friendExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -109,17 +85,28 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-	if isAlreadyFriends {
-		logger.Error.Println(errors.ErrFriendAlreadyFriends)
+	if !friendExists {
+		logger.Error.Println(errors.ErrFriendInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyFriends.Error(),
-			Status: errors.StatusFriendAlreadyFriends,
+			Error:  errors.ErrFriendInvalid.Error(),
+			Status: errors.StatusFriendInvalid,
 		})
 		return
 	}
-
+	var isRequested bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND requested = true)
+		OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND requested = true)
+		`, user.Id, userId).Scan(&isRequested); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 	if _, err := db.Db.Exec(`
-		INSERT INTO friends(user_id, friend_id, friended) VALUES($1, $2, false)
+		DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
 		`, user.Id, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -128,24 +115,30 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-
+	var typeFriendEvent string
+	var typeClientEvent string
+	if isRequested {
+		typeFriendEvent = events.FRIEND_INCOMING_REQUEST
+		typeClientEvent = events.FRIEND_DELETE_REQUEST
+	} else {
+		typeFriendEvent = events.REMOVE_USER_FRIENDLIST
+		typeClientEvent = events.REMOVE_USER_FRIENDLIST
+	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.FRIEND_REQUEST_ADD,
+		Event: typeClientEvent,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.FRIEND_INCOMING_REQUEST,
+		Event: typeFriendEvent,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)
-
-	c.Status(http.StatusCreated)
-
+	c.Status(http.StatusNoContent)
 }

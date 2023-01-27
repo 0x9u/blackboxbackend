@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Create(c *gin.Context) {
+func Accept(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -54,33 +54,12 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	var isBlocked bool
-	var isAlreadyFriends bool
 	var isRequested bool
 
 	if err := db.Db.QueryRow(`
-		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
-		 OR 
-		EXISTS (SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
-		`, user.Id, userId).Scan(&isBlocked); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if isBlocked {
-		logger.Error.Println(errors.ErrFriendBlocked)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendBlocked.Error(),
-			Status: errors.StatusFriendBlocked,
-		})
-		return
-	}
-
-	if err := db.Db.QueryRow(`
-	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
+	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
+	 OR 
+	EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -90,18 +69,18 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	if isRequested {
-		logger.Error.Println(errors.ErrFriendAlreadyRequested)
+	if !isRequested {
+		logger.Error.Println(errors.ErrFriendRequestNotFound)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyRequested.Error(),
-			Status: errors.StatusFriendAlreadyRequested,
+			Error:  errors.ErrFriendRequestNotFound.Error(),
+			Status: errors.StatusFriendRequestNotFound,
 		})
 		return
 	}
 
-	if err := db.Db.QueryRow(`
-		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
-		`, user.Id, userId).Scan(&isAlreadyFriends); err != nil {
+	if _, err := db.Db.Exec(`
+	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	`, userId, user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -109,18 +88,22 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-	if isAlreadyFriends {
-		logger.Error.Println(errors.ErrFriendAlreadyFriends)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyFriends.Error(),
-			Status: errors.StatusFriendAlreadyFriends,
+
+	var clientUsername string
+	if err := db.Db.QueryRow(`
+	SELECT username FROM users WHERE id = $1
+	`, user.Id).Scan(&clientUsername); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
 		})
 		return
 	}
-
-	if _, err := db.Db.Exec(`
-		INSERT INTO friends(user_id, friend_id, friended) VALUES($1, $2, false)
-		`, user.Id, userId); err != nil {
+	var friendUsername string
+	if err := db.Db.QueryRow(`
+	SELECT username FROM users WHERE id = $1
+	`, userId).Scan(&friendUsername); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -134,7 +117,7 @@ func Create(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.FRIEND_REQUEST_ADD,
+		Event: events.FRIEND_DELETE_REQUEST,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -143,9 +126,32 @@ func Create(c *gin.Context) {
 		},
 		Event: events.FRIEND_INCOMING_REQUEST,
 	}
+
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)
 
-	c.Status(http.StatusCreated)
+	resAfter := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intUserId,
+			Name:   friendUsername,
+			Icon:   0,
+		},
+		Event: events.ADD_USER_FRIENDLIST,
+	}
+	resFriendAfter := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: user.Id,
+			Name:   clientUsername,
+			Icon:   0,
+		},
+		Event: events.ADD_USER_FRIENDLIST,
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, resAfter)
+	wsclient.Pools.BroadcastClient(intUserId, resFriendAfter)
+
+	c.Status(http.StatusNoContent)
 
 }

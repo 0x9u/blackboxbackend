@@ -69,17 +69,9 @@ func joinGuild(c *gin.Context) {
 	var guild events.Guild
 	row.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.OwnerId)
 
-	row = db.Db.QueryRow(
-		`
-		SELECT EXISTS (SELECT * FROM userguilds WHERE user_id=$1 AND guild_id=$2)
-		`,
-		user.Id,
-		guild.GuildId,
-	)
-
 	var check bool
 
-	if err := row.Scan(&check); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE user_id=$1 AND guild_id=$2)", user.Id, guild.GuildId).Scan(&check); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -95,6 +87,7 @@ func joinGuild(c *gin.Context) {
 		})
 		return
 	}
+
 	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil { //cleanup if failed later
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

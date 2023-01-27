@@ -27,6 +27,14 @@ const (
 
 	StatusDMNotOpened
 
+	StatusFriendBlocked
+	StatusFriendAlreadyFriends
+	StatusFriendAlreadyRequested
+	StatusFriendRequestNotFound
+	StatusFriendInvalid
+
+	StatusUserNotBlocked
+
 	StatusUsernameExists
 	StatusEmailExists
 	StatusInvalidEmail

@@ -2,6 +2,8 @@ package users
 
 import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/users/directmsgs"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/users/friends"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/users/msgs"
 	"github.com/gin-gonic/gin"
 )
@@ -26,11 +28,13 @@ func Routes(r *gin.RouterGroup) {
 	users.DELETE("/:userId/msgs/:msgId", msgs.Delete).Use(middleware.Auth)
 	users.POST("/:userId/msgs/typing", msgs.Typing).Use(middleware.Auth)
 
-	users.POST("/dms/:userId", msgs.CreateDM).Use(middleware.Auth)
-	users.GET("/dms", msgs.GetDM).Use(middleware.Auth)
-	users.DELETE("/dms/:userId", msgs.DeleteDM).Use(middleware.Auth)
+	users.PUT("/dms/:userId", directmsgs.Create).Use(middleware.Auth)
+	users.GET("/dms", directmsgs.Get).Use(middleware.Auth)
+	users.DELETE("/dms/:userId", directmsgs.Delete).Use(middleware.Auth)
 
-	users.POST("/friends").Use(middleware.Auth)
+	users.PUT("/friends/:userId", friends.Create).Use(middleware.Auth)
+	users.GET("/friends", friends.Get).Use(middleware.Auth)
+	users.DELETE("/friends/:userId", friends.Delete).Use(middleware.Auth)
 
 	users.GET("/guilds", getSelfGuilds).Use(middleware.Auth)
 	users.DELETE("/guilds/:guildId", leaveGuild).Use(middleware.Auth)

@@ -32,6 +32,18 @@ CREATE TABLE public.bannedips (
 ALTER TABLE public.bannedips OWNER TO oliver;
 
 --
+-- Name: blocked; Type: TABLE; Schema: public; Owner: oliver
+--
+
+CREATE TABLE public.blocked (
+    user_id integer,
+    blocked_id integer
+);
+
+
+ALTER TABLE public.blocked OWNER TO oliver;
+
+--
 -- Name: directmsgs; Type: TABLE; Schema: public; Owner: oliver
 --
 
@@ -78,7 +90,6 @@ CREATE TABLE public.friends (
     user_id integer,
     friend_id integer,
     friended boolean DEFAULT false NOT NULL,
-    blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT not_same CHECK ((user_id <> friend_id))
 );
 
@@ -516,6 +527,14 @@ ALTER TABLE ONLY public.directmsgs
 
 
 --
+-- Name: blocked fk_blocked_id; Type: FK CONSTRAINT; Schema: public; Owner: oliver
+--
+
+ALTER TABLE ONLY public.blocked
+    ADD CONSTRAINT fk_blocked_id FOREIGN KEY (blocked_id) REFERENCES public.users(id);
+
+
+--
 -- Name: userguilds fk_guild_userguild; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -568,6 +587,14 @@ ALTER TABLE ONLY public.unreadmsgs
 --
 
 ALTER TABLE ONLY public.tokens
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: blocked fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: oliver
+--
+
+ALTER TABLE ONLY public.blocked
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 

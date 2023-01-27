@@ -24,7 +24,9 @@
 
 - Add direct messages
     - Make new tables - done
-- add friend requests
+- add friend requests - done
+- persist typing state for guild and users
+- add blocked users 
 
 
 # PRIORITY

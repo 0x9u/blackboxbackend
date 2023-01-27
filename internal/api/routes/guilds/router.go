@@ -33,7 +33,7 @@ func Routes(r *gin.RouterGroup) {
 	guilds.POST("/:guildId/msgs/read", msgs.Read)
 
 	guilds.GET("/:guildId/bans", bans.Get)
-	guilds.POST("/:guildId/bans/:userId", bans.Ban)
+	guilds.PUT("/:guildId/bans/:userId", bans.Ban)
 	guilds.DELETE("/:guildId/bans/:userId", bans.Unban)
 
 	guilds.GET("/:guildId/invites", invites.Get)

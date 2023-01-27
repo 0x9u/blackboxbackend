@@ -1,4 +1,4 @@
-package msgs
+package directmsgs
 
 import (
 	"net/http"
@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteDM(c *gin.Context) {
+func Delete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")

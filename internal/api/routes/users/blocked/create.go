@@ -1,4 +1,4 @@
-package msgs
+package blocked
 
 import (
 	"net/http"
@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateDM(c *gin.Context) {
+func Block(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -54,7 +54,12 @@ func CreateDM(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO userdirectmsgs (sender_id, receiver_id) VALUES ($1, $2)", user.Id, userId); err != nil {
+	var isBlocked bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
+		 OR 
+		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
+		`, user.Id, userId).Scan(&isBlocked); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -62,10 +67,20 @@ func CreateDM(c *gin.Context) {
 		})
 		return
 	}
-
-	var username string
-
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+	if isBlocked {
+		logger.Error.Println(errors.ErrFriendBlocked)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendBlocked.Error(),
+			Status: errors.StatusFriendBlocked,
+		})
+		return
+	}
+	var isFriends bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2)
+		 OR 
+		EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
+		`, user.Id, userId).Scan(&isFriends); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -73,17 +88,53 @@ func CreateDM(c *gin.Context) {
 		})
 		return
 	}
-
+	if _, err := db.Db.Exec(`
+		INSERT INTO blocked (user_id, blocked_id) VALUES ($1, $2)
+		`, user.Id, userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if isFriends {
+		if _, err := db.Db.Exec(`
+		DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+		`, user.Id, userId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: intUserId,
-			Name:   username,
-			Icon:   0,
 		},
-		Event: events.CREATE_DM,
+		Event: events.ADD_USER_BLOCKEDLIST,
 	}
-	wsclient.Pools.BroadcastClient(user.Id, res)
-
+	wsclient.Pools.BroadcastClient(intUserId, res)
+	if isFriends {
+		resAfter := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: intUserId,
+			},
+			Event: events.REMOVE_USER_FRIENDLIST,
+		}
+		resFriendAfter := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: user.Id,
+			},
+			Event: events.REMOVE_USER_FRIENDLIST,
+		}
+		wsclient.Pools.BroadcastClient(user.Id, resFriendAfter)
+		wsclient.Pools.BroadcastClient(intUserId, resAfter)
+	}
 	c.Status(http.StatusNoContent)
 }

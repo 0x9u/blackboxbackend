@@ -39,6 +39,16 @@ var (
 
 	ErrDMNotOpened = errors.New("dm: not opened")
 
+	//FRIND
+	ErrFriendBlocked          = errors.New("friend: blocked")
+	ErrFriendAlreadyFriends   = errors.New("friend: already friends")
+	ErrFriendAlreadyRequested = errors.New("friend: already requested")
+	ErrFriendRequestNotFound  = errors.New("friend: request not found")
+	ErrFriendInvalid          = errors.New("friend: invalid friend")
+
+	//BLOCKED
+	ErrUserNotBlocked = errors.New("blocked: user not blocked")
+
 	//USER
 
 	ErrUsernameExists     = errors.New("user: username already exists")

@@ -22,9 +22,10 @@ type guild struct {
 }
 
 type user struct {
-	MaxGuildsPerUser int           `yaml:"maxGuildsPerUser"` //not used yet
-	CoolDownLength   time.Duration `yaml:"coolDownLength"`
-	TokenExpireTime  time.Duration `yaml:"tokenExpireTime"`
+	MaxGuildsPerUser  int           `yaml:"maxGuildsPerUser"`  //not used yet
+	MaxFriendsPerUser int           `yaml:"maxFriendsPerUser"` //not used yet
+	CoolDownLength    time.Duration `yaml:"coolDownLength"`
+	TokenExpireTime   time.Duration `yaml:"tokenExpireTime"`
 }
 
 type server struct {
@@ -77,9 +78,10 @@ func createConfig() (*config, error) {
 			Timeout:      20 * time.Second,
 		},
 		User: user{
-			MaxGuildsPerUser: 10,
-			CoolDownLength:   5 * time.Second,
-			TokenExpireTime:  60 * time.Hour * 24,
+			MaxGuildsPerUser:  100,
+			MaxFriendsPerUser: 200,
+			CoolDownLength:    5 * time.Second,
+			TokenExpireTime:   60 * time.Hour * 24,
 		},
 		Server: server{
 			Host: "0.0.0.0",
