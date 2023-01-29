@@ -26,7 +26,10 @@
     - Make new tables - done
 - add friend requests - done
 - persist typing state for guild and users
-- add blocked users 
+- add blocked users - done
+    - block msg from blocked users including dms
+- add mentioning in msgs
+
 
 
 # PRIORITY

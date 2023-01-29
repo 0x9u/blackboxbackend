@@ -9,6 +9,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
+	"github.com/asianchinaboi/backendserver/internal/logger"
 )
 
 const (
@@ -69,6 +70,7 @@ func GenToken(id int) (Session, error) {
 		return authData, err
 	} else if err == sql.ErrNoRows {
 		authToken, err := generateSecureToken(tokenLength)
+		logger.Debug.Println(authToken)
 		if err != nil {
 			return Session{}, err
 		}
@@ -90,7 +92,7 @@ func generateSecureToken(l int) (string, error) { //also copied from stackoverfl
 	if _, err := rand.Read(token); err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(token), nil
+	return hex.EncodeToString(token), nil //generates 64 char string
 }
 
 func GenerateRandString(l int) string { //copied from stackoverflow (insecure and shit dont use for token)

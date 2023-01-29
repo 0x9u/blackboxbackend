@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Block(c *gin.Context) {
+func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")

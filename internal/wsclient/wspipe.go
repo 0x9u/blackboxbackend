@@ -113,6 +113,10 @@ func (c *wsClient) readData(body DataFrame) {
 		rows.Close()
 		Pools.AddUserToClientPool(c.id, c.uniqueId, c.broadcast)
 		logger.Info.Println("added to client pool")
+		res := DataFrame{
+			Op: TYPE_READY,
+		}
+		c.ws.WriteJSON(res)
 	default:
 		logger.Warn.Printf("Invalid Op: %v\n", body.Op)
 	}

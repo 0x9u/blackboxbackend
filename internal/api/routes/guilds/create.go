@@ -72,7 +72,7 @@ func createGuild(c *gin.Context) {
 		GuildId: guildId,
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO unreadmessages (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
+	if _, err := db.Db.Exec("INSERT INTO unreadmsgs (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

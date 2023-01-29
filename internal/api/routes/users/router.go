@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/users/blocked"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/users/directmsgs"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/users/friends"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/users/msgs"
@@ -35,6 +36,11 @@ func Routes(r *gin.RouterGroup) {
 	users.PUT("/friends/:userId", friends.Create).Use(middleware.Auth)
 	users.GET("/friends", friends.Get).Use(middleware.Auth)
 	users.DELETE("/friends/:userId", friends.Delete).Use(middleware.Auth)
+	users.POST("/friends/:userId/accept", friends.Accept).Use(middleware.Auth)
+
+	users.PUT("/blocked/:userId", blocked.Create).Use(middleware.Auth)
+	users.GET("/blocked", blocked.Get).Use(middleware.Auth)
+	users.DELETE("/blocked/:userId", blocked.Delete).Use(middleware.Auth)
 
 	users.GET("/guilds", getSelfGuilds).Use(middleware.Auth)
 	users.DELETE("/guilds/:guildId", leaveGuild).Use(middleware.Auth)

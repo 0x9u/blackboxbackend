@@ -5,7 +5,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members"
-	msgs "github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs"
 	"github.com/gin-gonic/gin"
 )
 
