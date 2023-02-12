@@ -27,8 +27,8 @@ func Typing(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -44,7 +44,7 @@ func Typing(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intDmId, err := strconv.Atoi(dmId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -64,16 +64,26 @@ func Typing(c *gin.Context) {
 		})
 		return
 	}
+
+	var otherUser int
+
+	if err := db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2 ", dmId, user.Id).Scan(&otherUser); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.User{
-			UserId: user.Id,
-			Name:   username,
-			Icon:   0,
+		Data: events.Dm{
+			DmId: intDmId,
 		},
 		Event: events.USER_DM_TYPING,
 	}
-	wsclient.Pools.BroadcastGuild(intUserId, res)
+	wsclient.Pools.BroadcastGuild(otherUser, res)
 	c.Status(http.StatusNoContent)
 
 }

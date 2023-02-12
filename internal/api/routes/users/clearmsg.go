@@ -47,7 +47,16 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	userRows, err := db.Db.Query("SELECT DISTINCT receiver_id FROM directmsgs WHERE sender_id = $1", user.Id)
+	if _, err = db.Db.Exec("DELETE FROM directmsgs WHERE user_id = $1", user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	dmRows, err := db.Db.Query("SELECT dm_id, user_id FROM directmsgs WHERE dm_id IN (SELECT dm_id FROM directmsgs WHERE user_id = $1) AND user_id != $1", user.Id)
 
 	if err != nil {
 		logger.Error.Println(err)
@@ -57,6 +66,8 @@ func clearUserMsg(c *gin.Context) {
 		})
 		return
 	}
+
+	defer dmRows.Close()
 
 	for guildRows.Next() {
 		var guildId int
@@ -90,9 +101,10 @@ func clearUserMsg(c *gin.Context) {
 		}
 	}
 
-	for userRows.Next() {
-		var receiverId int
-		err = userRows.Scan(&receiverId)
+	for dmRows.Next() {
+		var dmId int
+		var otherUser int
+		err = dmRows.Scan(&dmId, &otherUser)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -105,14 +117,14 @@ func clearUserMsg(c *gin.Context) {
 			Author: events.User{
 				UserId: user.Id,
 			},
-			UserId: receiverId,
+			DmId: dmId,
 		}
 		res := wsclient.DataFrame{
 			Op:    wsclient.TYPE_DISPATCH,
 			Data:  clearMsg,
 			Event: events.CLEAR_USER_DM_MESSAGES,
 		}
-		if err := wsclient.Pools.BroadcastClient(receiverId, res); err != nil && err != errors.ErrUserClientNotExist {
+		if err := wsclient.Pools.BroadcastClient(otherUser, res); err != nil && err != errors.ErrUserClientNotExist {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

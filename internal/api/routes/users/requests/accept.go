@@ -1,4 +1,4 @@
-package members
+package requests
 
 import (
 	"net/http"
@@ -15,8 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// todo put check where owner cant make themself owner
-func ChangeOwner(c *gin.Context) {
+func Accept(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -25,22 +24,6 @@ func ChangeOwner(c *gin.Context) {
 				Error:  errors.ErrSessionDidntPass.Error(),
 				Status: errors.StatusInternalError,
 			})
-		return
-	}
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
 		return
 	}
 
@@ -61,60 +44,6 @@ func ChangeOwner(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-	var inGuild bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true), EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3)", guildId, user.Id, userId).Scan(&isOwner, &inGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
-	if !inGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
-		return
-	}
-
-	if _, err := db.Db.Exec("UPDATE userguilds SET owner = false WHERE user_id = $1 AND guild_id = $2", user.Id, guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if _, err := db.Db.Exec("UPDATE userguilds SET owner = true WHERE user_id = $1 AND guild_id = $2", userId, guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
 	intUserId, err := strconv.Atoi(userId)
 	if err != nil {
 		logger.Error.Println(err)
@@ -124,21 +53,105 @@ func ChangeOwner(c *gin.Context) {
 		})
 		return
 	}
+
+	var isRequested bool
+
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
+	 OR 
+	EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
+	`, userId, user.Id).Scan(&isRequested); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if !isRequested {
+		logger.Error.Println(errors.ErrFriendRequestNotFound)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendRequestNotFound.Error(),
+			Status: errors.StatusFriendRequestNotFound,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec(`
+	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	`, userId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var clientUsername string
+	if err := db.Db.QueryRow(`
+	SELECT username FROM users WHERE id = $1
+	`, user.Id).Scan(&clientUsername); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	var friendUsername string
+	if err := db.Db.QueryRow(`
+	SELECT username FROM users WHERE id = $1
+	`, userId).Scan(&friendUsername); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Guild{
-			GuildId: intGuildId,
+		Data: events.User{
+			UserId: intUserId,
 		},
-		Event: events.NOT_OWNER,
+		Event: events.REMOVE_FRIEND_REQUEST,
 	}
-	otherUserRes := wsclient.DataFrame{
+	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Guild{
-			GuildId: intGuildId,
+		Data: events.User{
+			UserId: user.Id,
 		},
-		Event: events.NEW_OWNER,
+		Event: events.REMOVE_FRIEND_INCOMING_REQUEST,
 	}
+
 	wsclient.Pools.BroadcastClient(user.Id, res)
-	wsclient.Pools.BroadcastClient(intUserId, otherUserRes)
+	wsclient.Pools.BroadcastClient(intUserId, resFriend)
+
+	resAfter := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intUserId,
+			Name:   friendUsername,
+			Icon:   0,
+		},
+		Event: events.ADD_USER_FRIENDLIST,
+	}
+	resFriendAfter := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: user.Id,
+			Name:   clientUsername,
+			Icon:   0,
+		},
+		Event: events.ADD_USER_FRIENDLIST,
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, resAfter)
+	wsclient.Pools.BroadcastClient(intUserId, resFriendAfter)
+
 	c.Status(http.StatusNoContent)
+
 }

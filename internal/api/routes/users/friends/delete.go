@@ -76,7 +76,7 @@ func Delete(c *gin.Context) {
 	}
 	var friendExists bool
 	if err := db.Db.QueryRow(`
-		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
+		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = TRUE) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = TRUE)
 		`, user.Id, userId).Scan(&friendExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -93,18 +93,7 @@ func Delete(c *gin.Context) {
 		})
 		return
 	}
-	var isRequested bool
-	if err := db.Db.QueryRow(`
-		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND requested = true)
-		OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND requested = true)
-		`, user.Id, userId).Scan(&isRequested); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
+
 	if _, err := db.Db.Exec(`
 		DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
 		`, user.Id, userId); err != nil {
@@ -115,28 +104,20 @@ func Delete(c *gin.Context) {
 		})
 		return
 	}
-	var typeFriendEvent string
-	var typeClientEvent string
-	if isRequested {
-		typeFriendEvent = events.FRIEND_INCOMING_REQUEST
-		typeClientEvent = events.FRIEND_DELETE_REQUEST
-	} else {
-		typeFriendEvent = events.REMOVE_USER_FRIENDLIST
-		typeClientEvent = events.REMOVE_USER_FRIENDLIST
-	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: typeClientEvent,
+		Event: events.REMOVE_USER_FRIENDLIST,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: typeFriendEvent,
+		Event: events.REMOVE_USER_FRIENDLIST,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)

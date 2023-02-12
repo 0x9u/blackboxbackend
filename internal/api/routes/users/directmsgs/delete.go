@@ -27,8 +27,8 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -44,7 +44,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intDmId, err := strconv.Atoi(dmId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -54,27 +54,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	var dmExists bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2)", user.Id, intUserId).Scan(&dmExists); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if !dmExists {
-		logger.Error.Println(errors.ErrDMNotOpened)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrDMNotOpened.Error(),
-			Status: errors.StatusDMNotOpened,
-		})
-		return
-	}
-
-	if _, err := db.Db.Exec("DELETE FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2", user.Id, userId); err != nil {
+	if _, err := db.Db.Exec("UPDATE userdirectmsgsguild SET left_dm = true WHERE user_id = $1 AND dm_id = $2", user.Id, dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -97,7 +77,7 @@ func Delete(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intUserId,
+			UserId: intDmId,
 			Name:   username,
 			Icon:   0,
 		},

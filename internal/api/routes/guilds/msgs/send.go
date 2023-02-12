@@ -153,7 +153,7 @@ func Send(c *gin.Context) {
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,
-		Event: events.CREATE_MESSAGE,
+		Event: events.CREATE_GUILD_MESSAGE,
 	})
 	c.Status(http.StatusNoContent)
 }

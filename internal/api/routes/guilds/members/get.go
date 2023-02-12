@@ -3,6 +3,7 @@ package members
 import (
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -68,11 +69,21 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	userlist := []events.User{}
+	userlist := []events.Member{}
+	intGuildId, err := strconv.Atoi(guildId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 	for rows.Next() {
-		var user events.User
-		err = rows.Scan(&user.Name, &user.UserId)
-		user.Icon = 0 //placeholder until upload is implemented
+		var user events.Member
+		err = rows.Scan(&user.UserInfo.Name, &user.UserInfo.UserId)
+		user.UserInfo.Icon = 0 //placeholder until upload is implemented
+		user.GuildId = intGuildId
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

@@ -26,6 +26,7 @@ const (
 	StatusGuildNotExist
 
 	StatusDMNotOpened
+	StatusDmAlreadyExists
 
 	StatusFriendBlocked
 	StatusFriendAlreadyFriends

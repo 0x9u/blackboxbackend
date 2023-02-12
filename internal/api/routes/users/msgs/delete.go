@@ -53,8 +53,8 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -70,7 +70,7 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intDmId, err := strconv.Atoi(dmId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -81,7 +81,7 @@ func Delete(c *gin.Context) { //deletes message
 	}
 
 	var msgExists bool
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM directmsgs WHERE id = $1 AND sender_id = $2 AND receiver_id=$3)", msgId, user.Id, userId).Scan(&msgExists); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM directmsgs WHERE id = $1 AND user_id = $2)", msgId, user.Id).Scan(&msgExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -99,7 +99,18 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
-	if _, err = db.Db.Exec("DELETE FROM directmsgs where id = $1 AND receiver_id = $2 AND sender_id = $3", msgId, userId, user.Id); err != nil {
+	if _, err = db.Db.Exec("DELETE FROM directmsgs where id = $1", msgId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var otherUser int
+
+	if err = db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2", dmId, user.Id).Scan(&otherUser); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -111,14 +122,14 @@ func Delete(c *gin.Context) { //deletes message
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
-			MsgId:  intMsgId,
-			UserId: user.Id,
+			MsgId: intMsgId,
+			DmId:  intDmId,
 		},
-		Event: events.DELETE_MESSAGE,
+		Event: events.DELETE_GUILD_MESSAGE,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, res)
-	wsclient.Pools.BroadcastClient(intUserId, res)
+	wsclient.Pools.BroadcastClient(otherUser, res)
 	c.Status(http.StatusNoContent)
 
 }

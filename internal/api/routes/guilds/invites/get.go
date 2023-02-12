@@ -3,10 +3,12 @@ package invites
 import (
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
+	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
@@ -67,10 +69,19 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	inviteList := []string{}
+	inviteList := []events.Invite{}
+	intGuildId, err := strconv.Atoi(guildId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 	for rows.Next() {
-		var invite string
-		if err := rows.Scan(&invite); err != nil {
+		var invite events.Invite
+		if err := rows.Scan(&invite.Invite); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -78,6 +89,7 @@ func Get(c *gin.Context) {
 			})
 			return
 		}
+		invite.GuildId = intGuildId
 		inviteList = append(inviteList, invite)
 	}
 	c.JSON(http.StatusOK, inviteList)

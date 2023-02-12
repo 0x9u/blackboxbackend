@@ -54,8 +54,8 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -71,7 +71,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intDmId, err := strconv.Atoi(dmId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -102,7 +102,7 @@ func Edit(c *gin.Context) {
 	}
 
 	var msgExists bool
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM directmsgs WHERE id = $1 AND sender_id = $2 AND receiver_id=$3)", msgId, user.Id, userId).Scan(&msgExists); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM directmsgs WHERE id = $1 AND user_id = $2)", msgId, user.Id).Scan(&msgExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -122,7 +122,18 @@ func Edit(c *gin.Context) {
 
 	timestamp := time.Now().UnixMilli()
 
-	if _, err = db.Db.Exec("UPDATE directmsgs SET content = $1, modified = $2 WHERE id = $3 AND sender_id = $4 AND receiver_id=$5", msg.Content, timestamp, msgId, user.Id, userId); err != nil {
+	if _, err = db.Db.Exec("UPDATE directmsgs SET content = $1, modified = $2 WHERE id = $3", msg.Content, timestamp, msgId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var otherUser int
+
+	if err := db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2 ", dmId, user.Id).Scan(&otherUser); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -135,16 +146,16 @@ func Edit(c *gin.Context) {
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
 			MsgId:    intMsgId,
-			UserId:   intUserId,
+			DmId:     intDmId,
 			Content:  msg.Content,
 			Modified: timestamp,
 			Author: events.User{
 				UserId: user.Id,
 			},
 		},
-		Event: events.UPDATE_MESSAGE,
+		Event: events.UPDATE_GUILD_MESSAGE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
-	wsclient.Pools.BroadcastClient(intUserId, res)
+	wsclient.Pools.BroadcastClient(otherUser, res)
 	c.Status(http.StatusNoContent)
 }

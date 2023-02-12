@@ -167,7 +167,7 @@ func Edit(c *gin.Context) {
 				UserId: user.Id,
 			},
 		},
-		Event: events.UPDATE_MESSAGE,
+		Event: events.UPDATE_GUILD_MESSAGE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

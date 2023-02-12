@@ -134,14 +134,14 @@ func Create(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.FRIEND_REQUEST_ADD,
+		Event: events.ADD_FRIEND_REQUEST,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.FRIEND_INCOMING_REQUEST,
+		Event: events.ADD_FRIEND_INCOMING_REQUEST,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)

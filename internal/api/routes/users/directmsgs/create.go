@@ -2,8 +2,6 @@ package directmsgs
 
 import (
 	"net/http"
-	"regexp"
-	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -14,6 +12,10 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
+
+type CreateDmBody struct {
+	ReceiverId int `json:"receiverId"`
+}
 
 func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
@@ -27,25 +29,20 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	var body CreateDmBody
+
+	if err := c.ShouldBindJSON(&body); err != nil {
 		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
+			Error:  err.Error(),
+			Status: errors.StatusBadJSON,
 		})
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
-	if err != nil {
+	var userExists bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)", body.ReceiverId).Scan(&userExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -54,7 +51,48 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO userdirectmsgs (sender_id, receiver_id) VALUES ($1, $2)", user.Id, userId); err != nil {
+	if !userExists {
+		logger.Error.Println(errors.ErrUserNotFound)
+		c.JSON(http.StatusNotFound, errors.Body{
+			Error:  errors.ErrUserNotFound.Error(),
+			Status: errors.StatusUserNotFound,
+		})
+	}
+
+	var dmExists bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM usersdirectmsgsguild WHERE user_id = $1 AND dm_id = (SELECT dm_id FROM usersdirectmsgsguild WHERE user_id = $2))", user.Id, body.ReceiverId).Scan(&dmExists); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if dmExists {
+		logger.Error.Println(errors.ErrDmAlreadyExists)
+		c.JSON(http.StatusConflict, errors.Body{
+			Error:  errors.ErrDmAlreadyExists.Error(),
+			Status: errors.StatusDmAlreadyExists,
+		})
+		return
+	}
+	
+
+
+	var dmId int
+
+	if err := db.Db.QueryRow("INSERT INTO directmsgsguild VALUES (default) RETURNING id").Scan(&dmId); err != nil { //make new dm identity
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec("INSERT INTO usersdirectmsgsguild VALUES ($1, $2, false), ($1, $3, true)", dmId, user.Id, body.ReceiverId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -77,7 +115,7 @@ func Create(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intUserId,
+			UserId: body.ReceiverId,
 			Name:   username,
 			Icon:   0,
 		},

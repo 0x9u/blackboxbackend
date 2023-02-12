@@ -18,11 +18,10 @@ func Routes(r *gin.RouterGroup) {
 
 	guilds.DELETE("/:guildId", deleteGuild)
 	guilds.PATCH("/:guildId", editGuild)
-	guilds.GET("/:guildId/settings", getSettings)
+	guilds.GET("/:guildId", getGuild)
 
 	guilds.GET("/:guildId/members", members.Get)
 	guilds.DELETE("/:guildId/members/:userId", members.Kick)
-	guilds.POST("/:guildId/members/:userId/owner", members.ChangeOwner)
 
 	guilds.GET("/:guildId/msgs", msgs.Get)
 	guilds.POST("/:guildId/msgs", msgs.Send)

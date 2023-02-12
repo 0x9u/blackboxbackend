@@ -192,7 +192,7 @@ func Delete(c *gin.Context) { //deletes message
 			GuildId:   intGuildId,
 			RequestId: requestId,
 		},
-		Event: events.DELETE_MESSAGE,
+		Event: events.DELETE_GUILD_MESSAGE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

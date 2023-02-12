@@ -69,9 +69,9 @@ func joinGuild(c *gin.Context) {
 	var guild events.Guild
 	row.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.OwnerId)
 
-	var check bool
+	var isInGuild bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE user_id=$1 AND guild_id=$2)", user.Id, guild.GuildId).Scan(&check); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE user_id=$1 AND guild_id=$2)", user.Id, guild.GuildId).Scan(&isInGuild); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -79,8 +79,8 @@ func joinGuild(c *gin.Context) {
 		})
 		return
 	}
-	if check {
-		logger.Error.Println(errors.ErrAlreadyInGuild)
+	if isInGuild {
+		logger.Error.Println(errors.ErrAlreadyInGuild) //applies for banned too
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrAlreadyInGuild.Error(),
 			Status: errors.StatusAlreadyInGuild,
@@ -99,7 +99,7 @@ func joinGuild(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  guild,
-		Event: events.JOIN_GUILD,
+		Event: events.CREATE_GUILD,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 

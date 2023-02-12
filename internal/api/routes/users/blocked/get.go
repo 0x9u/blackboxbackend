@@ -34,6 +34,7 @@ func Get(c *gin.Context) {
 		return
 	}
 	var blockedUsers []events.User
+	defer rows.Close()
 	for rows.Next() {
 		var blockedUser events.User
 		if err := rows.Scan(&blockedUser.UserId, &blockedUser.Name); err != nil {

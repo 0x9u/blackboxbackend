@@ -15,6 +15,11 @@ type User struct {
 	Flags    *int   `json:"flags,omitempty"`
 }
 
+type Member struct { //may use for nicks later
+	GuildId  int  `json:"guildId"`
+	UserInfo User `json:"userInfo"`
+}
+
 /*
 * flags
 * 0x01 developer

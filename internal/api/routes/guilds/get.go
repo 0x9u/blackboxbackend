@@ -3,7 +3,6 @@ package guilds
 import (
 	"net/http"
 	"regexp"
-	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -14,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getSettings(c *gin.Context) {
+func getGuild(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -43,9 +42,9 @@ func getSettings(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
+	var isInGuild bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND banned = false)", user.Id, guildId).Scan(&isInGuild); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -53,17 +52,31 @@ func getSettings(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+
+	if !isInGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
 		})
 		return
 	}
 
-	var guildData events.Guild
-	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&guildData.SaveChat); err != nil {
+	query := `
+		SELECT SELECT g.id, g.name, g.icon, g.save_chat, 
+		(SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true) AS owner_id, 
+		un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs,
+		un.time FROM guilds g WHERE g.id = $1
+		INNER JOIN unreadmsgs un ON un.guild_id = g.id AND un.user_id = $2
+		LEFT JOIN msgs m ON m.guild_id = g.id 
+		GROUP BY g.id, g.name, g.icon, owner_id, un.msg_id, un.time
+	`
+	var guild events.Guild
+	if err := db.Db.QueryRow(query, guildId, user.Id).Scan(&guild.GuildId,
+		&guild.Name, &guild.Icon,
+		&guild.SaveChat, &guild.OwnerId,
+		&guild.Unread.Id, &guild.Unread.Count,
+		&guild.Unread.Time); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -71,15 +84,8 @@ func getSettings(c *gin.Context) {
 		})
 		return
 	}
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	guildData.GuildId = intGuildId
-	c.JSON(http.StatusOK, guildData)
+	c.JSON(
+		http.StatusOK,
+		guild,
+	)
 }

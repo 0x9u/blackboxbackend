@@ -37,6 +37,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
+	defer rows.Close()
 	var friends []events.User
 	for rows.Next() {
 		var friendUser events.User

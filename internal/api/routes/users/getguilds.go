@@ -27,7 +27,7 @@ func getSelfGuilds(c *gin.Context) {
 	rows, err := db.Db.Query(
 		/* long goofy aaaaa code*/
 		`
-		SELECT g.id, g.name, g.icon, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
+		SELECT g.id, g.name, g.icon, g.save_chat, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
 		FROM userguilds u 
 		INNER JOIN guilds g ON g.id = u.guild_id 
 		INNER JOIN unreadmsgs un ON un.guild_id = u.guild_id and un.user_id = u.user_id
@@ -50,7 +50,7 @@ func getSelfGuilds(c *gin.Context) {
 	for rows.Next() {
 		var guild events.Guild
 		guild.Unread = &events.UnreadMsg{}
-		err = rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
+		err = rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

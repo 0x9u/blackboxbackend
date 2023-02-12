@@ -19,6 +19,7 @@ type editGuildBody struct {
 	SaveChat *bool   `json:"saveChat"`
 	Name     *string `json:"name"`
 	Icon     *int    `json:"icon"`
+	OwnerId  *int    `json:"ownerId"`
 }
 
 func editGuild(c *gin.Context) {
@@ -106,10 +107,6 @@ func editGuild(c *gin.Context) {
 	}
 	bodyRes.GuildId = intGuildId
 
-	bodySettingsRes := events.Guild{}
-
-	bodySettingsRes.GuildId = intGuildId
-
 	if newSettings.SaveChat != nil {
 
 		if _, err = db.Db.Exec("UPDATE guilds SET save_chat=$1 WHERE id=$2", *newSettings.SaveChat, guildId); err != nil {
@@ -120,7 +117,18 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
-		bodySettingsRes.SaveChat = newSettings.SaveChat
+		bodyRes.SaveChat = newSettings.SaveChat
+	} else {
+		var saveChat bool
+		if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&saveChat); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.SaveChat = &saveChat
 	}
 	if newSettings.Name != nil {
 		if valid, err := events.ValidateGuildName(*newSettings.Name); err != nil {
@@ -145,6 +153,17 @@ func editGuild(c *gin.Context) {
 			return
 		}
 		bodyRes.Name = *newSettings.Name
+	} else {
+		var name string
+		if err := db.Db.QueryRow("SELECT name FROM guilds WHERE id=$1", guildId).Scan(&name); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.Name = name
 	}
 	if newSettings.Icon != nil {
 		if _, err = db.Db.Exec("UPDATE guilds SET icon=$1 WHERE id=$2", *newSettings.Icon, guildId); err != nil {
@@ -156,6 +175,64 @@ func editGuild(c *gin.Context) {
 			return
 		}
 		bodyRes.Icon = *newSettings.Icon
+	} else {
+		var icon int
+		if err := db.Db.QueryRow("SELECT icon FROM guilds WHERE id=$1", guildId).Scan(&icon); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.Icon = icon
+	}
+
+	if newSettings.OwnerId != nil {
+		var inGuild bool
+		if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2)", guildId, newSettings.OwnerId).Scan(&isOwner, &inGuild); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if !isOwner {
+			logger.Error.Println(errors.ErrNotGuildOwner)
+			c.JSON(http.StatusForbidden, errors.Body{
+				Error:  errors.ErrNotGuildOwner.Error(),
+				Status: errors.StatusNotGuildOwner,
+			})
+			return
+		}
+		if !inGuild {
+			logger.Error.Println(errors.ErrNotInGuild)
+			c.JSON(http.StatusForbidden, errors.Body{
+				Error:  errors.ErrNotInGuild.Error(),
+				Status: errors.StatusNotInGuild,
+			})
+			return
+		}
+		if _, err = db.Db.Exec("UPDATE userguilds SET owner=false WHERE guild_id=$1 AND user_id = $2", guildId, user.Id); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if _, err := db.Db.Exec("UPDATE userguilds SET owner = true WHERE user_id = $1 AND guild_id = $2", newSettings.OwnerId, guildId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.OwnerId = *newSettings.OwnerId
+	} else {
+		bodyRes.OwnerId = user.Id
 	}
 
 	guildRes := wsclient.DataFrame{
@@ -163,14 +240,7 @@ func editGuild(c *gin.Context) {
 		Data:  bodyRes,
 		Event: events.UPDATE_GUILD,
 	}
-	res := wsclient.DataFrame{
-		Op:    wsclient.TYPE_DISPATCH,
-		Data:  bodySettingsRes,
-		Event: events.UPDATE_GUILD_SETTINGS,
-	}
 	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
-	logger.Debug.Println(user.Id)
-	wsclient.Pools.BroadcastClient(user.Id, res)
 
 	c.Status(http.StatusNoContent)
 }

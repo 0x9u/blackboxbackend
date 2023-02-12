@@ -1,4 +1,4 @@
-package friends
+package requests
 
 import (
 	"net/http"
@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Accept(c *gin.Context) {
+func Decline(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -79,31 +79,8 @@ func Accept(c *gin.Context) {
 	}
 
 	if _, err := db.Db.Exec(`
-	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
 	`, userId, user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	var clientUsername string
-	if err := db.Db.QueryRow(`
-	SELECT username FROM users WHERE id = $1
-	`, user.Id).Scan(&clientUsername); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	var friendUsername string
-	if err := db.Db.QueryRow(`
-	SELECT username FROM users WHERE id = $1
-	`, userId).Scan(&friendUsername); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -117,40 +94,18 @@ func Accept(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.FRIEND_DELETE_REQUEST,
+		Event: events.REMOVE_FRIEND_REQUEST,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.FRIEND_INCOMING_REQUEST,
+		Event: events.REMOVE_FRIEND_INCOMING_REQUEST,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)
-
-	resAfter := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.User{
-			UserId: intUserId,
-			Name:   friendUsername,
-			Icon:   0,
-		},
-		Event: events.ADD_USER_FRIENDLIST,
-	}
-	resFriendAfter := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.User{
-			UserId: user.Id,
-			Name:   clientUsername,
-			Icon:   0,
-		},
-		Event: events.ADD_USER_FRIENDLIST,
-	}
-
-	wsclient.Pools.BroadcastClient(user.Id, resAfter)
-	wsclient.Pools.BroadcastClient(intUserId, resFriendAfter)
 
 	c.Status(http.StatusNoContent)
 
