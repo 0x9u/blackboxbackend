@@ -77,6 +77,17 @@ func (c *wsClient) tokenDeadline() {
 
 }
 
+func (c *wsClient) tokenExpireDeadline(expireTime int64) { //i have no idea if this works
+	timeLeft := time.Until(time.Now().Add(time.Duration(expireTime) * time.Second))
+	select {
+	case <-time.After(timeLeft):
+		c.quit()
+	case <-c.quitctx.Done():
+		return
+	}
+
+}
+
 func (c *wsClient) hello() {
 	body := DataFrame{
 		Op: TYPE_HELLO,

@@ -92,6 +92,7 @@ func (c *wsClient) readData(body DataFrame) {
 
 		c.deadlineCancel()
 		c.id = user.Id
+		go c.tokenExpireDeadline(user.Expires)
 		c.uniqueId = session.GenerateRandString(32)
 
 		rows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", c.id)
