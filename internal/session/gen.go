@@ -58,7 +58,7 @@ func CheckToken(token string) (*Session, error) {
 	return &user, nil
 }
 
-func GenToken(id int) (Session, error) {
+func GenToken(id int64) (Session, error) {
 	var authData Session
 	//delete token if expired
 	_, err := db.Db.Exec("DELETE FROM tokens WHERE user_id=$1 AND token_expires < $2", id, time.Now().UnixMilli())

@@ -6,7 +6,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/logger"
 )
 
-func (p *pools) AddUserToClientPool(id int, uid string, broadcast brcastEvents) {
+func (p *pools) AddUserToClientPool(id int64, uid string, broadcast brcastEvents) {
 	p.clientsMutex.Lock() //prevents datarace
 	defer p.clientsMutex.Unlock()
 	if _, ok := p.clients[id]; !ok {
@@ -16,7 +16,7 @@ func (p *pools) AddUserToClientPool(id int, uid string, broadcast brcastEvents) 
 	p.clients[id][uid] = broadcast
 }
 
-func (p *pools) removeUserUIDFromClientPool(id int, uid string) {
+func (p *pools) removeUserUIDFromClientPool(id int64, uid string) {
 	p.clientsMutex.Lock()
 	defer p.clientsMutex.Unlock()
 	if _, ok := p.clients[id]; !ok {
@@ -31,7 +31,7 @@ func (p *pools) removeUserUIDFromClientPool(id int, uid string) {
 	//logger.Debug.Printf("apple pie %v \n", p.clients)
 }
 
-func (p *pools) DisconnectUserFromClientPool(id int) {
+func (p *pools) DisconnectUserFromClientPool(id int64) {
 	p.clientsMutex.Lock()
 	defer p.clientsMutex.Unlock()
 	clientList, ok := p.clients[id] //problem if two websockets of same user exist only of those two will be sent
@@ -47,7 +47,7 @@ func (p *pools) DisconnectUserFromClientPool(id int) {
 	} //will automatically delete itself from defer funciton in wsclient through RemoveUserUIDFromClientPool
 }
 
-func (p *pools) BroadcastClient(id int, data DataFrame) error {
+func (p *pools) BroadcastClient(id int64, data DataFrame) error {
 	p.clientsMutex.RLock()
 	defer p.clientsMutex.RUnlock()
 	clientList, ok := p.clients[id] //problem if two websockets of same user exist only of those two will be sent

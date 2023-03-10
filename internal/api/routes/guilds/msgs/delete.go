@@ -72,7 +72,7 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -168,13 +168,13 @@ func Delete(c *gin.Context) { //deletes message
 	}
 
 	var requestId string
-	var intMsgId int
+	var intMsgId int64
 	if isRequestId {
 		requestId = msgId
 		intMsgId = 0
 	} else {
 		requestId = "" //there for readabilty
-		intMsgId, err = strconv.Atoi(msgId)
+		intMsgId, err = strconv.ParseInt(msgId, 10, 64)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -218,7 +218,7 @@ func Clear(c *gin.Context) {
 		return
 	}
 
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

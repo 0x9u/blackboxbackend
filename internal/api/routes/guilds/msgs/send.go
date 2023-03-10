@@ -15,6 +15,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
@@ -50,7 +51,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -123,10 +124,10 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	msg.MsgId = 0 //just there to make it obvious
+	msg.MsgId = uid.Snowflake.Generate().Int64()
 
 	if isChatSaveOn {
-		if err := db.Db.QueryRow("INSERT INTO msgs (content, user_id, guild_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, guildId, msg.Created).Scan(&msg.MsgId); err != nil {
+		if _, err := db.Db.Exec("INSERT INTO msgs (id, content, user_id, guild_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, guildId, msg.Created); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

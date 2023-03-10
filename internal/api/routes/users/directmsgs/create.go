@@ -9,12 +9,13 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
 
 type CreateDmBody struct {
-	ReceiverId int `json:"receiverId"`
+	ReceiverId int64 `json:"receiverId"`
 }
 
 func Create(c *gin.Context) {
@@ -78,12 +79,10 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-	
 
+	dmId := uid.Snowflake.Generate().Int64()
 
-	var dmId int
-
-	if err := db.Db.QueryRow("INSERT INTO directmsgsguild VALUES (default) RETURNING id").Scan(&dmId); err != nil { //make new dm identity
+	if _, err := db.Db.Exec("INSERT INTO directmsgsguild VALUES ($1)", dmId); err != nil { //make new dm identity
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

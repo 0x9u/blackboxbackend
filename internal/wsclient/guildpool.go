@@ -20,7 +20,7 @@ type (
 )
 
 type guildPool struct {
-	guildId       int
+	guildId       int64
 	clients       map[string]brcastEvents //channel of clients
 	Remove        removeClient            //channel to broadcast which client to remove
 	Add           addClient               //channel to broadcast which client to add
@@ -87,7 +87,7 @@ func (p *guildPool) run() {
 	}
 }
 
-func (p *pools) BroadcastGuild(guild int, data DataFrame) error {
+func (p *pools) BroadcastGuild(guild int64, data DataFrame) error {
 	p.guildsMutex.RLock() //prevents datarace
 	defer p.guildsMutex.RUnlock()
 	guildPool, ok := p.guilds[guild]
@@ -101,7 +101,7 @@ func (p *pools) BroadcastGuild(guild int, data DataFrame) error {
 	return nil
 }
 
-func (p *pools) AddUserToGuildPool(guildId int, userId int) {
+func (p *pools) AddUserToGuildPool(guildId int64, userId int64) {
 	p.guildsMutex.Lock()
 	defer p.guildsMutex.Unlock()
 	p.clientsMutex.RLock()
@@ -136,7 +136,7 @@ func (p *pools) AddUserToGuildPool(guildId int, userId int) {
 	}
 }
 
-func (p *pools) AddUIDToGuildPool(guildId int, uid string, broadcast brcastEvents) {
+func (p *pools) AddUIDToGuildPool(guildId int64, uid string, broadcast brcastEvents) {
 	p.guildsMutex.Lock()
 	defer p.guildsMutex.Unlock()
 	p.clientsMutex.RLock()
@@ -170,7 +170,7 @@ func (p *pools) AddUIDToGuildPool(guildId int, uid string, broadcast brcastEvent
 	}
 }
 
-func (p *pools) RemoveUIDFromGuildPool(guildId int, uid string) {
+func (p *pools) RemoveUIDFromGuildPool(guildId int64, uid string) {
 	p.guildsMutex.RLock()
 	defer p.guildsMutex.RUnlock()
 	p.clientsMutex.RLock()
@@ -183,7 +183,7 @@ func (p *pools) RemoveUIDFromGuildPool(guildId int, uid string) {
 	p.guilds[guildId].Remove <- uid //RACE CONDITION This may be the cause of the websockets being stopped
 }
 
-func (p *pools) RemoveUserFromGuildPool(guildId int, userId int) { //most likely occurs here (WEBSOCKET BUG)
+func (p *pools) RemoveUserFromGuildPool(guildId int64, userId int64) { //most likely occurs here (WEBSOCKET BUG)
 	p.guildsMutex.RLock()
 	defer p.guildsMutex.RUnlock()
 	p.clientsMutex.Lock()
@@ -202,7 +202,7 @@ func (p *pools) RemoveUserFromGuildPool(guildId int, userId int) { //most likely
 	} //removes all instances of the client alias from the pool to avoid exploits
 }
 
-func (p *pools) RemoveFromGuildPool(guildId int) {
+func (p *pools) RemoveFromGuildPool(guildId int64) {
 	p.guildsMutex.Lock()
 	defer p.guildsMutex.Unlock()
 	delete(p.guilds, guildId)

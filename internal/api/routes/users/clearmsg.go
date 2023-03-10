@@ -70,7 +70,7 @@ func clearUserMsg(c *gin.Context) {
 	defer dmRows.Close()
 
 	for guildRows.Next() {
-		var guildId int
+		var guildId int64
 		err = guildRows.Scan(&guildId)
 		if err != nil {
 			logger.Error.Println(err)
@@ -102,8 +102,8 @@ func clearUserMsg(c *gin.Context) {
 	}
 
 	for dmRows.Next() {
-		var dmId int
-		var otherUser int
+		var dmId int64
+		var otherUser int64
 		err = dmRows.Scan(&dmId, &otherUser)
 		if err != nil {
 			logger.Error.Println(err)

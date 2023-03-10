@@ -103,7 +103,7 @@ func (c *wsClient) readData(body DataFrame) {
 		//var guilds []int
 
 		for rows.Next() {
-			var guild int
+			var guild int64
 			rows.Scan(&guild)
 			//	guilds = append(guilds, guild)
 			Pools.AddUIDToGuildPool(guild, c.uniqueId, c.broadcast)

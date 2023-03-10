@@ -19,7 +19,7 @@ type editGuildBody struct {
 	SaveChat *bool   `json:"saveChat"`
 	Name     *string `json:"name"`
 	Icon     *int    `json:"icon"`
-	OwnerId  *int    `json:"ownerId"`
+	OwnerId  *int64  `json:"ownerId"`
 }
 
 func editGuild(c *gin.Context) {
@@ -96,7 +96,7 @@ func editGuild(c *gin.Context) {
 	}
 
 	bodyRes := events.Guild{}
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

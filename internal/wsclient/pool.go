@@ -9,16 +9,16 @@ import (
 type pools struct {
 	guildsMutex  sync.RWMutex
 	clientsMutex sync.RWMutex
-	guilds       map[int]*guildPool
-	clients      map[int]map[string]brcastEvents
+	guilds       map[int64]*guildPool
+	clients      map[int64]map[string]brcastEvents
 }
 
 var Pools *pools
 
 func NewPools() *pools {
 	return &pools{
-		guilds:  make(map[int]*guildPool),
-		clients: make(map[int]map[string]brcastEvents),
+		guilds:  make(map[int64]*guildPool),
+		clients: make(map[int64]map[string]brcastEvents),
 	}
 }
 
@@ -38,8 +38,8 @@ func (p *pools) RemoveAll() {
 			}
 		}
 	}
-	p.guilds = make(map[int]*guildPool)
-	p.clients = make(map[int]map[string]brcastEvents)
+	p.guilds = make(map[int64]*guildPool)
+	p.clients = make(map[int64]map[string]brcastEvents)
 }
 
 func init() {

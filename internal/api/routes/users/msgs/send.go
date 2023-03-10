@@ -15,6 +15,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
@@ -48,7 +49,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	intDmId, err := strconv.Atoi(dmId)
+	intDmId, err := strconv.ParseInt(dmId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -91,7 +92,9 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	if err := db.Db.QueryRow("INSERT INTO directmsgs (content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, dmId, msg.Created).Scan(&msg.MsgId); err != nil {
+	msg.MsgId = uid.Snowflake.Generate().Int64()
+
+	if _, err := db.Db.Exec("INSERT INTO directmsgs (id, content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, dmId, msg.Created); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -114,7 +117,7 @@ func Send(c *gin.Context) {
 	msg.Author = authorBody
 	msg.DmId = intDmId
 
-	var otherUser int
+	var otherUser int64
 
 	if err := db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2 ", dmId, user.Id).Scan(&otherUser); err != nil {
 		logger.Error.Println(err)

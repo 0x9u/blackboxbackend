@@ -44,7 +44,7 @@ func Edit(c *gin.Context) {
 		})
 		return
 	}
-	intMsgId, err := strconv.Atoi(msgId)
+	intMsgId, err := strconv.ParseInt(msgId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -71,7 +71,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	intDmId, err := strconv.Atoi(dmId)
+	intDmId, err := strconv.ParseInt(dmId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -131,7 +131,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	var otherUser int
+	var otherUser int64
 
 	if err := db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2 ", dmId, user.Id).Scan(&otherUser); err != nil {
 		logger.Error.Println(err)

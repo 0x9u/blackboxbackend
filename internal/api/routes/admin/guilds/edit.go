@@ -19,7 +19,7 @@ type editGuildBody struct {
 	SaveChat *bool   `json:"saveChat"`
 	Name     *string `json:"name"`
 	Icon     *int    `json:"icon"`
-	OwnerId  *int    `json:"ownerId"`
+	OwnerId  *int64  `json:"ownerId"`
 }
 
 func Edit(c *gin.Context) {
@@ -77,7 +77,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	var ownerId int
+	var ownerId int64
 
 	if err := db.Db.QueryRow("SELECT user_id FROM userguilds WHERE owner = true AND guild_id = $1").Scan(&ownerId); err != nil {
 		logger.Error.Println(err)
@@ -107,7 +107,7 @@ func Edit(c *gin.Context) {
 	}
 
 	bodyRes := events.Guild{}
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

@@ -12,7 +12,7 @@ import (
 type brcastEvents chan DataFrame
 type wsClient struct {
 	ws       *websocket.Conn
-	id       int
+	id       int64
 	uniqueId string //since some guys might be using multiple connections on one account
 	//	guilds         []int  //not used might remove later
 	timer          *time.Ticker
@@ -39,7 +39,7 @@ func (c *wsClient) Run() {
 			return
 		}
 		for rows.Next() { //should be using guilds array instead lol
-			var guildId int
+			var guildId int64
 			err = rows.Scan(&guildId)
 			if err != nil {
 				logger.Error.Printf("an error occured when getting guilds of user %v\n", err)

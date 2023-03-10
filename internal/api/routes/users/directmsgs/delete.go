@@ -44,7 +44,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	intDmId, err := strconv.Atoi(dmId)
+	intDmId, err := strconv.ParseInt(dmId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
