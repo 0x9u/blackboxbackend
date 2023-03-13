@@ -39,6 +39,7 @@
   - mux is archived so for maintainbility purposes this will have to be migrated into the gin lib
   - estimated probs 1-2 hours (ended as 4 hours)
 - combine multiple queries together and create auto clean up if there is a failure 
+    - ADD TRANSACTIONS FOR SQL QUERIES
 
 # MAYBES
 - Learn C# and program in unity in WASM (make games)
