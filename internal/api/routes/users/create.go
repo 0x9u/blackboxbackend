@@ -8,6 +8,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/gin-gonic/gin"
 )
 
@@ -64,7 +65,9 @@ func userCreate(c *gin.Context) {
 	}
 	hashedPass := hashPass(user.Password)
 
-	if err := db.Db.QueryRow("INSERT INTO users (email, password, username) VALUES ($1, $2, $3) RETURNING id", user.Email, hashedPass, user.Name).Scan(&user.UserId); err != nil {
+	user.UserId = uid.Snowflake.Generate().Int64()
+
+	if _, err := db.Db.Exec("INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

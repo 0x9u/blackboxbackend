@@ -2,7 +2,7 @@ package session
 
 type Session struct {
 	Expires int64        `json:"expires"`
-	Id      int          `json:"-"`
+	Id      int64        `json:"-"`
 	Token   string       `json:"token,omitempty"`
 	Perms   *Permissions `json:"perms,omitempty"`
 }

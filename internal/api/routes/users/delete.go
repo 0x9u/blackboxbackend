@@ -80,7 +80,7 @@ func userDelete(c *gin.Context) {
 		return
 	}
 	for rows.Next() {
-		var guildId int
+		var guildId int64
 		if err := rows.Scan(&guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -110,7 +110,7 @@ func userDelete(c *gin.Context) {
 		return
 	}
 	for rows.Next() {
-		var msgId, guildId int
+		var msgId, guildId int64
 		if err := rows.Scan(&msgId, &guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -168,7 +168,7 @@ func userDelete(c *gin.Context) {
 		return
 	}
 	for rows.Next() {
-		var guildId int
+		var guildId int64
 		if err := rows.Scan(&guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

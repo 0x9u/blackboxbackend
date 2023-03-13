@@ -9,6 +9,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
@@ -58,8 +59,8 @@ func createGuild(c *gin.Context) {
 		}
 	}
 
-	var guildId int
-	if err := db.Db.QueryRow("INSERT INTO guilds (name, icon, save_chat) VALUES ($1, $2, $3) RETURNING id", guild.Name, guild.Icon, guild.SaveChat).Scan(&guildId); err != nil {
+	guildId := uid.Snowflake.Generate().Int64()
+	if _, err := db.Db.Exec("INSERT INTO guilds (id, name, icon, save_chat) VALUES ($1, $2, $3, $4)", guildId, guild.Name, guild.Icon, guild.SaveChat); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -72,7 +73,7 @@ func createGuild(c *gin.Context) {
 		GuildId: guildId,
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO unreadmessages (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
+	if _, err := db.Db.Exec("INSERT INTO unreadmsgs (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

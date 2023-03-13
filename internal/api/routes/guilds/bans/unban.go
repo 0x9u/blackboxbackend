@@ -97,7 +97,7 @@ func Unban(c *gin.Context) {
 		})
 		return
 	}
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -106,7 +106,7 @@ func Unban(c *gin.Context) {
 		})
 		return
 	}
-	intUserId, err := strconv.Atoi(userId)
+	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

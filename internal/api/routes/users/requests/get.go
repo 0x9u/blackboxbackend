@@ -1,9 +1,8 @@
-package bans
+package requests
 
 import (
 	"net/http"
 	"regexp"
-	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -13,6 +12,11 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
+
+type FriendRequest struct {
+	Requested []events.User `json:"requested"` //people you have requested to be friends with
+	Pending   []events.User `json:"pending"`   //people who have requested to be friends with you
+}
 
 func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
@@ -26,8 +30,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -43,32 +47,9 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
-
-	rows, err := db.Db.Query(
-		`
-		SELECT u.id, u.username
-		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
-		WHERE g.banned = true AND g.guild_id = $1`,
-		guildId,
-	)
+	pendingReqs, err := db.Db.Query(`
+	SELECT f.receiver_id AS friend_id, u.username AS username FROM friends f INNER JOIN users u ON f.receiver_id = u.id WHERE f.sender_id = $1 AND f.friended = false
+	`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -77,20 +58,11 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	userlist := []events.Member{}
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	for rows.Next() {
-		var user events.Member
-		user.UserInfo.Icon = 0 //temp
-		if err := rows.Scan(&user.UserInfo.UserId, &user.UserInfo.Name); err != nil {
+	defer pendingReqs.Close()
+	var requests FriendRequest
+	for pendingReqs.Next() {
+		var friendUser events.User
+		if err := pendingReqs.Scan(&friendUser.UserId, &friendUser.Name); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -98,8 +70,32 @@ func Get(c *gin.Context) {
 			})
 			return
 		}
-		user.GuildId = intGuildId
-		userlist = append(userlist, user)
+		requests.Pending = append(requests.Pending, friendUser)
 	}
-	c.JSON(http.StatusOK, userlist)
+	requestedReqs, err := db.Db.Query(`
+	SELECT f.sender_id AS friend_id, u.username AS username  FROM friends f INNER JOIN users u ON f.sender_id = u.id WHERE f.receiver_id = $1 AND f.friended = false
+	`, user.Id)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer requestedReqs.Close()
+	for requestedReqs.Next() {
+		var friendUser events.User
+		if err := requestedReqs.Scan(&friendUser.UserId, &friendUser.Name); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		requests.Requested = append(requests.Requested, friendUser)
+	}
+
+	c.JSON(http.StatusOK, requests)
 }

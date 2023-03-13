@@ -15,6 +15,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
@@ -31,8 +32,8 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -48,7 +49,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intDmId, err := strconv.ParseInt(dmId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -91,7 +92,9 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	if err := db.Db.QueryRow("INSERT INTO directmsgs (content, sender_id, receiver_id, created) VALUES ($1, $2, $3, $4) RETURNING id", msg.Content, user.Id, userId, msg.Created).Scan(&msg.MsgId); err != nil {
+	msg.MsgId = uid.Snowflake.Generate().Int64()
+
+	if _, err := db.Db.Exec("INSERT INTO directmsgs (id, content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, dmId, msg.Created); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -112,8 +115,25 @@ func Send(c *gin.Context) {
 	authorBody.UserId = user.Id
 	authorBody.Icon = 0 //placeholder
 	msg.Author = authorBody
+	msg.DmId = intDmId
 
-	wsclient.Pools.BroadcastClient(intUserId, wsclient.DataFrame{
+	var otherUser int64
+
+	if err := db.Db.QueryRow("SELECT user_id FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id != $2 ", dmId, user.Id).Scan(&otherUser); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, wsclient.DataFrame{
+		Op:    wsclient.TYPE_DISPATCH,
+		Data:  msg,
+		Event: events.CREATE_DM_MESSAGE,
+	})
+	wsclient.Pools.BroadcastClient(otherUser, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,
 		Event: events.CREATE_DM_MESSAGE,

@@ -1,4 +1,4 @@
-package bans
+package requests
 
 import (
 	"net/http"
@@ -11,10 +11,11 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
 
-func Get(c *gin.Context) {
+func Decline(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -26,8 +27,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -43,32 +44,7 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
-
-	rows, err := db.Db.Query(
-		`
-		SELECT u.id, u.username
-		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
-		WHERE g.banned = true AND g.guild_id = $1`,
-		guildId,
-	)
+	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -77,9 +53,14 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	userlist := []events.Member{}
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
+
+	var isRequested bool
+
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
+	 OR 
+	EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
+	`, userId, user.Id).Scan(&isRequested); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -87,19 +68,45 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	for rows.Next() {
-		var user events.Member
-		user.UserInfo.Icon = 0 //temp
-		if err := rows.Scan(&user.UserInfo.UserId, &user.UserInfo.Name); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		user.GuildId = intGuildId
-		userlist = append(userlist, user)
+
+	if !isRequested {
+		logger.Error.Println(errors.ErrFriendRequestNotFound)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendRequestNotFound.Error(),
+			Status: errors.StatusFriendRequestNotFound,
+		})
+		return
 	}
-	c.JSON(http.StatusOK, userlist)
+
+	if _, err := db.Db.Exec(`
+	DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	`, userId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	res := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intUserId,
+		},
+		Event: events.REMOVE_FRIEND_REQUEST,
+	}
+	resFriend := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: user.Id,
+		},
+		Event: events.REMOVE_FRIEND_INCOMING_REQUEST,
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, res)
+	wsclient.Pools.BroadcastClient(intUserId, resFriend)
+
+	c.Status(http.StatusNoContent)
+
 }

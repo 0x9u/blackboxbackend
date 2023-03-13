@@ -1,4 +1,4 @@
-package guilds
+package directmsgs
 
 import (
 	"net/http"
@@ -11,10 +11,11 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
 
-func getSettings(c *gin.Context) {
+func Delete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -26,8 +27,8 @@ func getSettings(c *gin.Context) {
 		return
 	}
 
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -43,35 +44,7 @@ func getSettings(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
-
-	var guildData events.Guild
-	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&guildData.SaveChat); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	intGuildId, err := strconv.Atoi(guildId)
+	intDmId, err := strconv.ParseInt(dmId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -80,6 +53,36 @@ func getSettings(c *gin.Context) {
 		})
 		return
 	}
-	guildData.GuildId = intGuildId
-	c.JSON(http.StatusOK, guildData)
+
+	if _, err := db.Db.Exec("UPDATE userdirectmsgsguild SET left_dm = true WHERE user_id = $1 AND dm_id = $2", user.Id, dmId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var username string
+
+	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	res := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intDmId,
+			Name:   username,
+			Icon:   0,
+		},
+		Event: events.DELETE_DM,
+	}
+	wsclient.Pools.BroadcastClient(user.Id, res)
+	c.Status(http.StatusNoContent)
 }

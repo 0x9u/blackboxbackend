@@ -1,4 +1,4 @@
-package invites
+package friends
 
 import (
 	"net/http"
@@ -27,8 +27,8 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	invite := c.Param("invite")
-	if match, err := regexp.MatchString(`^\w+$`, invite); err != nil {
+	userId := c.Param("userId")
+	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -43,72 +43,60 @@ func Delete(c *gin.Context) {
 		})
 		return
 	}
-
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
-		return
-	}
-
-	var isOwner bool
-	var inviteValid bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM invites WHERE invite = $1 AND guild_id=$2)", invite, guildId).Scan(&inviteValid); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if !inviteValid {
-		logger.Error.Println(errors.ErrInvalidInvite)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrInvalidInvite.Error(),
-			Status: errors.StatusInvalidInvite,
-		})
-		return
-	}
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
-
-	if _, err := db.Db.Exec("DELETE FROM invites WHERE invite=$1", invite); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
+	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	var isBlocked bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
+		 OR 
+		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
+		`, user.Id, userId).Scan(&isBlocked); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if isBlocked {
+		logger.Error.Println(errors.ErrFriendBlocked)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendBlocked.Error(),
+			Status: errors.StatusFriendBlocked,
+		})
+		return
+	}
+	var friendExists bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = TRUE) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = TRUE)
+		`, user.Id, userId).Scan(&friendExists); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if !friendExists {
+		logger.Error.Println(errors.ErrFriendInvalid)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendInvalid.Error(),
+			Status: errors.StatusFriendInvalid,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec(`
+		DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
+		`, user.Id, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -119,12 +107,19 @@ func Delete(c *gin.Context) {
 
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Invite{
-			Invite:  invite,
-			GuildId: intGuildId,
+		Data: events.User{
+			UserId: intUserId,
 		},
-		Event: events.DELETE_INVITE,
+		Event: events.REMOVE_USER_FRIENDLIST,
 	}
-	wsclient.Pools.BroadcastGuild(intGuildId, res)
+	resFriend := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: user.Id,
+		},
+		Event: events.REMOVE_USER_FRIENDLIST,
+	}
+	wsclient.Pools.BroadcastClient(user.Id, res)
+	wsclient.Pools.BroadcastClient(intUserId, resFriend)
 	c.Status(http.StatusNoContent)
 }

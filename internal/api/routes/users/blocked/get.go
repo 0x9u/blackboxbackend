@@ -1,4 +1,4 @@
-package msgs
+package blocked
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetDM(c *gin.Context) {
+func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -24,9 +24,7 @@ func GetDM(c *gin.Context) {
 		return
 	}
 
-	var userList []events.User
-
-	rows, err := db.Db.Query("SELECT u.id, u.username FROM userdirectmsgs ud INNER JOIN users ON ud.receiver_id = u.id WHERE ud.sender_id = $1", user.Id)
+	rows, err := db.Db.Query("SELECT b.blocked_id, u.username FROM blocked b INNER JOIN users u ON b.blocked_id = u.id WHERE b.user_id = $1", user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -35,9 +33,11 @@ func GetDM(c *gin.Context) {
 		})
 		return
 	}
+	var blockedUsers []events.User
+	defer rows.Close()
 	for rows.Next() {
-		var user events.User
-		if err := rows.Scan(&user.UserId, &user.Name); err != nil {
+		var blockedUser events.User
+		if err := rows.Scan(&blockedUser.UserId, &blockedUser.Name); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -45,8 +45,7 @@ func GetDM(c *gin.Context) {
 			})
 			return
 		}
-		userList = append(userList, user)
+		blockedUsers = append(blockedUsers, blockedUser)
 	}
-	c.JSON(http.StatusOK, userList)
-
+	c.JSON(http.StatusOK, blockedUsers)
 }

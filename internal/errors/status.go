@@ -26,6 +26,15 @@ const (
 	StatusGuildNotExist
 
 	StatusDMNotOpened
+	StatusDmAlreadyExists
+
+	StatusFriendBlocked
+	StatusFriendAlreadyFriends
+	StatusFriendAlreadyRequested
+	StatusFriendRequestNotFound
+	StatusFriendInvalid
+
+	StatusUserNotBlocked
 
 	StatusUsernameExists
 	StatusEmailExists

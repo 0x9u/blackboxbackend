@@ -92,6 +92,7 @@ func (c *wsClient) readData(body DataFrame) {
 
 		c.deadlineCancel()
 		c.id = user.Id
+		go c.tokenExpireDeadline(user.Expires)
 		c.uniqueId = session.GenerateRandString(32)
 
 		rows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", c.id)
@@ -102,7 +103,7 @@ func (c *wsClient) readData(body DataFrame) {
 		//var guilds []int
 
 		for rows.Next() {
-			var guild int
+			var guild int64
 			rows.Scan(&guild)
 			//	guilds = append(guilds, guild)
 			Pools.AddUIDToGuildPool(guild, c.uniqueId, c.broadcast)
@@ -113,6 +114,10 @@ func (c *wsClient) readData(body DataFrame) {
 		rows.Close()
 		Pools.AddUserToClientPool(c.id, c.uniqueId, c.broadcast)
 		logger.Info.Println("added to client pool")
+		res := DataFrame{
+			Op: TYPE_READY,
+		}
+		c.ws.WriteJSON(res)
 	default:
 		logger.Warn.Printf("Invalid Op: %v\n", body.Op)
 	}

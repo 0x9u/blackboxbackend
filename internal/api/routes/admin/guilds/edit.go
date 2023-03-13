@@ -19,6 +19,7 @@ type editGuildBody struct {
 	SaveChat *bool   `json:"saveChat"`
 	Name     *string `json:"name"`
 	Icon     *int    `json:"icon"`
+	OwnerId  *int64  `json:"ownerId"`
 }
 
 func Edit(c *gin.Context) {
@@ -76,7 +77,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	var ownerId int
+	var ownerId int64
 
 	if err := db.Db.QueryRow("SELECT user_id FROM userguilds WHERE owner = true AND guild_id = $1").Scan(&ownerId); err != nil {
 		logger.Error.Println(err)
@@ -106,7 +107,7 @@ func Edit(c *gin.Context) {
 	}
 
 	bodyRes := events.Guild{}
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -132,6 +133,17 @@ func Edit(c *gin.Context) {
 			return
 		}
 		*bodySettingsRes.SaveChat = *newSettings.SaveChat
+	} else {
+		var saveChat bool
+		if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id = $1", guildId).Scan(&saveChat); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodySettingsRes.SaveChat = &saveChat
 	}
 	if newSettings.Name != nil {
 		if _, err = db.Db.Exec("UPDATE guilds SET name=$1 WHERE id=$2", *newSettings.Name, guildId); err != nil {
@@ -143,6 +155,17 @@ func Edit(c *gin.Context) {
 			return
 		}
 		bodyRes.Name = *newSettings.Name
+	} else {
+		var name string
+		if err := db.Db.QueryRow("SELECT name FROM guilds WHERE id = $1", guildId).Scan(&name); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.Name = name
 	}
 	if newSettings.Icon != nil {
 		if _, err = db.Db.Exec("UPDATE guilds SET icon=$1 WHERE id=$2", *newSettings.Icon, guildId); err != nil {
@@ -154,6 +177,38 @@ func Edit(c *gin.Context) {
 			return
 		}
 		bodyRes.Icon = *newSettings.Icon
+	} else {
+		var icon int
+		if err := db.Db.QueryRow("SELECT icon FROM guilds WHERE id = $1", guildId).Scan(&icon); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.Icon = icon
+	}
+	if newSettings.Icon != nil {
+		if _, err = db.Db.Exec("UPDATE userguilds SET owner = false WHERE guild_id AND owner = true", *newSettings.OwnerId, guildId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if _, err = db.Db.Exec("UPDATE userguilds SET owner = true WHERE guild_id AND user_id = $1", *newSettings.OwnerId, guildId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.OwnerId = *newSettings.OwnerId
+	} else {
+		bodyRes.OwnerId = ownerId
 	}
 
 	guildRes := wsclient.DataFrame{
@@ -161,13 +216,7 @@ func Edit(c *gin.Context) {
 		Data:  bodyRes,
 		Event: events.UPDATE_GUILD,
 	}
-	res := wsclient.DataFrame{
-		Op:    wsclient.TYPE_DISPATCH,
-		Data:  bodySettingsRes,
-		Event: events.UPDATE_GUILD_SETTINGS,
-	}
 	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
-	wsclient.Pools.BroadcastClient(ownerId, res)
 
 	c.Status(http.StatusNoContent)
 }

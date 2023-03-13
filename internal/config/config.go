@@ -22,16 +22,18 @@ type guild struct {
 }
 
 type user struct {
-	MaxGuildsPerUser int           `yaml:"maxGuildsPerUser"` //not used yet
-	CoolDownLength   time.Duration `yaml:"coolDownLength"`
-	TokenExpireTime  time.Duration `yaml:"tokenExpireTime"`
+	MaxGuildsPerUser  int           `yaml:"maxGuildsPerUser"`  //not used yet
+	MaxFriendsPerUser int           `yaml:"maxFriendsPerUser"` //not used yet
+	CoolDownLength    time.Duration `yaml:"coolDownLength"`
+	TokenExpireTime   time.Duration `yaml:"tokenExpireTime"`
 }
 
 type server struct {
-	Host       string     `yaml:"host"`
-	Port       string     `yaml:"port"`
-	Timeout    timeout    `yaml:"timeout"`
-	BufferSize bufferSize `yaml:"bufferSize"`
+	Host            string     `yaml:"host"`
+	Port            string     `yaml:"port"`
+	Timeout         timeout    `yaml:"timeout"`
+	BufferSize      bufferSize `yaml:"bufferSize"`
+	SnowflakeNodeID int64      `yaml:"snowflakeNodeID"`
 }
 
 type timeout struct {
@@ -77,9 +79,10 @@ func createConfig() (*config, error) {
 			Timeout:      20 * time.Second,
 		},
 		User: user{
-			MaxGuildsPerUser: 10,
-			CoolDownLength:   5 * time.Second,
-			TokenExpireTime:  60 * time.Hour * 24,
+			MaxGuildsPerUser:  100,
+			MaxFriendsPerUser: 200,
+			CoolDownLength:    5 * time.Second,
+			TokenExpireTime:   60 * time.Hour * 24,
 		},
 		Server: server{
 			Host: "0.0.0.0",
@@ -94,6 +97,7 @@ func createConfig() (*config, error) {
 				Read:  4096,
 				Write: 4096,
 			},
+			SnowflakeNodeID: 1,
 		},
 	}
 	path, err := os.Getwd()

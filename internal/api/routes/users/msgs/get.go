@@ -27,8 +27,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
+	dmId := c.Param("dmId")
+	if match, err := regexp.MatchString("^[0-9]+$", dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -58,7 +58,7 @@ func Get(c *gin.Context) {
 
 	var openDM bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userdirectmsgs WHERE sender_id=$1 AND receiver_id=$2)", userId, user.Id).Scan(&openDM); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userdirectmsgsguild WHERE dm_id = $1 AND user_id = $2) ", dmId, user.Id).Scan(&openDM); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -79,10 +79,10 @@ func Get(c *gin.Context) {
 	rows, err := db.Db.Query(
 		`SELECT m.*, u.username
 	FROM directmsgs m INNER JOIN users u 
-	ON u.sender_id = m.user_id 
-	WHERE created < $1 AND (receiver_id = $2 AND sender_id = $3 OR receiver_id = $3 AND sender_id = $2) 
-	ORDER BY created DESC LIMIT $4`,
-		timestamp, userId, user.Id, limit)
+	ON u.user_id = m.user_id 
+	WHERE created < $1 AND dm_id = $2
+	ORDER BY created DESC LIMIT $3`,
+		timestamp, dmId, limit)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -96,7 +96,7 @@ func Get(c *gin.Context) {
 	for rows.Next() {
 		message := events.Msg{}
 		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
-			&message.UserId, &message.Created, &message.Modified, &message.Author.Name)
+			&message.DmId, &message.Created, &message.Modified, &message.Author.Name)
 		if message.Modified == 0 { //to make it show in json
 			message.Modified = -1
 		}

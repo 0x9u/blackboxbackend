@@ -1,4 +1,4 @@
-package msgs
+package blocked
 
 import (
 	"net/http"
@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteDM(c *gin.Context) {
+func Delete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -44,7 +44,7 @@ func DeleteDM(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.Atoi(userId)
+	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -54,9 +54,10 @@ func DeleteDM(c *gin.Context) {
 		return
 	}
 
-	var dmExists bool
+	var isBlocked bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2)", user.Id, intUserId).Scan(&dmExists); err != nil {
+	//blocked in the clients perspective
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)", user.Id, intUserId).Scan(&isBlocked); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -65,16 +66,16 @@ func DeleteDM(c *gin.Context) {
 		return
 	}
 
-	if !dmExists {
-		logger.Error.Println(errors.ErrDMNotOpened)
+	if !isBlocked {
+		logger.Error.Println(errors.ErrUserNotBlocked)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrDMNotOpened.Error(),
-			Status: errors.StatusDMNotOpened,
+			Error:  errors.ErrUserNotBlocked.Error(),
+			Status: errors.StatusUserNotBlocked,
 		})
 		return
 	}
 
-	if _, err := db.Db.Exec("DELETE FROM userdirectmsgs WHERE sender_id = $1 AND receiver_id = $2", user.Id, userId); err != nil {
+	if _, err := db.Db.Exec("DELETE FROM blocked WHERE user_id = $1 AND blocked_id = $2", user.Id, intUserId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -82,27 +83,14 @@ func DeleteDM(c *gin.Context) {
 		})
 		return
 	}
-
-	var username string
-
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: intUserId,
-			Name:   username,
-			Icon:   0,
 		},
-		Event: events.DELETE_DM,
+		Event: events.REMOVE_USER_BLOCKEDLIST,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	c.Status(http.StatusNoContent)
+
 }

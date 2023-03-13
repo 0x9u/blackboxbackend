@@ -1,4 +1,4 @@
-package bans
+package msgs
 
 import (
 	"net/http"
@@ -11,10 +11,11 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
 
-func Get(c *gin.Context) {
+func Typing(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -43,9 +44,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -53,53 +53,49 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+
+	var inGuild bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guildId, user.Id).Scan(&inGuild); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if !inGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
 		})
 		return
 	}
+	//get user info
+	var username string
+	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&username); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	res := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.UserGuild{
+			GuildId: intGuildId,
+			UserId:  user.Id,
+			UserData: &events.User{
+				UserId: user.Id,
+				Name:   username,
+				Icon:   0, //placeholder
+			},
+		},
+		Event: events.USER_TYPING,
+	}
+	wsclient.Pools.BroadcastGuild(intGuildId, res)
+	c.Status(http.StatusNoContent)
 
-	rows, err := db.Db.Query(
-		`
-		SELECT u.id, u.username
-		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
-		WHERE g.banned = true AND g.guild_id = $1`,
-		guildId,
-	)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	userlist := []events.Member{}
-	intGuildId, err := strconv.Atoi(guildId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	for rows.Next() {
-		var user events.Member
-		user.UserInfo.Icon = 0 //temp
-		if err := rows.Scan(&user.UserInfo.UserId, &user.UserInfo.Name); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		user.GuildId = intGuildId
-		userlist = append(userlist, user)
-	}
-	c.JSON(http.StatusOK, userlist)
 }

@@ -1,4 +1,4 @@
-package members
+package blocked
 
 import (
 	"net/http"
@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Kick(c *gin.Context) {
+func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -24,23 +24,6 @@ func Kick(c *gin.Context) {
 				Error:  errors.ErrSessionDidntPass.Error(),
 				Status: errors.StatusInternalError,
 			})
-		return
-	}
-
-	guildId := c.Param("guildId")
-	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
 		return
 	}
 
@@ -61,15 +44,6 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
@@ -80,18 +54,12 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	if intUserId == user.Id {
-		logger.Error.Println(errors.ErrCantKickBanSelf)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrCantKickBanSelf.Error(),
-			Status: errors.StatusCantKickBanSelf,
-		})
-		return
-	}
-
-	var isOwner bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	var isBlocked bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
+		 OR 
+		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
+		`, user.Id, userId).Scan(&isBlocked); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -99,16 +67,20 @@ func Kick(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+	if isBlocked {
+		logger.Error.Println(errors.ErrFriendBlocked)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrFriendBlocked.Error(),
+			Status: errors.StatusFriendBlocked,
 		})
 		return
 	}
-
-	if _, err = db.Db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
+	var isFriends bool
+	if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2)
+		 OR 
+		EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
+		`, user.Id, userId).Scan(&isFriends); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -116,23 +88,53 @@ func Kick(c *gin.Context) {
 		})
 		return
 	}
-	kickRes := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Guild{
-			GuildId: intGuildId,
-		},
-		Event: events.DELETE_GUILD,
+	if _, err := db.Db.Exec(`
+		INSERT INTO blocked (user_id, blocked_id) VALUES ($1, $2)
+		`, user.Id, userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
-	guildRes := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
-			UserId:  intUserId,
-			GuildId: intGuildId,
-		},
-		Event: events.REMOVE_USER_GUILDLIST,
+	if isFriends {
+		if _, err := db.Db.Exec(`
+		DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+		`, user.Id, userId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
-	wsclient.Pools.BroadcastClient(intUserId, kickRes)
-	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, intUserId)
-	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
+	res := wsclient.DataFrame{
+		Op: wsclient.TYPE_DISPATCH,
+		Data: events.User{
+			UserId: intUserId,
+		},
+		Event: events.ADD_USER_BLOCKEDLIST,
+	}
+	wsclient.Pools.BroadcastClient(intUserId, res)
+	if isFriends {
+		resAfter := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: intUserId,
+			},
+			Event: events.REMOVE_USER_FRIENDLIST,
+		}
+		resFriendAfter := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: user.Id,
+			},
+			Event: events.REMOVE_USER_FRIENDLIST,
+		}
+		wsclient.Pools.BroadcastClient(user.Id, resFriendAfter)
+		wsclient.Pools.BroadcastClient(intUserId, resAfter)
+	}
 	c.Status(http.StatusNoContent)
 }

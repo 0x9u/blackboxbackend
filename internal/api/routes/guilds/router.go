@@ -5,7 +5,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members"
-	msgs "github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msg"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,11 +18,10 @@ func Routes(r *gin.RouterGroup) {
 
 	guilds.DELETE("/:guildId", deleteGuild)
 	guilds.PATCH("/:guildId", editGuild)
-	guilds.GET("/:guildId/settings", getSettings)
+	guilds.GET("/:guildId", getGuild)
 
 	guilds.GET("/:guildId/members", members.Get)
 	guilds.DELETE("/:guildId/members/:userId", members.Kick)
-	guilds.POST("/:guildId/members/:userId/owner", members.ChangeOwner)
 
 	guilds.GET("/:guildId/msgs", msgs.Get)
 	guilds.POST("/:guildId/msgs", msgs.Send)
@@ -33,7 +32,7 @@ func Routes(r *gin.RouterGroup) {
 	guilds.POST("/:guildId/msgs/read", msgs.Read)
 
 	guilds.GET("/:guildId/bans", bans.Get)
-	guilds.POST("/:guildId/bans/:userId", bans.Ban)
+	guilds.PUT("/:guildId/bans/:userId", bans.Ban)
 	guilds.DELETE("/:guildId/bans/:userId", bans.Unban)
 
 	guilds.GET("/:guildId/invites", invites.Get)

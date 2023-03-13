@@ -1,4 +1,4 @@
-package users
+package directmsgs
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getSelfGuilds(c *gin.Context) {
+func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -23,21 +23,16 @@ func getSelfGuilds(c *gin.Context) {
 			})
 		return
 	}
-	logger.Info.Println("Getting guilds")
-	rows, err := db.Db.Query(
-		/* long goofy aaaaa code*/
-		`
-		SELECT g.id, g.name, g.icon, g.save_chat, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
-		FROM userguilds u 
-		INNER JOIN guilds g ON g.id = u.guild_id 
-		INNER JOIN unreadmsgs un ON un.guild_id = u.guild_id and un.user_id = u.user_id
-		LEFT JOIN msgs m ON m.guild_id = un.guild_id 
-		WHERE u.user_id=$1 AND u.banned = false
-		GROUP BY g.id, g.name, g.icon, owner_id, un.msg_id, un.time, u.*
-		ORDER BY u
-		`,
-		user.Id,
-	)
+
+	rows, err := db.Db.Query(`
+		SELECT udmg.dm_id, udmg.user_id, u.username 
+		udm.msg_id AS last_read_msg_id, COUNT(dm.id) filter (WHERE dm.id > udm.msg_id) AS unread_msgs, udm.time
+		FROM userdirectmsgsguilds udmg 
+		INNER JOIN users u ON u.id = udm.user_id 
+		INNER JOIN unreaddirectmsgs udm ON udm.dm_id = udmg.dm_id AND un.user_id = $1
+		INNER JOIN directmsgs dm ON dm.id = udm.msg_id 
+		WHERE udmg.dm_id IN (SELECT dm_id FROM userdirectmsgsguilds WHERE user_id=$1 AND left_dm = false) AND udmg.user_id != $1
+	`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -46,12 +41,11 @@ func getSelfGuilds(c *gin.Context) {
 		})
 		return
 	}
-	guilds := []events.Guild{}
+	defer rows.Close()
+	var openDMs []events.Dm
 	for rows.Next() {
-		var guild events.Guild
-		guild.Unread = &events.UnreadMsg{}
-		err = rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
-		if err != nil {
+		var dm events.Dm
+		if err := rows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -59,8 +53,7 @@ func getSelfGuilds(c *gin.Context) {
 			})
 			return
 		}
-		guilds = append(guilds, guild)
+		openDMs = append(openDMs, dm)
 	}
-
-	c.JSON(http.StatusOK, guilds)
+	c.JSON(http.StatusOK, openDMs)
 }
