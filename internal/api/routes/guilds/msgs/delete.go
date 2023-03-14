@@ -1,6 +1,7 @@
 package msgs
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -117,6 +118,23 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	//theortically if the user did not have chat saved and ran this request it would still work
 	if isRequestId {
 		var isChatSaved bool
@@ -157,7 +175,7 @@ func Delete(c *gin.Context) { //deletes message
 			return
 		}
 
-		if _, err = db.Db.Exec("DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
+		if _, err = tx.ExecContext(ctx, "DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -183,6 +201,15 @@ func Delete(c *gin.Context) { //deletes message
 			})
 			return
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 
 	res := wsclient.DataFrame{

@@ -1,6 +1,7 @@
 package msgs
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -106,6 +107,23 @@ func Edit(c *gin.Context) {
 
 	timestamp := time.Now().UnixMilli()
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	if isRequestId {
 
 		var msgExists bool
@@ -127,7 +145,7 @@ func Edit(c *gin.Context) {
 			return
 		}
 
-		if _, err = db.Db.Exec("UPDATE msgs SET content = $1, modified = $2 WHERE id = $3 AND user_id = $4 AND guild_id=$5", msg.Content, timestamp, msgId, user.Id, guildId); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE msgs SET content = $1, modified = $2 WHERE id = $3 AND user_id = $4 AND guild_id=$5", msg.Content, timestamp, msgId, user.Id, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -153,6 +171,15 @@ func Edit(c *gin.Context) {
 			})
 			return
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 
 	res := wsclient.DataFrame{

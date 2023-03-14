@@ -99,7 +99,6 @@ func Send(c *gin.Context) {
 	//BEGIN TRANSACTION
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
-
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -108,6 +107,11 @@ func Send(c *gin.Context) {
 		})
 		return
 	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
 
 	msg.Content = strings.TrimSpace(msg.Content)
 	//screw off html
@@ -158,6 +162,7 @@ func Send(c *gin.Context) {
 		}
 
 		outFile, err := os.Create(fmt.Sprintf("uploads/%d.lz4", attachment.Id))
+		//TODO: delete files if failed or write them after when its deemed successful
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -178,7 +183,14 @@ func Send(c *gin.Context) {
 			return
 		}
 
-		tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created) VALUES ($1, $2, $3, $4)", attachment.Id, attachment.Filename, user.Id, msg.Created)
+		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created) VALUES ($1, $2, $3, $4)", attachment.Id, attachment.Filename, user.Id, msg.Created); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 		msg.Attachments = append(msg.Attachments, attachment)
 	}
 
@@ -239,6 +251,16 @@ func Send(c *gin.Context) {
 	authorBody.UserId = user.Id
 	authorBody.Icon = 0 //placeholder
 	msg.Author = authorBody
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,
