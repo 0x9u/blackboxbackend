@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -51,6 +52,25 @@ func editSelf(c *gin.Context) {
 		return
 	}
 	newUserInfo := events.User{}
+
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err != nil {
+			if err := tx.Rollback(); err != nil {
+				logger.Warn.Printf("unable to rollback error: %v\n", err)
+			}
+		}
+	}() //rollback changes if failed
 	if body.Password != nil && body.OldPassword != nil {
 		var oldhashedpass string
 		if err := db.Db.QueryRow("SELECT password FROM users WHERE id=$1", user.Id).Scan(&oldhashedpass); err != nil {
@@ -81,7 +101,7 @@ func editSelf(c *gin.Context) {
 		}
 		strHashedPass := string(hashedPass)
 
-		if _, err = db.Db.Exec("UPDATE users SET password=$1 WHERE id=$2", strHashedPass, user.Id); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE users SET password=$1 WHERE id=$2", strHashedPass, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -108,7 +128,7 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
-		if _, err := db.Db.Exec("UPDATE users SET email=$1 WHERE id=$2", *body.Email, user.Id); err != nil {
+		if _, err := tx.ExecContext(ctx, "UPDATE users SET email=$1 WHERE id=$2", *body.Email, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -136,7 +156,7 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
-		if _, err := db.Db.Exec("UPDATE users SET username=$1 WHERE id=$2", *body.Username, user.Id); err != nil {
+		if _, err := tx.ExecContext(ctx, "UPDATE users SET username=$1 WHERE id=$2", *body.Username, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -145,6 +165,15 @@ func editSelf(c *gin.Context) {
 			return
 		}
 		newUserInfo.Name = *body.Username
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,

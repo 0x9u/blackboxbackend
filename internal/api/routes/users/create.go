@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -63,11 +64,31 @@ func userCreate(c *gin.Context) {
 		})
 		return
 	}
+
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err != nil {
+			if err := tx.Rollback(); err != nil {
+				logger.Warn.Printf("unable to rollback error: %v\n", err)
+			}
+		}
+	}() //rollback changes if failed
+
 	hashedPass := hashPass(user.Password)
 
 	user.UserId = uid.Snowflake.Generate().Int64()
 
-	if _, err := db.Db.Exec("INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -78,7 +99,16 @@ func userCreate(c *gin.Context) {
 
 	//add user role
 
-	if _, err := db.Db.Exec("INSERT INTO userroles (user_id, role_id) VALUES ($1, 1)", user.UserId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userroles (user_id, role_id) VALUES ($1, 1)", user.UserId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

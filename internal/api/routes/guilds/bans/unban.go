@@ -1,7 +1,6 @@
 package bans
 
 import (
-	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -90,24 +89,7 @@ func Unban(c *gin.Context) {
 		return
 	}
 
-	//BEGIN TRANSACTION
-	ctx := context.Background()
-	tx, err := db.Db.BeginTx(ctx, nil)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
-
-	if _, err := tx.ExecContext(ctx, "DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
+	if _, err := db.Db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -126,14 +108,6 @@ func Unban(c *gin.Context) {
 	}
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

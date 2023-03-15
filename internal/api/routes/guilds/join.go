@@ -1,7 +1,6 @@
 package guilds
 
 import (
-	"context"
 	"database/sql"
 	"net/http"
 
@@ -89,33 +88,7 @@ func joinGuild(c *gin.Context) {
 		return
 	}
 
-	//BEGIN TRANSACTION
-	ctx := context.Background()
-	tx, err := db.Db.BeginTx(ctx, nil)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
-
-	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil { //cleanup if failed later
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if err := tx.Commit(); err != nil { //commits the transaction
+	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil { //cleanup if failed later
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

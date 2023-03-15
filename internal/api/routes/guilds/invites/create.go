@@ -1,7 +1,6 @@
 package invites
 
 import (
-	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -81,26 +80,9 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	//BEGIN TRANSACTION
-	ctx := context.Background()
-	tx, err := db.Db.BeginTx(ctx, nil)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
-
 	invite := session.GenerateRandString(10)
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite, guildId); err != nil {
+	if _, err := db.Db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite, guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -123,16 +105,6 @@ func Create(c *gin.Context) {
 		Invite:  invite,
 		GuildId: intGuildId,
 	}
-
-	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  inviteBody,

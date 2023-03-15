@@ -28,6 +28,7 @@ func CheckToken(token string) (*Session, error) {
 	} else if err != nil {
 		return nil, err
 	}
+	
 	if time.Now().Unix() > user.Expires {
 		db.Db.Exec("DELETE FROM tokens WHERE token=$1", token)
 		return nil, errors.ErrExpiredToken

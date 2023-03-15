@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -62,8 +63,10 @@ func deleteGuild(c *gin.Context) {
 		return
 	}
 
-	//start deleting
-	if _, err := db.Db.Exec("DELETE FROM msgs WHERE guild_id=$1", guildId); err != nil {
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -71,7 +74,24 @@ func deleteGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("DELETE FROM unreadmsgs WHERE guild_id=$1", guildId); err != nil {
+	defer func() {
+		if err != nil {
+			if err := tx.Rollback(); err != nil {
+				logger.Warn.Printf("unable to rollback error: %v\n", err)
+			}
+		}
+	}() //rollback changes if failed
+
+	//start deleting
+	if _, err := tx.ExecContext(ctx, "DELETE FROM msgs WHERE guild_id=$1", guildId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if _, err := tx.ExecContext(ctx, "DELETE FROM unreadmsgs WHERE guild_id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -80,7 +100,7 @@ func deleteGuild(c *gin.Context) {
 		return
 	}
 	//delete all existing invites
-	if _, err := db.Db.Exec("DELETE FROM invites WHERE guild_id=$1", guildId); err != nil {
+	if _, err := tx.ExecContext(ctx, "DELETE FROM invites WHERE guild_id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -89,7 +109,7 @@ func deleteGuild(c *gin.Context) {
 		return
 	}
 	//delete from users guilds
-	if _, err := db.Db.Exec("DELETE FROM userguilds WHERE guild_id=$1", guildId); err != nil {
+	if _, err := tx.ExecContext(ctx, "DELETE FROM userguilds WHERE guild_id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -97,7 +117,7 @@ func deleteGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("DELETE FROM guilds WHERE id=$1", guildId); err != nil {
+	if _, err := tx.ExecContext(ctx, "DELETE FROM guilds WHERE id=$1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -107,6 +127,15 @@ func deleteGuild(c *gin.Context) {
 	}
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

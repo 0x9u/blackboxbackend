@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -38,7 +39,26 @@ func clearUserMsg(c *gin.Context) {
 
 	defer guildRows.Close()
 
-	if _, err = db.Db.Exec("DELETE FROM msgs WHERE user_id = $1", user.Id); err != nil {
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err != nil {
+			if err := tx.Rollback(); err != nil {
+				logger.Warn.Printf("unable to rollback error: %v\n", err)
+			}
+		}
+	}() //rollback changes if failed
+
+	if _, err = tx.ExecContext(ctx, "DELETE FROM msgs WHERE user_id = $1", user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -47,7 +67,7 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	if _, err = db.Db.Exec("DELETE FROM directmsgs WHERE user_id = $1", user.Id); err != nil {
+	if _, err = tx.ExecContext(ctx, "DELETE FROM directmsgs WHERE user_id = $1", user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -68,6 +88,15 @@ func clearUserMsg(c *gin.Context) {
 	}
 
 	defer dmRows.Close()
+
+	if err = tx.Commit(); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 
 	for guildRows.Next() {
 		var guildId int64
