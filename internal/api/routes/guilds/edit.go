@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -107,9 +108,26 @@ func editGuild(c *gin.Context) {
 	}
 	bodyRes.GuildId = intGuildId
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	if newSettings.SaveChat != nil {
 
-		if _, err = db.Db.Exec("UPDATE guilds SET save_chat=$1 WHERE id=$2", *newSettings.SaveChat, guildId); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE guilds SET save_chat=$1 WHERE id=$2", *newSettings.SaveChat, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -144,7 +162,7 @@ func editGuild(c *gin.Context) {
 			return
 		}
 
-		if _, err = db.Db.Exec("UPDATE guilds SET name=$1 WHERE id=$2", *newSettings.Name, guildId); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE guilds SET name=$1 WHERE id=$2", *newSettings.Name, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -166,7 +184,7 @@ func editGuild(c *gin.Context) {
 		bodyRes.Name = name
 	}
 	if newSettings.Icon != nil {
-		if _, err = db.Db.Exec("UPDATE guilds SET icon=$1 WHERE id=$2", *newSettings.Icon, guildId); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE guilds SET icon=$1 WHERE id=$2", *newSettings.Icon, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -214,7 +232,7 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
-		if _, err = db.Db.Exec("UPDATE userguilds SET owner=false WHERE guild_id=$1 AND user_id = $2", guildId, user.Id); err != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE userguilds SET owner=false WHERE guild_id=$1 AND user_id = $2", guildId, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -222,7 +240,7 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
-		if _, err := db.Db.Exec("UPDATE userguilds SET owner = true WHERE user_id = $1 AND guild_id = $2", newSettings.OwnerId, guildId); err != nil {
+		if _, err := tx.ExecContext(ctx, "UPDATE userguilds SET owner = true WHERE user_id = $1 AND guild_id = $2", newSettings.OwnerId, guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -233,6 +251,15 @@ func editGuild(c *gin.Context) {
 		bodyRes.OwnerId = *newSettings.OwnerId
 	} else {
 		bodyRes.OwnerId = user.Id
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 
 	guildRes := wsclient.DataFrame{

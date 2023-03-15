@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -59,8 +60,25 @@ func createGuild(c *gin.Context) {
 		}
 	}
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	guildId := uid.Snowflake.Generate().Int64()
-	if _, err := db.Db.Exec("INSERT INTO guilds (id, name, icon, save_chat) VALUES ($1, $2, $3, $4)", guildId, guild.Name, guild.Icon, guild.SaveChat); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, name, icon, save_chat) VALUES ($1, $2, $3, $4)", guildId, guild.Name, guild.Icon, guild.SaveChat); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -73,7 +91,7 @@ func createGuild(c *gin.Context) {
 		GuildId: guildId,
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO unreadmsgs (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
+	if _, err := tx.ExecContext(ctx, "INSERT INTO unreadmsgs (guild_id, user_id) VALUES ($1, $2)", guildId, user.Id); err != nil { //cleanup if failed later
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -81,7 +99,7 @@ func createGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id, owner) VALUES ($1, $2, true)", guildId, user.Id); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds (guild_id, user_id, owner) VALUES ($1, $2, true)", guildId, user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -89,7 +107,16 @@ func createGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, guildId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO invites (invite, guild_id) VALUES ($1, $2)", invite.Invite, guildId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

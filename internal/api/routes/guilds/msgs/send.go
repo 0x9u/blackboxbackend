@@ -123,6 +123,17 @@ func Send(c *gin.Context) {
 	files := form.File["files[]"]
 	msg.Attachments = []events.Attachment{}
 
+	//check if guild has chat messages save turned on
+	var isChatSaveOn bool
+	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&isChatSaveOn); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	for _, file := range files {
 		var attachment events.Attachment
 		attachment.Filename = file.Filename
@@ -183,7 +194,9 @@ func Send(c *gin.Context) {
 			return
 		}
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created) VALUES ($1, $2, $3, $4)", attachment.Id, attachment.Filename, user.Id, msg.Created); err != nil {
+		//make files temporary if chat messages save turned off
+
+		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created, temp) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, user.Id, msg.Created, !isChatSaveOn); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -209,17 +222,6 @@ func Send(c *gin.Context) {
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrMsgTooLong.Error(),
 			Status: errors.StatusMsgTooLong,
-		})
-		return
-	}
-
-	//check if guild has chat messages save turned on
-	var isChatSaveOn bool
-	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&isChatSaveOn); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
 		})
 		return
 	}
