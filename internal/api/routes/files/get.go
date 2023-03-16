@@ -95,7 +95,7 @@ func get(c *gin.Context) {
 	}
 
 	c.Header("Content-Type", "application/octet-stream")
-	c.Header("Content-Disposition", "attachment; filename=file.txt")
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 
 	c.Data(http.StatusOK, "application/octet-stream", decompress)
 }
