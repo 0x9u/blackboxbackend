@@ -9,7 +9,9 @@
 - Add badges for users
 
 - Remove 6 character limit - done
-- Have file support
+- Have file support - sorta
+    - add file deletion for messages
+    - add files for user and server profiles
 - Have captcha on backend
 - Have games support (single player)
 - multiplayer games
