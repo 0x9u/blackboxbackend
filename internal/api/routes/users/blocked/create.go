@@ -99,6 +99,11 @@ func Create(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}()
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO blocked (user_id, blocked_id) VALUES ($1, $2)
 		`, user.Id, userId); err != nil {

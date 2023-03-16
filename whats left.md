@@ -38,8 +38,10 @@
 - CONVERT THIS INTO GIN (ASAP) - done
   - mux is archived so for maintainbility purposes this will have to be migrated into the gin lib
   - estimated probs 1-2 hours (ended as 4 hours)
-- combine multiple queries together and create auto clean up if there is a failure 
-    - ADD TRANSACTIONS FOR SQL QUERIES
+- combine multiple queries together and create auto clean up if there is a failure - DONe
+    - ADD TRANSACTIONS FOR SQL QUERIES - DONE
+    - FIX rollback error bug
+        - I accidently put the error in the condition scope 
 
 # MAYBES
 - Learn C# and program in unity in WASM (make games)
