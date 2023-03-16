@@ -1,6 +1,7 @@
 package directmsgs
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -79,10 +80,28 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err != nil {
+			if err := tx.Rollback(); err != nil {
+				logger.Warn.Printf("unable to rollback error: %v\n", err)
+			}
+		}
+	}() //rollback changes if failed
 
 	dmId := uid.Snowflake.Generate().Int64()
 
-	if _, err := db.Db.Exec("INSERT INTO directmsgsguild VALUES ($1)", dmId); err != nil { //make new dm identity
+	if _, err := tx.ExecContext(ctx, "INSERT INTO directmsgsguild VALUES ($1)", dmId); err != nil { //make new dm identity
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -91,7 +110,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("INSERT INTO usersdirectmsgsguild VALUES ($1, $2, false), ($1, $3, true)", dmId, user.Id, body.ReceiverId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userdirectmsgsguild VALUES ($1, $2, false), ($1, $3, true)", dmId, user.Id, body.ReceiverId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -109,6 +128,14 @@ func Create(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	if err := tx.Commit(); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
 	}
 
 	res := wsclient.DataFrame{

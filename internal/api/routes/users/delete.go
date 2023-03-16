@@ -15,6 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//TODO: Replace IN with something else (might be inefficient)
+
 func userDelete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
@@ -162,6 +164,19 @@ func userDelete(c *gin.Context) {
 
 	//delete roles associated with user
 	if _, err := tx.ExecContext(ctx, "DELETE FROM userroles WHERE user_id = $1", user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	//deletes the direct messages associated with the user and the other user
+	if _, err := tx.ExecContext(ctx, `DELETE FROM userdirectmsgsguild WHERE dm_id IN
+		 (DELETE FROM directmsgsguild WHERE id IN 
+			(DELETE FROM userdirectmsgsguild WHERE user_id = $1 RETURNING dm_id)
+			 RETURNING id)`, user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
