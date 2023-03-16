@@ -84,6 +84,9 @@ var (
 	//IP
 	ErrIpBanned = errors.New("ip: banned")
 
+	//FILES
+	ErrFileNotFound = errors.New("file: not found")
+
 	//ROUTES
 	ErrRouteParamInvalid = errors.New("route: invalid param")
 

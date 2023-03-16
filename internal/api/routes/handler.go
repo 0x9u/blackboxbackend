@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/admin"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/files"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/static"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/status"
@@ -21,4 +22,5 @@ func PrepareRoutes(r *gin.Engine) {
 	guilds.Routes(apiRoute)
 	users.Routes(apiRoute)
 	ws.Routes(apiRoute)
+	files.Routes(apiRoute)
 }

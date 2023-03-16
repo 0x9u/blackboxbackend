@@ -160,8 +160,8 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
-
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(len(fileBytes)))
+		filesize := len(fileBytes)
+		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
 		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
 		if err != nil {
 			logger.Error.Println(err)
@@ -196,7 +196,7 @@ func Send(c *gin.Context) {
 
 		//make files temporary if chat messages save turned off
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created, temp) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, user.Id, msg.Created, !isChatSaveOn); err != nil {
+		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created, temp, filesize) VALUES ($1, $2, $3, $4, $5, $6)", attachment.Id, attachment.Filename, user.Id, msg.Created, !isChatSaveOn, filesize); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

@@ -58,6 +58,8 @@ const (
 
 	StatusIpBanned
 
+	StatusFileNotFound
+
 	StatusRouteParamInvalid
 
 	StatusNotAuthorised
