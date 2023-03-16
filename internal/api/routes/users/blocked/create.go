@@ -1,6 +1,7 @@
 package blocked
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -75,6 +76,7 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+
 	var isFriends bool
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS (SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2)
@@ -88,7 +90,16 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec(`
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+	}
+	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO blocked (user_id, blocked_id) VALUES ($1, $2)
 		`, user.Id, userId); err != nil {
 		logger.Error.Println(err)
@@ -99,7 +110,7 @@ func Create(c *gin.Context) {
 		return
 	}
 	if isFriends {
-		if _, err := db.Db.Exec(`
+		if _, err := tx.ExecContext(ctx, `
 		DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
 		`, user.Id, userId); err != nil {
 			logger.Error.Println(err)
@@ -109,6 +120,14 @@ func Create(c *gin.Context) {
 			})
 			return
 		}
+	}
+	if err := tx.Commit(); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
