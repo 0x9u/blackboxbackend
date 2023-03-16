@@ -120,10 +120,8 @@ func editGuild(c *gin.Context) {
 		return
 	}
 	defer func() {
-		if err != nil {
-			if err := tx.Rollback(); err != nil {
-				logger.Warn.Printf("unable to rollback error: %v\n", err)
-			}
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
 		}
 	}() //rollback changes if failed
 

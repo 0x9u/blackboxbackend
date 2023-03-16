@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -34,6 +35,23 @@ func reset(c *gin.Context) {
 			Status: errors.StatusNotAuthorised,
 		})
 	}
+
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
 
 	if _, err := db.Db.Exec("DELETE FROM userguilds"); err != nil {
 		logger.Error.Println(err)
@@ -91,6 +109,15 @@ func reset(c *gin.Context) {
 		})
 		return
 	}
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	wsclient.Pools.RemoveAll()
 
 	logger.Warn.Println("And thus the database is now gone I hope you're happy")
