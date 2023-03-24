@@ -12,7 +12,7 @@ import (
 
 func deleteTempFile() {
 	logger.Info.Println("Deleting temp files")
-	fileRows, err := db.Db.Query("SELECT id FROM files WHERE temp = 1 AND created_at < $1", time.Now().Add(-config.Config.Server.TempFileAlive))
+	fileRows, err := db.Db.Query("DELETE FROM FROM files WHERE temp = 1 AND created_at < $1 RETURNING id", time.Now().Add(-config.Config.Server.TempFileAlive))
 	if err != nil {
 		logger.Error.Println(err)
 		return
