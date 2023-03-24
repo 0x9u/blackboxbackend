@@ -87,7 +87,7 @@ func Edit(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
@@ -120,7 +120,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	timestamp := time.Now().UnixMilli()
+	timestamp := time.Now().Unix()
 
 	if _, err = db.Db.Exec("UPDATE directmsgs SET content = $1, modified = $2 WHERE id = $3", msg.Content, timestamp, msgId); err != nil {
 		logger.Error.Println(err)

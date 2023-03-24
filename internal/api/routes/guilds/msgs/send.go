@@ -71,7 +71,7 @@ func Send(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
@@ -116,12 +116,32 @@ func Send(c *gin.Context) {
 	msg.Content = strings.TrimSpace(msg.Content)
 	//screw off html
 	msg.Content = html.EscapeString(msg.Content) //prevents xss attacks
-	msg.Created = time.Now().UnixMilli()
+	msg.Created = time.Now().Unix()
 	//check if attachments uploaded
 
-	form, _ := c.MultipartForm()
+	form, err := c.MultipartForm()
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusBadRequest,
+		})
+		return
+	}
+
 	files := form.File["files[]"]
 	msg.Attachments = []events.Attachment{}
+	fileIds := []int64{}
+	fileSucessful := false
+	defer func() {
+		if !fileSucessful {
+			for _, id := range fileIds {
+				if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", id)); err != nil {
+					logger.Warn.Printf("unable to remove file: %v\n", err)
+				}
+			}
+		}
+	}()
 
 	//check if guild has chat messages save turned on
 	var isChatSaveOn bool
@@ -172,6 +192,8 @@ func Send(c *gin.Context) {
 			return
 		}
 
+		fileIds = append(fileIds, attachment.Id)
+
 		outFile, err := os.Create(fmt.Sprintf("uploads/%d.lz4", attachment.Id))
 		//TODO: delete files if failed or write them after when its deemed successful
 		if err != nil {
@@ -196,7 +218,7 @@ func Send(c *gin.Context) {
 
 		//make files temporary if chat messages save turned off
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO attachments (id, filename, user_id, created, temp, filesize) VALUES ($1, $2, $3, $4, $5, $6)", attachment.Id, attachment.Filename, user.Id, msg.Created, !isChatSaveOn, filesize); err != nil {
+		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, msg.Created, !isChatSaveOn, filesize); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -263,6 +285,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
+	fileSucessful = true
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,

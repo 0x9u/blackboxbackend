@@ -1,7 +1,10 @@
 package msgs
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -117,6 +120,23 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	//theortically if the user did not have chat saved and ran this request it would still work
 	if isRequestId {
 		var isChatSaved bool
@@ -157,13 +177,43 @@ func Delete(c *gin.Context) { //deletes message
 			return
 		}
 
-		if _, err = db.Db.Exec("DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
+		if _, err = tx.ExecContext(ctx, "DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+
+		fileRows, err := db.Db.QueryContext(ctx, "DELETE FROM files f WHERE EXISTS(SELECT 1 FROM msgfiles mf WHERE mf.msg_id = $1 AND f.id = mf.file_id) RETURNING f.id", msgId)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		defer fileRows.Close()
+		for fileRows.Next() {
+			var fileId int64
+			if err := fileRows.Scan(&fileId); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
 		}
 	}
 
@@ -183,6 +233,15 @@ func Delete(c *gin.Context) { //deletes message
 			})
 			return
 		}
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 
 	res := wsclient.DataFrame{

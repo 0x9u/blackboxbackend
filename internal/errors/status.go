@@ -4,7 +4,7 @@ type StatusCode int
 
 const (
 	StatusInternalError StatusCode = iota
-	StatusBadJSON
+	StatusBadRequest
 
 	StatusAbsentToken
 	StatusInvalidToken

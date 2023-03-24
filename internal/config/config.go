@@ -29,11 +29,12 @@ type user struct {
 }
 
 type server struct {
-	Host            string     `yaml:"host"`
-	Port            string     `yaml:"port"`
-	Timeout         timeout    `yaml:"timeout"`
-	BufferSize      bufferSize `yaml:"bufferSize"`
-	SnowflakeNodeID int64      `yaml:"snowflakeNodeID"`
+	Host            string        `yaml:"host"`
+	Port            string        `yaml:"port"`
+	Timeout         timeout       `yaml:"timeout"`
+	BufferSize      bufferSize    `yaml:"bufferSize"`
+	SnowflakeNodeID int64         `yaml:"snowflakeNodeID"`
+	TempFileAlive   time.Duration `yaml:"tempFileAlive"`
 }
 
 type timeout struct {
@@ -98,6 +99,7 @@ func createConfig() (*config, error) {
 				Write: 4096,
 			},
 			SnowflakeNodeID: 1,
+			TempFileAlive:   24 * time.Hour,
 		},
 	}
 	path, err := os.Getwd()

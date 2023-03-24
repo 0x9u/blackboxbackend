@@ -28,7 +28,7 @@ func CheckToken(token string) (*Session, error) {
 	} else if err != nil {
 		return nil, err
 	}
-	
+
 	if time.Now().Unix() > user.Expires {
 		db.Db.Exec("DELETE FROM tokens WHERE token=$1", token)
 		return nil, errors.ErrExpiredToken
@@ -62,7 +62,7 @@ func CheckToken(token string) (*Session, error) {
 func GenToken(id int64) (Session, error) {
 	var authData Session
 	//delete token if expired
-	_, err := db.Db.Exec("DELETE FROM tokens WHERE user_id=$1 AND token_expires < $2", id, time.Now().UnixMilli())
+	_, err := db.Db.Exec("DELETE FROM tokens WHERE user_id=$1 AND token_expires < $2", id, time.Now().Unix())
 	if err != nil {
 		return Session{}, err
 	}
@@ -75,7 +75,7 @@ func GenToken(id int64) (Session, error) {
 		if err != nil {
 			return Session{}, err
 		}
-		authExpires := time.Now().Add(config.Config.User.TokenExpireTime).UnixMilli()
+		authExpires := time.Now().Add(config.Config.User.TokenExpireTime).Unix()
 		authData = Session{Id: id, Expires: authExpires, Token: authToken}
 		_, err = db.Db.Exec("INSERT INTO tokens (user_id, token, token_expires) VALUES ($1, $2, $3)", id, authToken, authExpires)
 		if err != nil {

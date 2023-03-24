@@ -9,6 +9,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/logger"
+	"github.com/asianchinaboi/backendserver/internal/schedule"
 )
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 	defer db.Db.Close()
 
 	server := api.StartServer()
+	schedule.Start()
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {

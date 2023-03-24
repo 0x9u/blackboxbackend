@@ -39,7 +39,7 @@ func createGuild(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}

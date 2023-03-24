@@ -90,7 +90,7 @@ func Edit(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
@@ -104,7 +104,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	timestamp := time.Now().UnixMilli()
+	timestamp := time.Now().Unix()
 
 	if isRequestId {
 

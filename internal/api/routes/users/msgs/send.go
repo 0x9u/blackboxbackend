@@ -64,7 +64,7 @@ func Send(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
@@ -72,7 +72,7 @@ func Send(c *gin.Context) {
 	msg.Content = strings.TrimSpace(msg.Content)
 	//screw off html
 	msg.Content = html.EscapeString(msg.Content) //prevents xss attacks
-	msg.Created = time.Now().UnixMilli()
+	msg.Created = time.Now().Unix()
 	logger.Debug.Printf("Message recieved %s\n", msg.Content)
 	if len(msg.Content) == 0 {
 		logger.Error.Println(errors.ErrNoMsgContent)

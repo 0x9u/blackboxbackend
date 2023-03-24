@@ -49,7 +49,7 @@ func Get(c *gin.Context) { //sends message history
 	timestamp := urlVars.Get("time")
 
 	if timestamp == "" {
-		timestamp = fmt.Sprintf("%v", time.Now().UnixMilli())
+		timestamp = fmt.Sprintf("%v", time.Now().Unix())
 	}
 
 	if limit == "" {

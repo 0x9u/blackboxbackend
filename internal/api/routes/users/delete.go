@@ -34,7 +34,7 @@ func userDelete(c *gin.Context) {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusBadJSON,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
@@ -114,6 +114,7 @@ func userDelete(c *gin.Context) {
 	defer msgGuildRows.Close()
 
 	//remove guilds owned by user
+	//TODO: schedule for mass deletion for files later
 	if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE guild_id IN (SELECT guild_id FROM userguilds WHERE AND user_id = $1)", user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -171,6 +172,7 @@ func userDelete(c *gin.Context) {
 	}
 
 	//deletes the direct messages associated with the user and the other user
+	//TODO: schedule for mass deletion for files later
 	if _, err := tx.ExecContext(ctx, `DELETE FROM userdirectmsgsguild WHERE dm_id IN
 		 (DELETE FROM directmsgsguild WHERE id IN 
 			(DELETE FROM userdirectmsgsguild WHERE user_id = $1 RETURNING dm_id)
