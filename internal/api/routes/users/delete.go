@@ -3,7 +3,9 @@ package users
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -81,17 +83,7 @@ func userDelete(c *gin.Context) {
 		}
 	}() //rollback changes if failed
 
-	if _, err := tx.ExecContext(ctx, "DELETE FROM tokens WHERE user_id = $1", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	//removes user from non-owned guilds
-	guildRows, err := tx.QueryContext(ctx, "WITH guildIds AS (DELETE FROM userguilds WHERE user_id = $1 AND owner = false) SELECT DISTINCT guild_id FROM guildIds", user.Id)
+	guildRows, err := tx.QueryContext(ctx, "SELECT guild_id FROM userguilds WHERE user_id = $1", user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -102,7 +94,7 @@ func userDelete(c *gin.Context) {
 	}
 	defer guildRows.Close()
 
-	msgGuildRows, err := tx.QueryContext(ctx, "WITH guildIds AS (DELETE FROM messages WHERE user_id = $1 RETURNING guild_id) SELECT DISTINCT guild_id FROM guildIds ", user.Id)
+	msgGuildRows, err := tx.QueryContext(ctx, "SELECT DISTINCT guild_id FROM msgs WHERE user_id = $1 ", user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -113,35 +105,7 @@ func userDelete(c *gin.Context) {
 	}
 	defer msgGuildRows.Close()
 
-	//remove guilds owned by user
-	//TODO: schedule for mass deletion for files later
-	if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE guild_id IN (SELECT guild_id FROM userguilds WHERE AND user_id = $1)", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if _, err := tx.ExecContext(ctx, "DELETE FROM invites WHERE guild_id IN (SELECT guild_id FROM userguilds WHERE AND user_id = $1)", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	//probs slow
-	//dont need to check if owner true since we already deleted all guild association that isnt owner
-
-	//this crazy query deletes all guilds that the user owns and deletes all guild user association for all users including owner
-	ownedGuildRows, err := tx.QueryContext(ctx, `
-	DELETE FROM guilds WHERE id IN 
-		( DELETE FROM userguilds WHERE guild_id IN ( 
-			SELECT guild_id FROM userguilds WHERE user_id = $1 )
-	) RETURNING id`, user.Id) //id is all unique from guilds no need for with clause
+	ownedGuildRows, err := tx.QueryContext(ctx, `DELETE FROM guilds u INNER JOIN userguilds ug ON g.id = ug.guild_id WHERE ug.owner = true AND ug.user_id = $1 RETURNING u.id`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -161,8 +125,12 @@ func userDelete(c *gin.Context) {
 		return
 	}
 
-	//delete roles associated with user
-	if _, err := tx.ExecContext(ctx, "DELETE FROM userroles WHERE user_id = $1", user.Id); err != nil {
+	fileIds, err := tx.QueryContext(ctx, `DELETE FROM files f 
+	WHERE NOT EXISTS (SELECT 1 FROM directmsgfiles dmf WHERE f.id = dmf.file_id) 
+	AND NOT EXISTS (SELECT 1 FROM msgfiles mf WHERE f.id = mf.file_id) 
+	AND NOT EXISTS (SELECT 1 FROM users u WHERE f.id = u.image_id) 
+	AND NOT EXISTS (SELECT 1 FROM guilds g WHERE f.id = g.image_id) RETURNING f.id`, user.Id)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -170,20 +138,7 @@ func userDelete(c *gin.Context) {
 		})
 		return
 	}
-
-	//deletes the direct messages associated with the user and the other user
-	//TODO: schedule for mass deletion for files later
-	if _, err := tx.ExecContext(ctx, `DELETE FROM userdirectmsgsguild WHERE dm_id IN
-		 (DELETE FROM directmsgsguild WHERE id IN 
-			(DELETE FROM userdirectmsgsguild WHERE user_id = $1 RETURNING dm_id)
-			 RETURNING id)`, user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
+	defer fileIds.Close()
 
 	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
@@ -192,6 +147,21 @@ func userDelete(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	for fileIds.Next() {
+		var fileId int64
+		if err := fileIds.Scan(&fileId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+			logger.Warn.Printf("unable to remove file: %v\n", err)
+		}
 	}
 
 	for guildRows.Next() {
