@@ -44,6 +44,18 @@ CREATE TABLE public.blocked (
 ALTER TABLE public.blocked OWNER TO postgres;
 
 --
+-- Name: directmsgfiles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.directmsgfiles (
+    directmsg_id bigint,
+    file_id bigint
+);
+
+
+ALTER TABLE public.directmsgfiles OWNER TO postgres;
+
+--
 -- Name: directmsgs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -79,6 +91,21 @@ COMMENT ON TABLE public.directmsgsguild IS 'This is referenced by userdirectmsgs
 
 
 --
+-- Name: files; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.files (
+    id bigint NOT NULL,
+    filename character varying(4096),
+    created bigint,
+    temp boolean,
+    filesize integer
+);
+
+
+ALTER TABLE public.files OWNER TO postgres;
+
+--
 -- Name: friends; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -99,8 +126,8 @@ ALTER TABLE public.friends OWNER TO postgres;
 CREATE TABLE public.guilds (
     id bigint NOT NULL,
     name character varying(16) NOT NULL,
-    icon integer DEFAULT 0,
-    save_chat boolean DEFAULT true NOT NULL
+    save_chat boolean DEFAULT true NOT NULL,
+    image_id bigint
 );
 
 
@@ -117,6 +144,18 @@ CREATE TABLE public.invites (
 
 
 ALTER TABLE public.invites OWNER TO postgres;
+
+--
+-- Name: msgfiles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.msgfiles (
+    msg_id bigint,
+    file_id bigint
+);
+
+
+ALTER TABLE public.msgfiles OWNER TO postgres;
 
 --
 -- Name: msgs; Type: TABLE; Schema: public; Owner: postgres
@@ -303,7 +342,8 @@ CREATE TABLE public.users (
     email character varying(128) NOT NULL,
     password character varying(64) NOT NULL,
     username character varying(32),
-    flags integer DEFAULT 0
+    flags integer DEFAULT 0,
+    image_id bigint
 );
 
 
@@ -329,6 +369,14 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 ALTER TABLE ONLY public.directmsgs
     ADD CONSTRAINT directmessages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: files files_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_pkey PRIMARY KEY (id);
 
 
 --
@@ -412,35 +460,75 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: directmsgs directmessages_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: directmsgs directmsgs_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.directmsgs
-    ADD CONSTRAINT directmessages_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id);
+    ADD CONSTRAINT directmsgs_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
 
 
 --
--- Name: directmsgs directmessages_sender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: directmsgs directmsgs_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.directmsgs
-    ADD CONSTRAINT directmessages_sender_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT directmsgs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: blocked fk_blocked_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: blocked fk_blocked_blocked_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.blocked
-    ADD CONSTRAINT fk_blocked_id FOREIGN KEY (blocked_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_blocked_blocked_id FOREIGN KEY (blocked_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: userguilds fk_guild_userguild; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: blocked fk_blocked_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.userguilds
-    ADD CONSTRAINT fk_guild_userguild FOREIGN KEY (guild_id) REFERENCES public.guilds(id);
+ALTER TABLE ONLY public.blocked
+    ADD CONSTRAINT fk_blocked_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: directmsgfiles fk_directmsg_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directmsgfiles
+    ADD CONSTRAINT fk_directmsg_id FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id);
+
+
+--
+-- Name: directmsgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directmsgfiles
+    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id);
+
+
+--
+-- Name: msgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.msgfiles
+    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: guilds fk_image_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.guilds
+    ADD CONSTRAINT fk_image_id FOREIGN KEY (image_id) REFERENCES public.files(id) ON DELETE SET NULL;
+
+
+--
+-- Name: users fk_image_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_image_id FOREIGN KEY (image_id) REFERENCES public.files(id) ON DELETE SET NULL;
 
 
 --
@@ -448,7 +536,7 @@ ALTER TABLE ONLY public.userguilds
 --
 
 ALTER TABLE ONLY public.invites
-    ADD CONSTRAINT fk_invite_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id);
+    ADD CONSTRAINT fk_invite_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
 
 
 --
@@ -456,7 +544,15 @@ ALTER TABLE ONLY public.invites
 --
 
 ALTER TABLE ONLY public.msgs
-    ADD CONSTRAINT fk_msg_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id);
+    ADD CONSTRAINT fk_msg_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: msgfiles fk_msg_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.msgfiles
+    ADD CONSTRAINT fk_msg_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
 
 
 --
@@ -464,7 +560,15 @@ ALTER TABLE ONLY public.msgs
 --
 
 ALTER TABLE ONLY public.msgs
-    ADD CONSTRAINT fk_msg_user FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_msg_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tokens fk_token_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tokens
+    ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -472,7 +576,7 @@ ALTER TABLE ONLY public.msgs
 --
 
 ALTER TABLE ONLY public.unreadmsgs
-    ADD CONSTRAINT fk_unreadmsg_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id);
+    ADD CONSTRAINT fk_unreadmsg_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
 
 
 --
@@ -480,79 +584,87 @@ ALTER TABLE ONLY public.unreadmsgs
 --
 
 ALTER TABLE ONLY public.unreadmsgs
-    ADD CONSTRAINT fk_unreadmsg_user FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_unreadmsg_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: blocked fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.blocked
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: tokens fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.tokens
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: userguilds fk_user_userguild; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: userguilds fk_userguild_guild; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.userguilds
-    ADD CONSTRAINT fk_user_userguild FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_userguild_guild FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: friends friends_friend_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: userguilds fk_userguild_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.userguilds
+    ADD CONSTRAINT fk_userguild_user FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: userroles fk_userrole_role_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.userroles
+    ADD CONSTRAINT fk_userrole_role_id FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: userroles fk_userrole_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.userroles
+    ADD CONSTRAINT fk_userrole_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: friends friend_friend_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.friends
-    ADD CONSTRAINT friends_friend_id_fkey FOREIGN KEY (friend_id) REFERENCES public.users(id);
+    ADD CONSTRAINT friend_friend_id_fkey FOREIGN KEY (friend_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: friends friends_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: friends friend_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.friends
-    ADD CONSTRAINT friends_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT friend_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: rolepermissions rolepermissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rolepermissions
-    ADD CONSTRAINT rolepermissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES public.permissions(id);
-
-
---
--- Name: rolepermissions rolepermissions_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: rolepermissions rolepermission_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rolepermissions
-    ADD CONSTRAINT rolepermissions_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);
+    ADD CONSTRAINT rolepermission_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES public.permissions(id) ON DELETE CASCADE;
 
 
 --
--- Name: unreaddirectmsgs unreaddirectmsgs_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: rolepermissions rolepermission_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rolepermissions
+    ADD CONSTRAINT rolepermission_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: unreaddirectmsgs unreaddirectmsg_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.unreaddirectmsgs
-    ADD CONSTRAINT unreaddirectmsgs_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id);
+    ADD CONSTRAINT unreaddirectmsg_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
 
 
 --
--- Name: unreaddirectmsgs unreaddirectmsgs_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: unreaddirectmsgs unreaddirectmsg_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.unreaddirectmsgs
-    ADD CONSTRAINT unreaddirectmsgs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT unreaddirectmsg_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -560,7 +672,7 @@ ALTER TABLE ONLY public.unreaddirectmsgs
 --
 
 ALTER TABLE ONLY public.userdirectmsgsguild
-    ADD CONSTRAINT userdirectmsgsguild_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id);
+    ADD CONSTRAINT userdirectmsgsguild_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
 
 
 --
@@ -568,23 +680,7 @@ ALTER TABLE ONLY public.userdirectmsgsguild
 --
 
 ALTER TABLE ONLY public.userdirectmsgsguild
-    ADD CONSTRAINT userdirectmsgsguild_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: userroles userroles_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.userroles
-    ADD CONSTRAINT userroles_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);
-
-
---
--- Name: userroles userroles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.userroles
-    ADD CONSTRAINT userroles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT userdirectmsgsguild_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
