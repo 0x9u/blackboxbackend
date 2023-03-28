@@ -75,7 +75,6 @@ func Get(c *gin.Context) { //sends message history
 		return
 	}
 
-	logger.Debug.Printf("limit: %v, timestamp %v\n", limit, timestamp)
 	rows, err := db.Db.Query(
 		`SELECT m.*, u.username
 		FROM msgs m INNER JOIN users u 

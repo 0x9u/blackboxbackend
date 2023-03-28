@@ -1,8 +1,12 @@
 package msgs
 
 import (
+	"context"
+	"fmt"
 	"html"
+	"io"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -18,6 +22,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
+	"github.com/pierrec/lz4/v4"
 )
 
 func Send(c *gin.Context) {
@@ -69,10 +74,28 @@ func Send(c *gin.Context) {
 		return
 	}
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
 	msg.Content = strings.TrimSpace(msg.Content)
 	//screw off html
 	msg.Content = html.EscapeString(msg.Content) //prevents xss attacks
 	msg.Created = time.Now().Unix()
+	msg.MsgId = uid.Snowflake.Generate().Int64()
 	logger.Debug.Printf("Message recieved %s\n", msg.Content)
 	if len(msg.Content) == 0 {
 		logger.Error.Println(errors.ErrNoMsgContent)
@@ -81,6 +104,105 @@ func Send(c *gin.Context) {
 			Status: errors.StatusNoMsgContent,
 		})
 		return
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusBadRequest,
+		})
+		return
+	}
+
+	files := form.File["files[]"]
+	msg.Attachments = []events.Attachment{}
+	fileIds := []int64{}
+	fileSucessful := false
+	defer func() {
+		if !fileSucessful {
+			for _, id := range fileIds {
+				if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", id)); err != nil {
+					logger.Warn.Printf("unable to remove file: %v\n", err)
+				}
+			}
+		}
+	}()
+
+	for _, file := range files {
+		var attachment events.Attachment
+		attachment.Filename = file.Filename
+		attachment.Id = uid.Snowflake.Generate().Int64()
+		msg.Attachments = append(msg.Attachments, attachment)
+		//compress the file using LZ4 now
+
+		fileContents, err := file.Open()
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		defer fileContents.Close()
+		fileBytes, err := io.ReadAll(fileContents)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		filesize := len(fileBytes)
+		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
+		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		fileIds = append(fileIds, attachment.Id)
+
+		outFile, err := os.Create(fmt.Sprintf("uploads/%d.lz4", attachment.Id))
+		//TODO: delete files if failed or write them after when its deemed successful
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		defer outFile.Close()
+
+		_, err = outFile.Write(compressedBuffer)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		//make files temporary if chat messages save turned off
+
+		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, msg.Created, true, filesize); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		msg.Attachments = append(msg.Attachments, attachment)
 	}
 
 	if len(msg.Content) > config.Config.Guild.MaxMsgLength {
@@ -92,9 +214,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	msg.MsgId = uid.Snowflake.Generate().Int64()
-
-	if _, err := db.Db.Exec("INSERT INTO directmsgs (id, content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, dmId, msg.Created); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO directmsgs (id, content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, dmId, msg.Created); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

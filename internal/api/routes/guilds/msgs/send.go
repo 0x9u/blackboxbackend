@@ -117,6 +117,7 @@ func Send(c *gin.Context) {
 	//screw off html
 	msg.Content = html.EscapeString(msg.Content) //prevents xss attacks
 	msg.Created = time.Now().Unix()
+	msg.MsgId = uid.Snowflake.Generate().Int64()
 	//check if attachments uploaded
 
 	form, err := c.MultipartForm()
@@ -226,6 +227,14 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
+		if _, err := tx.ExecContext(ctx, "INSERT INTO msgfiles (file_id, msg_id) VALUES ($1, $2)", attachment.Id, msg.MsgId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 		msg.Attachments = append(msg.Attachments, attachment)
 	}
 
@@ -247,8 +256,6 @@ func Send(c *gin.Context) {
 		})
 		return
 	}
-
-	msg.MsgId = uid.Snowflake.Generate().Int64()
 
 	if isChatSaveOn {
 		if _, err := tx.ExecContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, guildId, msg.Created); err != nil {

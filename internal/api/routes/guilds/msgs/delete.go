@@ -2,6 +2,7 @@ package msgs
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
@@ -137,6 +138,8 @@ func Delete(c *gin.Context) { //deletes message
 		}
 	}() //rollback changes if failed
 
+	var fileRows *sql.Rows
+
 	//theortically if the user did not have chat saved and ran this request it would still work
 	if isRequestId {
 		var isChatSaved bool
@@ -186,7 +189,8 @@ func Delete(c *gin.Context) { //deletes message
 			return
 		}
 
-		fileRows, err := db.Db.QueryContext(ctx, "DELETE FROM files f WHERE EXISTS(SELECT 1 FROM msgfiles mf WHERE mf.msg_id = $1 AND f.id = mf.file_id) RETURNING f.id", msgId)
+		//delete files associated with msg
+		fileRows, err := tx.QueryContext(ctx, "DELETE FROM files f WHERE NOT EXISTS(SELECT 1 FROM msgfiles mf WHERE mf.msg_id = $1 AND f.id = mf.file_id) RETURNING f.id", msgId)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -196,25 +200,6 @@ func Delete(c *gin.Context) { //deletes message
 			return
 		}
 		defer fileRows.Close()
-		for fileRows.Next() {
-			var fileId int64
-			if err := fileRows.Scan(&fileId); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
-				return
-			}
-			if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
-				return
-			}
-		}
 	}
 
 	var requestId string
@@ -242,6 +227,28 @@ func Delete(c *gin.Context) { //deletes message
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	if fileRows != nil { //if there are files to delete
+		for fileRows.Next() {
+			var fileId int64
+			if err := fileRows.Scan(&fileId); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+		}
 	}
 
 	res := wsclient.DataFrame{
@@ -286,8 +293,8 @@ func Clear(c *gin.Context) {
 		})
 		return
 	}
+
 	var isOwner bool
-	var isChatSaved bool
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -305,7 +312,7 @@ func Clear(c *gin.Context) {
 		return
 	}
 
-	if err := db.Db.QueryRow("SELECT save_chat from guilds where id = $1", guildId).Scan(&isChatSaved); err != nil {
+	if _, err := db.Db.Exec("DELETE FROM msgs WHERE guild_id = $1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -314,17 +321,6 @@ func Clear(c *gin.Context) {
 		return
 	}
 
-	if isChatSaved {
-		if _, err := db.Db.Exec("DELETE FROM msgs WHERE guild_id = $1", guildId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-
-	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Guild{
