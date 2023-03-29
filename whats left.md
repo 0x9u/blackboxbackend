@@ -30,6 +30,8 @@
 - persist typing state for guild and users
 - add blocked users - done
     - block msg from blocked users including dms
+
+- add give admin for guilds
 - add mentioning in msgs
 
 
