@@ -54,10 +54,10 @@ func deleteGuild(c *gin.Context) {
 		return
 	}
 	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}

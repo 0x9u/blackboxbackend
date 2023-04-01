@@ -2,6 +2,7 @@ package msgs
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"html"
 	"io"
@@ -255,6 +256,50 @@ func Send(c *gin.Context) {
 			Status: errors.StatusMsgTooLong,
 		})
 		return
+	}
+
+	//finding mentions
+	mentions := events.MentionExp.FindAllString(msg.Content, -1)
+	if len(mentions) > 0 {
+		for _, mention := range mentions {
+			mentionUserId, err := strconv.ParseInt(mention, 10, 64)
+			if err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusBadRequest, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusBadRequest,
+				})
+				return
+			}
+			var mentionUser events.User
+			mentionUser.UserId = mentionUserId
+			if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", mentionUserId).Scan(&mentionUser.Name); err != nil && err != sql.ErrNoRows {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			} else if err == sql.ErrNoRows {
+				logger.Error.Println(errors.ErrUserNotFound)
+				c.JSON(http.StatusBadRequest, errors.Body{
+					Error:  errors.ErrUserNotFound.Error(),
+					Status: errors.StatusBadRequest,
+				})
+				return
+			}
+
+			if _, err := tx.ExecContext(ctx, "INSERT IGNORE INTO msgmentions (msg_id, user_id) VALUES ($1, $2)", msg.MsgId, mentionUserId); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+
+			msg.Mentions = append(msg.Mentions, mentionUser)
+		}
 	}
 
 	if isChatSaveOn {

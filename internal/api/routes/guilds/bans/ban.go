@@ -89,10 +89,10 @@ func Ban(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
+	var hasAuth bool
 	var isBanned bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true), EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id=$3 AND banned = true)", guildId, user.Id, userId).Scan(&isOwner, &isBanned); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id=$3 AND banned = true)", guildId, user.Id, userId).Scan(&hasAuth, &isBanned); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -108,11 +108,11 @@ func Ban(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+	if !hasAuth {
+		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}
@@ -134,19 +134,36 @@ func Ban(c *gin.Context) {
 		})
 		return
 	}
-	res := wsclient.DataFrame{
-		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
-			GuildId: intGuildId,
-			UserId:  intUserId,
-			UserData: &events.User{
-				UserId: intUserId,
-				Name:   username,
-				Icon:   0,
-			},
-		},
-		Event: events.ADD_USER_BANLIST,
+
+	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true OR admin = true", guildId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
+	defer rows.Close()
+	for rows.Next() {
+		var adminUserId int64
+		rows.Scan(&adminUserId)
+		res := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.UserGuild{
+				GuildId: intGuildId,
+				UserId:  intUserId,
+				UserData: &events.User{
+					UserId: intUserId,
+					Name:   username,
+					Icon:   0,
+				},
+			},
+			Event: events.ADD_USER_BANLIST,
+		}
+		wsclient.Pools.BroadcastClient(adminUserId, res)
+	}
+
 	banRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Guild{
@@ -163,7 +180,6 @@ func Ban(c *gin.Context) {
 		Event: events.REMOVE_USER_GUILDLIST,
 	}
 	wsclient.Pools.BroadcastClient(intUserId, banRes)
-	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, intUserId)
 	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
 	c.Status(http.StatusNoContent)

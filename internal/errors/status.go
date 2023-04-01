@@ -18,7 +18,9 @@ const (
 	StatusAlreadyBanned
 	StatusUserNotBanned
 	StatusCantLeaveOwnGuild
-	StatusNotGuildOwner
+	StatusNotGuildAuthorised
+	StatusAlreadyOwner
+	StatusAlreadyAdmin
 
 	StatusGuildSaveChatOn
 	StatusGuildNotProvided

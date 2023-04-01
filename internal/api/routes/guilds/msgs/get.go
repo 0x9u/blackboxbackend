@@ -79,6 +79,7 @@ func Get(c *gin.Context) { //sends message history
 		`SELECT m.*, u.username
 		FROM msgs m INNER JOIN users u 
 		ON u.id = m.user_id 
+		ON u.id = mm.msg_id 
 		WHERE created < $1 AND guild_id = $2 
 		ORDER BY created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
 		timestamp, guildId, limit)
@@ -108,6 +109,28 @@ func Get(c *gin.Context) { //sends message history
 			})
 			return
 		}
+		mentions, err := db.Db.Query(`SELECT mm.user_id, u.username FROM msgmentions mm INNER JOIN users u ON u.id = mm.user_id WHERE msg_id = $1`, message.MsgId)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		for mentions.Next() {
+			var mentionUser events.User
+			if err := mentions.Scan(&mentionUser.UserId, &mentionUser.Name); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			message.Mentions = append(message.Mentions, mentionUser)
+		}
+		mentions.Close()
 		message.MsgSaved = true
 		messages = append(messages, message)
 	}

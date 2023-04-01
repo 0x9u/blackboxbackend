@@ -86,9 +86,9 @@ func Delete(c *gin.Context) { //deletes message
 		return
 	}
 
-	var isOwner bool
+	var hasAuth bool
 	var isAuthor bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -96,14 +96,7 @@ func Delete(c *gin.Context) { //deletes message
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
-		})
-		return
-	}
+
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2)", msgId, user.Id).Scan(&isAuthor); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -112,11 +105,11 @@ func Delete(c *gin.Context) { //deletes message
 		})
 		return
 	}
-	if !isOwner && !isAuthor {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+	if !hasAuth && !isAuthor {
+		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}
@@ -294,8 +287,8 @@ func Clear(c *gin.Context) {
 		return
 	}
 
-	var isOwner bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	var hasAuth bool
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -303,11 +296,11 @@ func Clear(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
-		logger.Error.Println(errors.ErrNotGuildOwner)
+	if !hasAuth {
+		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}

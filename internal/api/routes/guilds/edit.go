@@ -73,7 +73,8 @@ func editGuild(c *gin.Context) {
 
 	var exists bool
 	var isOwner bool
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT * FROM guilds WHERE id = $1), EXISTS(SELECT * FROM userguilds WHERE user_id=$2 and guild_id=$1 and owner = true)", guildId, user.Id).Scan(&exists, &isOwner); err != nil {
+	var isAdmin bool
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM guilds WHERE id = $1), EXISTS(SELECT 1 FROM userguilds WHERE user_id=$2 and guild_id=$1 and owner = true), EXISTS (SELECT 1 FROM userguilds WHERE user_id=$2 AND guild=$1 AND admin = true)", guildId, user.Id).Scan(&exists, &isOwner, &isAdmin); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -88,10 +89,10 @@ func editGuild(c *gin.Context) {
 		})
 		return
 	}
-	if !isOwner {
+	if !isOwner && !isAdmin {
 		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildOwner.Error(),
-			Status: errors.StatusNotGuildOwner,
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}
@@ -216,11 +217,11 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
-		if !isOwner {
-			logger.Error.Println(errors.ErrNotGuildOwner)
+		if isOwner {
+			logger.Error.Println(errors.ErrAlreadyOwner)
 			c.JSON(http.StatusForbidden, errors.Body{
-				Error:  errors.ErrNotGuildOwner.Error(),
-				Status: errors.StatusNotGuildOwner,
+				Error:  errors.ErrAlreadyOwner.Error(),
+				Status: errors.StatusAlreadyOwner,
 			})
 			return
 		}

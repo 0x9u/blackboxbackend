@@ -20,13 +20,15 @@ var (
 
 	ErrInvalidGuildName = errors.New("guild: invalid name")
 
-	ErrNotInGuild        = errors.New("guild: user is not in guild")
-	ErrAlreadyInGuild    = errors.New("guild: user is already in guild or is banned")
-	ErrCantKickBanSelf   = errors.New("guild: you can't kick or ban yourself")
-	ErrAlreadyBanned     = errors.New("guild: user is already banned")
-	ErrUserNotBanned     = errors.New("guild: user is not banned")
-	ErrCantLeaveOwnGuild = errors.New("guild: you can't leave your own guild")
-	ErrNotGuildOwner     = errors.New("guild: user is not owner")
+	ErrNotInGuild         = errors.New("guild: user is not in guild")
+	ErrAlreadyInGuild     = errors.New("guild: user is already in guild or is banned")
+	ErrCantKickBanSelf    = errors.New("guild: you can't kick or ban yourself")
+	ErrAlreadyBanned      = errors.New("guild: user is already banned")
+	ErrUserNotBanned      = errors.New("guild: user is not banned")
+	ErrCantLeaveOwnGuild  = errors.New("guild: you can't leave your own guild")
+	ErrNotGuildAuthorised = errors.New("guild: user is not authorised")
+	ErrAlreadyOwner       = errors.New("guild: already owner")
+	ErrAlreadyAdmin       = errors.New("guild: already admin")
 
 	//GUILD AND MISC
 

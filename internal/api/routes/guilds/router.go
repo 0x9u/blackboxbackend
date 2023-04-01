@@ -2,6 +2,7 @@ package guilds
 
 import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/admins"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members"
@@ -22,6 +23,9 @@ func Routes(r *gin.RouterGroup) {
 
 	guilds.GET("/:guildId/members", members.Get)
 	guilds.DELETE("/:guildId/members/:userId", members.Kick)
+
+	guilds.PUT("/:guildId/admins/:userId", admins.Create)
+	guilds.DELETE("/:guildId/admins/:userId", admins.Delete)
 
 	guilds.GET("/:guildId/msgs", msgs.Get)
 	guilds.POST("/:guildId/msgs", msgs.Send)
