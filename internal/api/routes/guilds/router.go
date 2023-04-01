@@ -26,6 +26,7 @@ func Routes(r *gin.RouterGroup) {
 
 	guilds.PUT("/:guildId/admins/:userId", admins.Create)
 	guilds.DELETE("/:guildId/admins/:userId", admins.Delete)
+	guilds.GET("/:guildId/admins", admins.Get)
 
 	guilds.GET("/:guildId/msgs", msgs.Get)
 	guilds.POST("/:guildId/msgs", msgs.Send)
