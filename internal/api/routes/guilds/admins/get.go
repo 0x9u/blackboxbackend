@@ -59,23 +59,6 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var hasAuth bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND owner = true OR admin = true) ", user.Id, guildId).Scan(hasAuth); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !hasAuth {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
-		return
-	}
 	var admins []events.User
 	rows, err := db.Db.Query("SELECT ug.user_id, u.username FROM userguilds ug INNER JOIN users u ON u.id = ug.user_id WHERE guild_id=$1 AND admin = true", guildId)
 	if err != nil {

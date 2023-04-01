@@ -9,9 +9,11 @@
 - Add badges for users
 
 - Remove 6 character limit - done
-- Have file support - sorta
-    - add file deletion for messages
-    - add files for user and server profiles
+- Have file support - done
+    - add file deletion for messages - done
+    - add files for user and server profiles - done
+    - add compression (LZ4) - done
+    - schedule deleton for temp files - done
 - Have captcha on backend
 - Have games support (single player)
 - multiplayer games
@@ -28,11 +30,16 @@
     - Make new tables - done
 - add friend requests - done
 - persist typing state for guild and users
+
 - add blocked users - done
     - block msg from blocked users including dms
 
-- add give admin for guilds
-- add mentioning in msgs
+- add friending restrictions
+
+- add give admin for guilds - done
+- add mentioning in msgs - sorta
+    - remove duplicate mentions in one msg
+    - show total mentions in unread
 
 
 
