@@ -195,7 +195,7 @@ func Send(c *gin.Context) {
 
 		//make files temporary if chat messages save turned off
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, msg.Created, true, filesize); err != nil {
+		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, msg.Created, false, filesize); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -259,6 +259,15 @@ func Send(c *gin.Context) {
 	}
 
 	if _, err := tx.ExecContext(ctx, "INSERT INTO directmsgs (id, content, sender_id, dm_id, created) VALUES ($1, $2, $3, $4, $5)", msg.MsgId, msg.Content, user.Id, dmId, msg.Created); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

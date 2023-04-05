@@ -60,7 +60,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	rows, err := db.Db.Query("SELECT users.username, users.id FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
+	rows, err := db.Db.Query("SELECT users.username, users.id, admin FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -81,7 +81,7 @@ func Get(c *gin.Context) {
 	}
 	for rows.Next() {
 		var user events.Member
-		err = rows.Scan(&user.UserInfo.Name, &user.UserInfo.UserId)
+		err = rows.Scan(&user.UserInfo.Name, &user.UserInfo.UserId, &user.Admin)
 		user.UserInfo.Icon = 0 //placeholder until upload is implemented
 		user.GuildId = intGuildId
 		if err != nil {
