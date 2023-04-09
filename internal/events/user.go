@@ -13,6 +13,7 @@ type User struct {
 	Password string `json:"password,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Flags    *int   `json:"flags,omitempty"`
+	Options  *int   `json:"options,omitempty"`
 }
 
 type Member struct { //may use for nicks later
@@ -22,7 +23,7 @@ type Member struct { //may use for nicks later
 }
 
 /*
-* flags
+* flags 32 bit
 * 0x01 developer
 * 0x02 moderator
 * 0x04 tester
@@ -38,6 +39,24 @@ const (
 	FLmoderator
 	FLtester
 	FLfirstUser
+)
+
+/*
+* options 32 bit
+* 0x01 allow_same_chat
+* 0x02 allow_friends_of_friends
+* 0x04 allow_requests_everyone
+* 0x08 allow_dms_chat_members
+* 0x10 automatically_play_gifs
+* rest is reserved
+ */
+
+const (
+	OAllowSameChat = 1 << iota
+	OAllowFriendsOfFriends
+	OAllowRequestEveryone
+	OAllowDmsChatMembers
+	OAutoPlayGifs
 )
 
 func ValidateUserInput(body User) (errors.StatusCode, error) {

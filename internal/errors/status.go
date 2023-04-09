@@ -35,6 +35,7 @@ const (
 	StatusFriendAlreadyRequested
 	StatusFriendRequestNotFound
 	StatusFriendInvalid
+	StatusFriendCannotRequest
 
 	StatusUserNotBlocked
 

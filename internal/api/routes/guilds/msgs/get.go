@@ -96,7 +96,7 @@ func Get(c *gin.Context) { //sends message history
 	for rows.Next() {
 		message := events.Msg{}
 		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
-			&message.GuildId, &message.Created, &message.Modified, &message.Author.Name)
+			&message.GuildId, &message.Created, &message.Modified, &message.MentionsEveryone, &message.Author.Name)
 		if message.Modified == 0 { //to make it show in json
 			message.Modified = -1
 		}

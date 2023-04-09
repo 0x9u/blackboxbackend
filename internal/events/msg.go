@@ -9,17 +9,18 @@ type UnreadMsg struct {
 }
 
 type Msg struct { //id and request id not omitted for checking purposes
-	MsgId       int64        `json:"id"`
-	Author      User         `json:"author,omitempty"`  // author id aka user id
-	Content     string       `json:"content"`           // message content
-	GuildId     int64        `json:"guildId,omitempty"` // Chat id
-	DmId        int64        `json:"dmId,omitempty"`    // Dm id
-	Created     int64        `json:"created,omitempty"`
-	Modified    int64        `json:"modified,omitempty"`
-	MsgSaved    bool         `json:"msgSaved,omitempty"` //shows if the message is saved or not
-	RequestId   string       `json:"requestId"`
-	Mentions    []User       `json:"mentions"`
-	Attachments []Attachment `json:"attachments"`
+	MsgId            int64        `json:"id"`
+	Author           User         `json:"author,omitempty"`  // author id aka user id
+	Content          string       `json:"content"`           // message content
+	GuildId          int64        `json:"guildId,omitempty"` // Chat id
+	DmId             int64        `json:"dmId,omitempty"`    // Dm id
+	Created          int64        `json:"created,omitempty"`
+	Modified         int64        `json:"modified,omitempty"`
+	MsgSaved         bool         `json:"msgSaved,omitempty"` //shows if the message is saved or not
+	RequestId        string       `json:"requestId"`
+	MentionsEveryone bool         `json:"mentionsEveryone"`
+	Mentions         []User       `json:"mentions"`
+	Attachments      []Attachment `json:"attachments"`
 }
 
 type Attachment struct {
@@ -29,3 +30,4 @@ type Attachment struct {
 }
 
 var MentionExp = regexp.MustCompile(`\<\@(\d+)\>`)
+var MentionEveryoneExp = regexp.MustCompile(`\@everyone`)

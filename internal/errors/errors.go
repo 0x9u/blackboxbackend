@@ -48,6 +48,7 @@ var (
 	ErrFriendAlreadyRequested = errors.New("friend: already requested")
 	ErrFriendRequestNotFound  = errors.New("friend: request not found")
 	ErrFriendInvalid          = errors.New("friend: invalid friend")
+	ErrFriendCannotRequest    = errors.New("friend: cannot request")
 
 	//BLOCKED
 	ErrUserNotBlocked = errors.New("blocked: user not blocked")

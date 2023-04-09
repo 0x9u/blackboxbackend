@@ -20,6 +20,7 @@ type editSelfBody struct {
 	OldPassword *string `json:"oldPassword"`
 	Email       *string `json:"email"`
 	Username    *string `json:"username"`
+	Options     *int    `json:"options"`
 }
 
 func editSelf(c *gin.Context) {
@@ -163,6 +164,17 @@ func editSelf(c *gin.Context) {
 			return
 		}
 		newUserInfo.Name = *body.Username
+	}
+	if body.Options != nil {
+		if _, err := tx.ExecContext(ctx, "UPDATE users SET options=$1 WHERE id=$2", *body.Options, user.Id); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		newUserInfo.Options = body.Options
 	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
