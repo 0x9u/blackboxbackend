@@ -26,11 +26,14 @@ func Get(c *gin.Context) {
 
 	rows, err := db.Db.Query(`
 		SELECT udmg.dm_id, udmg.user_id, u.username 
-		udm.msg_id AS last_read_msg_id, COUNT(dm.id) filter (WHERE dm.id > udm.msg_id) AS unread_msgs, udm.time
+		udm.msg_id AS last_read_msg_id, COUNT(dm.id) filter (WHERE dm.id > udm.msg_id) AS unread_msgs,
+		COUNT(dmm.msg_id) filter (WHERE dmm.user_id = $1 AND dmm.msg_id > udm.msg_id) + 
+		COUNT(dm.msg_id) filter (WHERE dm.mentions_everyone = true AND dm.msg_id > udm.msg_id) AS mentions, udm.time
 		FROM userdirectmsgsguilds udmg 
 		INNER JOIN users u ON u.id = udm.user_id 
 		INNER JOIN unreaddirectmsgs udm ON udm.dm_id = udmg.dm_id AND un.user_id = $1
-		INNER JOIN directmsgs dm ON dm.id = udm.msg_id 
+		LEFT JOIN directmsgs dm ON dm.id = udm.msg_id 
+		LEFT JOIN directmsgmentions dmm ON dmm.msg_id = dm.id 
 		WHERE udmg.dm_id IN (SELECT dm_id FROM userdirectmsgsguilds WHERE user_id=$1 AND left_dm = false) AND udmg.user_id != $1
 	`, user.Id)
 	if err != nil {
