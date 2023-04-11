@@ -1,7 +1,10 @@
 package users
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -81,16 +84,9 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("DELETE FROM tokens WHERE user_id = $1", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	//no need to remove user from guild since we are disconnecting the user anyways
-	rows, err := db.Db.Query("WITH guildIds AS (DELETE FROM userguilds WHERE user_id = $1 AND owner = false) SELECT DISTINCT guild_id FROM guildIds", userId)
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -99,9 +95,117 @@ func Delete(c *gin.Context) {
 		})
 		return
 	}
-	for rows.Next() {
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			logger.Warn.Printf("unable to rollback error: %v\n", err)
+		}
+	}() //rollback changes if failed
+
+	guildRows, err := tx.QueryContext(ctx, "SELECT guild_id FROM userguilds WHERE user_id = $1", userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer guildRows.Close()
+
+	msgGuildRows, err := tx.QueryContext(ctx, "SELECT DISTINCT guild_id FROM msgs WHERE user_id = $1 ", userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer msgGuildRows.Close()
+
+	ownedGuildRows, err := tx.QueryContext(ctx, `DELETE FROM guilds u INNER JOIN userguilds ug ON g.id = ug.guild_id 
+	WHERE ug.owner = true AND ug.user_id = $1 RETURNING u.id`, userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer ownedGuildRows.Close()
+
+	directGuildRows, err := tx.QueryContext(ctx, "SELECT user_id, dm_id FROM userdirectmsgsguild WHERE dm_id IN (SELECT dm_id FROM userdirectmsgsguild udmg WHERE udmg.user_id = $1) AND user_id <> $1", userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer directGuildRows.Close()
+
+	if _, err := tx.ExecContext(ctx, "DELETE FROM directmsgsguild dmg WHERE dmg.id IN (SELECT dm_id FROM userdirectmsgsguild udmg WHERE udmg.user_id = $1)", userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := tx.ExecContext(ctx, "DELETE FROM users WHERE id = $1", userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	fileIds, err := tx.QueryContext(ctx, `DELETE FROM files f 
+	WHERE NOT EXISTS (SELECT 1 FROM directmsgfiles dmf WHERE f.id = dmf.file_id) 
+	AND NOT EXISTS (SELECT 1 FROM msgfiles mf WHERE f.id = mf.file_id) 
+	AND NOT EXISTS (SELECT 1 FROM users u WHERE f.id = u.image_id) 
+	AND NOT EXISTS (SELECT 1 FROM guilds g WHERE f.id = g.image_id) RETURNING f.id`, userId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer fileIds.Close()
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	for fileIds.Next() {
+		var fileId int64
+		if err := fileIds.Scan(&fileId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+			logger.Warn.Printf("unable to remove file: %v\n", err)
+		}
+	}
+
+	for guildRows.Next() {
 		var guildId int64
-		if err := rows.Scan(&guildId); err != nil {
+		if err := guildRows.Scan(&guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -120,18 +224,9 @@ func Delete(c *gin.Context) {
 		})
 	}
 
-	rows, err = db.Db.Query("WITH guildIds AS (DELETE FROM messages WHERE user_id = $1 RETURNING guild_id) SELECT DISTINCT guild_id FROM guildIds ", userId)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	for rows.Next() {
+	for msgGuildRows.Next() {
 		var msgId, guildId int64
-		if err := rows.Scan(&msgId, &guildId); err != nil {
+		if err := msgGuildRows.Scan(&msgId, &guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -151,45 +246,9 @@ func Delete(c *gin.Context) {
 		})
 	}
 
-	//remove guilds owned by user
-	if _, err := db.Db.Exec("DELETE FROM messages WHERE guild_id IN (SELECT guild_id FROM userguilds WHERE AND user_id = $1)", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if _, err := db.Db.Exec("DELETE FROM invites WHERE guild_id IN (SELECT guild_id FROM userguilds WHERE AND user_id = $1)", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	//probs slow
-	//dont need to check if owner true since we already deleted all guild association that isnt owner
-
-	//this crazy query deletes all guilds that the user owns and deletes all guild user association for all users including owner
-	rows, err = db.Db.Query(`
-	DELETE FROM guilds WHERE id IN 
-		( DELETE FROM userguilds WHERE guild_id IN ( 
-			SELECT guild_id FROM userguilds WHERE user_id = $1 )
-	) RETURNING id`, userId) //id is all unique from guilds no need for with clause
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	for rows.Next() {
+	for ownedGuildRows.Next() {
 		var guildId int64
-		if err := rows.Scan(&guildId); err != nil {
+		if err := ownedGuildRows.Scan(&guildId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -199,21 +258,33 @@ func Delete(c *gin.Context) {
 		}
 		wsclient.Pools.BroadcastGuild(guildId, wsclient.DataFrame{ //makes the client delete guild
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.Msg{
+			Data: events.Guild{
 				GuildId: guildId,
 			},
 			Event: events.DELETE_GUILD,
 		})
 	}
 
-	if _, err := db.Db.Exec("DELETE FROM users WHERE id = $1", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
+	for directGuildRows.Next() { //clear dms for other users
+		var userId int64
+		var dmId int64
+		if err := directGuildRows.Scan(&userId, &dmId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		wsclient.Pools.BroadcastGuild(userId, wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.Dm{
+				DmId: dmId,
+			},
+			Event: events.DELETE_DM,
 		})
-		return
 	}
+
 	wsclient.Pools.DisconnectUserFromClientPool(intUserId)
 	c.Status(http.StatusNoContent)
 }

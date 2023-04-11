@@ -32,7 +32,7 @@ func userDelete(c *gin.Context) {
 	}
 
 	var body events.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&body); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),

@@ -93,7 +93,7 @@ func deleteGuild(c *gin.Context) {
 
 	fileIds, err := tx.QueryContext(ctx, `DELETE FROM files f 
 	WHERE NOT EXISTS (SELECT 1 FROM msgfiles mf WHERE f.id = mf.file_id)
-	AND NOT EXISTS (SELECT 1 FROM guilds g WHERE f.id = g.image_id) RETURNING f.id`, user.Id)
+	AND NOT EXISTS (SELECT 1 FROM guilds g WHERE f.id = g.image_id) RETURNING f.id`)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
