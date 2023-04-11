@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -90,9 +91,10 @@ func Accept(c *gin.Context) {
 	}
 
 	var clientUsername string
+	var clientImage sql.NullInt64
 	if err := db.Db.QueryRow(`
-	SELECT username FROM users WHERE id = $1
-	`, user.Id).Scan(&clientUsername); err != nil {
+	SELECT username, image_id FROM users WHERE id = $1
+	`, user.Id).Scan(&clientUsername, &clientImage); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -100,16 +102,32 @@ func Accept(c *gin.Context) {
 		})
 		return
 	}
+
+	var resClientImage int64
+	if clientImage.Valid {
+		resClientImage = clientImage.Int64
+	} else {
+		resClientImage = clientImage.Int64
+	}
+
 	var friendUsername string
+	var friendImage sql.NullInt64
 	if err := db.Db.QueryRow(`
-	SELECT username FROM users WHERE id = $1
-	`, userId).Scan(&friendUsername); err != nil {
+	SELECT username, image_id FROM users WHERE id = $1
+	`, userId).Scan(&friendUsername, &friendImage); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	var resFriendImage int64
+	if friendImage.Valid {
+		resFriendImage = friendImage.Int64
+	} else {
+		resFriendImage = -1
 	}
 
 	res := wsclient.DataFrame{
@@ -133,18 +151,18 @@ func Accept(c *gin.Context) {
 	resAfter := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intUserId,
-			Name:   friendUsername,
-			Icon:   0,
+			UserId:  intUserId,
+			Name:    friendUsername,
+			ImageId: resFriendImage,
 		},
 		Event: events.ADD_USER_FRIENDLIST,
 	}
 	resFriendAfter := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: user.Id,
-			Name:   clientUsername,
-			Icon:   0,
+			UserId:  user.Id,
+			Name:    clientUsername,
+			ImageId: resClientImage,
 		},
 		Event: events.ADD_USER_FRIENDLIST,
 	}

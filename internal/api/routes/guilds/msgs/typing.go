@@ -1,6 +1,7 @@
 package msgs
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -74,7 +75,8 @@ func Typing(c *gin.Context) {
 	}
 	//get user info
 	var username string
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&username); err != nil {
+	var imageId sql.NullInt64
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", user.Id).Scan(&username, imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -82,15 +84,23 @@ func Typing(c *gin.Context) {
 		})
 		return
 	}
+
+	var resImageId int64
+	resImageId = 0
+	if imageId.Valid {
+		resImageId = imageId.Int64
+	} else {
+		resImageId = -1
+	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.UserGuild{
 			GuildId: intGuildId,
 			UserId:  user.Id,
 			UserData: &events.User{
-				UserId: user.Id,
-				Name:   username,
-				Icon:   0, //placeholder
+				UserId:  user.Id,
+				Name:    username,
+				ImageId: resImageId,
 			},
 		},
 		Event: events.USER_TYPING,

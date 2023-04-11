@@ -1,6 +1,7 @@
 package members
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -60,7 +61,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	rows, err := db.Db.Query("SELECT users.username, users.id, admin FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
+	rows, err := db.Db.Query("SELECT users.username, users.image_id, users.id, admin FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -81,8 +82,13 @@ func Get(c *gin.Context) {
 	}
 	for rows.Next() {
 		var user events.Member
-		err = rows.Scan(&user.UserInfo.Name, &user.UserInfo.UserId, &user.Admin)
-		user.UserInfo.Icon = 0 //placeholder until upload is implemented
+		var imageId sql.NullInt64
+		err = rows.Scan(&user.UserInfo.Name, &imageId, &user.UserInfo.UserId, &user.Admin)
+		if imageId.Valid {
+			user.UserInfo.ImageId = imageId.Int64
+		} else {
+			user.UserInfo.ImageId = -1
+		}
 		user.GuildId = intGuildId
 		if err != nil {
 			logger.Error.Println(err)

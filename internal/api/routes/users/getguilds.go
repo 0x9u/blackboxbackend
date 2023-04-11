@@ -1,6 +1,7 @@
 package users
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -27,13 +28,13 @@ func getSelfGuilds(c *gin.Context) {
 	rows, err := db.Db.Query(
 		/* long goofy aaaaa code*/
 		`
-		SELECT g.id, g.name, g.icon, g.save_chat, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
+		SELECT g.id, g.name, g.image_id, g.save_chat, (SELECT user_id FROM userguilds WHERE guild_id = u.guild_id AND owner = true) AS owner_id, un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs, un.time
 		FROM userguilds u 
 		INNER JOIN guilds g ON g.id = u.guild_id 
 		INNER JOIN unreadmsgs un ON un.guild_id = u.guild_id and un.user_id = u.user_id
 		LEFT JOIN msgs m ON m.guild_id = un.guild_id 
 		WHERE u.user_id=$1 AND u.banned = false
-		GROUP BY g.id, g.name, g.icon, owner_id, un.msg_id, un.time, u.*
+		GROUP BY g.id, g.name, g.image_id, owner_id, un.msg_id, un.time, u.*
 		ORDER BY u
 		`,
 		user.Id,
@@ -49,8 +50,10 @@ func getSelfGuilds(c *gin.Context) {
 	guilds := []events.Guild{}
 	for rows.Next() {
 		var guild events.Guild
+		var imageId sql.NullInt64
 		guild.Unread = &events.UnreadMsg{}
-		err = rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
+
+		err = rows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -58,6 +61,9 @@ func getSelfGuilds(c *gin.Context) {
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+		if imageId.Valid {
+			guild.ImageId = imageId.Int64
 		}
 		guilds = append(guilds, guild)
 	}

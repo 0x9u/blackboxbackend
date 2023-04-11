@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.2
--- Dumped by pg_dump version 14.2
+-- Dumped from database version 14.4
+-- Dumped by pg_dump version 14.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -56,6 +56,18 @@ CREATE TABLE public.directmsgfiles (
 ALTER TABLE public.directmsgfiles OWNER TO postgres;
 
 --
+-- Name: directmsgmentions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.directmsgmentions (
+    directmsg_id bigint,
+    user_id bigint
+);
+
+
+ALTER TABLE public.directmsgmentions OWNER TO postgres;
+
+--
 -- Name: directmsgs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -66,6 +78,7 @@ CREATE TABLE public.directmsgs (
     dm_id bigint NOT NULL,
     created bigint NOT NULL,
     modified bigint,
+    mentions_everyone boolean DEFAULT false NOT NULL,
     CONSTRAINT not_same CHECK ((user_id <> dm_id))
 );
 
@@ -98,7 +111,7 @@ CREATE TABLE public.files (
     id bigint NOT NULL,
     filename character varying(4096),
     created bigint,
-    temp boolean,
+    temp boolean DEFAULT false NOT NULL,
     filesize integer
 );
 
@@ -158,6 +171,18 @@ CREATE TABLE public.msgfiles (
 ALTER TABLE public.msgfiles OWNER TO postgres;
 
 --
+-- Name: msgmentions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.msgmentions (
+    msg_id bigint,
+    user_id bigint
+);
+
+
+ALTER TABLE public.msgmentions OWNER TO postgres;
+
+--
 -- Name: msgs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -167,7 +192,8 @@ CREATE TABLE public.msgs (
     user_id bigint NOT NULL,
     guild_id bigint NOT NULL,
     created bigint NOT NULL,
-    modified bigint DEFAULT 0
+    modified bigint DEFAULT 0,
+    mentions_everyone boolean DEFAULT false NOT NULL
 );
 
 
@@ -343,7 +369,8 @@ CREATE TABLE public.users (
     password character varying(64) NOT NULL,
     username character varying(32),
     flags integer DEFAULT 0,
-    image_id bigint
+    image_id bigint,
+    options integer DEFAULT 15
 );
 
 
@@ -460,6 +487,22 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: directmsgmentions directmsgmentions_directmsg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directmsgmentions
+    ADD CONSTRAINT directmsgmentions_directmsg_id_fkey FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: directmsgmentions directmsgmentions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directmsgmentions
+    ADD CONSTRAINT directmsgmentions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: directmsgs directmsgs_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -496,15 +539,7 @@ ALTER TABLE ONLY public.blocked
 --
 
 ALTER TABLE ONLY public.directmsgfiles
-    ADD CONSTRAINT fk_directmsg_id FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id);
-
-
---
--- Name: directmsgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgfiles
-    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id);
+    ADD CONSTRAINT fk_directmsg_id FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id) ON DELETE CASCADE;
 
 
 --
@@ -512,6 +547,14 @@ ALTER TABLE ONLY public.directmsgfiles
 --
 
 ALTER TABLE ONLY public.msgfiles
+    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: directmsgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directmsgfiles
     ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
 
 
@@ -633,6 +676,22 @@ ALTER TABLE ONLY public.friends
 
 ALTER TABLE ONLY public.friends
     ADD CONSTRAINT friend_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: msgmentions msgmentions_msg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.msgmentions
+    ADD CONSTRAINT msgmentions_msg_id_fkey FOREIGN KEY (msg_id) REFERENCES public.msgs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: msgmentions msgmentions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.msgmentions
+    ADD CONSTRAINT msgmentions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --

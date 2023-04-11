@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds"
+	"github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/bans"
 	"github.com/asianchinaboi/backendserver/internal/api/routes/admin/users"
 	"github.com/gin-gonic/gin"
 )
@@ -26,4 +27,8 @@ func Routes(r *gin.RouterGroup) {
 	admin.GET("/guilds", guilds.Get) //two query params page and limit
 	admin.DELETE("/guilds/:userId", guilds.Delete)
 	admin.PATCH("/guilds/:userId", guilds.Edit)
+
+	admin.GET("/:guildId/bans", bans.Get)
+	admin.PUT("/:guildId/bans/:userId", bans.Ban)
+	admin.DELETE("/:guildId/bans/:userId", bans.Unban)
 }

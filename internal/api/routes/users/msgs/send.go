@@ -278,7 +278,7 @@ func Send(c *gin.Context) {
 	}
 
 	var authorBody events.User
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name); err != nil {
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name, &authorBody.ImageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -287,7 +287,6 @@ func Send(c *gin.Context) {
 		return
 	}
 	authorBody.UserId = user.Id
-	authorBody.Icon = 0 //placeholder
 	msg.Author = authorBody
 	msg.DmId = intDmId
 

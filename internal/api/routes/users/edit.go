@@ -2,7 +2,12 @@ package users
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -10,8 +15,10 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
+	"github.com/pierrec/lz4/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -44,7 +51,18 @@ func editSelf(c *gin.Context) {
 		})
 		return
 	}
-	if body.Password == nil && body.Email == nil && body.Username == nil {
+
+	imageHeader, err := c.FormFile("image")
+	if err != nil && err != http.ErrMissingFile {
+		logger.Error.Println(err)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusBadRequest,
+		})
+		return
+	}
+
+	if body.Password == nil && body.Email == nil && body.Username == nil && imageHeader == nil {
 		logger.Error.Println(errors.ErrAllFieldsEmpty)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrAllFieldsEmpty.Error(),
@@ -70,6 +88,7 @@ func editSelf(c *gin.Context) {
 			logger.Warn.Printf("unable to rollback error: %v\n", err)
 		}
 	}() //rollback changes if failed
+	successful := false
 	if body.Password != nil && body.OldPassword != nil {
 		var oldhashedpass string
 		if err := db.Db.QueryRow("SELECT password FROM users WHERE id=$1", user.Id).Scan(&oldhashedpass); err != nil {
@@ -176,6 +195,110 @@ func editSelf(c *gin.Context) {
 		}
 		newUserInfo.Options = body.Options
 	}
+	if imageHeader != nil {
+		//get old image id
+		var oldImageId sql.NullInt64
+		if err := db.Db.QueryRow("SELECT image_id FROM users WHERE id = $1", user.Id).Scan(&oldImageId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if oldImageId.Valid {
+			defer func() { //defer just in case something went wrong
+				if successful {
+					deleteImageId := oldImageId.Int64
+					if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
+						logger.Error.Println(err)
+						c.JSON(http.StatusInternalServerError, errors.Body{
+							Error:  err.Error(),
+							Status: errors.StatusInternalError,
+						})
+						return
+					}
+				}
+			}()
+
+			if _, err := tx.ExecContext(ctx, "DELETE FROM files WHERE id = $1", oldImageId.Int64); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+		}
+		filename := imageHeader.Filename
+		imageCreated := time.Now().Unix()
+
+		image, err := imageHeader.Open()
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+		defer image.Close()
+
+		imageId := uid.Snowflake.Generate().Int64()
+		fileBytes, err := io.ReadAll(image)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
+		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
+		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", imageId, filename, imageCreated, false, filesize); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if _, err = tx.ExecContext(ctx, "UPDATE users SET image_id=$1 WHERE id=$2", imageId, user.Id); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		newUserInfo.ImageId = imageId
+	} else {
+		var imageId sql.NullInt64
+		if err := db.Db.QueryRow("SELECT image_id FROM guilds WHERE id=$1", user.Id).Scan(&imageId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if imageId.Valid {
+			newUserInfo.ImageId = imageId.Int64
+		} else {
+			newUserInfo.ImageId = -1
+		}
+	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
@@ -185,6 +308,7 @@ func editSelf(c *gin.Context) {
 		})
 		return
 	}
+	successful = true
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,

@@ -120,8 +120,9 @@ func Create(c *gin.Context) {
 	}
 
 	var username string
+	var imageId int64
 
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id = $1", user.Id).Scan(&username, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -141,9 +142,9 @@ func Create(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: body.ReceiverId,
-			Name:   username,
-			Icon:   0,
+			UserId:  body.ReceiverId,
+			Name:    username,
+			ImageId: imageId,
 		},
 		Event: events.CREATE_DM,
 	}

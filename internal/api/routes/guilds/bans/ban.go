@@ -1,6 +1,7 @@
 package bans
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -126,7 +127,8 @@ func Ban(c *gin.Context) {
 		return
 	}
 	var username string
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", userId).Scan(&username); err != nil {
+	var imageId sql.NullInt64
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", userId).Scan(&username, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -135,7 +137,14 @@ func Ban(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true OR admin = true", guildId)
+	var resImageId int64
+	if imageId.Valid {
+		resImageId = imageId.Int64
+	} else {
+		resImageId = -1
+	}
+
+	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND (owner = true OR admin = true)", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -154,9 +163,9 @@ func Ban(c *gin.Context) {
 				GuildId: intGuildId,
 				UserId:  intUserId,
 				UserData: &events.User{
-					UserId: intUserId,
-					Name:   username,
-					Icon:   0,
+					UserId:  intUserId,
+					Name:    username,
+					ImageId: resImageId,
 				},
 			},
 			Event: events.ADD_USER_BANLIST,

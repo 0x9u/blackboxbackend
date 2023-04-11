@@ -105,7 +105,8 @@ func userDelete(c *gin.Context) {
 	}
 	defer msgGuildRows.Close()
 
-	ownedGuildRows, err := tx.QueryContext(ctx, `DELETE FROM guilds u INNER JOIN userguilds ug ON g.id = ug.guild_id WHERE ug.owner = true AND ug.user_id = $1 RETURNING u.id`, user.Id)
+	ownedGuildRows, err := tx.QueryContext(ctx, `DELETE FROM guilds u INNER JOIN userguilds ug ON g.id = ug.guild_id 
+	WHERE ug.owner = true AND ug.user_id = $1 RETURNING u.id`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -115,6 +116,26 @@ func userDelete(c *gin.Context) {
 		return
 	}
 	defer ownedGuildRows.Close()
+
+	directGuildRows, err := tx.QueryContext(ctx, "SELECT user_id, dm_id FROM userdirectmsgsguild WHERE dm_id IN (SELECT dm_id FROM userdirectmsgsguild udmg WHERE udmg.user_id = $1) AND user_id <> $1", user.Id)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer directGuildRows.Close()
+
+	if _, err := tx.ExecContext(ctx, "DELETE FROM directmsgsguild dmg WHERE dmg.id IN (SELECT dm_id FROM userdirectmsgsguild udmg WHERE udmg.user_id = $1)", user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 
 	if _, err := tx.ExecContext(ctx, "DELETE FROM users WHERE id = $1", user.Id); err != nil {
 		logger.Error.Println(err)
@@ -219,10 +240,30 @@ func userDelete(c *gin.Context) {
 		}
 		wsclient.Pools.BroadcastGuild(guildId, wsclient.DataFrame{ //makes the client delete guild
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.Msg{
+			Data: events.Guild{
 				GuildId: guildId,
 			},
 			Event: events.DELETE_GUILD,
+		})
+	}
+
+	for directGuildRows.Next() { //clear dms for other users
+		var userId int64
+		var dmId int64
+		if err := directGuildRows.Scan(&userId, &dmId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		wsclient.Pools.BroadcastGuild(userId, wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.Dm{
+				DmId: dmId,
+			},
+			Event: events.DELETE_DM,
 		})
 	}
 

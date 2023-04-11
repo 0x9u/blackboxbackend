@@ -77,7 +77,7 @@ func Get(c *gin.Context) {
 
 	logger.Debug.Printf("limit: %v, timestamp %v\n", limit, timestamp)
 	rows, err := db.Db.Query(
-		`SELECT m.*, u.username
+		`SELECT m.*, u.username, u.image_id
 	FROM directmsgs m INNER JOIN users u 
 	ON u.user_id = m.user_id 
 	WHERE created < $1 AND dm_id = $2
@@ -96,11 +96,10 @@ func Get(c *gin.Context) {
 	for rows.Next() {
 		message := events.Msg{}
 		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
-			&message.DmId, &message.Created, &message.Modified, &message.MentionsEveryone, &message.Author.Name)
+			&message.DmId, &message.Created, &message.Modified, &message.MentionsEveryone, &message.Author.Name, &message.Author.ImageId)
 		if message.Modified == 0 { //to make it show in json
 			message.Modified = -1
 		}
-		message.Author.Icon = 0 //placeholder
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

@@ -64,8 +64,9 @@ func Delete(c *gin.Context) {
 	}
 
 	var username string
+	var imageId int64
 
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id = $1", user.Id).Scan(&username, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -77,9 +78,9 @@ func Delete(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intDmId,
-			Name:   username,
-			Icon:   0,
+			UserId:  intDmId,
+			Name:    username,
+			ImageId: imageId,
 		},
 		Event: events.DELETE_DM,
 	}

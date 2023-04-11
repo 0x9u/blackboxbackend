@@ -1,6 +1,7 @@
 package msgs
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -76,7 +77,7 @@ func Get(c *gin.Context) { //sends message history
 	}
 
 	rows, err := db.Db.Query(
-		`SELECT m.*, u.username
+		`SELECT m.*, u.username, u.image_id
 		FROM msgs m INNER JOIN users u 
 		ON u.id = m.user_id 
 		ON u.id = mm.msg_id 
@@ -95,12 +96,20 @@ func Get(c *gin.Context) { //sends message history
 	messages := []events.Msg{}
 	for rows.Next() {
 		message := events.Msg{}
-		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
-			&message.GuildId, &message.Created, &message.Modified, &message.MentionsEveryone, &message.Author.Name)
-		if message.Modified == 0 { //to make it show in json
-			message.Modified = -1
+		var imageId sql.NullInt64
+		var modified sql.NullInt64
+		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId, imageId,
+			&message.GuildId, &message.Created, modified, &message.MentionsEveryone, &message.Author.Name)
+		if modified.Valid { //to make it show in json
+			message.Modified = modified.Int64
+		} else {
+
 		}
-		message.Author.Icon = 0 //placeholder
+		if imageId.Valid {
+			message.Author.ImageId = imageId.Int64
+		} else {
+			message.Author.ImageId = -1
+		}
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

@@ -17,7 +17,7 @@ type Guild struct {
 	OwnerId  int64      `json:"owner:id,omitempty"`
 	GuildId  int64      `json:"id"`
 	Name     string     `json:"name,omitempty"`
-	Icon     int        `json:"icon,omitempty"`
+	ImageId  int64      `json:"image:id,omitempty"`
 	Unread   *UnreadMsg `json:"unread,omitempty"`
 	SaveChat *bool      `json:"saveChat,omitempty"`
 }

@@ -46,7 +46,7 @@ func joinGuild(c *gin.Context) {
 	}
 	row := db.Db.QueryRow(
 		`
-		SELECT i.guild_id, g.name, g.icon, ug.user_id
+		SELECT i.guild_id, g.name, g.image_id, ug.user_id
 		FROM invites i INNER JOIN guilds g ON g.id = i.guild_id 
 		INNER JOIN userguilds ug ON ug.guild_id = g.id AND owner = true
 		WHERE i.invite = $1`,
@@ -67,7 +67,13 @@ func joinGuild(c *gin.Context) {
 		return
 	}
 	var guild events.Guild
-	row.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.OwnerId)
+	var imageId sql.NullInt64
+	row.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.OwnerId)
+	if imageId.Valid {
+		guild.ImageId = imageId.Int64
+	} else {
+		guild.ImageId = -1
+	}
 
 	var isInGuild bool
 

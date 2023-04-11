@@ -1,6 +1,7 @@
 package users
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -15,7 +16,8 @@ import (
 func getSelfInfo(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	var body events.User
-	if err := db.Db.QueryRow("SELECT email, username FROM users WHERE id=$1", user.Id).Scan(&body.Email, &body.Name); err != nil {
+	var imageId sql.NullInt64
+	if err := db.Db.QueryRow("SELECT email, username, image_id, options FROM users WHERE id=$1", user.Id).Scan(&body.Email, &body.Name, &imageId, &body.Options); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -23,7 +25,11 @@ func getSelfInfo(c *gin.Context) {
 		})
 		return
 	}
+	if imageId.Valid {
+		body.ImageId = imageId.Int64
+	} else {
+		body.ImageId = -1
+	}
 	//placeholder for now
-	body.Icon = 0
 	c.JSON(http.StatusOK, body)
 }

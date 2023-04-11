@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -94,7 +95,13 @@ func Get(c *gin.Context) {
 	var guilds []events.Guild
 	for rows.Next() {
 		var guild events.Guild
-		rows.Scan(&guild.GuildId, &guild.Name, &guild.Icon, &guild.SaveChat)
+		var imageId sql.NullInt64
+		rows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat)
+		if imageId.Valid {
+			guild.ImageId = imageId.Int64
+		} else {
+			guild.ImageId = -1
+		}
 		guilds = append(guilds, guild)
 	}
 	c.JSON(http.StatusOK, guilds)

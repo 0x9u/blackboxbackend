@@ -34,7 +34,9 @@
 - add blocked users - done
     - block msg from blocked users including dms
 
-- add friending restrictions
+- add friending restrictions - sorta
+    - the most fucked - mainly the sql shit
+    - might skip and put in v2.0 instead
 
 - add give admin for guilds - done
 - add mentioning in msgs - sorta

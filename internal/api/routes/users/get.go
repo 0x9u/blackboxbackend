@@ -43,8 +43,9 @@ func getUserInfo(c *gin.Context) {
 	}
 
 	var userBody events.User
+	var imageId sql.NullInt64
 
-	if err := db.Db.QueryRow("SELECT id, username, flags FROM users WHERE id = $1", userId).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags); err != nil && err == sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT id, username, flags, image_id, options FROM users WHERE id = $1", userId).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags, &imageId, &userBody.Options); err != nil && err == sql.ErrNoRows {
 		logger.Error.Println(errors.ErrUserNotFound)
 		c.JSON(http.StatusNotFound, errors.Body{
 			Error:  errors.ErrUserNotFound.Error(),
@@ -58,6 +59,12 @@ func getUserInfo(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	if imageId.Valid {
+		userBody.ImageId = imageId.Int64
+	} else {
+		userBody.ImageId = -1
 	}
 
 	c.JSON(http.StatusOK, userBody)

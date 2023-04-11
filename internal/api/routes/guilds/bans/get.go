@@ -1,6 +1,7 @@
 package bans
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -45,7 +46,7 @@ func Get(c *gin.Context) {
 
 	var hasAuth bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND (owner=true OR admin=true))", guildId, user.Id).Scan(&hasAuth); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -64,7 +65,7 @@ func Get(c *gin.Context) {
 
 	rows, err := db.Db.Query(
 		`
-		SELECT u.id, u.username
+		SELECT u.id, u.username, u.image_id
 		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
 		WHERE g.banned = true AND g.guild_id = $1`,
 		guildId,
@@ -89,14 +90,19 @@ func Get(c *gin.Context) {
 	}
 	for rows.Next() {
 		var user events.Member
-		user.UserInfo.Icon = 0 //temp
-		if err := rows.Scan(&user.UserInfo.UserId, &user.UserInfo.Name); err != nil {
+		var imageId sql.NullInt64
+		if err := rows.Scan(&user.UserInfo.UserId, &user.UserInfo.Name, &imageId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+		if imageId.Valid {
+			user.UserInfo.ImageId = imageId.Int64
+		} else {
+			user.UserInfo.ImageId = -1
 		}
 		user.GuildId = intGuildId
 		userlist = append(userlist, user)

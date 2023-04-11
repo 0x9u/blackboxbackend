@@ -182,7 +182,7 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
-		filesize := len(fileBytes)
+		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
 		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
 		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
 		if err != nil {
@@ -317,7 +317,8 @@ func Send(c *gin.Context) {
 	msg.MsgSaved = isChatSaveOn //false not saved | true saved
 
 	var authorBody events.User
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name); err != nil {
+	var imageId sql.NullInt64
+	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -325,8 +326,12 @@ func Send(c *gin.Context) {
 		})
 		return
 	}
+	if imageId.Valid {
+		authorBody.ImageId = imageId.Int64
+	} else {
+		authorBody.ImageId = -1
+	}
 	authorBody.UserId = user.Id
-	authorBody.Icon = 0 //placeholder
 	msg.Author = authorBody
 
 	if err := tx.Commit(); err != nil { //commits the transaction
