@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -13,6 +14,11 @@ import (
 
 type sqlQueryBody struct {
 	Query string `json:"query"`
+}
+
+type sqlQueryRes struct {
+	Columns []string   `json:"columns"`
+	Rows    [][]string `json:"rows"`
 }
 
 func runSqlQuery(c *gin.Context) {
@@ -36,13 +42,15 @@ func runSqlQuery(c *gin.Context) {
 	var sqlQuery sqlQueryBody
 	if err := c.ShouldBindJSON(sqlQuery); err != nil {
 		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
+		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusInternalError,
+			Status: errors.StatusBadRequest,
 		})
 		return
 	}
-	if _, err := db.Db.Exec(sqlQuery.Query); err != nil {
+
+	rows, err := db.Db.Query(sqlQuery.Query)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -50,5 +58,44 @@ func runSqlQuery(c *gin.Context) {
 		})
 		return
 	}
-	c.Status(http.StatusNoContent)
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	res := sqlQueryRes{}
+	res.Columns = columns
+
+	if len(columns) > 0 {
+		values := make([]interface{}, len(columns))
+		pointers := make([]interface{}, len(columns))
+		for i := range values {
+			pointers[i] = &values[i]
+		}
+
+		for rows.Next() {
+			err := rows.Scan(pointers...)
+			if err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			row := []string{}
+			for value := range values {
+				strValue := fmt.Sprintf("%v", value)
+				row = append(row, strValue)
+			}
+			res.Rows = append(res.Rows, row)
+		}
+	}
 }
