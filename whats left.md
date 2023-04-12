@@ -43,6 +43,8 @@
     - remove duplicate mentions in one msg
     - show total mentions in unread
 
+- redo files entity table
+    - make it reference its own entities instead for better management
 
 
 # PRIORITY

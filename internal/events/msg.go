@@ -6,6 +6,7 @@ type UnreadMsg struct {
 	Id    int64 `json:"id"`    //message last read Id
 	Count int   `json:"count"` //number of unread messages
 	Time  int   `json:"time"`
+	Mentions int `json:"mentions"` //how many times user was mentioned
 }
 
 type Msg struct { //id and request id not omitted for checking purposes
