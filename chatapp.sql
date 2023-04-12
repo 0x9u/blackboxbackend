@@ -327,7 +327,8 @@ ALTER TABLE public.unreadmsgs OWNER TO postgres;
 CREATE TABLE public.userdirectmsgsguild (
     dm_id bigint,
     user_id bigint,
-    left_dm boolean DEFAULT false NOT NULL
+    left_dm boolean DEFAULT false NOT NULL,
+    receiver_id bigint
 );
 
 
@@ -388,6 +389,204 @@ ALTER TABLE ONLY public.permissions ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+
+
+--
+-- Data for Name: bannedips; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.bannedips (ip) FROM stdin;
+\.
+
+
+--
+-- Data for Name: blocked; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.blocked (user_id, blocked_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: directmsgfiles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.directmsgfiles (directmsg_id, file_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: directmsgmentions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.directmsgmentions (directmsg_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: directmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.directmsgs (id, content, user_id, dm_id, created, modified, mentions_everyone) FROM stdin;
+\.
+
+
+--
+-- Data for Name: directmsgsguild; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.directmsgsguild (id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.files (id, filename, created, temp, filesize) FROM stdin;
+\.
+
+
+--
+-- Data for Name: friends; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.friends (user_id, friend_id, friended) FROM stdin;
+\.
+
+
+--
+-- Data for Name: guilds; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.guilds (id, name, save_chat, image_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: invites; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.invites (invite, guild_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: msgfiles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.msgfiles (msg_id, file_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: msgmentions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.msgmentions (msg_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: msgs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.msgs (id, content, user_id, guild_id, created, modified, mentions_everyone) FROM stdin;
+\.
+
+
+--
+-- Data for Name: permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.permissions (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: rolepermissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rolepermissions (role_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tokens; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tokens (token, token_expires, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: unreaddirectmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.unreaddirectmsgs (msg_id, "time", dm_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: unreadmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.unreadmsgs (guild_id, user_id, msg_id, "time") FROM stdin;
+\.
+
+
+--
+-- Data for Name: userdirectmsgsguild; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.userdirectmsgsguild (dm_id, user_id, left_dm, receiver_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: userguilds; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.userguilds (guild_id, user_id, banned, owner) FROM stdin;
+\.
+
+
+--
+-- Data for Name: userroles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.userroles (user_id, role_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, email, password, username, flags, image_id, options) FROM stdin;
+\.
+
+
+--
+-- Name: permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.permissions_id_seq', 1, false);
+
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 
 
 --
@@ -732,6 +931,14 @@ ALTER TABLE ONLY public.unreaddirectmsgs
 
 ALTER TABLE ONLY public.userdirectmsgsguild
     ADD CONSTRAINT userdirectmsgsguild_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
+
+
+--
+-- Name: userdirectmsgsguild userdirectmsgsguild_receiver_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.userdirectmsgsguild
+    ADD CONSTRAINT userdirectmsgsguild_receiver_id_fkey FOREIGN KEY (receiver_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
