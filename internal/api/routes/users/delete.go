@@ -128,7 +128,7 @@ func userDelete(c *gin.Context) {
 	}
 	defer directGuildRows.Close()
 
-	/*
+	
 	if _, err := tx.ExecContext(ctx, "DELETE FROM directmsgsguild dmg WHERE dmg.id IN (SELECT dm_id FROM userdirectmsgsguild udmg WHERE udmg.user_id = $1)", user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -136,7 +136,7 @@ func userDelete(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 		return
-	}*/ // no longer needed I think - REMOVE if no bugs
+	}
 
 	if _, err := tx.ExecContext(ctx, "DELETE FROM users WHERE id = $1", user.Id); err != nil {
 		logger.Error.Println(err)
