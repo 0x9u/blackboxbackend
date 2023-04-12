@@ -110,7 +110,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO userdirectmsgsguild VALUES ($1, $2, false), ($1, $3, true)", dmId, user.Id, body.ReceiverId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userdirectmsgsguild VALUES ($1, $2, $3, false), ($1, $3, $2, true)", dmId, user.Id, body.ReceiverId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
