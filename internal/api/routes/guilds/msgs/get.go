@@ -77,10 +77,10 @@ func Get(c *gin.Context) { //sends message history
 	}
 
 	rows, err := db.Db.Query(
-		`SELECT m.*, u.username, u.image_id
+		`SELECT m.*, u.username, f.id
 		FROM msgs m INNER JOIN users u 
-		ON u.id = m.user_id 
-		ON u.id = mm.msg_id 
+		ON u.id = m.user_id LEFT JOIN files f
+		ON f.user_id = u.id 
 		WHERE created < $1 AND guild_id = $2 
 		ORDER BY created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
 		timestamp, guildId, limit)
