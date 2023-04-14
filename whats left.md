@@ -41,10 +41,17 @@
 - add give admin for guilds - done
 - add mentioning in msgs - sorta
     - remove duplicate mentions in one msg
-    - show total mentions in unread
+    - show total mentions in unread - done
 
-- redo files entity table
-    - make it reference its own entities instead for better management
+- redo files entity table - done
+    - make it reference its own entities instead for better management - Cancelled
+        - made it its own table instead
+
+- show member count
+
+- add public guilds
+    - sort by member count or new
+        - add guild bumping in future
 
 
 # PRIORITY
