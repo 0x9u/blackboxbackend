@@ -2,9 +2,10 @@ package users
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -29,7 +30,6 @@ func userCreate(c *gin.Context) {
 		return
 	}
 
-	var imageId sql.NullInt64
 	imageHeader, err := c.FormFile("image")
 	if err != nil && err != http.ErrMissingFile {
 		logger.Error.Println(err)
@@ -39,6 +39,8 @@ func userCreate(c *gin.Context) {
 		})
 		return
 	}
+
+	successful := false
 
 	//validation
 
@@ -54,26 +56,6 @@ func userCreate(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	var isUsernameTaken bool
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM users WHERE username=$1)", user.Name).Scan(&isUsernameTaken); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if isUsernameTaken {
-		logger.Error.Println(errors.ErrUsernameExists)
-		c.JSON(http.StatusConflict, errors.Body{
-			Error:  errors.ErrUsernameExists.Error(),
-			Status: errors.StatusUsernameExists,
 		})
 		return
 	}
@@ -97,13 +79,32 @@ func userCreate(c *gin.Context) {
 		}
 	}() //rollback changes if failed
 
+	var isUsernameTaken bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM users WHERE username=$1)", user.Name).Scan(&isUsernameTaken); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if isUsernameTaken {
+		logger.Error.Println(errors.ErrUsernameExists)
+		c.JSON(http.StatusConflict, errors.Body{
+			Error:  errors.ErrUsernameExists.Error(),
+			Status: errors.StatusUsernameExists,
+		})
+		return
+	}
+
 	hashedPass := hashPass(user.Password)
 
 	user.UserId = uid.Snowflake.Generate().Int64()
 
 	if imageHeader != nil {
-		imageId.Int64 = uid.Snowflake.Generate().Int64()
-		imageId.Valid = true
+		imageId := uid.Snowflake.Generate().Int64()
 
 		filename := imageHeader.Filename
 		imageCreated := time.Now().Unix()
@@ -140,7 +141,9 @@ func userCreate(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", imageId, filename, imageCreated, false, filesize); err != nil {
+		outFile, err := os.Create(fmt.Sprintf("uploads/user/%d.lz4", imageId))
+		//TODO: delete files if failed or write them after when its deemed successful
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -148,12 +151,42 @@ func userCreate(c *gin.Context) {
 			})
 			return
 		}
-	} else {
-		imageId.Int64 = -1
-		imageId.Valid = false
+		defer outFile.Close()
+
+		_, err = outFile.Write(compressedBuffer)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		defer func() { //defer just in case something went wrong
+			if !successful {
+				if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", imageId)); err != nil {
+					logger.Error.Println(err)
+					c.JSON(http.StatusInternalServerError, errors.Body{
+						Error:  err.Error(),
+						Status: errors.StatusInternalError,
+					})
+					return
+				}
+			}
+		}()
+
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'user')", imageId, user.UserId, filename, imageCreated, false, filesize); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username, image_id) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name, imageId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -181,6 +214,8 @@ func userCreate(c *gin.Context) {
 		})
 		return
 	}
+
+	successful = true
 
 	//create session for new user
 	authData, err := session.GenToken(user.UserId)

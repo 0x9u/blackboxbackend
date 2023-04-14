@@ -45,7 +45,7 @@ func getUserInfo(c *gin.Context) {
 	var userBody events.User
 	var imageId sql.NullInt64
 
-	if err := db.Db.QueryRow("SELECT id, username, flags, image_id, options FROM users WHERE id = $1", userId).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags, &imageId, &userBody.Options); err != nil && err == sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT users.id, username, flags, files.id, options FROM users LEFT JOIN files ON files.user_id = users.id WHERE usersid = $1", userId).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags, &imageId, &userBody.Options); err != nil && err == sql.ErrNoRows {
 		logger.Error.Println(errors.ErrUserNotFound)
 		c.JSON(http.StatusNotFound, errors.Body{
 			Error:  errors.ErrUserNotFound.Error(),

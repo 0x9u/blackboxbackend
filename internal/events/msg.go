@@ -3,10 +3,10 @@ package events
 import "regexp"
 
 type UnreadMsg struct {
-	Id    int64 `json:"id"`    //message last read Id
-	Count int   `json:"count"` //number of unread messages
-	Time  int   `json:"time"`
-	Mentions int `json:"mentions"` //how many times user was mentioned
+	Id       int64 `json:"id"`    //message last read Id
+	Count    int   `json:"count"` //number of unread messages
+	Time     int   `json:"time"`
+	Mentions int   `json:"mentions"` //how many times user was mentioned
 }
 
 type Msg struct { //id and request id not omitted for checking purposes
@@ -14,7 +14,6 @@ type Msg struct { //id and request id not omitted for checking purposes
 	Author           User         `json:"author,omitempty"`  // author id aka user id
 	Content          string       `json:"content"`           // message content
 	GuildId          int64        `json:"guildId,omitempty"` // Chat id
-	DmId             int64        `json:"dmId,omitempty"`    // Dm id
 	Created          int64        `json:"created,omitempty"`
 	Modified         int64        `json:"modified,omitempty"`
 	MsgSaved         bool         `json:"msgSaved,omitempty"` //shows if the message is saved or not

@@ -87,8 +87,9 @@ func Delete(c *gin.Context) { //deletes message
 	}
 
 	var hasAuth bool
+	var isDm bool
 	var isAuthor bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -165,25 +166,16 @@ func Delete(c *gin.Context) { //deletes message
 		}
 
 		if !msgExists {
-			logger.Error.Println(errors.ErrNotExists)
+			logger.Error.Println(errors.ErrNotExist)
 			c.JSON(http.StatusNotFound, errors.Body{
-				Error:  errors.ErrNotExists.Error(),
-				Status: errors.StatusNotExists,
-			})
-			return
-		}
-
-		if _, err = tx.ExecContext(ctx, "DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
+				Error:  errors.ErrNotExist.Error(),
+				Status: errors.StatusNotExist,
 			})
 			return
 		}
 
 		//delete files associated with msg
-		fileRows, err := tx.QueryContext(ctx, "DELETE FROM files f WHERE NOT EXISTS(SELECT 1 FROM msgfiles mf WHERE mf.msg_id = $1 AND f.id = mf.file_id) RETURNING f.id", msgId)
+		fileRows, err := db.Db.Query("SELECT id FROM files WHERE msg_id = $1", msgId)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -193,6 +185,15 @@ func Delete(c *gin.Context) { //deletes message
 			return
 		}
 		defer fileRows.Close()
+
+		if _, err = tx.ExecContext(ctx, "DELETE FROM msgs where id = $1 AND guild_id = $2 AND user_id = $3", msgId, guildId, user.Id); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
 
 	var requestId string
@@ -233,7 +234,7 @@ func Delete(c *gin.Context) { //deletes message
 				})
 				return
 			}
-			if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+			if err := os.Remove(fmt.Sprintf("uploads/msg/%d.lz4", fileId)); err != nil {
 				logger.Error.Println(err)
 				c.JSON(http.StatusInternalServerError, errors.Body{
 					Error:  err.Error(),
@@ -244,6 +245,14 @@ func Delete(c *gin.Context) { //deletes message
 		}
 	}
 
+	var statusMessage string
+
+	if isDm {
+		statusMessage = events.DELETE_DM_MESSAGE
+	} else {
+		statusMessage = events.DELETE_GUILD_MESSAGE
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
@@ -251,7 +260,7 @@ func Delete(c *gin.Context) { //deletes message
 			GuildId:   intGuildId,
 			RequestId: requestId,
 		},
-		Event: events.DELETE_GUILD_MESSAGE,
+		Event: statusMessage,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)
@@ -288,7 +297,8 @@ func Clear(c *gin.Context) {
 	}
 
 	var hasAuth bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
+	var isDm bool
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND (owner=true OR admin=true)), EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND dm=true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -305,6 +315,17 @@ func Clear(c *gin.Context) {
 		return
 	}
 
+	fileRows, err := db.Db.Query("SELECT files.id FROM files INNER JOIN msgs ON msg.id=files.msg_id WHERE msgs.guild_id = $1", guildId)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer fileRows.Close()
+
 	if _, err := db.Db.Exec("DELETE FROM msgs WHERE guild_id = $1", guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -314,12 +335,41 @@ func Clear(c *gin.Context) {
 		return
 	}
 
+	if fileRows != nil { //if there are files to delete
+		for fileRows.Next() {
+			var fileId int64
+			if err := fileRows.Scan(&fileId); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			if err := os.Remove(fmt.Sprintf("uploads/msg/%d.lz4", fileId)); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+		}
+	}
+	var statusMessage string
+
+	if isDm {
+		statusMessage = events.CLEAR_USER_DM_MESSAGES
+	} else {
+		statusMessage = events.CLEAR_GUILD_MESSAGES
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Guild{
 			GuildId: intGuildId,
 		},
-		Event: events.CLEAR_GUILD_MESSAGES,
+		Event: statusMessage,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

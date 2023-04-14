@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.4
--- Dumped by pg_dump version 14.4
+-- Dumped from database version 14.2
+-- Dumped by pg_dump version 14.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -44,66 +44,6 @@ CREATE TABLE public.blocked (
 ALTER TABLE public.blocked OWNER TO postgres;
 
 --
--- Name: directmsgfiles; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.directmsgfiles (
-    directmsg_id bigint,
-    file_id bigint
-);
-
-
-ALTER TABLE public.directmsgfiles OWNER TO postgres;
-
---
--- Name: directmsgmentions; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.directmsgmentions (
-    directmsg_id bigint,
-    user_id bigint
-);
-
-
-ALTER TABLE public.directmsgmentions OWNER TO postgres;
-
---
--- Name: directmsgs; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.directmsgs (
-    id bigint NOT NULL,
-    content character varying(1024) NOT NULL,
-    user_id bigint NOT NULL,
-    dm_id bigint NOT NULL,
-    created bigint NOT NULL,
-    modified bigint,
-    mentions_everyone boolean DEFAULT false NOT NULL,
-    CONSTRAINT not_same CHECK ((user_id <> dm_id))
-);
-
-
-ALTER TABLE public.directmsgs OWNER TO postgres;
-
---
--- Name: directmsgsguild; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.directmsgsguild (
-    id bigint NOT NULL
-);
-
-
-ALTER TABLE public.directmsgsguild OWNER TO postgres;
-
---
--- Name: TABLE directmsgsguild; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON TABLE public.directmsgsguild IS 'This is referenced by userdirectmsgsguild because if the user close a dm then it would be gone for the other user therefore this table keeps track of the dms yes I know this looks confusing as but it just works I think';
-
-
---
 -- Name: files; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -112,7 +52,13 @@ CREATE TABLE public.files (
     filename character varying(4096),
     created bigint,
     temp boolean DEFAULT false NOT NULL,
-    filesize integer
+    filesize integer,
+    msg_id bigint,
+    entity_type character varying(12) NOT NULL,
+    guild_id bigint,
+    user_id bigint,
+    CONSTRAINT files_entity_type_check CHECK ((((entity_type)::text = 'guild
+'::text) OR ((entity_type)::text = 'user'::text) OR ((entity_type)::text = 'msg'::text)))
 );
 
 
@@ -138,9 +84,9 @@ ALTER TABLE public.friends OWNER TO postgres;
 
 CREATE TABLE public.guilds (
     id bigint NOT NULL,
-    name character varying(16) NOT NULL,
+    name character varying(16) DEFAULT ''::character varying NOT NULL,
     save_chat boolean DEFAULT true NOT NULL,
-    image_id bigint
+    dm boolean DEFAULT false NOT NULL
 );
 
 
@@ -157,18 +103,6 @@ CREATE TABLE public.invites (
 
 
 ALTER TABLE public.invites OWNER TO postgres;
-
---
--- Name: msgfiles; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.msgfiles (
-    msg_id bigint,
-    file_id bigint
-);
-
-
-ALTER TABLE public.msgfiles OWNER TO postgres;
 
 --
 -- Name: msgmentions; Type: TABLE; Schema: public; Owner: postgres
@@ -293,20 +227,6 @@ CREATE TABLE public.tokens (
 ALTER TABLE public.tokens OWNER TO postgres;
 
 --
--- Name: unreaddirectmsgs; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.unreaddirectmsgs (
-    msg_id bigint DEFAULT 0,
-    "time" bigint DEFAULT 0,
-    dm_id bigint,
-    user_id bigint
-);
-
-
-ALTER TABLE public.unreaddirectmsgs OWNER TO postgres;
-
---
 -- Name: unreadmsgs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -321,20 +241,6 @@ CREATE TABLE public.unreadmsgs (
 ALTER TABLE public.unreadmsgs OWNER TO postgres;
 
 --
--- Name: userdirectmsgsguild; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.userdirectmsgsguild (
-    dm_id bigint,
-    user_id bigint,
-    left_dm boolean DEFAULT false NOT NULL,
-    receiver_id bigint
-);
-
-
-ALTER TABLE public.userdirectmsgsguild OWNER TO postgres;
-
---
 -- Name: userguilds; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -342,7 +248,9 @@ CREATE TABLE public.userguilds (
     guild_id bigint NOT NULL,
     user_id bigint NOT NULL,
     banned boolean DEFAULT false NOT NULL,
-    owner boolean DEFAULT false NOT NULL
+    owner boolean DEFAULT false NOT NULL,
+    receiver_id bigint,
+    left_dm boolean
 );
 
 
@@ -370,7 +278,6 @@ CREATE TABLE public.users (
     password character varying(64) NOT NULL,
     username character varying(32),
     flags integer DEFAULT 0,
-    image_id bigint,
     options integer DEFAULT 15
 );
 
@@ -392,209 +299,11 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 
 --
--- Data for Name: bannedips; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Name: files files_guild_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-COPY public.bannedips (ip) FROM stdin;
-\.
-
-
---
--- Data for Name: blocked; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.blocked (user_id, blocked_id) FROM stdin;
-\.
-
-
---
--- Data for Name: directmsgfiles; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.directmsgfiles (directmsg_id, file_id) FROM stdin;
-\.
-
-
---
--- Data for Name: directmsgmentions; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.directmsgmentions (directmsg_id, user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: directmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.directmsgs (id, content, user_id, dm_id, created, modified, mentions_everyone) FROM stdin;
-\.
-
-
---
--- Data for Name: directmsgsguild; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.directmsgsguild (id) FROM stdin;
-\.
-
-
---
--- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.files (id, filename, created, temp, filesize) FROM stdin;
-\.
-
-
---
--- Data for Name: friends; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.friends (user_id, friend_id, friended) FROM stdin;
-\.
-
-
---
--- Data for Name: guilds; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.guilds (id, name, save_chat, image_id) FROM stdin;
-\.
-
-
---
--- Data for Name: invites; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.invites (invite, guild_id) FROM stdin;
-\.
-
-
---
--- Data for Name: msgfiles; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.msgfiles (msg_id, file_id) FROM stdin;
-\.
-
-
---
--- Data for Name: msgmentions; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.msgmentions (msg_id, user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: msgs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.msgs (id, content, user_id, guild_id, created, modified, mentions_everyone) FROM stdin;
-\.
-
-
---
--- Data for Name: permissions; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.permissions (id, name) FROM stdin;
-\.
-
-
---
--- Data for Name: rolepermissions; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.rolepermissions (role_id, permission_id) FROM stdin;
-\.
-
-
---
--- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.roles (id, name) FROM stdin;
-\.
-
-
---
--- Data for Name: tokens; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.tokens (token, token_expires, user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: unreaddirectmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.unreaddirectmsgs (msg_id, "time", dm_id, user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: unreadmsgs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.unreadmsgs (guild_id, user_id, msg_id, "time") FROM stdin;
-\.
-
-
---
--- Data for Name: userdirectmsgsguild; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.userdirectmsgsguild (dm_id, user_id, left_dm, receiver_id) FROM stdin;
-\.
-
-
---
--- Data for Name: userguilds; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.userguilds (guild_id, user_id, banned, owner) FROM stdin;
-\.
-
-
---
--- Data for Name: userroles; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.userroles (user_id, role_id) FROM stdin;
-\.
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.users (id, email, password, username, flags, image_id, options) FROM stdin;
-\.
-
-
---
--- Name: permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.permissions_id_seq', 1, false);
-
-
---
--- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
-
-
---
--- Name: directmsgs directmessages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgs
-    ADD CONSTRAINT directmessages_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_guild_id_key UNIQUE (guild_id);
 
 
 --
@@ -603,6 +312,14 @@ ALTER TABLE ONLY public.directmsgs
 
 ALTER TABLE ONLY public.files
     ADD CONSTRAINT files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: files files_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_user_id_key UNIQUE (user_id);
 
 
 --
@@ -662,14 +379,6 @@ ALTER TABLE ONLY public.tokens
 
 
 --
--- Name: directmsgsguild userdirectmsgs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgsguild
-    ADD CONSTRAINT userdirectmsgs_pkey PRIMARY KEY (id);
-
-
---
 -- Name: userguilds userguilds_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -686,35 +395,27 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: directmsgmentions directmsgmentions_directmsg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: files files_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.directmsgmentions
-    ADD CONSTRAINT directmsgmentions_directmsg_id_fkey FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id) ON DELETE CASCADE;
-
-
---
--- Name: directmsgmentions directmsgmentions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgmentions
-    ADD CONSTRAINT directmsgmentions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_guild_id_fkey FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
 
 
 --
--- Name: directmsgs directmsgs_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: files files_msg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.directmsgs
-    ADD CONSTRAINT directmsgs_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_msg_id_fkey FOREIGN KEY (msg_id) REFERENCES public.msgs(id) ON DELETE CASCADE;
 
 
 --
--- Name: directmsgs directmsgs_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: files files_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.directmsgs
-    ADD CONSTRAINT directmsgs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -734,46 +435,6 @@ ALTER TABLE ONLY public.blocked
 
 
 --
--- Name: directmsgfiles fk_directmsg_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgfiles
-    ADD CONSTRAINT fk_directmsg_id FOREIGN KEY (directmsg_id) REFERENCES public.directmsgs(id) ON DELETE CASCADE;
-
-
---
--- Name: msgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.msgfiles
-    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
-
-
---
--- Name: directmsgfiles fk_file_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.directmsgfiles
-    ADD CONSTRAINT fk_file_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
-
-
---
--- Name: guilds fk_image_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.guilds
-    ADD CONSTRAINT fk_image_id FOREIGN KEY (image_id) REFERENCES public.files(id) ON DELETE SET NULL;
-
-
---
--- Name: users fk_image_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_image_id FOREIGN KEY (image_id) REFERENCES public.files(id) ON DELETE SET NULL;
-
-
---
 -- Name: invites fk_invite_guild; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -787,14 +448,6 @@ ALTER TABLE ONLY public.invites
 
 ALTER TABLE ONLY public.msgs
     ADD CONSTRAINT fk_msg_guild FOREIGN KEY (guild_id) REFERENCES public.guilds(id) ON DELETE CASCADE;
-
-
---
--- Name: msgfiles fk_msg_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.msgfiles
-    ADD CONSTRAINT fk_msg_id FOREIGN KEY (file_id) REFERENCES public.files(id) ON DELETE CASCADE;
 
 
 --
@@ -910,43 +563,11 @@ ALTER TABLE ONLY public.rolepermissions
 
 
 --
--- Name: unreaddirectmsgs unreaddirectmsg_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: userguilds userguilds_receiver_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.unreaddirectmsgs
-    ADD CONSTRAINT unreaddirectmsg_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
-
-
---
--- Name: unreaddirectmsgs unreaddirectmsg_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.unreaddirectmsgs
-    ADD CONSTRAINT unreaddirectmsg_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
-
---
--- Name: userdirectmsgsguild userdirectmsgsguild_dm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.userdirectmsgsguild
-    ADD CONSTRAINT userdirectmsgsguild_dm_id_fkey FOREIGN KEY (dm_id) REFERENCES public.directmsgsguild(id) ON DELETE CASCADE;
-
-
---
--- Name: userdirectmsgsguild userdirectmsgsguild_receiver_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.userdirectmsgsguild
-    ADD CONSTRAINT userdirectmsgsguild_receiver_id_fkey FOREIGN KEY (receiver_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
-
---
--- Name: userdirectmsgsguild userdirectmsgsguild_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.userdirectmsgsguild
-    ADD CONSTRAINT userdirectmsgsguild_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.userguilds
+    ADD CONSTRAINT userguilds_receiver_id_fkey FOREIGN KEY (receiver_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --

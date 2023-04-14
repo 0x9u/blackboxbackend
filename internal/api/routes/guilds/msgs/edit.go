@@ -106,7 +106,28 @@ func Edit(c *gin.Context) {
 
 	timestamp := time.Now().Unix()
 
-	if isRequestId {
+	var isDm bool
+	var inGuild bool
+
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM guilds WHERE id = $1 AMD dm = true), EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false", guildId, user.Id).Scan(&isDm, &inGuild); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if !inGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
+		})
+		return
+	}
+
+	if !isRequestId { //vulnerability: isrequestid can be updated by any user
 
 		var msgExists bool
 		if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2 AND guild_id=$3)", msgId, user.Id, guildId).Scan(&msgExists); err != nil {
@@ -119,10 +140,10 @@ func Edit(c *gin.Context) {
 		}
 
 		if !msgExists {
-			logger.Error.Println(errors.ErrNotExists)
+			logger.Error.Println(errors.ErrNotExist)
 			c.JSON(http.StatusNotFound, errors.Body{
-				Error:  errors.ErrNotExists.Error(),
-				Status: errors.StatusNotExists,
+				Error:  errors.ErrNotExist.Error(),
+				Status: errors.StatusNotExist,
 			})
 			return
 		}
@@ -155,6 +176,14 @@ func Edit(c *gin.Context) {
 		}
 	}
 
+	var statusMessage string
+
+	if isDm {
+		statusMessage = events.UPDATE_DM_MESSAGE
+	} else {
+		statusMessage = events.UPDATE_GUILD_MESSAGE
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
@@ -167,7 +196,7 @@ func Edit(c *gin.Context) {
 				UserId: user.Id,
 			},
 		},
-		Event: events.UPDATE_GUILD_MESSAGE,
+		Event: statusMessage,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

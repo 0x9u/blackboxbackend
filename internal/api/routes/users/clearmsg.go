@@ -26,7 +26,7 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	guildRows, err := db.Db.Query("SELECT DISTINCT guild_id FROM msgs WHERE user_id = $1", user.Id)
+	guildRows, err := db.Db.Query("SELECT DISTINCT msgs.guild_id, guilds.dm FROM msgs INNER JOIN guilds ON msgs.guild_id = guilds.id WHERE user_id = $1", user.Id)
 
 	if err != nil {
 		logger.Error.Println(err)
@@ -67,28 +67,6 @@ func clearUserMsg(c *gin.Context) {
 		return
 	}
 
-	if _, err = tx.ExecContext(ctx, "DELETE FROM directmsgs WHERE user_id = $1", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	dmRows, err := db.Db.Query("SELECT dm_id, user_id FROM directmsgs WHERE dm_id IN (SELECT dm_id FROM directmsgs WHERE user_id = $1) AND user_id != $1", user.Id)
-
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	defer dmRows.Close()
-
 	if err = tx.Commit(); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -100,7 +78,8 @@ func clearUserMsg(c *gin.Context) {
 
 	for guildRows.Next() {
 		var guildId int64
-		err = guildRows.Scan(&guildId)
+		var isDm bool
+		err = guildRows.Scan(&guildId, &isDm)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -115,53 +94,18 @@ func clearUserMsg(c *gin.Context) {
 			},
 			GuildId: guildId,
 		}
+		var statusMessage string
+		if isDm {
+			statusMessage = events.CLEAR_USER_DM_MESSAGES
+		} else {
+			statusMessage = events.CLEAR_USER_MESSAGES
+		}
 		res := wsclient.DataFrame{
 			Op:    wsclient.TYPE_DISPATCH,
 			Data:  clearMsg,
-			Event: events.CLEAR_USER_MESSAGES,
+			Event: statusMessage,
 		}
 		if err := wsclient.Pools.BroadcastGuild(guildId, res); err != nil && err != errors.ErrGuildPoolNotExist {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-	}
-
-	for dmRows.Next() {
-		var dmId int64
-		var otherUser int64
-		err = dmRows.Scan(&dmId, &otherUser)
-		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		clearMsg := events.Msg{
-			Author: events.User{
-				UserId: user.Id,
-			},
-			DmId: dmId,
-		}
-		res := wsclient.DataFrame{
-			Op:    wsclient.TYPE_DISPATCH,
-			Data:  clearMsg,
-			Event: events.CLEAR_USER_DM_MESSAGES,
-		}
-		if err := wsclient.Pools.BroadcastClient(otherUser, res); err != nil && err != errors.ErrUserClientNotExist {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		if err := wsclient.Pools.BroadcastClient(user.Id, res); err != nil && err != errors.ErrUserClientNotExist {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

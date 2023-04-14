@@ -90,8 +90,9 @@ func Kick(c *gin.Context) {
 	}
 
 	var hasAuth bool
+	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true)", guildId, user.Id).Scan(&hasAuth); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -99,6 +100,16 @@ func Kick(c *gin.Context) {
 		})
 		return
 	}
+
+	if isDm {
+		logger.Error.Println(errors.ErrGuildIsDm)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrGuildIsDm.Error(),
+			Status: errors.StatusGuildIsDm,
+		})
+		return
+	}
+
 	if !hasAuth {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{

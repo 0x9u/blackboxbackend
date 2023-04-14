@@ -54,7 +54,26 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("UPDATE userdirectmsgsguild SET left_dm = true WHERE user_id = $1 AND dm_id = $2", user.Id, dmId); err != nil {
+	var dmExists bool
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND receiver_id IS NOT NULL)", user.Id, intDmId).Scan(&dmExists); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if !dmExists {
+		logger.Error.Println(errors.ErrDmNotExist)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrDmNotExist.Error(),
+			Status: errors.StatusDmNotExist,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec("UPDATE userguilds SET left_dm = true WHERE user_id = $1 AND dm_id = $2", user.Id, dmId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

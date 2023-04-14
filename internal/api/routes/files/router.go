@@ -8,5 +8,5 @@ import (
 
 func Routes(r *gin.RouterGroup) {
 	files := r.Group("/files")
-	files.GET("/:fileId", get)
+	files.GET("/:entityType/:fileId", get)
 }

@@ -138,7 +138,7 @@ func Send(c *gin.Context) {
 	defer func() {
 		if !fileSucessful {
 			for _, id := range fileIds {
-				if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", id)); err != nil {
+				if err := os.Remove(fmt.Sprintf("uploads/msg/%d.lz4", id)); err != nil {
 					logger.Warn.Printf("unable to remove file: %v\n", err)
 				}
 			}
@@ -196,7 +196,7 @@ func Send(c *gin.Context) {
 
 		fileIds = append(fileIds, attachment.Id)
 
-		outFile, err := os.Create(fmt.Sprintf("uploads/%d.lz4", attachment.Id))
+		outFile, err := os.Create(fmt.Sprintf("uploads/msg/%d.lz4", attachment.Id))
 		//TODO: delete files if failed or write them after when its deemed successful
 		if err != nil {
 			logger.Error.Println(err)
@@ -220,15 +220,7 @@ func Send(c *gin.Context) {
 
 		//make files temporary if chat messages save turned off
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", attachment.Id, attachment.Filename, msg.Created, !isChatSaveOn, filesize); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		if _, err := tx.ExecContext(ctx, "INSERT INTO msgfiles (file_id, msg_id) VALUES ($1, $2)", attachment.Id, msg.MsgId); err != nil {
+		if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, msg_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'msg')", attachment.Id, msg.MsgId, attachment.Filename, msg.Created, !isChatSaveOn, filesize); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -239,7 +231,6 @@ func Send(c *gin.Context) {
 		msg.Attachments = append(msg.Attachments, attachment)
 	}
 
-	logger.Debug.Printf("Message recieved %s\n", msg.Content)
 	if len(msg.Content) == 0 {
 		logger.Error.Println(errors.ErrNoMsgContent)
 		c.JSON(http.StatusUnprocessableEntity, errors.Body{
@@ -314,6 +305,17 @@ func Send(c *gin.Context) {
 		}
 	}
 
+	var isDm bool
+
+	if err := db.Db.QueryRow("SELECT receiver_id IS NOT NULL FROM userguilds WHERE guild_id = $1 AND user_id = $2", guildId, user.Id).Scan(&isDm); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	msg.MsgSaved = isChatSaveOn //false not saved | true saved
 
 	var authorBody events.User
@@ -344,10 +346,18 @@ func Send(c *gin.Context) {
 	}
 
 	fileSucessful = true
+
+	var statusMessage string
+	if isDm {
+		statusMessage = events.CREATE_DM_MESSAGE
+	} else {
+		statusMessage = events.CREATE_GUILD_MESSAGE
+	}
+
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,
-		Event: events.CREATE_GUILD_MESSAGE,
+		Event: statusMessage,
 	})
 	c.Status(http.StatusNoContent)
 }

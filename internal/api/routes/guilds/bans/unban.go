@@ -63,8 +63,11 @@ func Unban(c *gin.Context) {
 
 	var hasAuth bool
 	var isBanned bool
+	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3 AND banned = true)", guildId, user.Id, userId).Scan(&hasAuth, &isBanned); err != nil {
+	if err := db.Db.QueryRow(`SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), 
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3 AND banned = true), 
+	EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)`, guildId, user.Id, userId).Scan(&hasAuth, &isBanned, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -72,6 +75,15 @@ func Unban(c *gin.Context) {
 		})
 		return
 	}
+	if isDm {
+		logger.Error.Println(errors.ErrGuildIsDm)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrGuildIsDm.Error(),
+			Status: errors.StatusGuildIsDm,
+		})
+		return
+	}
+
 	if !hasAuth {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
@@ -80,6 +92,7 @@ func Unban(c *gin.Context) {
 		})
 		return
 	}
+
 	if !isBanned {
 		logger.Error.Println(errors.ErrUserNotBanned)
 		c.JSON(http.StatusForbidden, errors.Body{
@@ -116,7 +129,7 @@ func Unban(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true OR admin = true", guildId)
+	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND (owner = true OR admin = true)", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

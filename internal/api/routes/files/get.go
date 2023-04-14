@@ -45,9 +45,25 @@ func get(c *gin.Context) {
 		})
 		return
 	}
+	entityType := c.Param("entityType")
+	if match, err := regexp.MatchString("^(guild|user|msg)$", entityType); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	} else if !match {
+		logger.Error.Println(errors.ErrRouteParamInvalid)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrRouteParamInvalid.Error(),
+			Status: errors.StatusRouteParamInvalid,
+		})
+		return
+	}
 	var filename string
 	var filesize int
-	if err := db.Db.QueryRow("SELECT filename, filesize FROM attachments WHERE id = $1", fileId).Scan(&filename, &filesize); err != nil && err != sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT filename, filesize FROM files WHERE id = $1 AND entity_type = $2", fileId, entityType).Scan(&filename, &filesize); err != nil && err != sql.ErrNoRows {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -63,7 +79,7 @@ func get(c *gin.Context) {
 		return
 	}
 
-	file, err := os.Open(fmt.Sprintf("uploads/%s.lz4", fileId))
+	file, err := os.Open(fmt.Sprintf("uploads/%s/%s.lz4", fileId, entityType))
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

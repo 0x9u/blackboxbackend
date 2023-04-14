@@ -26,9 +26,11 @@ const (
 	StatusGuildNotProvided
 	StatusGuildPoolNotExist
 	StatusGuildNotExist
+	StatusGuildIsDm
 
-	StatusDMNotOpened
+	StatusDmNotOpened
 	StatusDmAlreadyExists
+	StatusDmNotExist
 
 	StatusFriendBlocked
 	StatusFriendAlreadyFriends
@@ -55,7 +57,7 @@ const (
 
 	StatusAllFieldsEmpty
 	StatusInvalidDetails
-	StatusNotExists
+	StatusNotExist
 
 	StatusCooldownActive
 

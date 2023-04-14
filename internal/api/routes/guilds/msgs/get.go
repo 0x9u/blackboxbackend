@@ -103,7 +103,7 @@ func Get(c *gin.Context) { //sends message history
 		if modified.Valid { //to make it show in json
 			message.Modified = modified.Int64
 		} else {
-
+			message.Modified = -1
 		}
 		if imageId.Valid {
 			message.Author.ImageId = imageId.Int64

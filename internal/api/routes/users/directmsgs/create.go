@@ -63,7 +63,7 @@ func Create(c *gin.Context) {
 
 	var dmExists bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM usersdirectmsgsguild WHERE user_id = $1 AND dm_id = (SELECT dm_id FROM usersdirectmsgsguild WHERE user_id = $2))", user.Id, body.ReceiverId).Scan(&dmExists); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id = $1 AND receiver_id = $2)", user.Id, body.ReceiverId).Scan(&dmExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -101,7 +101,7 @@ func Create(c *gin.Context) {
 
 	dmId := uid.Snowflake.Generate().Int64()
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO directmsgsguild VALUES ($1)", dmId); err != nil { //make new dm identity
+	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, dm) VALUES ($1, true)", dmId); err != nil { //make new dm identity
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -110,7 +110,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO userdirectmsgsguild VALUES ($1, $2, $3, false), ($1, $3, $2, true)", dmId, user.Id, body.ReceiverId); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds(guild_id, user_id, receiver_id, left_dm, owner) VALUES ($1, $2, $3, false, true), ($1, $3, $2, true, true)", dmId, user.Id, body.ReceiverId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

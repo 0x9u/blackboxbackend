@@ -36,11 +36,13 @@ var (
 	ErrGuildSaveChatOn   = errors.New("guild: save chat is on")
 	ErrGuildPoolNotExist = errors.New("guild: pool does not exist")
 	ErrGuildNotExist     = errors.New("guild: doesn't exist")
+	ErrGuildIsDm         = errors.New("guild: is dm")
 
 	//DM
 
-	ErrDMNotOpened     = errors.New("dm: not opened")
+	ErrDmNotOpened     = errors.New("dm: not opened")
 	ErrDmAlreadyExists = errors.New("dm: already exists")
+	ErrDmNotExist      = errors.New("dm: doesnt exists")
 
 	//FRIND
 	ErrFriendBlocked          = errors.New("friend: blocked")
@@ -78,7 +80,7 @@ var (
 
 	ErrAllFieldsEmpty = errors.New("patch: all fields are empty")
 	ErrInvalidDetails = errors.New("patch: invalid details")
-	ErrNotExists      = errors.New("patch: doesn't exist")
+	ErrNotExist       = errors.New("patch: doesn't exist")
 
 	//COOLDOWN
 

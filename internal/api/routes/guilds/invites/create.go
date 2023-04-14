@@ -47,7 +47,8 @@ func Create(c *gin.Context) {
 
 	var count int
 	var isInGuild bool
-	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id=$1)", user.Id).Scan(&isInGuild); err != nil {
+	var isDm bool
+	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id=$1 AND guild_id = $2) ,EXISTS (SELECT 1 FROM guilds WHERE guild_id = $2 AND dm = true) ", user.Id, guildId).Scan(&isInGuild, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -55,6 +56,16 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+
+	if isDm {
+		logger.Error.Println(errors.ErrGuildIsDm)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrGuildIsDm.Error(),
+			Status: errors.StatusGuildIsDm,
+		})
+		return
+	}
+
 	if !isInGuild {
 		logger.Error.Println(errors.ErrNotInGuild)
 		c.JSON(http.StatusForbidden, errors.Body{

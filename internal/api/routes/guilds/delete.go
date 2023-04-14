@@ -48,11 +48,20 @@ func deleteGuild(c *gin.Context) {
 	}
 
 	var isOwner bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true)", guildId, user.Id).Scan(&isOwner); err != nil {
+	var isDm bool
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&isOwner, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if isDm {
+		logger.Error.Println(errors.ErrGuildIsDm)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrGuildIsDm.Error(),
+			Status: errors.StatusGuildIsDm,
 		})
 		return
 	}
@@ -82,18 +91,7 @@ func deleteGuild(c *gin.Context) {
 		}
 	}() //rollback changes if failed
 
-	if _, err := tx.ExecContext(ctx, "DELETE FROM guilds WHERE id=$1", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	fileIds, err := tx.QueryContext(ctx, `DELETE FROM files f 
-	WHERE NOT EXISTS (SELECT 1 FROM msgfiles mf WHERE f.id = mf.file_id)
-	AND NOT EXISTS (SELECT 1 FROM guilds g WHERE f.id = g.image_id) RETURNING f.id`)
+	fileIds, err := tx.QueryContext(ctx, `SELECT f.id FROM files f INNER JOIN msgs ON msgs.id = f.msg_id WHERE msgs.guild_id = $1`, guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -103,6 +101,25 @@ func deleteGuild(c *gin.Context) {
 		return
 	}
 	defer fileIds.Close()
+
+	var guildImageId int64
+	if err := tx.QueryRowContext(ctx, "SELECT id FROM files WHERE guild_id = $1", guildId).Scan(&guildImageId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := tx.ExecContext(ctx, "DELETE FROM guilds WHERE id=$1", guildId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
 
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
@@ -121,6 +138,10 @@ func deleteGuild(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 		return
+	}
+
+	if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", guildImageId)); err != nil {
+		logger.Warn.Printf("unable to remove file: %v\n", err)
 	}
 
 	for fileIds.Next() {

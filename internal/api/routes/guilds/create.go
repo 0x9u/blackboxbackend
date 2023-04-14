@@ -2,8 +2,10 @@ package guilds
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -80,8 +82,9 @@ func createGuild(c *gin.Context) {
 		}
 	}() //rollback changes if failed
 
+	successful := false
+
 	guildId := uid.Snowflake.Generate().Int64()
-	var imageId int64
 
 	imageHeader, err := c.FormFile("image")
 	if err != nil {
@@ -91,8 +94,18 @@ func createGuild(c *gin.Context) {
 			Status: errors.StatusBadRequest,
 		})
 	}
+
+	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, name, save_chat) VALUES ($1, $2, $3)", guildId, guild.Name, guild.SaveChat); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	if imageHeader != nil {
-		imageId = uid.Snowflake.Generate().Int64()
+		imageId := uid.Snowflake.Generate().Int64()
 
 		filename := imageHeader.Filename
 		imageCreated := time.Now().Unix()
@@ -129,7 +142,9 @@ func createGuild(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", imageId, filename, imageCreated, false, filesize); err != nil {
+		outFile, err := os.Create(fmt.Sprintf("uploads/guild/%d.lz4", imageId))
+		//TODO: delete files if failed or write them after when its deemed successful
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -137,17 +152,42 @@ func createGuild(c *gin.Context) {
 			})
 			return
 		}
-	} else {
-		imageId = -1
+		defer outFile.Close()
+
+		_, err = outFile.Write(compressedBuffer)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		defer func() { //defer just in case something went wrong
+			if !successful {
+				if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", imageId)); err != nil {
+					logger.Error.Println(err)
+					c.JSON(http.StatusInternalServerError, errors.Body{
+						Error:  err.Error(),
+						Status: errors.StatusInternalError,
+					})
+					return
+				}
+			}
+		}()
+
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'guild')", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
 	}
-	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, name, icon, save_chat) VALUES ($1, $2, $3, $4)", guildId, guild.Name, imageId, guild.SaveChat); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
+
 	invite := events.Invite{
 		Invite:  session.GenerateRandString(10),
 		GuildId: guildId,
@@ -186,6 +226,8 @@ func createGuild(c *gin.Context) {
 		})
 		return
 	}
+
+	successful = true
 
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,

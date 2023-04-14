@@ -45,8 +45,9 @@ func Get(c *gin.Context) {
 	}
 
 	var hasAuth bool
+	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND (owner=true OR admin=true))", guildId, user.Id).Scan(&hasAuth); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND (owner=true OR admin=true)), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -54,6 +55,15 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
+	if isDm {
+		logger.Error.Println(errors.ErrGuildIsDm)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrGuildIsDm.Error(),
+			Status: errors.StatusGuildIsDm,
+		})
+		return
+	}
+
 	if !hasAuth {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
@@ -65,8 +75,9 @@ func Get(c *gin.Context) {
 
 	rows, err := db.Db.Query(
 		`
-		SELECT u.id, u.username, u.image_id
-		FROM userguilds g INNER JOIN users u ON u.id = g.user_id
+		SELECT u.id, u.username, f.id
+		FROM userguilds g INNER JOIN users u ON u.id = g.user_id 
+		LEFT JOIN files f ON f.user_id = u.id 
 		WHERE g.banned = true AND g.guild_id = $1`,
 		guildId,
 	)
