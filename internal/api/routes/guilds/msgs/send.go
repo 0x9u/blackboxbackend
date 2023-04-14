@@ -320,7 +320,7 @@ func Send(c *gin.Context) {
 
 	var authorBody events.User
 	var imageId sql.NullInt64
-	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", user.Id).Scan(&authorBody.Name, &imageId); err != nil {
+	if err := db.Db.QueryRow("SELECT username, files.id FROM users LEFT JOIN files ON files.user_id = users.id WHERE id=$1", user.Id).Scan(&authorBody.Name, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
