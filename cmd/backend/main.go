@@ -10,12 +10,26 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/schedule"
+
+	_ "net/http/pprof"
 )
 
 func main() {
 
 	logger.Info.Println("Handling requests")
 
+	if err := os.Mkdir("uploads", os.ModePerm); err != nil {
+		logger.Fatal.Println(err)
+	}
+	if err := os.Mkdir("uploads/user", os.ModePerm); err != nil {
+		logger.Fatal.Println(err)
+	}
+	if err := os.Mkdir("uploads/msg", os.ModePerm); err != nil {
+		logger.Fatal.Println(err)
+	}
+	if err := os.Mkdir("uploads/guild", os.ModePerm); err != nil {
+		logger.Fatal.Println(err)
+	}
 	defer db.Db.Close()
 
 	server := api.StartServer()
