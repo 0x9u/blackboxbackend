@@ -14,24 +14,13 @@ type statusInfo struct {
 	ClientNumber    int `json:"clientNumber"`
 	GuildNumber     int `json:"guildNumber"`
 	MsgNumber       int `json:"msgNumber"`
+	FileNumber      int `json:"fileNumber"`
 	GuildPoolNumber int `json:"guildPoolNumber"`
 }
 
 func ShowStatus(c *gin.Context) { //debugging
-	row := db.Db.QueryRow("SELECT COUNT(*) FROM messages")
-	if err := row.Err(); err != nil {
-		logger.Info.Println(err)
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-		return
-	}
 	var msgNumber int
-	row.Scan(&msgNumber)
-	row = db.Db.QueryRow("SELECT COUNT(*) FROM guilds")
-	if err := row.Err(); err != nil {
+	if err := db.Db.QueryRow("SELECT COUNT(*) FROM msgs").Scan(&msgNumber); err != nil {
 		logger.Info.Println(err)
 		c.JSON(http.StatusInternalServerError,
 			errors.Body{
@@ -40,8 +29,28 @@ func ShowStatus(c *gin.Context) { //debugging
 			})
 		return
 	}
+
 	var guildNumber int
-	row.Scan(&guildNumber)
+	if err := db.Db.QueryRow("SELECT COUNT(*) FROM guilds").Scan(&guildNumber); err != nil {
+		logger.Info.Println(err)
+		c.JSON(http.StatusInternalServerError,
+			errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+		return
+	}
+
+	var fileNumber int
+	if err := db.Db.QueryRow("SELECT COUNT(*) FROM files").Scan(&fileNumber); err != nil {
+		logger.Info.Println(err)
+		c.JSON(http.StatusInternalServerError,
+			errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+		return
+	}
 
 	guildPoolNumber := wsclient.Pools.GetLengthGuilds()
 

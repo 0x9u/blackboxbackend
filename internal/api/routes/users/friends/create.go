@@ -1,6 +1,7 @@
 package friends
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -168,17 +169,43 @@ func Create(c *gin.Context) {
 		return
 	}
 
+	var userImageId int64
+	if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id = $1", user.Id).Scan(&userImageId); err != nil && err != sql.ErrNoRows {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	} else if err == sql.ErrNoRows {
+		userImageId = -1
+	}
+
+	var friendImageId int64
+	if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id = $1", userId).Scan(&friendImageId); err != nil && err != sql.ErrNoRows {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	} else if err == sql.ErrNoRows {
+		friendImageId = -1
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intUserId,
+			UserId:  intUserId,
+			ImageId: friendImageId,
 		},
 		Event: events.ADD_FRIEND_REQUEST,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: user.Id,
+			UserId:  user.Id,
+			ImageId: userImageId,
 		},
 		Event: events.ADD_FRIEND_INCOMING_REQUEST,
 	}

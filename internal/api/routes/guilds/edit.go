@@ -3,15 +3,19 @@ package guilds
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/compress"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
@@ -20,7 +24,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
-	"github.com/pierrec/lz4/v4"
 )
 
 type editGuildBody struct {
@@ -59,20 +62,41 @@ func editGuild(c *gin.Context) {
 	}
 
 	var newSettings editGuildBody
-	if err := c.ShouldBindJSON(&newSettings); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
-		return
-	}
+	var imageHeader *multipart.FileHeader
+	contentType := c.GetHeader("Content-Type")
 
-	imageHeader, err := c.FormFile("image")
-	if err != nil && err != http.ErrMissingFile {
-		logger.Error.Println(err)
+	if strings.HasPrefix(contentType, "multipart/form-data") {
+		var err error
+		if imageHeader, err = c.FormFile("image"); err != nil && err != http.ErrMissingFile {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+		jsonData := c.PostForm("body")
+		if err := json.Unmarshal([]byte(jsonData), &newSettings); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else if strings.HasPrefix(contentType, "application/json") {
+		if err := c.ShouldBindJSON(&newSettings); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrNotSupportedContentType)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
+			Error:  errors.ErrNotSupportedContentType.Error(),
 			Status: errors.StatusBadRequest,
 		})
 		return
@@ -227,9 +251,10 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
+
+		imageId := uid.Snowflake.Generate().Int64()
 		filename := imageHeader.Filename
 		imageCreated := time.Now().Unix()
-
 		image, err := imageHeader.Open()
 		if err != nil {
 			logger.Error.Println(err)
@@ -241,7 +266,6 @@ func editGuild(c *gin.Context) {
 		}
 		defer image.Close()
 
-		imageId := uid.Snowflake.Generate().Int64()
 		fileBytes, err := io.ReadAll(image)
 		if err != nil {
 			logger.Error.Println(err)
@@ -252,9 +276,8 @@ func editGuild(c *gin.Context) {
 			return
 		}
 
-		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
-		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+		filesize := len(fileBytes)
+		compressedBuffer, err := compress.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -265,7 +288,6 @@ func editGuild(c *gin.Context) {
 		}
 
 		outFile, err := os.Create(fmt.Sprintf("uploads/guild/%d.lz4", imageId))
-		//TODO: delete files if failed or write them after when its deemed successful
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -274,41 +296,29 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
-		defer outFile.Close()
-
-		_, err = outFile.Write(compressedBuffer)
-		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-
 		defer func() { //defer just in case something went wrong
 			if !successful {
 				if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", imageId)); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
-					return
+					logger.Warn.Printf("failed to remove file: %v\n", err)
 				}
 			} else {
 				if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", oldImageId)); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
-					return
+					logger.Warn.Printf("failed to remove file: %v\n", err)
 				}
 			}
 		}()
+		defer outFile.Close()
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5, $6)", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
+		if _, err = outFile.Write(compressedBuffer); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'guild')", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -318,19 +328,18 @@ func editGuild(c *gin.Context) {
 		}
 		bodyRes.ImageId = imageId
 	} else {
-		var imageId sql.NullInt64
-		if err := db.Db.QueryRow("SELECT image_id FROM files WHERE guild_id=$1", guildId).Scan(&imageId); err != nil {
+		var imageId int64
+		if err := db.Db.QueryRow("SELECT id FROM files WHERE guild_id=$1", guildId).Scan(&imageId); err != nil && err != sql.ErrNoRows {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
-		}
-		if imageId.Valid {
-			bodyRes.ImageId = imageId.Int64
-		} else {
+		} else if err == sql.ErrNoRows {
 			bodyRes.ImageId = -1
+		} else {
+			bodyRes.ImageId = imageId
 		}
 	}
 

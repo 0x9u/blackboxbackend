@@ -99,4 +99,7 @@ var (
 	ErrNotAuthorised     = errors.New("session: not authorised")
 	ErrInvalidPermission = errors.New("session: invalid permission") //internal error
 	ErrSessionDidntPass  = errors.New("session: didn't pass")        //internal error
+
+	//CONTENT TYPE
+	ErrNotSupportedContentType = errors.New("content type: not supported")
 )

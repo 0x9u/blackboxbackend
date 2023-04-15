@@ -2,6 +2,7 @@ package blocked
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -126,6 +127,19 @@ func Create(c *gin.Context) {
 			return
 		}
 	}
+
+	var blockedImageId int64
+	if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id = $1", user.Id).Scan(&blockedImageId); err != nil && err != sql.ErrNoRows {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	} else if err == sql.ErrNoRows {
+		blockedImageId = -1
+	}
+
 	if err := tx.Commit(); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -137,7 +151,8 @@ func Create(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
-			UserId: intUserId,
+			UserId:  intUserId,
+			ImageId: blockedImageId,
 		},
 		Event: events.ADD_USER_BLOCKEDLIST,
 	}

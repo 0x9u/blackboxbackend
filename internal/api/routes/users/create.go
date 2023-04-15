@@ -2,12 +2,16 @@ package users
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/asianchinaboi/backendserver/internal/compress"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
@@ -15,26 +19,48 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/gin-gonic/gin"
-	"github.com/pierrec/lz4/v4"
 )
 
 func userCreate(c *gin.Context) {
 	logger.Debug.Println("Creating User")
 	var user events.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
-		return
-	}
 
-	imageHeader, err := c.FormFile("image")
-	if err != nil && err != http.ErrMissingFile {
-		logger.Error.Println(err)
+	c.FormFile("image")
+	var imageHeader *multipart.FileHeader
+
+	contentType := c.GetHeader("Content-Type")
+	if strings.HasPrefix(contentType, "multipart/form-data") {
+		var err error
+		if imageHeader, err = c.FormFile("image"); err != nil && err != http.ErrMissingFile {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+		jsonData := c.PostForm("body")
+		if err := json.Unmarshal([]byte(jsonData), &user); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else if strings.HasPrefix(contentType, "application/json") {
+		if err := c.ShouldBindJSON(&user); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrNotSupportedContentType)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
+			Error:  errors.ErrNotSupportedContentType.Error(),
 			Status: errors.StatusBadRequest,
 		})
 		return
@@ -103,10 +129,20 @@ func userCreate(c *gin.Context) {
 
 	user.UserId = uid.Snowflake.Generate().Int64()
 
+	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	if imageHeader != nil {
 		imageId := uid.Snowflake.Generate().Int64()
 
 		filename := imageHeader.Filename
+
 		imageCreated := time.Now().Unix()
 
 		image, err := imageHeader.Open()
@@ -129,9 +165,9 @@ func userCreate(c *gin.Context) {
 			})
 			return
 		}
-		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
-		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+
+		filesize := len(fileBytes)
+		compressedBuffer, err := compress.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -151,10 +187,16 @@ func userCreate(c *gin.Context) {
 			})
 			return
 		}
+		defer func() { //defer just in case something went wrong
+			if !successful {
+				if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", imageId)); err != nil {
+					logger.Warn.Printf("failed to remove file: %v\n", err)
+				}
+			}
+		}()
 		defer outFile.Close()
 
-		_, err = outFile.Write(compressedBuffer)
-		if err != nil {
+		if _, err = outFile.Write(compressedBuffer); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -162,19 +204,6 @@ func userCreate(c *gin.Context) {
 			})
 			return
 		}
-
-		defer func() { //defer just in case something went wrong
-			if !successful {
-				if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", imageId)); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
-					return
-				}
-			}
-		}()
 
 		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'user')", imageId, user.UserId, filename, imageCreated, false, filesize); err != nil {
 			logger.Error.Println(err)
@@ -184,15 +213,8 @@ func userCreate(c *gin.Context) {
 			})
 			return
 		}
-	}
-
-	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
+	} else {
+		logger.Debug.Println("no image provided")
 	}
 
 	//add user role

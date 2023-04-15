@@ -3,9 +3,11 @@ package msgs
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"html"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"regexp"
@@ -14,6 +16,7 @@ import (
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/compress"
 	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
@@ -23,7 +26,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
-	"github.com/pierrec/lz4/v4"
 )
 
 // expects
@@ -68,10 +70,55 @@ func Send(c *gin.Context) {
 	}
 
 	var msg events.Msg
-	if err := c.ShouldBindJSON(&msg); err != nil {
-		logger.Error.Println(err)
+	var files []*multipart.FileHeader
+	fileIds := []int64{}
+	fileSucessful := false
+
+	contentType := c.GetHeader("Content-Type")
+	if strings.HasPrefix(contentType, "multipart/form-data") {
+		form, err := c.MultipartForm()
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+
+		files = form.File["file"]
+		msg.Attachments = []events.Attachment{}
+		defer func() {
+			if !fileSucessful {
+				for _, id := range fileIds {
+					if err := os.Remove(fmt.Sprintf("uploads/msg/%d.lz4", id)); err != nil {
+						logger.Warn.Printf("unable to remove file: %v\n", err)
+					}
+				}
+			}
+		}()
+		jsonData := c.PostForm("body")
+		if err := json.Unmarshal([]byte(jsonData), &msg); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else if strings.HasPrefix(contentType, "application/json") {
+		if err := c.ShouldBindJSON(&msg); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrNotSupportedContentType)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
+			Error:  errors.ErrNotSupportedContentType.Error(),
 			Status: errors.StatusBadRequest,
 		})
 		return
@@ -121,30 +168,6 @@ func Send(c *gin.Context) {
 	msg.MsgId = uid.Snowflake.Generate().Int64()
 	//check if attachments uploaded
 
-	form, err := c.MultipartForm()
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
-		return
-	}
-
-	files := form.File["files[]"]
-	msg.Attachments = []events.Attachment{}
-	fileIds := []int64{}
-	fileSucessful := false
-	defer func() {
-		if !fileSucessful {
-			for _, id := range fileIds {
-				if err := os.Remove(fmt.Sprintf("uploads/msg/%d.lz4", id)); err != nil {
-					logger.Warn.Printf("unable to remove file: %v\n", err)
-				}
-			}
-		}
-	}()
-
 	//check if guild has chat messages save turned on
 	var isChatSaveOn bool
 	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&isChatSaveOn); err != nil {
@@ -182,9 +205,9 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
-		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
-		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+
+		filesize := len(fileBytes)
+		compressedBuffer, err := compress.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -193,8 +216,6 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
-
-		fileIds = append(fileIds, attachment.Id)
 
 		outFile, err := os.Create(fmt.Sprintf("uploads/msg/%d.lz4", attachment.Id))
 		//TODO: delete files if failed or write them after when its deemed successful
@@ -228,6 +249,8 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
+
+		fileIds = append(fileIds, attachment.Id)
 		msg.Attachments = append(msg.Attachments, attachment)
 	}
 

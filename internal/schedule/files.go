@@ -12,7 +12,7 @@ import (
 
 func deleteTempFile() {
 	logger.Info.Println("Deleting temp files")
-	fileRows, err := db.Db.Query("DELETE FROM FROM files WHERE temp = 1 AND created_at < $1 RETURNING id", time.Now().Add(-config.Config.Server.TempFileAlive))
+	fileRows, err := db.Db.Query("DELETE FROM files WHERE temp = true AND created < $1 RETURNING id, entity_type", time.Now().Add(-config.Config.Server.TempFileAlive))
 	if err != nil {
 		logger.Error.Println(err)
 		return
@@ -20,11 +20,12 @@ func deleteTempFile() {
 	defer fileRows.Close()
 	for fileRows.Next() {
 		var fileId int64
-		if err := fileRows.Scan(&fileId); err != nil {
+		var entityType string
+		if err := fileRows.Scan(&fileId, &entityType); err != nil {
 			logger.Error.Println(err)
 			continue
 		}
-		if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", fileId)); err != nil {
+		if err := os.Remove(fmt.Sprintf("uploads/%s/%d.lz4", entityType, fileId)); err != nil {
 			logger.Warn.Printf("unable to remove file: %v\n", err)
 		}
 	}

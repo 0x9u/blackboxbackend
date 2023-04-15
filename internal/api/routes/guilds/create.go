@@ -2,13 +2,17 @@ package guilds
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/compress"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
@@ -17,7 +21,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
-	"github.com/pierrec/lz4/v4"
 )
 
 /*
@@ -39,11 +42,43 @@ func createGuild(c *gin.Context) {
 			})
 		return
 	}
+
 	var guild events.Guild
-	if err := c.ShouldBindJSON(&guild); err != nil {
-		logger.Error.Println(err)
+	var imageHeader *multipart.FileHeader
+
+	contentType := c.GetHeader("Content-Type")
+	if strings.HasPrefix(contentType, "multipart/form-data") {
+		var err error
+		if imageHeader, err = c.FormFile("image"); err != nil && err != http.ErrMissingFile {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+		jsonData := c.PostForm("body")
+		if err := json.Unmarshal([]byte(jsonData), &guild); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else if strings.HasPrefix(contentType, "application/json") {
+		if err := c.ShouldBindJSON(&guild); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrNotSupportedContentType)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
+			Error:  errors.ErrNotSupportedContentType.Error(),
 			Status: errors.StatusBadRequest,
 		})
 		return
@@ -86,15 +121,6 @@ func createGuild(c *gin.Context) {
 
 	guildId := uid.Snowflake.Generate().Int64()
 
-	imageHeader, err := c.FormFile("image")
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
-	}
-
 	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, name, save_chat) VALUES ($1, $2, $3)", guildId, guild.Name, guild.SaveChat); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -106,10 +132,8 @@ func createGuild(c *gin.Context) {
 
 	if imageHeader != nil {
 		imageId := uid.Snowflake.Generate().Int64()
-
 		filename := imageHeader.Filename
 		imageCreated := time.Now().Unix()
-
 		image, err := imageHeader.Open()
 		if err != nil {
 			logger.Error.Println(err)
@@ -130,9 +154,9 @@ func createGuild(c *gin.Context) {
 			})
 			return
 		}
-		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
-		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+
+		filesize := len(fileBytes)
+		compressedBuffer, err := compress.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -152,32 +176,16 @@ func createGuild(c *gin.Context) {
 			})
 			return
 		}
-		defer outFile.Close()
-
-		_, err = outFile.Write(compressedBuffer)
-		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-
 		defer func() { //defer just in case something went wrong
 			if !successful {
 				if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", imageId)); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
-					return
+					logger.Warn.Printf("failed to remove file: %v\n", err)
 				}
 			}
 		}()
+		defer outFile.Close()
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'guild')", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
+		if _, err = outFile.Write(compressedBuffer); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -186,6 +194,16 @@ func createGuild(c *gin.Context) {
 			return
 		}
 
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'guild')", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+	} else {
+		logger.Debug.Println("no image provided")
 	}
 
 	invite := events.Invite{

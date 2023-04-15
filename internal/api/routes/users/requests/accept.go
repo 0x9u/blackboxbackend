@@ -93,7 +93,7 @@ func Accept(c *gin.Context) {
 	var clientUsername string
 	var clientImage sql.NullInt64
 	if err := db.Db.QueryRow(`
-	SELECT username, image_id FROM users WHERE id = $1
+	SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
 	`, user.Id).Scan(&clientUsername, &clientImage); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -113,7 +113,7 @@ func Accept(c *gin.Context) {
 	var friendUsername string
 	var friendImage sql.NullInt64
 	if err := db.Db.QueryRow(`
-	SELECT username, image_id FROM users WHERE id = $1
+	SELECT username FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
 	`, userId).Scan(&friendUsername, &friendImage); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

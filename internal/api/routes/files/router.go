@@ -8,5 +8,6 @@ import (
 
 func Routes(r *gin.RouterGroup) {
 	files := r.Group("/files")
+	//files.Use(middleware.Auth)
 	files.GET("/:entityType/:fileId", get)
 }

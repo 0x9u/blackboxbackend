@@ -64,15 +64,17 @@ func getGuild(c *gin.Context) {
 	}
 
 	query := `
-		SELECT SELECT g.id, g.name, g.image_id, g.save_chat, 
+		SELECT SELECT g.id, g.name, f.id, g.save_chat, 
 		(SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true) AS owner_id, 
 		un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.id > un.msg_id) AS unread_msgs,
 		un.time, COUNT(mm.msg_id) filter (WHERE mm.user_id = $2 AND mm.msg_id > un.msg_id) +
-		 COUNT(m.id) filter (WHERE m.mentions_everyone = true AND m.id > un.msg_id) AS mentions FROM guilds g WHERE g.id = $1
+		 COUNT(m.id) filter (WHERE m.mentions_everyone = true AND m.id > un.msg_id) AS mentions FROM guilds g
 		INNER JOIN unreadmsgs un ON un.guild_id = g.id AND un.user_id = $2
-		LEFT JOIN msgs m ON m.guild_id = g.id
+		LEFT JOIN msgs m ON m.guild_id = g.id 
 		LEFT JOIN msgmentions mm ON m.id = mm.msg_id
-		GROUP BY g.id, g.name, g.image_id, owner_id, un.msg_id, un.time
+		LEFT JOIN files f ON f.guild_id = g.id 
+		WHERE g.id = $1 
+		GROUP BY g.id, g.name, f.id, owner_id, un.msg_id, un.time
 	`
 	var guild events.Guild
 	var imageId sql.NullInt64
