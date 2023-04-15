@@ -1,0 +1,4 @@
+cmd/backend/uploads/
+cmd/backend/logs/
+cmd/backend/backend.exe
+cmd/backend/config.yml

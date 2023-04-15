@@ -1,11 +1,13 @@
 guild:
     maxInvites: 10
-    maxMsgLength: 2000
+    maxMsgLength: 2048
     timeout: 20s
 user:
-    maxGuildsPerUser: 10
-    coolDownLength: 60s
+    maxGuildsPerUser: 100
+    maxFriendsPerUser: 200
+    coolDownLength: 5s
     tokenExpireTime: 1440h0m0s
+    wsPerUser: 5
 server:
     host: 0.0.0.0
     port: "8080"
@@ -17,3 +19,8 @@ server:
     bufferSize:
         read: 4096
         write: 4096
+    snowflakeNodeID: 1
+    tempFileAlive: 24h0m0s
+    imageProfileSize: 4096
+    maxFileSize: 15728640
+    maxBodyRequestSize: 5242880

@@ -43,25 +43,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
-		return
-	}
-
 	var isDm bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId).Scan(&isDm); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)", guildId).Scan(&isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -79,8 +62,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var admins []events.User
-	rows, err := db.Db.Query("SELECT ug.user_id, u.username, f.id FROM userguilds ug INNER JOIN users u ON u.id = ug.user_id LEFT JOIN files f ON f.user_id = u.id WHERE guild_id=$1 AND admin = true", guildId)
+	admins := []events.User{}
+	rows, err := db.Db.Query("SELECT ug.user_id, u.username, f.id FROM userguilds ug INNER JOIN users u ON u.id = ug.user_id LEFT JOIN files f ON f.user_id = u.id WHERE ug.guild_id=$1 AND admin = true", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -91,7 +74,7 @@ func Get(c *gin.Context) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var userAdmin events.User
+		userAdmin := events.User{}
 		var imageId sql.NullInt64
 		rows.Scan(&userAdmin.UserId, &userAdmin.Name, imageId)
 		if imageId.Valid {

@@ -55,6 +55,15 @@ func Create(c *gin.Context) {
 		return
 	}
 
+	if user.Id == intUserId {
+		logger.Error.Println(errors.ErrFriendSelf)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrFriendSelf.Error(),
+			Status: errors.StatusFriendSelf,
+		})
+		return
+	}
+
 	var isBlocked bool
 	var isAlreadyFriends bool
 	var isRequested bool
@@ -119,44 +128,45 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	var sameChat bool
-	var friendsOfFriends bool
-	var options int
+	/*
+			var sameChat bool
+			var friendsOfFriends bool
+			var options int
 
-	if err := db.Db.QueryRow(`
-	SELECT EXISTS(SELECT 1 FROM userguilds uga WHERE uga.guild_id IN (SELECT guild_id FROM userguilds ugb WHERE ugb.user_id = $2) AND uga.user_id = $1) as samechat,
-	 EXISTS(SELECT 1 FROM friends WHERE (user_id = $1 OR friend_id = $1) AND 
-	 ( user_id IN (SELECT user_id FROM friends WHERE friend_id = $2) OR friend_id IN (SELECT friend_id FROM friends WHERE user_id = $2))) as friendsoffriends
-	`, user.Id, userId).Scan(&sameChat, &friendsOfFriends); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
+			if err := db.Db.QueryRow(`
+			SELECT EXISTS(SELECT 1 FROM userguilds uga WHERE uga.guild_id IN (SELECT guild_id FROM userguilds ugb WHERE ugb.user_id = $2) AND uga.user_id = $1) as samechat,
+			 EXISTS(SELECT 1 FROM friends WHERE (user_id = $1 OR friend_id = $1) AND
+			 ( user_id IN (SELECT user_id FROM friends WHERE friend_id = $2) OR friend_id IN (SELECT friend_id FROM friends WHERE user_id = $2))) as friendsoffriends
+			`, user.Id, userId).Scan(&sameChat, &friendsOfFriends); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
 
-	if err := db.Db.QueryRow(`
-		SELECT options FROM users WHERE id = $1
-	`, userId).Scan(&options); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
+		if err := db.Db.QueryRow(`
+			SELECT options FROM users WHERE id = $1
+		`, userId).Scan(&options); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 
-	if !((options&events.OAllowFriendsOfFriends) != 0 && friendsOfFriends) &&
-		!((options&events.OAllowSameChat) != 0 && sameChat) &&
-		!((options & events.OAllowRequestEveryone) != 0) {
-		logger.Error.Println(errors.ErrFriendCannotRequest)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrFriendCannotRequest.Error(),
-			Status: errors.StatusFriendCannotRequest,
-		})
-		return
-	}
+			if !((options&events.OAllowFriendsOfFriends) != 0 && friendsOfFriends) &&
+				!((options&events.OAllowSameChat) != 0 && sameChat) &&
+				!((options & events.OAllowRequestEveryone) != 0) {
+				logger.Error.Println(errors.ErrFriendCannotRequest)
+				c.JSON(http.StatusForbidden, errors.Body{
+					Error:  errors.ErrFriendCannotRequest.Error(),
+					Status: errors.StatusFriendCannotRequest,
+				})
+				return
+			}*/ //i dont trust myself
 
 	if _, err := db.Db.Exec(`
 		INSERT INTO friends(user_id, friend_id, friended) VALUES($1, $2, false)

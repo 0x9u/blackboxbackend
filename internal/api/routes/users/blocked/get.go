@@ -1,6 +1,7 @@
 package blocked
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -24,7 +25,7 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT b.blocked_id, u.username FROM blocked b INNER JOIN users u ON b.blocked_id = u.id WHERE b.user_id = $1", user.Id)
+	rows, err := db.Db.Query("SELECT b.blocked_id, u.username, f.id FROM blocked b INNER JOIN users u ON b.blocked_id = u.id LEFT JOIN files f ON f.user_id = u.id WHERE b.user_id = $1", user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -33,17 +34,23 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	var blockedUsers []events.User
+	blockedUsers := []events.User{}
 	defer rows.Close()
 	for rows.Next() {
-		var blockedUser events.User
-		if err := rows.Scan(&blockedUser.UserId, &blockedUser.Name); err != nil {
+		blockedUser := events.User{}
+		var imageId sql.NullInt64
+		if err := rows.Scan(&blockedUser.UserId, &blockedUser.Name, &imageId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+		if imageId.Valid {
+			blockedUser.ImageId = imageId.Int64
+		} else {
+			blockedUser.ImageId = -1
 		}
 		blockedUsers = append(blockedUsers, blockedUser)
 	}

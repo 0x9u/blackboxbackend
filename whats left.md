@@ -49,10 +49,20 @@
 
 - show member count
 
+- THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
+
+v2.0
+
+- add reactions
+
+- add replys
+
+- add friend restrictions
+
 - add public guilds
     - sort by member count or new
-        - add guild bumping in future
-
+        - add guild bumping
+            - sort by timestamps
 
 # PRIORITY
 - Clean up sql database

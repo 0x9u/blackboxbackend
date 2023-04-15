@@ -53,30 +53,9 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	var isBlocked bool
-	if err := db.Db.QueryRow(`
-		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
-		 OR 
-		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
-		`, user.Id, userId).Scan(&isBlocked); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if isBlocked {
-		logger.Error.Println(errors.ErrFriendBlocked)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendBlocked.Error(),
-			Status: errors.StatusFriendBlocked,
-		})
-		return
-	}
 	var friendExists bool
 	if err := db.Db.QueryRow(`
-		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = TRUE) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = TRUE)
+		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = true)
 		`, user.Id, userId).Scan(&friendExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -95,7 +74,7 @@ func Delete(c *gin.Context) {
 	}
 
 	if _, err := db.Db.Exec(`
-		DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
+		DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
 		`, user.Id, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

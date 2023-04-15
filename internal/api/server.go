@@ -13,7 +13,8 @@ func StartServer() *http.Server {
 	r := gin.New()
 	routes.PrepareRoutes(r)
 	server := &http.Server{ //server settings
-		Addr: config.Config.Server.Host + ":" + config.Config.Server.Port,
+		Addr:           config.Config.Server.Host + ":" + config.Config.Server.Port,
+		MaxHeaderBytes: config.Config.Server.MaxFileSize + config.Config.Server.MaxBodyRequestSize,
 		//prevents ddos attacks
 		WriteTimeout: config.Config.Server.Timeout.Write,
 		ReadTimeout:  config.Config.Server.Timeout.Read,

@@ -74,3 +74,9 @@ func (p *pools) GetLengthClients() int {
 	defer p.clientsMutex.RUnlock()
 	return len(p.clients)
 }
+
+func (p *pools) GetLengthForClient(id int64) int {
+	p.clientsMutex.RLock()
+	defer p.clientsMutex.RUnlock()
+	return len(p.clients[id])
+}

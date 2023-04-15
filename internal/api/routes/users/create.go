@@ -8,13 +8,15 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/asianchinaboi/backendserver/internal/compress"
+	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
+	"github.com/asianchinaboi/backendserver/internal/files"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/uid"
@@ -24,8 +26,6 @@ import (
 func userCreate(c *gin.Context) {
 	logger.Debug.Println("Creating User")
 	var user events.User
-
-	c.FormFile("image")
 	var imageHeader *multipart.FileHeader
 
 	contentType := c.GetHeader("Content-Type")
@@ -142,6 +142,7 @@ func userCreate(c *gin.Context) {
 		imageId := uid.Snowflake.Generate().Int64()
 
 		filename := imageHeader.Filename
+		fileType := filepath.Ext(filename)
 
 		imageCreated := time.Now().Unix()
 
@@ -166,8 +167,33 @@ func userCreate(c *gin.Context) {
 			return
 		}
 
+		if valid := files.ValidateImage(fileBytes, fileType); !valid {
+			logger.Error.Println(errors.ErrFileInvalid)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileInvalid.Error(),
+				Status: errors.StatusFileInvalid,
+			})
+			return
+		}
+
 		filesize := len(fileBytes)
-		compressedBuffer, err := compress.Compress(fileBytes, filesize)
+
+		if filesize > config.Config.Server.MaxFileSize {
+			logger.Error.Println(errors.ErrFileTooLarge)
+			c.JSON(http.StatusRequestEntityTooLarge, errors.Body{
+				Error:  errors.ErrFileTooLarge.Error(),
+				Status: errors.StatusFileTooLarge,
+			})
+			return
+		} else if !(filesize >= 0) {
+			logger.Error.Println(errors.ErrFileNoBytes)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileNoBytes.Error(),
+				Status: errors.StatusFileNoBytes,
+			})
+			return
+		}
+		compressedBuffer, err := files.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

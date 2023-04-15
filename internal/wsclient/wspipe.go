@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
+	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
@@ -92,12 +94,18 @@ func (c *wsClient) readData(body DataFrame) {
 
 		c.deadlineCancel()
 		c.id = user.Id
+		if Pools.GetLengthForClient(c.id) >= config.Config.User.WSPerUser {
+			logger.Error.Println(errors.ErrSessionTooManySessions)
+			c.quit()
+			return
+		}
 		go c.tokenExpireDeadline(user.Expires)
 		c.uniqueId = session.GenerateRandString(32)
 
 		rows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", c.id)
 		if err != nil {
 			logger.Error.Println(err)
+			c.quit()
 			return
 		}
 		//var guilds []int

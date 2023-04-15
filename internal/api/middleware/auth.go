@@ -26,9 +26,9 @@ func Auth(c *gin.Context) {
 	c.Set(User, user)
 	if err != nil {
 		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
+		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  err.Error(),
-			Status: errors.StatusInternalError,
+			Status: errors.StatusNotAuthorised,
 		})
 		c.Abort()
 		return

@@ -59,8 +59,6 @@ func Create(c *gin.Context) {
 	var isBlocked bool
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)
-		 OR 
-		EXISTS(SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
 		`, user.Id, userId).Scan(&isBlocked); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -81,8 +79,6 @@ func Create(c *gin.Context) {
 	var isFriends bool
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS (SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2)
-		 OR 
-		EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
 		`, user.Id, userId).Scan(&isFriends); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -100,11 +96,8 @@ func Create(c *gin.Context) {
 			Status: errors.StatusInternalError,
 		})
 	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}()
+	defer tx.Rollback()
+
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO blocked (user_id, blocked_id) VALUES ($1, $2)
 		`, user.Id, userId); err != nil {

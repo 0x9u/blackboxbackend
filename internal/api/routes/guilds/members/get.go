@@ -46,7 +46,7 @@ func Get(c *gin.Context) {
 	var inGuild bool
 	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&inGuild, &isDm); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false), EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)", guildId, user.Id).Scan(&inGuild, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -72,7 +72,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	rows, err := db.Db.Query("SELECT users.username, f.id, users.id, admin FROM userguilds INNER JOIN users ON userguilds.user_id=users.id LEFT JOIN files f ON f.user_id = users.id WHERE guild_id=$1 AND banned = false", guildId)
+	rows, err := db.Db.Query("SELECT users.username, f.id, users.id, admin, owner FROM userguilds INNER JOIN users ON userguilds.user_id=users.id LEFT JOIN files f ON f.user_id = users.id WHERE userguilds.guild_id=$1 AND banned = false", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -94,7 +94,7 @@ func Get(c *gin.Context) {
 	for rows.Next() {
 		var user events.Member
 		var imageId sql.NullInt64
-		err = rows.Scan(&user.UserInfo.Name, &imageId, &user.UserInfo.UserId, &user.Admin)
+		err = rows.Scan(&user.UserInfo.Name, &imageId, &user.UserInfo.UserId, &user.Admin, &user.Owner)
 		if imageId.Valid {
 			user.UserInfo.ImageId = imageId.Int64
 		} else {

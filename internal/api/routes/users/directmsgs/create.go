@@ -74,11 +74,45 @@ func Create(c *gin.Context) {
 	}
 
 	if dmExists {
-		logger.Error.Println(errors.ErrDmAlreadyExists)
-		c.JSON(http.StatusConflict, errors.Body{
-			Error:  errors.ErrDmAlreadyExists.Error(),
-			Status: errors.StatusDmAlreadyExists,
-		})
+		if _, err := db.Db.Exec("UPDATE userguilds SET left_dm = false WHERE user_id = $1 AND receiver_id = $2", user.Id, body.ReceiverId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		var username string
+		var sqlImageId sql.NullInt64
+
+		if err := db.Db.QueryRow("SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1", user.Id).Scan(&username, &sqlImageId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		var imageId int64
+		if sqlImageId.Valid {
+			imageId = sqlImageId.Int64
+		} else {
+			imageId = -1
+		}
+
+		res := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId:  body.ReceiverId,
+				Name:    username,
+				ImageId: imageId,
+			},
+			Event: events.CREATE_DM,
+		}
+		wsclient.Pools.BroadcastClient(user.Id, res)
+
+		c.Status(http.StatusCreated)
 		return
 	}
 	//BEGIN TRANSACTION
@@ -92,13 +126,7 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
-	defer func() {
-		if err != nil {
-			if err := tx.Rollback(); err != nil {
-				logger.Warn.Printf("unable to rollback error: %v\n", err)
-			}
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 
 	dmId := uid.Snowflake.Generate().Int64()
 
@@ -112,6 +140,15 @@ func Create(c *gin.Context) {
 	}
 
 	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds(guild_id, user_id, receiver_id, left_dm, owner) VALUES ($1, $2, $3, false, true), ($1, $3, $2, true, true)", dmId, user.Id, body.ReceiverId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := tx.ExecContext(ctx, "INSERT INTO unreadmsgs(guild_id, user_id) VALUES ($1, $2), ($1, $3)", dmId, user.Id, body.ReceiverId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

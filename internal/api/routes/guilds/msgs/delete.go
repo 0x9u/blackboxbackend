@@ -89,7 +89,7 @@ func Delete(c *gin.Context) { //deletes message
 	var hasAuth bool
 	var isDm bool
 	var isAuthor bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -126,11 +126,7 @@ func Delete(c *gin.Context) { //deletes message
 		})
 		return
 	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 
 	var fileRows *sql.Rows
 
@@ -175,7 +171,7 @@ func Delete(c *gin.Context) { //deletes message
 		}
 
 		//delete files associated with msg
-		fileRows, err := db.Db.Query("SELECT id FROM files WHERE msg_id = $1", msgId)
+		fileRows, err = db.Db.Query("SELECT id FROM files WHERE msg_id = $1", msgId)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{

@@ -63,7 +63,14 @@ func Delete(c *gin.Context) {
 
 	var isOwner bool
 	var isDm bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND owner = true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $2 AND dm = true)", user.Id, guildId).Scan(&isOwner, &isDm); err != nil {
+	var isUserAdmin bool
+	var isUserInGuild bool
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS (SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND owner = true), 
+	EXISTS (SELECT 1 FROM guilds WHERE id = $2 AND dm = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3 AND admin = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3)
+	`, user.Id, guildId, userId).Scan(&isOwner, &isDm, &isUserAdmin, &isUserInGuild); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -86,6 +93,24 @@ func Delete(c *gin.Context) {
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrNotAuthorised.Error(),
 			Status: errors.StatusNotAuthorised,
+		})
+		return
+	}
+
+	if !isUserAdmin {
+		logger.Error.Println(errors.ErrUserNotAdmin)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrUserNotAdmin.Error(),
+			Status: errors.StatusUserNotAdmin,
+		})
+		return
+	}
+
+	if !isUserInGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
 		})
 		return
 	}

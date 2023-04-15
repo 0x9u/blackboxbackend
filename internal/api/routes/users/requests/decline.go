@@ -58,8 +58,6 @@ func Decline(c *gin.Context) {
 
 	if err := db.Db.QueryRow(`
 	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
-	 OR 
-	EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -79,7 +77,7 @@ func Decline(c *gin.Context) {
 	}
 
 	if _, err := db.Db.Exec(`
-	DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
 	`, userId, user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

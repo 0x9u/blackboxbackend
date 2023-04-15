@@ -26,10 +26,8 @@ func Get(c *gin.Context) {
 	}
 
 	rows, err := db.Db.Query(`
-		SELECT f.sender_id AS friend_id, u.username AS username f.id AS image_id FROM friends f INNER JOIN users u ON f.sender_id = u.id LEFT JOIN files f ON f.user_id = f.sender_id WHERE f.receiver_id = $1 AND f.friended = true
-		 UNION
-		SELECT f.receiver_id AS friend_id, u.username AS username, f.id AS image_id FROM friends f INNER JOIN users u ON f.receiver_id = u.id LEFT JOIN files f ON f.user_id = f.receiver_id WHERE f.sender_id = $1 AND f.friended = true
-	`)
+		SELECT f.friend_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.friend_id = u.id LEFT JOIN files ON files.user_id = f.friend_id WHERE f.user_id = $1 AND f.friended = true
+	`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -39,7 +37,7 @@ func Get(c *gin.Context) {
 		return
 	}
 	defer rows.Close()
-	var friends []events.User
+	friends := []events.User{}
 	for rows.Next() {
 		var friendUser events.User
 		var imageId sql.NullInt64

@@ -77,12 +77,12 @@ func Get(c *gin.Context) { //sends message history
 	}
 
 	rows, err := db.Db.Query(
-		`SELECT m.*, u.username, f.id
+		`SELECT m.id, m.content, m.user_id, m.guild_id, m.created, m.modified, m.mentions_everyone, u.username, f.id
 		FROM msgs m INNER JOIN users u 
 		ON u.id = m.user_id LEFT JOIN files f
 		ON f.user_id = u.id 
-		WHERE created < $1 AND guild_id = $2 
-		ORDER BY created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
+		WHERE m.created < $1 AND m.guild_id = $2 
+		ORDER BY m.created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
 		timestamp, guildId, limit)
 	if err != nil {
 		logger.Error.Println(err)
@@ -98,8 +98,8 @@ func Get(c *gin.Context) { //sends message history
 		message := events.Msg{}
 		var imageId sql.NullInt64
 		var modified sql.NullInt64
-		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId, imageId,
-			&message.GuildId, &message.Created, modified, &message.MentionsEveryone, &message.Author.Name)
+		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
+			&message.GuildId, &message.Created, &modified, &message.MentionsEveryone, &message.Author.Name, &imageId)
 		if modified.Valid { //to make it show in json
 			message.Modified = modified.Int64
 		} else {
@@ -118,6 +118,7 @@ func Get(c *gin.Context) { //sends message history
 			})
 			return
 		}
+
 		mentions, err := db.Db.Query(`SELECT mm.user_id, u.username FROM msgmentions mm INNER JOIN users u ON u.id = mm.user_id WHERE msg_id = $1`, message.MsgId)
 		if err != nil {
 			logger.Error.Println(err)
@@ -127,6 +128,7 @@ func Get(c *gin.Context) { //sends message history
 			})
 			return
 		}
+
 		for mentions.Next() {
 			var mentionUser events.User
 			if err := mentions.Scan(&mentionUser.UserId, &mentionUser.Name); err != nil {
@@ -140,6 +142,34 @@ func Get(c *gin.Context) { //sends message history
 			message.Mentions = append(message.Mentions, mentionUser)
 		}
 		mentions.Close()
+
+		attachments, err := db.Db.Query(`SELECT id, filename FROM files WHERE msg_id = $1`, message.MsgId)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
+		message.Attachments = []events.Attachment{}
+
+		for attachments.Next() {
+			var attachment events.Attachment
+			if err := attachments.Scan(&attachment.Id, &attachment.Filename); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+
+			message.Attachments = append(message.Attachments, attachment)
+		}
+		attachments.Close()
+
 		message.MsgSaved = true
 		messages = append(messages, message)
 	}

@@ -89,10 +89,19 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	var hasAuth bool
+	var isOwner bool
+	var isAdmin bool
+	var isUserAdmin bool
+	var isUserInGuild bool
 	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true), 
+	EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND admin=true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3 AND admin=true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3)
+	`, guildId, user.Id, userId).Scan(&isOwner, &isDm, &isAdmin, &isUserAdmin, &isUserInGuild); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -110,11 +119,29 @@ func Kick(c *gin.Context) {
 		return
 	}
 
-	if !hasAuth {
+	if !isAdmin && !isOwner {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrNotGuildAuthorised.Error(),
 			Status: errors.StatusNotGuildAuthorised,
+		})
+		return
+	}
+
+	if !isUserInGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
+		})
+		return
+	}
+
+	if isUserAdmin && !isOwner {
+		logger.Error.Println(errors.ErrNotAuthorised)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotAuthorised.Error(),
+			Status: errors.StatusNotAuthorised,
 		})
 		return
 	}

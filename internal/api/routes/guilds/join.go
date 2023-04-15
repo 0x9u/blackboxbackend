@@ -46,9 +46,10 @@ func joinGuild(c *gin.Context) {
 	}
 	row := db.Db.QueryRow(
 		`
-		SELECT i.guild_id, g.name, g.image_id, ug.user_id
+		SELECT i.guild_id, g.name, f.id, ug.user_id
 		FROM invites i INNER JOIN guilds g ON g.id = i.guild_id 
-		INNER JOIN userguilds ug ON ug.guild_id = g.id AND owner = true
+		INNER JOIN userguilds ug ON ug.guild_id = g.id AND owner = true 
+		LEFT JOIN files f ON f.guild_id = g.id 
 		WHERE i.invite = $1`,
 		invite.Invite)
 	if err := row.Err(); err == sql.ErrNoRows {
@@ -110,7 +111,9 @@ func joinGuild(c *gin.Context) {
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 
-	var userData events.UserGuild //change name later
+	userData := events.UserGuild{} //change name later
+	userData.UserData = &events.User{}
+
 	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&userData.UserData.Name); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

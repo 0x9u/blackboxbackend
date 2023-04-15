@@ -1,7 +1,6 @@
 package msgs
 
 import (
-	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -58,7 +57,7 @@ func Typing(c *gin.Context) {
 	var inGuild bool
 	var isDm bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)", guildId, user.Id).Scan(&inGuild, &isDm); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false), EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)", guildId, user.Id).Scan(&inGuild, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -76,8 +75,7 @@ func Typing(c *gin.Context) {
 	}
 	//get user info
 	var username string
-	var imageId sql.NullInt64
-	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", user.Id).Scan(&username, imageId); err != nil {
+	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&username); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -86,13 +84,6 @@ func Typing(c *gin.Context) {
 		return
 	}
 
-	var resImageId int64
-	resImageId = 0
-	if imageId.Valid {
-		resImageId = imageId.Int64
-	} else {
-		resImageId = -1
-	}
 	var statusMessage string
 	if isDm {
 		statusMessage = events.USER_DM_TYPING
@@ -105,9 +96,8 @@ func Typing(c *gin.Context) {
 			GuildId: intGuildId,
 			UserId:  user.Id,
 			UserData: &events.User{
-				UserId:  user.Id,
-				Name:    username,
-				ImageId: resImageId,
+				UserId: user.Id,
+				Name:   username,
 			},
 		},
 		Event: statusMessage,

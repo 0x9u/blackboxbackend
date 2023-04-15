@@ -12,33 +12,33 @@ import (
 func Routes(r *gin.RouterGroup) {
 	users := r.Group("/users")
 	users.POST("/", userCreate)
-	users.DELETE("/", userDelete)
-
-	users.DELETE("/msgs", clearUserMsg)
+	users.GET("/:userId", middleware.Auth, getUserInfo)
 
 	users.POST("/auth", userAuth)
 
-	users.PATCH("/@me", editSelf).Use(middleware.Auth)
-	users.GET("/@me", getSelfInfo).Use(middleware.Auth)
+	self := users.Group("/@me").Use(middleware.Auth)
 
-	users.POST("/@me/dms", directmsgs.Create).Use(middleware.Auth)
-	users.DELETE("/@me/dms/:dmId", directmsgs.Delete).Use(middleware.Auth)
+	self.PATCH("/", editSelf)
+	self.DELETE("/", userDelete)
+	self.GET("/", getSelfInfo)
 
-	users.PUT("/@me/friends/:userId", friends.Create).Use(middleware.Auth)
-	users.GET("/@me/friends", friends.Get).Use(middleware.Auth)
-	users.DELETE("/@me/friends/:userId", friends.Delete).Use(middleware.Auth)
+	self.POST("/dms", directmsgs.Create)
+	self.DELETE("/dms/:dmId", directmsgs.Delete)
 
-	users.POST("/@me/requests/:userId/accept", requests.Accept).Use(middleware.Auth)
-	users.POST("/@me/requests/:userId/decline", requests.Decline).Use(middleware.Auth)
-	users.GET("/@me/requests", requests.Get).Use(middleware.Auth)
+	self.PUT("/friends/:userId", friends.Create)
+	self.GET("/friends", friends.Get)
+	self.DELETE("/friends/:userId", friends.Delete)
 
-	users.PUT("/@me/blocked/:userId", blocked.Create).Use(middleware.Auth)
-	users.GET("/@me/blocked", blocked.Get).Use(middleware.Auth)
-	users.DELETE("/@me/blocked/:userId", blocked.Delete).Use(middleware.Auth)
+	self.POST("/requests/:userId/accept", requests.Accept)
+	self.POST("/requests/:userId/decline", requests.Decline)
+	self.GET("/requests", requests.Get)
 
-	users.GET("/@me/guilds", getSelfGuilds).Use(middleware.Auth)
-	users.DELETE("/@me/guilds/:guildId", leaveGuild).Use(middleware.Auth)
+	self.PUT("/blocked/:userId", blocked.Create)
+	self.GET("/blocked", blocked.Get)
+	self.DELETE("/blocked/:userId", blocked.Delete)
 
-	users.GET("/:userId", getUserInfo).Use(middleware.Auth)
+	self.GET("/guilds", getSelfGuilds)
+	self.DELETE("/guilds/:guildId", leaveGuild)
 
+	self.DELETE("/msgs", clearUserMsg)
 }

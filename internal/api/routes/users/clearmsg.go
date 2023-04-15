@@ -50,13 +50,7 @@ func clearUserMsg(c *gin.Context) {
 		})
 		return
 	}
-	defer func() {
-		if err != nil {
-			if err := tx.Rollback(); err != nil {
-				logger.Warn.Printf("unable to rollback error: %v\n", err)
-			}
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 
 	if _, err = tx.ExecContext(ctx, "DELETE FROM msgs WHERE user_id = $1", user.Id); err != nil {
 		logger.Error.Println(err)

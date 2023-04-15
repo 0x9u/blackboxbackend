@@ -40,9 +40,8 @@ var (
 
 	//DM
 
-	ErrDmNotOpened     = errors.New("dm: not opened")
-	ErrDmAlreadyExists = errors.New("dm: already exists")
-	ErrDmNotExist      = errors.New("dm: doesnt exists")
+	ErrDmNotOpened = errors.New("dm: not opened")
+	ErrDmNotExist  = errors.New("dm: doesnt exists")
 
 	//FRIND
 	ErrFriendBlocked          = errors.New("friend: blocked")
@@ -51,6 +50,7 @@ var (
 	ErrFriendRequestNotFound  = errors.New("friend: request not found")
 	ErrFriendInvalid          = errors.New("friend: invalid friend")
 	ErrFriendCannotRequest    = errors.New("friend: cannot request")
+	ErrFriendSelf             = errors.New("friend: cannot add self")
 
 	//BLOCKED
 	ErrUserNotBlocked = errors.New("blocked: user not blocked")
@@ -64,6 +64,10 @@ var (
 	ErrInvalidUsername    = errors.New("user: invalid username")
 	ErrUserNotFound       = errors.New("user: user not found")
 	ErrUserClientNotExist = errors.New("user: client does not exist")
+
+	//GUILD ADMIN
+	ErrUserAlreadyAdmin = errors.New("guild admin: user is already admin")
+	ErrUserNotAdmin     = errors.New("guild admin: user is not admin")
 
 	//INVITE
 
@@ -91,14 +95,18 @@ var (
 
 	//FILES
 	ErrFileNotFound = errors.New("file: not found")
+	ErrFileInvalid  = errors.New("file: invalid")
+	ErrFileNoBytes  = errors.New("file: no bytes")
+	ErrFileTooLarge = errors.New("file: too large")
 
 	//ROUTES
 	ErrRouteParamInvalid = errors.New("route: invalid param")
 
 	//SESSION
-	ErrNotAuthorised     = errors.New("session: not authorised")
-	ErrInvalidPermission = errors.New("session: invalid permission") //internal error
-	ErrSessionDidntPass  = errors.New("session: didn't pass")        //internal error
+	ErrNotAuthorised          = errors.New("session: not authorised")
+	ErrInvalidPermission      = errors.New("session: invalid permission") //internal error
+	ErrSessionDidntPass       = errors.New("session: didn't pass")        //internal error
+	ErrSessionTooManySessions = errors.New("session: too many sessions")
 
 	//CONTENT TYPE
 	ErrNotSupportedContentType = errors.New("content type: not supported")

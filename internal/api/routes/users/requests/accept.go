@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 	"regexp"
@@ -59,8 +60,6 @@ func Accept(c *gin.Context) {
 
 	if err := db.Db.QueryRow(`
 	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
-	 OR 
-	EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -79,9 +78,40 @@ func Accept(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec(`
-	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.ExecContext(ctx, `
+	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2)
 	`, userId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := tx.ExecContext(ctx, `
+	INSERT INTO friends(user_id, friend_id, friended) VALUES ($1, $2, true)
+`, user.Id, userId); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -113,7 +143,7 @@ func Accept(c *gin.Context) {
 	var friendUsername string
 	var friendImage sql.NullInt64
 	if err := db.Db.QueryRow(`
-	SELECT username FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
+	SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
 	`, userId).Scan(&friendUsername, &friendImage); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

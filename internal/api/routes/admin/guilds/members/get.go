@@ -52,7 +52,7 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT users.username, users.image_id, users.id, admin FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
+	rows, err := db.Db.Query("SELECT users.username, users.image_id, users.id, admin, owner FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -74,7 +74,7 @@ func Get(c *gin.Context) {
 	for rows.Next() {
 		var user events.Member
 		var imageId sql.NullInt64
-		err = rows.Scan(&user.UserInfo.Name, &imageId, &user.UserInfo.UserId, &user.Admin)
+		err = rows.Scan(&user.UserInfo.Name, &imageId, &user.UserInfo.UserId, &user.Admin, &user.Owner)
 		if imageId.Valid {
 			user.UserInfo.ImageId = imageId.Int64
 		} else {

@@ -3,7 +3,6 @@ package requests
 import (
 	"database/sql"
 	"net/http"
-	"regexp"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -31,25 +30,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId")
-	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
-		return
-	}
-
 	pendingReqs, err := db.Db.Query(`
-	SELECT f.receiver_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.receiver_id = u.id LEFT JOIN files ON files.user_id = f.receiver_id WHERE f.sender_id = $1 AND f.friended = false
+	SELECT f.user_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.user_id = u.id LEFT JOIN files ON files.user_id = f.user_id WHERE f.friend_id = $1 AND f.friended = false
 	`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)
@@ -61,6 +43,10 @@ func Get(c *gin.Context) {
 	}
 	defer pendingReqs.Close()
 	var requests FriendRequest
+
+	requests.Pending = []events.User{}
+	requests.Requested = []events.User{}
+
 	for pendingReqs.Next() {
 		var friendUser events.User
 		var imageId sql.NullInt64
@@ -80,8 +66,9 @@ func Get(c *gin.Context) {
 		}
 		requests.Pending = append(requests.Pending, friendUser)
 	}
+
 	requestedReqs, err := db.Db.Query(`
-	SELECT f.sender_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.sender_id = u.id LEFT JOIN files ON files.user_id = f.sender_id WHERE f.receiver_id = $1 AND f.friended = false
+	SELECT f.friend_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.friend_id = u.id LEFT JOIN files ON files.user_id = f.friend_id WHERE f.user_id = $1 AND f.friended = false
 	`, user.Id)
 	if err != nil {
 		logger.Error.Println(err)

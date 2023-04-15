@@ -62,8 +62,16 @@ func Create(c *gin.Context) {
 	}
 
 	var isOwner bool
+	var isUserAdmin bool
 	var isDm bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND owner = true), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $2 AND dm = true)", user.Id, guildId).Scan(&isOwner, &isDm); err != nil {
+	var isUserInGuild bool
+
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS (SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND owner = true), 
+	EXISTS (SELECT 1 FROM guilds WHERE id = $2 AND dm = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3 AND admin = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3)
+	`, user.Id, guildId, userId).Scan(&isOwner, &isDm, &isUserAdmin, &isUserInGuild); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -71,6 +79,7 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+
 	if isDm {
 		logger.Error.Println(errors.ErrGuildIsDm)
 		c.JSON(http.StatusForbidden, errors.Body{
@@ -79,6 +88,7 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+
 	if !isOwner {
 		logger.Error.Println(errors.ErrNotAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
@@ -87,6 +97,25 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+
+	if isUserAdmin {
+		logger.Error.Println(errors.ErrUserAlreadyAdmin)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrUserAlreadyAdmin.Error(),
+			Status: errors.StatusUserAlreadyAdmin,
+		})
+		return
+	}
+
+	if !isUserInGuild {
+		logger.Error.Println(errors.ErrNotInGuild)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotInGuild.Error(),
+			Status: errors.StatusNotInGuild,
+		})
+		return
+	}
+
 	if _, err := db.Db.Exec("UPDATE userguilds SET admin = true WHERE user_id = $1 AND guild_id = $2", userId, guildId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

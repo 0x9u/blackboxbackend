@@ -90,13 +90,21 @@ func Ban(c *gin.Context) {
 		return
 	}
 
-	var hasAuth bool
+	var hasAdmin bool
+	var isUserAdmin bool
+	var isOwner bool
 	var isBanned bool
+	var userExists bool
 	var isDm bool
 
-	if err := db.Db.QueryRow(`SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), 
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND admin=true), 
 	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id=$3 AND banned = true), 
-	EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)`, guildId, user.Id, userId).Scan(&hasAuth, &isBanned, &isDm); err != nil {
+	EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id = $3 AND admin = true),
+	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id = $2 AND owner = true),
+	EXISTS (SELECT 1 FROM users WHERE user_id = $3)
+	`, guildId, user.Id, userId).Scan(&hasAdmin, &isBanned, &isDm, &isUserAdmin, &isOwner, &userExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -115,14 +123,14 @@ func Ban(c *gin.Context) {
 	}
 
 	if isBanned {
-		logger.Error.Println(errors.ErrUserNotBanned)
-		c.JSON(http.StatusUnprocessableEntity, errors.Body{
-			Error:  errors.ErrUserNotBanned.Error(),
-			Status: errors.StatusUserNotBanned,
+		logger.Error.Println(errors.ErrAlreadyBanned)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrAlreadyBanned.Error(),
+			Status: errors.StatusAlreadyBanned,
 		})
 		return
 	}
-	if !hasAuth {
+	if !hasAdmin || !isOwner {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrNotGuildAuthorised.Error(),
@@ -131,7 +139,25 @@ func Ban(c *gin.Context) {
 		return
 	}
 
-	if _, err := db.Db.Exec("UPDATE userguilds SET banned=true WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
+	if !isUserAdmin && !isOwner {
+		logger.Error.Println(errors.ErrNotGuildAuthorised)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotGuildAuthorised.Error(),
+			Status: errors.StatusNotGuildAuthorised,
+		})
+		return
+	}
+
+	if !userExists {
+		logger.Error.Println(errors.ErrUserNotFound)
+		c.JSON(http.StatusNotFound, errors.Body{
+			Error:  errors.ErrUserNotFound.Error(),
+			Status: errors.StatusUserNotFound,
+		})
+		return
+	}
+
+	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id, banned) VALUES ($1, $2, true) ON CONFLICT (guild_id, user_id) DO UPDATE SET banned=true", guildId, userId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -139,9 +165,10 @@ func Ban(c *gin.Context) {
 		})
 		return
 	}
+
 	var username string
 	var imageId sql.NullInt64
-	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", userId).Scan(&username, &imageId); err != nil {
+	if err := db.Db.QueryRow("SELECT username, files.id FROM users LEFT JOIN files ON files.user_id = users.id WHERE users.id=$1", userId).Scan(&username, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

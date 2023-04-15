@@ -29,7 +29,6 @@ const (
 	StatusGuildIsDm
 
 	StatusDmNotOpened
-	StatusDmAlreadyExists
 	StatusDmNotExist
 
 	StatusFriendBlocked
@@ -38,6 +37,7 @@ const (
 	StatusFriendRequestNotFound
 	StatusFriendInvalid
 	StatusFriendCannotRequest
+	StatusFriendSelf
 
 	StatusUserNotBlocked
 
@@ -47,6 +47,9 @@ const (
 	StatusInvalidPass
 	StatusInvalidUsername
 	StatusUserNotFound
+
+	StatusUserAlreadyAdmin
+	StatusUserNotAdmin
 
 	StatusNoInvite
 	StatusInvalidInvite
@@ -64,8 +67,13 @@ const (
 	StatusIpBanned
 
 	StatusFileNotFound
+	StatusFileInvalid
+	StatusFileNoBytes
+	StatusFileTooLarge
 
 	StatusRouteParamInvalid
+
+	StatusSessionTooManySessions
 
 	StatusNotAuthorised
 )

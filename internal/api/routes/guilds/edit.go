@@ -9,16 +9,18 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
-	"github.com/asianchinaboi/backendserver/internal/compress"
+	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
+	"github.com/asianchinaboi/backendserver/internal/files"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/uid"
@@ -102,7 +104,7 @@ func editGuild(c *gin.Context) {
 		return
 	}
 
-	if newSettings.SaveChat == nil && newSettings.Name == nil && imageHeader == nil {
+	if newSettings.SaveChat == nil && newSettings.Name == nil && newSettings.OwnerId == nil && imageHeader == nil {
 		logger.Error.Println(errors.ErrAllFieldsEmpty)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrAllFieldsEmpty.Error(),
@@ -118,8 +120,8 @@ func editGuild(c *gin.Context) {
 
 	if err := db.Db.QueryRow(`SELECT EXISTS(SELECT 1 FROM guilds WHERE id = $1), 
 	EXISTS(SELECT 1 FROM userguilds WHERE user_id=$2 and guild_id=$1 and owner = true), 
-	EXISTS (SELECT 1 FROM userguilds WHERE user_id=$2 AND guild=$1 AND admin = true), 
-	EXISTS (SELECT 1 FROM guilds WHERE guild_id = $1 AND dm = true)`, guildId, user.Id).Scan(&exists, &isOwner, &isAdmin, &isDm); err != nil {
+	EXISTS (SELECT 1 FROM userguilds WHERE user_id=$2 AND guild_id=$1 AND admin = true), 
+	EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)`, guildId, user.Id).Scan(&exists, &isOwner, &isAdmin, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -173,11 +175,7 @@ func editGuild(c *gin.Context) {
 		})
 		return
 	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 
 	successful := false
 
@@ -254,6 +252,7 @@ func editGuild(c *gin.Context) {
 
 		imageId := uid.Snowflake.Generate().Int64()
 		filename := imageHeader.Filename
+		fileType := filepath.Ext(filename)
 		imageCreated := time.Now().Unix()
 		image, err := imageHeader.Open()
 		if err != nil {
@@ -276,8 +275,34 @@ func editGuild(c *gin.Context) {
 			return
 		}
 
+		if valid := files.ValidateImage(fileBytes, fileType); !valid {
+			logger.Error.Println(errors.ErrFileInvalid)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileInvalid.Error(),
+				Status: errors.StatusFileInvalid,
+			})
+			return
+		}
+
 		filesize := len(fileBytes)
-		compressedBuffer, err := compress.Compress(fileBytes, filesize)
+
+		if filesize > config.Config.Server.MaxFileSize {
+			logger.Error.Println(errors.ErrFileTooLarge)
+			c.JSON(http.StatusRequestEntityTooLarge, errors.Body{
+				Error:  errors.ErrFileTooLarge.Error(),
+				Status: errors.StatusFileTooLarge,
+			})
+			return
+		} else if !(filesize >= 0) {
+			logger.Error.Println(errors.ErrFileNoBytes)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileNoBytes.Error(),
+				Status: errors.StatusFileNoBytes,
+			})
+			return
+		}
+
+		compressedBuffer, err := files.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -345,7 +370,10 @@ func editGuild(c *gin.Context) {
 
 	if newSettings.OwnerId != nil {
 		var inGuild bool
-		if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2)", guildId, newSettings.OwnerId).Scan(&isOwner, &inGuild); err != nil {
+		if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2),
+		EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$2 AND user_id=$3 AND owner=true)
+		`, guildId, newSettings.OwnerId, user.Id).Scan(&inGuild, &isOwner); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

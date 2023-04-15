@@ -3,22 +3,27 @@ package users
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
+	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
+	"github.com/asianchinaboi/backendserver/internal/files"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
-	"github.com/pierrec/lz4/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,22 +46,43 @@ func editSelf(c *gin.Context) {
 			})
 		return
 	}
+
 	var body editSelfBody
+	var imageHeader *multipart.FileHeader
 
-	if err := c.ShouldBindJSON(&body); err != nil {
-		logger.Error.Println(err)
+	contentType := c.GetHeader("Content-Type")
+	if strings.HasPrefix(contentType, "multipart/form-data") {
+		var err error
+		if imageHeader, err = c.FormFile("image"); err != nil && err != http.ErrMissingFile {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+		jsonData := c.PostForm("body")
+		if err := json.Unmarshal([]byte(jsonData), &body); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else if strings.HasPrefix(contentType, "application/json") {
+		if err := c.ShouldBindJSON(&body); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusBadRequest,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrNotSupportedContentType)
 		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
-		return
-	}
-
-	imageHeader, err := c.FormFile("image")
-	if err != nil && err != http.ErrMissingFile {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
+			Error:  errors.ErrNotSupportedContentType.Error(),
 			Status: errors.StatusBadRequest,
 		})
 		return
@@ -83,11 +109,7 @@ func editSelf(c *gin.Context) {
 		})
 		return
 	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			logger.Warn.Printf("unable to rollback error: %v\n", err)
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 	successful := false
 	if body.Password != nil && body.OldPassword != nil {
 		var oldhashedpass string
@@ -197,31 +219,26 @@ func editSelf(c *gin.Context) {
 	}
 	if imageHeader != nil {
 		//get old image id
-		var oldImageId sql.NullInt64
-		if err := db.Db.QueryRow("SELECT image_id FROM users WHERE id = $1", user.Id).Scan(&oldImageId); err != nil {
+		var oldImageId int64
+		if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id = $1", user.Id).Scan(&oldImageId); err != nil && err != sql.ErrNoRows {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
-		}
-		if oldImageId.Valid {
+		} else if err == sql.ErrNoRows {
+			oldImageId = -1
+		} else {
 			defer func() { //defer just in case something went wrong
 				if successful {
-					deleteImageId := oldImageId.Int64
+					deleteImageId := oldImageId
 					if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
-						logger.Error.Println(err)
-						c.JSON(http.StatusInternalServerError, errors.Body{
-							Error:  err.Error(),
-							Status: errors.StatusInternalError,
-						})
-						return
+						logger.Warn.Printf("failed to remove file: %v\n", err)
 					}
 				}
 			}()
-
-			if _, err := tx.ExecContext(ctx, "DELETE FROM files WHERE id = $1", oldImageId.Int64); err != nil {
+			if _, err := tx.ExecContext(ctx, "DELETE FROM files WHERE id = $1", oldImageId); err != nil {
 				logger.Error.Println(err)
 				c.JSON(http.StatusInternalServerError, errors.Body{
 					Error:  err.Error(),
@@ -230,8 +247,11 @@ func editSelf(c *gin.Context) {
 				return
 			}
 		}
+
 		filename := imageHeader.Filename
+		fileType := filepath.Ext(filename)
 		imageCreated := time.Now().Unix()
+		imageId := uid.Snowflake.Generate().Int64()
 
 		image, err := imageHeader.Open()
 		if err != nil {
@@ -243,8 +263,6 @@ func editSelf(c *gin.Context) {
 			return
 		}
 		defer image.Close()
-
-		imageId := uid.Snowflake.Generate().Int64()
 		fileBytes, err := io.ReadAll(image)
 		if err != nil {
 			logger.Error.Println(err)
@@ -255,9 +273,34 @@ func editSelf(c *gin.Context) {
 			return
 		}
 
-		filesize := len(fileBytes) //possible bug file.Size but its a int64 review later
-		compressedBuffer := make([]byte, lz4.CompressBlockBound(filesize))
-		_, err = lz4.CompressBlock(fileBytes, compressedBuffer, nil)
+		if valid := files.ValidateImage(fileBytes, fileType); !valid {
+			logger.Error.Println(errors.ErrFileInvalid)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileInvalid.Error(),
+				Status: errors.StatusFileInvalid,
+			})
+			return
+		}
+
+		filesize := len(fileBytes)
+
+		if filesize > config.Config.Server.MaxFileSize {
+			logger.Error.Println(errors.ErrFileTooLarge)
+			c.JSON(http.StatusRequestEntityTooLarge, errors.Body{
+				Error:  errors.ErrFileTooLarge.Error(),
+				Status: errors.StatusFileTooLarge,
+			})
+			return
+		} else if !(filesize >= 0) {
+			logger.Error.Println(errors.ErrFileNoBytes)
+			c.JSON(http.StatusBadRequest, errors.Body{
+				Error:  errors.ErrFileNoBytes.Error(),
+				Status: errors.StatusFileNoBytes,
+			})
+			return
+		}
+
+		compressedBuffer, err := files.Compress(fileBytes, filesize)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -266,7 +309,8 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize) VALUES ($1, $2, $3, $4, $5)", imageId, filename, imageCreated, false, filesize); err != nil {
+
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, user_id, entity_type) VALUES ($1, $2, $3, $4, $5, $6,'user')", imageId, filename, imageCreated, false, filesize, user.Id); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -274,7 +318,9 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
-		if _, err = tx.ExecContext(ctx, "UPDATE users SET image_id=$1 WHERE id=$2", imageId, user.Id); err != nil {
+
+		outFile, err := os.Create(fmt.Sprintf("uploads/user/%d.lz4", imageId))
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -282,21 +328,38 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
+		defer func() { //defer just in case something went wrong
+			if !successful {
+				if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", imageId)); err != nil {
+					logger.Warn.Printf("failed to remove file: %v\n", err)
+				}
+			}
+		}()
+		defer outFile.Close()
+
+		if _, err = outFile.Write(compressedBuffer); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
 		newUserInfo.ImageId = imageId
 	} else {
-		var imageId sql.NullInt64
-		if err := db.Db.QueryRow("SELECT image_id FROM guilds WHERE id=$1", user.Id).Scan(&imageId); err != nil {
+		var imageId int64
+		if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id=$1", user.Id).Scan(&imageId); err != nil && err != sql.ErrNoRows {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
-		}
-		if imageId.Valid {
-			newUserInfo.ImageId = imageId.Int64
+		} else if err == sql.ErrNoRows {
+			imageId = -1
 		} else {
-			newUserInfo.ImageId = -1
+			newUserInfo.ImageId = imageId
 		}
 	}
 
