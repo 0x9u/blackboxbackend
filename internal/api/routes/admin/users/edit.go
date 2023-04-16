@@ -286,7 +286,7 @@ func Edit(c *gin.Context) {
 				if successful {
 					deleteImageId := oldImageId
 					if deleteImageId != -1 {
-						if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
+						if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", deleteImageId)); err != nil {
 							logger.Warn.Printf("failed to remove file: %v\n", err)
 						}
 					}

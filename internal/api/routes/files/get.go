@@ -119,35 +119,6 @@ func get(c *gin.Context) {
 		})
 		return
 	}
-	/*
-		var contentType string
-
-		if strings.HasSuffix(filename, ".png") {
-			contentType = "image/png"
-		} else if strings.HasSuffix(filename, ".jpg") || strings.HasSuffix(filename, ".jpeg") {
-			contentType = "image/jpeg"
-		} else if strings.HasSuffix(filename, ".gif") {
-			contentType = "image/gif"
-		} else if strings.HasSuffix(filename, ".mp4") {
-			contentType = "video/mp4"
-		} else if strings.HasSuffix(filename, ".webm") {
-			contentType = "video/webm"
-		} else if strings.HasSuffix(filename, ".ogg") {
-			contentType = "video/ogg"
-		} else if strings.HasSuffix(filename, ".mp3") {
-			contentType = "audio/mpeg"
-		} else if strings.HasSuffix(filename, ".wav") {
-			contentType = "audio/wav"
-		} else if strings.HasSuffix(filename, ".ogg") {
-			contentType = "audio/ogg"
-		} else if strings.HasSuffix(filename, ".pdf") {
-			contentType = "application/pdf"
-		} else if strings.HasSuffix(filename, ".txt") {
-			contentType = "text/plain"
-		} else {
-			contentType = "application/octet-stream"
-		}
-	*/
 
 	contentType := http.DetectContentType(uncompressedBuffer)
 

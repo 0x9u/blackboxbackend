@@ -26,6 +26,15 @@ func Get(c *gin.Context) {
 			})
 		return
 	}
+	if !user.Perms.Admin && !user.Perms.Users.Get {
+		logger.Error.Println(errors.ErrNotAuthorised)
+		c.JSON(http.StatusForbidden, errors.Body{
+			Error:  errors.ErrNotAuthorised.Error(),
+			Status: errors.StatusNotAuthorised,
+		})
+		return
+	}
+
 	queryParms := c.Request.URL.Query()
 	//GET PAGE NUM
 	page := queryParms.Get("page")

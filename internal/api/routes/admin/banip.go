@@ -32,6 +32,7 @@ func banIP(c *gin.Context) {
 			Error:  errors.ErrNotAuthorised.Error(),
 			Status: errors.StatusNotAuthorised,
 		})
+		return
 	}
 	var body banIPBody
 	if err := c.ShouldBindJSON(&body); err != nil {

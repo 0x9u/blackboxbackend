@@ -53,6 +53,8 @@
 
 v2.0
 
+- clean up code and put it in functions
+
 - add join/left messages
 
 - add reactions

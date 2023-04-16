@@ -38,9 +38,10 @@ func runSqlQuery(c *gin.Context) {
 			Error:  errors.ErrNotAuthorised.Error(),
 			Status: errors.StatusNotAuthorised,
 		})
+		return
 	}
 	var sqlQuery sqlQueryBody
-	if err := c.ShouldBindJSON(sqlQuery); err != nil {
+	if err := c.ShouldBindJSON(&sqlQuery); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  err.Error(),
@@ -91,11 +92,12 @@ func runSqlQuery(c *gin.Context) {
 				return
 			}
 			row := []string{}
-			for value := range values {
+			for _, value := range values {
 				strValue := fmt.Sprintf("%v", value)
 				row = append(row, strValue)
 			}
 			res.Rows = append(res.Rows, row)
 		}
 	}
+	c.JSON(http.StatusOK, res)
 }

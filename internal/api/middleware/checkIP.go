@@ -27,6 +27,7 @@ func CheckIP(c *gin.Context) {
 			Error:  errors.ErrIpBanned.Error(),
 			Status: errors.StatusIpBanned,
 		})
+		c.Abort()
 		return
 	}
 	c.Next()
