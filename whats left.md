@@ -53,6 +53,8 @@
 
 v2.0
 
+- add join/left messages
+
 - add reactions
 
 - add replys

@@ -60,7 +60,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	intPage, err := strconv.Atoi(page)
+	intPage, err := strconv.ParseInt(page, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -69,7 +69,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	intLimit, err := strconv.Atoi(limit)
+	intLimit, err := strconv.ParseInt(limit, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -79,10 +79,14 @@ func Get(c *gin.Context) {
 		return
 	}
 	offset := intPage * intLimit
+	var nullIntLimit sql.NullInt64
 	if limit == "0" {
-		limit = "ALL"
+		nullIntLimit.Valid = false
+	} else {
+		nullIntLimit.Int64 = intLimit
+		nullIntLimit.Valid = true
 	}
-	rows, err := db.Db.Query("SELECT * FROM guilds LIMIT $1 OFFSET $2", limit, offset)
+	rows, err := db.Db.Query("SELECT guilds.*, files.id FROM guilds LEFT JOIN files ON files.guild_id = guilds.id LIMIT $1 OFFSET $2", nullIntLimit, offset)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -96,7 +100,7 @@ func Get(c *gin.Context) {
 	for rows.Next() {
 		var guild events.Guild
 		var imageId sql.NullInt64
-		rows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat)
+		rows.Scan(&guild.GuildId, &guild.Name, &guild.SaveChat, &guild.Dm, &guild.ImageId)
 		if imageId.Valid {
 			guild.ImageId = imageId.Int64
 		} else {

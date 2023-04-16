@@ -52,7 +52,7 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT users.username, users.image_id, users.id, admin, owner FROM userguilds INNER JOIN users ON userguilds.user_id=users.id WHERE guild_id=$1 AND banned = false", guildId)
+	rows, err := db.Db.Query("SELECT users.username, files.id, users.id, admin, owner FROM userguilds INNER JOIN users ON userguilds.user_id=users.id LEFT JOIN files ON files.user_id=users.id WHERE userguilds.guild_id=$1 AND banned = false", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -62,7 +62,7 @@ func Get(c *gin.Context) {
 		return
 	}
 	userlist := []events.Member{}
-	intGuildId, err := strconv.Atoi(guildId)
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

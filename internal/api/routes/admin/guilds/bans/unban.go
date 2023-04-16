@@ -71,7 +71,7 @@ func Unban(c *gin.Context) {
 
 	var isBanned bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3 AND banned = true)", guildId, user.Id, userId).Scan(&isBanned); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned = true)", guildId, userId).Scan(&isBanned); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -115,7 +115,7 @@ func Unban(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true OR admin = true", guildId)
+	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND (owner = true OR admin = true)", guildId)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

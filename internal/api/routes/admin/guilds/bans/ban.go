@@ -90,8 +90,9 @@ func Ban(c *gin.Context) {
 	}
 
 	var isBanned bool
+	var userExists bool
 
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id=$3 AND banned = true)", guildId, user.Id, userId).Scan(&isBanned); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id=$2 AND banned = true), EXISTS (SELECT 1 FROM users WHERE id = $2)", guildId, userId).Scan(&isBanned, &userExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -107,6 +108,14 @@ func Ban(c *gin.Context) {
 		})
 		return
 	}
+	if !userExists {
+		logger.Error.Println(errors.ErrUserNotFound)
+		c.JSON(http.StatusNotFound, errors.Body{
+			Error:  errors.ErrUserNotFound.Error(),
+			Status: errors.StatusUserNotFound,
+		})
+		return
+	}
 
 	if _, err := db.Db.Exec("UPDATE userguilds SET banned=true WHERE guild_id=$1 AND user_id=$2", guildId, userId); err != nil {
 		logger.Error.Println(err)
@@ -118,7 +127,7 @@ func Ban(c *gin.Context) {
 	}
 	var username string
 	var imageId sql.NullInt64
-	if err := db.Db.QueryRow("SELECT username, image_id FROM users WHERE id=$1", userId).Scan(&username, &imageId); err != nil {
+	if err := db.Db.QueryRow("SELECT username, files.id FROM users LEFT JOIN files ON files.user_id = users.id WHERE users.id=$1", userId).Scan(&username, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

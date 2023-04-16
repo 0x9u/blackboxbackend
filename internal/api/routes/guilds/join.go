@@ -44,15 +44,19 @@ func joinGuild(c *gin.Context) {
 		c.Status(http.StatusUnprocessableEntity)
 		return
 	}
-	row := db.Db.QueryRow(
+
+	var guild events.Guild
+	var imageId sql.NullInt64
+
+	err := db.Db.QueryRow(
 		`
 		SELECT i.guild_id, g.name, f.id, ug.user_id
 		FROM invites i INNER JOIN guilds g ON g.id = i.guild_id 
 		INNER JOIN userguilds ug ON ug.guild_id = g.id AND owner = true 
 		LEFT JOIN files f ON f.guild_id = g.id 
 		WHERE i.invite = $1`,
-		invite.Invite)
-	if err := row.Err(); err == sql.ErrNoRows {
+		invite.Invite).Scan(&guild.GuildId, &guild.Name, &imageId, &guild.OwnerId)
+	if err != nil && err == sql.ErrNoRows {
 		logger.Error.Println(errors.ErrInvalidInvite)
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrInvalidInvite.Error(),
@@ -67,9 +71,7 @@ func joinGuild(c *gin.Context) {
 		})
 		return
 	}
-	var guild events.Guild
-	var imageId sql.NullInt64
-	row.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.OwnerId)
+
 	if imageId.Valid {
 		guild.ImageId = imageId.Int64
 	} else {
@@ -94,6 +96,8 @@ func joinGuild(c *gin.Context) {
 		})
 		return
 	}
+
+	logger.Debug.Println("user", user.Id, "joined guild", guild.GuildId)
 
 	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil {
 		logger.Error.Println(err)

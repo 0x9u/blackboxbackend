@@ -1,6 +1,7 @@
 package users
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -50,7 +51,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	intPage, err := strconv.Atoi(page)
+	intPage, err := strconv.ParseInt(page, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -59,7 +60,7 @@ func Get(c *gin.Context) {
 		})
 		return
 	}
-	intLimit, err := strconv.Atoi(limit)
+	intLimit, err := strconv.ParseInt(limit, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -69,12 +70,16 @@ func Get(c *gin.Context) {
 		return
 	}
 	offset := intPage * intLimit
+	var nullIntLimit sql.NullInt64
 	if limit == "0" {
-		limit = "ALL"
+		nullIntLimit.Valid = false
+	} else {
+		nullIntLimit.Valid = true
+		nullIntLimit.Int64 = intLimit
 	}
 	logger.Debug.Println(limit, offset)
 	//somehow escaping characters probs why
-	rows, err := db.Db.Query("SELECT id, username, email FROM users LIMIT $1 OFFSET $2", limit, offset)
+	rows, err := db.Db.Query("SELECT users.id, username, email, files.id FROM users LEFT JOIN files ON files.user_id = users.id LIMIT $1 OFFSET $2", nullIntLimit, offset)
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -88,7 +93,7 @@ func Get(c *gin.Context) {
 	var users []events.User
 	for rows.Next() {
 		var user events.User
-		if err := rows.Scan(&user.UserId, &user.Name, &user.Email); err != nil {
+		if err := rows.Scan(&user.UserId, &user.Name, &user.Email, &user.ImageId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

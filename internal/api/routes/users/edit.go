@@ -111,6 +111,7 @@ func editSelf(c *gin.Context) {
 	}
 	defer tx.Rollback() //rollback changes if failed
 	successful := false
+
 	if body.Password != nil && body.OldPassword != nil {
 		var oldhashedpass string
 		if err := db.Db.QueryRow("SELECT password FROM users WHERE id=$1", user.Id).Scan(&oldhashedpass); err != nil {
@@ -233,8 +234,10 @@ func editSelf(c *gin.Context) {
 			defer func() { //defer just in case something went wrong
 				if successful {
 					deleteImageId := oldImageId
-					if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
-						logger.Warn.Printf("failed to remove file: %v\n", err)
+					if deleteImageId != -1 {
+						if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
+							logger.Warn.Printf("failed to remove file: %v\n", err)
+						}
 					}
 				}
 			}()
@@ -372,6 +375,7 @@ func editSelf(c *gin.Context) {
 		return
 	}
 	successful = true
+
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,

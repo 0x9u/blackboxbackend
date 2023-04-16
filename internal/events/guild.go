@@ -15,6 +15,7 @@ type UserGuild struct {
 // used for guild settings, info, join info, update info
 type Guild struct {
 	OwnerId  int64      `json:"owner:id,omitempty"`
+	Dm       *bool      `json:"dm,omitempty"`
 	GuildId  int64      `json:"id"`
 	Name     string     `json:"name,omitempty"`
 	ImageId  int64      `json:"image:id,omitempty"`

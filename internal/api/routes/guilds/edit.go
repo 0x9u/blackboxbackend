@@ -241,7 +241,7 @@ func editGuild(c *gin.Context) {
 		//remove old image
 
 		var oldImageId int64
-		if err := tx.QueryRowContext(ctx, "DELETE FROM files WHERE guild_id = $1 RETURNING id", guildId).Scan(&oldImageId); err != nil {
+		if err := tx.QueryRowContext(ctx, "DELETE FROM files WHERE guild_id = $1 RETURNING id", guildId).Scan(&oldImageId); err != nil && err != sql.ErrNoRows {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -327,8 +327,10 @@ func editGuild(c *gin.Context) {
 					logger.Warn.Printf("failed to remove file: %v\n", err)
 				}
 			} else {
-				if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", oldImageId)); err != nil {
-					logger.Warn.Printf("failed to remove file: %v\n", err)
+				if oldImageId != 0 {
+					if err := os.Remove(fmt.Sprintf("uploads/guild/%d.lz4", oldImageId)); err != nil {
+						logger.Warn.Printf("failed to remove file: %v\n", err)
+					}
 				}
 			}
 		}()
