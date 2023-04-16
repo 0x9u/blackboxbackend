@@ -180,7 +180,7 @@ func Edit(c *gin.Context) {
 			})
 			return
 		}
-		*bodySettingsRes.SaveChat = *newSettings.SaveChat
+		bodySettingsRes.SaveChat = newSettings.SaveChat
 	} else {
 		var saveChat bool
 		if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id = $1", guildId).Scan(&saveChat); err != nil {
@@ -346,6 +346,35 @@ func Edit(c *gin.Context) {
 			bodyRes.ImageId = -1
 		} else {
 			bodyRes.ImageId = imageId
+		}
+	}
+
+	if newSettings.OwnerId != nil {
+		if _, err = tx.ExecContext(ctx, "UPDATE userguilds SET owner=false WHERE guild_id=$1 AND owner = true", guildId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds(user_id, guild_id, owner) VALUES ($1, $2, true) ON CONFLICT (guild_id, user_id) DO UPDATE SET owner = true", newSettings.OwnerId, guildId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		bodyRes.OwnerId = *newSettings.OwnerId
+	} else {
+		if err := db.Db.QueryRow("SELECT user_id FROM userguilds WHERE guild_id=$1 AND owner = true", guildId).Scan(&bodyRes.OwnerId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
 		}
 	}
 

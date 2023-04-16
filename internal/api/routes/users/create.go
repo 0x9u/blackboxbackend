@@ -68,6 +68,10 @@ func userCreate(c *gin.Context) {
 
 	successful := false
 
+	if user.Email == nil {
+		user.Email = new(string)
+	}
+
 	//validation
 
 	if statusCode, err := events.ValidateUserInput(user); err != nil && statusCode != errors.StatusInternalError {
@@ -97,13 +101,7 @@ func userCreate(c *gin.Context) {
 		})
 		return
 	}
-	defer func() {
-		if err != nil {
-			if err := tx.Rollback(); err != nil {
-				logger.Warn.Printf("unable to rollback error: %v\n", err)
-			}
-		}
-	}() //rollback changes if failed
+	defer tx.Rollback() //rollback changes if failed
 
 	var isUsernameTaken bool
 
@@ -129,7 +127,7 @@ func userCreate(c *gin.Context) {
 
 	user.UserId = uid.Snowflake.Generate().Int64()
 
-	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, user.Email, hashedPass, user.Name); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO users (id, email, password, username) VALUES ($1, $2, $3, $4)", user.UserId, *user.Email, hashedPass, user.Name); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

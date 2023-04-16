@@ -177,7 +177,16 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		}
-		newUserInfo.Email = *body.Email
+		newUserInfo.Email = body.Email
+	} else {
+		if err := db.Db.QueryRow("SELECT email FROM users WHERE id=$1", user.Id).Scan(&newUserInfo.Email); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
 	if body.Username != nil {
 		var taken bool
@@ -206,6 +215,15 @@ func editSelf(c *gin.Context) {
 			return
 		}
 		newUserInfo.Name = *body.Username
+	} else {
+		if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&newUserInfo.Name); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	}
 	if body.Options != nil {
 		if _, err := tx.ExecContext(ctx, "UPDATE users SET options=$1 WHERE id=$2", *body.Options, user.Id); err != nil {
@@ -217,7 +235,19 @@ func editSelf(c *gin.Context) {
 			return
 		}
 		newUserInfo.Options = body.Options
+	} else {
+		var options int
+		if err := db.Db.QueryRow("SELECT options FROM users WHERE id=$1", user.Id).Scan(&options); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		newUserInfo.Options = &options
 	}
+
 	if imageHeader != nil {
 		//get old image id
 		var oldImageId int64
@@ -235,7 +265,7 @@ func editSelf(c *gin.Context) {
 				if successful {
 					deleteImageId := oldImageId
 					if deleteImageId != -1 {
-						if err := os.Remove(fmt.Sprintf("uploads/%d.lz4", deleteImageId)); err != nil {
+						if err := os.Remove(fmt.Sprintf("uploads/user/%d.lz4", deleteImageId)); err != nil {
 							logger.Warn.Printf("failed to remove file: %v\n", err)
 						}
 					}
@@ -366,6 +396,15 @@ func editSelf(c *gin.Context) {
 		}
 	}
 
+	if err := db.Db.QueryRow("SELECT flags FROM users WHERE id=$1", user.Id).Scan(&newUserInfo.Flags); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -376,11 +415,51 @@ func editSelf(c *gin.Context) {
 	}
 	successful = true
 
+	newUserInfo.UserId = user.Id
+
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,
+		Event: events.UPDATE_SELF_USER_INFO,
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, res)
+
+	newUserInfoOtherRes := newUserInfo
+
+	newUserInfoOtherRes.Options = nil
+	newUserInfoOtherRes.Email = nil
+
+	otherRes := wsclient.DataFrame{
+		Op:    wsclient.TYPE_DISPATCH,
+		Data:  newUserInfoOtherRes,
 		Event: events.UPDATE_USER_INFO,
 	}
-	wsclient.Pools.BroadcastClient(user.Id, res)
+
+	userIdRows, err := db.Db.Query(
+		`(SELECT DISTINCT userguilds.user_id AS user_id FROM userguilds WHERE EXISTS (SELECT 1 FROM userguilds AS ug2 WHERE ug2.user_id = $1 AND ug2.guild_id = userguilds.guild_id) AND userguilds.user_id != $1)
+		UNION (SELECT DISTINCT friend_id AS user_id FROM friends WHERE user_id = $1)
+		`, user.Id)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer userIdRows.Close()
+	for userIdRows.Next() {
+		var userId int64
+		if err := userIdRows.Scan(&userId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		wsclient.Pools.BroadcastClient(userId, otherRes)
+	}
 	c.Status(http.StatusNoContent)
 }

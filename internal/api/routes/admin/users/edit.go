@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -112,16 +111,6 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	intUserId, err := strconv.ParseInt(userId, 10, 64)
-	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
 	var userExists bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id=$1)", userId).Scan(&userExists); err != nil {
@@ -212,7 +201,7 @@ func Edit(c *gin.Context) {
 			})
 			return
 		}
-		newUserInfo.Email = *body.Email
+		newUserInfo.Email = body.Email
 	} else {
 		if err := db.Db.QueryRow("SELECT email FROM users WHERE id=$1", userId).Scan(&newUserInfo.Email); err != nil {
 			logger.Error.Println(err)
@@ -438,11 +427,51 @@ func Edit(c *gin.Context) {
 	}
 	successful = true
 
+	newUserInfo.UserId = user.Id
+
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,
+		Event: events.UPDATE_SELF_USER_INFO,
+	}
+
+	wsclient.Pools.BroadcastClient(user.Id, res)
+
+	newUserInfoOtherRes := newUserInfo
+
+	newUserInfoOtherRes.Options = nil
+	newUserInfoOtherRes.Email = nil
+
+	otherRes := wsclient.DataFrame{
+		Op:    wsclient.TYPE_DISPATCH,
+		Data:  newUserInfoOtherRes,
 		Event: events.UPDATE_USER_INFO,
 	}
-	wsclient.Pools.BroadcastClient(intUserId, res)
+
+	userIdRows, err := db.Db.Query(
+		`(SELECT DISTINCT userguilds.user_id AS user_id FROM userguilds WHERE EXISTS (SELECT 1 FROM userguilds AS ug2 WHERE ug2.user_id = $1 AND ug2.guild_id = userguilds.guild_id) AND userguilds.user_id != $1)
+		UNION (SELECT DISTINCT friend_id AS user_id FROM friends WHERE user_id = $1)
+		`, user.Id)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer userIdRows.Close()
+	for userIdRows.Next() {
+		var userId int64
+		if err := userIdRows.Scan(&userId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		wsclient.Pools.BroadcastClient(userId, otherRes)
+	}
 	c.Status(http.StatusNoContent)
 }

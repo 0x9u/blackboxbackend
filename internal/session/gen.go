@@ -51,7 +51,7 @@ func CheckToken(token string) (*Session, error) {
 		if err := rows.Scan(&roleId); err != nil {
 			return nil, err
 		}
-		if err := getPerms(roleId, &user); err != nil {
+		if err := GetPerms(roleId, user.Perms); err != nil {
 			return nil, err
 		}
 

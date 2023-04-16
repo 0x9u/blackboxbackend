@@ -4,16 +4,18 @@ import (
 	"regexp"
 
 	"github.com/asianchinaboi/backendserver/internal/errors"
+	"github.com/asianchinaboi/backendserver/internal/session"
 )
 
 type User struct {
-	UserId   int64  `json:"id"`
-	Name     string `json:"name,omitempty"`
-	ImageId  int64  `json:"image:id,omitempty"`
-	Password string `json:"password,omitempty"`
-	Email    string `json:"email,omitempty"`
-	Flags    *int   `json:"flags,omitempty"`
-	Options  *int   `json:"options,omitempty"`
+	UserId      int64                `json:"id"`
+	Name        string               `json:"name,omitempty"`
+	ImageId     int64                `json:"image:id,omitempty"`
+	Password    string               `json:"password,omitempty"`
+	Email       *string              `json:"email,omitempty"`
+	Flags       *int                 `json:"flags,omitempty"`
+	Options     *int                 `json:"options,omitempty"`
+	Permissions *session.Permissions `json:"permissions,omitempty"`
 }
 
 type Member struct { //may use for nicks later
@@ -78,11 +80,11 @@ func ValidateUserInput(body User) (errors.StatusCode, error) {
 		return errors.StatusInvalidPass, errors.ErrInvalidPass
 	}
 
-	emailValid, err := validateUserEmail(body.Email)
+	emailValid, err := validateUserEmail(*body.Email)
 	if err != nil {
 		return errors.StatusInternalError, err
 	}
-	if !emailValid && len(body.Email) > 0 { //email optional
+	if !emailValid && len(*body.Email) > 0 { //email optional
 		return errors.StatusInvalidEmail, errors.ErrInvalidEmail
 	}
 

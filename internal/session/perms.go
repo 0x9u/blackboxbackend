@@ -2,24 +2,24 @@ package session
 
 import "github.com/asianchinaboi/backendserver/internal/errors"
 
-func getPerms(permId int, user *Session) error {
+func GetPerms(permId int, perms *Permissions) error {
 	switch permId {
 	case 1:
-		user.Perms.Admin = true
+		perms.Admin = true
 	case 2:
-		user.Perms.BanIP = true
+		perms.BanIP = true
 	case 3:
-		user.Perms.Users.Get = true
+		perms.Users.Get = true
 	case 4:
-		user.Perms.Users.Edit = true
+		perms.Users.Edit = true
 	case 5:
-		user.Perms.Users.Delete = true
+		perms.Users.Delete = true
 	case 6:
-		user.Perms.Guilds.Get = true
+		perms.Guilds.Get = true
 	case 7:
-		user.Perms.Guilds.Edit = true
+		perms.Guilds.Edit = true
 	case 8:
-		user.Perms.Guilds.Delete = true
+		perms.Guilds.Delete = true
 	default:
 		return errors.ErrInvalidPermission
 	}
