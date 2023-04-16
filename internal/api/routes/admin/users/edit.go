@@ -214,7 +214,7 @@ func Edit(c *gin.Context) {
 		}
 		newUserInfo.Email = *body.Email
 	} else {
-		if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", userId).Scan(&newUserInfo.Name); err != nil {
+		if err := db.Db.QueryRow("SELECT email FROM users WHERE id=$1", userId).Scan(&newUserInfo.Email); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
