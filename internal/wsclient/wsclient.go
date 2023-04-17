@@ -15,7 +15,6 @@ type wsClient struct {
 	id       int64
 	uniqueId string //since some guys might be using multiple connections on one account
 	//	guilds         []int  //not used might remove later
-	timer          *time.Ticker
 	broadcast      brcastEvents
 	quitctx        context.Context //chan bool //also temporary maybe use contexts later
 	quit           context.CancelFunc
@@ -92,7 +91,7 @@ func (c *wsClient) hello() {
 	body := DataFrame{
 		Op: TYPE_HELLO,
 		Data: helloFrame{
-			HeartbeatInterval: int(pingDelay),
+			HeartbeatInterval: int(pingDelay / time.Second * 1000),
 		},
 		Event: "",
 	}
@@ -114,7 +113,6 @@ func NewWsClient(ws *websocket.Conn) (*wsClient, error) {
 		ws:        ws,
 		id:        0,  //user id will be received when user sends identify payload
 		uniqueId:  "", //uniqueId,
-		timer:     time.NewTicker(pongDelay),
 		broadcast: make(brcastEvents),
 		quitctx:   quit,
 		quit:      quitFunc,

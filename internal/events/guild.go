@@ -7,25 +7,25 @@ import (
 )
 
 type UserGuild struct {
-	GuildId  int64 `json:"guild:id"`
-	UserId   int64 `json:"user:id"` //Id to remove/add user
+	GuildId  int64 `json:"guildId"`
+	UserId   int64 `json:"userId"` //Id to remove/add user
 	UserData *User `json:"userData,omitempty"`
 }
 
 // used for guild settings, info, join info, update info
 type Guild struct {
-	OwnerId  int64      `json:"owner:id,omitempty"`
+	OwnerId  int64      `json:"ownerId,omitempty"`
 	Dm       *bool      `json:"dm,omitempty"`
 	GuildId  int64      `json:"id"`
 	Name     string     `json:"name,omitempty"`
-	ImageId  int64      `json:"image:id,omitempty"`
+	ImageId  int64      `json:"imageId,omitempty"`
 	Unread   *UnreadMsg `json:"unread,omitempty"`
 	SaveChat *bool      `json:"saveChat,omitempty"`
 }
 
 type Invite struct {
 	Invite  string `json:"invite"`
-	GuildId int64  `json:"guild:id"`
+	GuildId int64  `json:"guildId"`
 }
 
 func ValidateGuildInput(body *Guild) (errors.StatusCode, error) {

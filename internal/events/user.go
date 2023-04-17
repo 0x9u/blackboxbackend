@@ -10,7 +10,7 @@ import (
 type User struct {
 	UserId      int64                `json:"id"`
 	Name        string               `json:"name,omitempty"`
-	ImageId     int64                `json:"image:id,omitempty"`
+	ImageId     int64                `json:"imageId,omitempty"`
 	Password    string               `json:"password,omitempty"`
 	Email       *string              `json:"email,omitempty"`
 	Flags       *int                 `json:"flags,omitempty"`
