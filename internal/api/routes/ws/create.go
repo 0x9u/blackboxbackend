@@ -14,6 +14,9 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  config.Config.Server.BufferSize.Read,
 	WriteBufferSize: config.Config.Server.BufferSize.Write,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 func webSocket(c *gin.Context) {
