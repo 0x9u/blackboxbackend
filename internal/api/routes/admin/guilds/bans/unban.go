@@ -130,9 +130,11 @@ func Unban(c *gin.Context) {
 		rows.Scan(&adminUserId)
 		res := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.UserGuild{
+			Data: events.Member{
 				GuildId: intGuildId,
-				UserId:  intUserId,
+				UserInfo: events.User{
+					UserId: intUserId,
+				},
 			},
 			Event: events.REMOVE_USER_BANLIST,
 		}

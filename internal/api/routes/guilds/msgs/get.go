@@ -81,7 +81,7 @@ func Get(c *gin.Context) { //sends message history
 		FROM msgs m INNER JOIN users u 
 		ON u.id = m.user_id LEFT JOIN files f
 		ON f.user_id = u.id 
-		WHERE m.created < $1 AND m.guild_id = $2 
+		WHERE m.created < to_timestamp($1) AND m.guild_id = $2 
 		ORDER BY m.created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
 		timestamp, guildId, limit)
 	if err != nil {
@@ -97,13 +97,13 @@ func Get(c *gin.Context) { //sends message history
 	for rows.Next() {
 		message := events.Msg{}
 		var imageId sql.NullInt64
-		var modified sql.NullInt64
+		var modified sql.NullTime
 		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
 			&message.GuildId, &message.Created, &modified, &message.MentionsEveryone, &message.Author.Name, &imageId)
 		if modified.Valid { //to make it show in json
-			message.Modified = modified.Int64
+			message.Modified = modified.Time
 		} else {
-			message.Modified = -1
+			message.Modified = time.Time{}
 		}
 		if imageId.Valid {
 			message.Author.ImageId = imageId.Int64

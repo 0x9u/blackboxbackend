@@ -17,7 +17,7 @@ import (
 )
 
 type CreateDmBody struct {
-	ReceiverId int64 `json:"receiverId"`
+	ReceiverId int64 `json:"receiverId,string"`
 }
 
 func Create(c *gin.Context) {

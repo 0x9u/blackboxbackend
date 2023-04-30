@@ -62,7 +62,7 @@ func getSelfGuilds(c *gin.Context) {
 	defer guildRows.Close()
 	dmRows, err := db.Db.Query(
 		`
-		SELECT userg.guild_id, userg.receiver_id, users.username,
+		SELECT userg.guild_id, userg.receiver_id, users.username, files.id, 
 		unread.msg_id AS last_read_msg_id, COUNT(msgs.id) filter (WHERE msgs.created > unread.time) AS unread_msgs,
 		COUNT(mentions.msg_id) filter (WHERE mentions.user_id = $1 AND msgs.created > unread.time) + 
 		COUNT(msgs.id) filter (WHERE msgs.mentions_everyone = true AND msgs.created > unread.time) AS mentions, unread.time
@@ -70,9 +70,10 @@ func getSelfGuilds(c *gin.Context) {
 		INNER JOIN users ON users.id = userg.receiver_id 
 		INNER JOIN unreadmsgs unread ON unread.guild_id = userg.guild_id AND unread.user_id = $1 
 		LEFT JOIN msgs ON msgs.guild_id = userg.guild_id 
-		LEFT JOIN msgmentions mentions ON mentions.msg_id = msgs.id 
+		LEFT JOIN msgmentions mentions ON mentions.msg_id = msgs.id
+		LEFT JOIN files ON files.user_id = users.id 
 		WHERE userg.user_id=$1 AND userg.left_dm = false AND userg.receiver_id IS NOT NULL 
-		GROUP BY userg.guild_id, userg.receiver_id, users.username, unread.time, unread.msg_id 
+		GROUP BY userg.guild_id, userg.receiver_id, users.username, files.id, unread.msg_id, unread.time
 		ORDER BY unread.time DESC
 		`, //holy shit it works
 		user.Id,
@@ -92,7 +93,7 @@ func getSelfGuilds(c *gin.Context) {
 		var imageId sql.NullInt64
 		guild.Unread = &events.UnreadMsg{}
 
-		err = guildRows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Time, &guild.Unread.Mentions)
+		err = guildRows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Mentions, &guild.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -111,8 +112,9 @@ func getSelfGuilds(c *gin.Context) {
 	dms := []events.Dm{}
 	for dmRows.Next() {
 		var dm events.Dm
+		var imageId sql.NullInt64
 		dm.Unread = events.UnreadMsg{}
-		err = dmRows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name, &dm.Unread.Id, &dm.Unread.Count, &dm.Unread.Mentions, &dm.Unread.Time)
+		err = dmRows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name, &imageId, &dm.Unread.Id, &dm.Unread.Count, &dm.Unread.Mentions, &dm.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -120,6 +122,11 @@ func getSelfGuilds(c *gin.Context) {
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+		if imageId.Valid {
+			dm.UserInfo.ImageId = imageId.Int64
+		} else {
+			dm.UserInfo.ImageId = -1
 		}
 		logger.Debug.Println(dm)
 		dms = append(dms, dm)

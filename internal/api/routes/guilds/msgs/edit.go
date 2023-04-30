@@ -104,8 +104,6 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	timestamp := time.Now().Unix()
-
 	var isDm bool
 	var inGuild bool
 
@@ -126,6 +124,8 @@ func Edit(c *gin.Context) {
 		})
 		return
 	}
+
+	var timestamp time.Time
 
 	if !isRequestId { //vulnerability: isrequestid can be updated by any user
 
@@ -148,7 +148,8 @@ func Edit(c *gin.Context) {
 			return
 		}
 
-		if _, err = db.Db.Exec("UPDATE msgs SET content = $1, modified = $2 WHERE id = $3 AND user_id = $4 AND guild_id=$5", msg.Content, timestamp, msgId, user.Id, guildId); err != nil {
+		//TODO: Replace modified with a trigger
+		if err = db.Db.QueryRow("UPDATE msgs SET content = $1, modified = now() WHERE id = $2 AND user_id = $3 AND guild_id=$4 RETURNING modified", msg.Content, msgId, user.Id, guildId).Scan(&timestamp); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -156,6 +157,8 @@ func Edit(c *gin.Context) {
 			})
 			return
 		}
+	} else {
+		timestamp = time.Now()
 	}
 
 	var requestId string

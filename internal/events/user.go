@@ -8,9 +8,9 @@ import (
 )
 
 type User struct {
-	UserId      int64                `json:"id"`
+	UserId      int64                `json:"id,string"`
 	Name        string               `json:"name,omitempty"`
-	ImageId     int64                `json:"imageId,omitempty"`
+	ImageId     int64                `json:"imageId,omitempty,string"`
 	Password    string               `json:"password,omitempty"`
 	Email       *string              `json:"email,omitempty"`
 	Flags       *int                 `json:"flags,omitempty"`
@@ -19,7 +19,7 @@ type User struct {
 }
 
 type Member struct { //may use for nicks later
-	GuildId  int64 `json:"guildId"`
+	GuildId  int64 `json:"guildId,string"`
 	Admin    bool  `json:"admin"`
 	Owner    bool  `json:"owner"`
 	UserInfo User  `json:"userInfo"`

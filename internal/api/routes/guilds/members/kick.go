@@ -164,9 +164,11 @@ func Kick(c *gin.Context) {
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
-			UserId:  intUserId,
+		Data: events.Member{
 			GuildId: intGuildId,
+			UserInfo: events.User{
+				UserId: intUserId,
+			},
 		},
 		Event: events.REMOVE_USER_GUILDLIST,
 	}

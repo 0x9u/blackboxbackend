@@ -158,10 +158,9 @@ func Ban(c *gin.Context) {
 		rows.Scan(&adminUserId)
 		res := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.UserGuild{
+			Data: events.Member{
 				GuildId: intGuildId,
-				UserId:  intUserId,
-				UserData: &events.User{
+				UserInfo: events.User{
 					UserId:  intUserId,
 					Name:    username,
 					ImageId: resImageId,
@@ -181,9 +180,11 @@ func Ban(c *gin.Context) {
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
+		Data: events.Member{
 			GuildId: intGuildId,
-			UserId:  intUserId,
+			UserInfo: events.User{
+				UserId: intUserId,
+			},
 		},
 		Event: events.REMOVE_USER_GUILDLIST,
 	}

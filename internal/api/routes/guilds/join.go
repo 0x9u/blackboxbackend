@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 
@@ -99,7 +100,38 @@ func joinGuild(c *gin.Context) {
 
 	logger.Debug.Println("user", user.Id, "joined guild", guild.GuildId)
 
-	if _, err := db.Db.Exec("INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil {
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer tx.Rollback() //rollback changes if failed
+
+	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if _, err := tx.ExecContext(ctx, "INSERT INTO unreadmsgs (guild_id, user_id) VALUES ($1, $2)", guild.GuildId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -115,10 +147,11 @@ func joinGuild(c *gin.Context) {
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 
-	userData := events.UserGuild{} //change name later
-	userData.UserData = &events.User{}
+	userData := events.Member{} //change name later
 
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id=$1", user.Id).Scan(&userData.UserData.Name); err != nil {
+	//reusing same imageid from before
+
+	if err := db.Db.QueryRow("SELECT username, files.id FROM users LEFT JOIN files ON files.user_id = users.id WHERE users.id=$1", user.Id).Scan(&userData.UserInfo.Name, &imageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -126,7 +159,14 @@ func joinGuild(c *gin.Context) {
 		})
 		return
 	}
-	userData.UserId = user.Id
+
+	if imageId.Valid {
+		userData.UserInfo.ImageId = imageId.Int64
+	} else {
+		userData.UserInfo.ImageId = -1
+	}
+
+	userData.UserInfo.UserId = user.Id
 	userData.GuildId = guild.GuildId
 
 	guildRes := wsclient.DataFrame{

@@ -22,7 +22,7 @@ func StartServer() *http.Server {
 		Handler: handlers.CORS(
 			handlers.AllowedHeaders([]string{"content-type", "Authorization", ""}), //took some time to figure out middleware problem
 			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"}),
+			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"}),
 			handlers.AllowCredentials(),
 		)(r),
 	}

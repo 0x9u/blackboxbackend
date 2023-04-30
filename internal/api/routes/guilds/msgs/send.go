@@ -12,7 +12,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/config"
@@ -160,7 +159,6 @@ func Send(c *gin.Context) {
 	//screw off html
 
 	//msg.Content = html.EscapeString(msg.Content) //prevents xss attacks //not needed we are using react
-	msg.Created = time.Now().Unix()
 	msg.MsgId = uid.Snowflake.Generate().Int64()
 	//check if attachments uploaded
 
@@ -200,7 +198,7 @@ func Send(c *gin.Context) {
 	mentionsEveryone := events.MentionEveryoneExp.MatchString(msg.Content)
 
 	if isChatSaveOn {
-		if _, err := tx.ExecContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, created, mentions_everyone) VALUES ($1, $2, $3, $4, $5, $6)", msg.MsgId, msg.Content, user.Id, guildId, msg.Created, mentionsEveryone); err != nil {
+		if err := tx.QueryRowContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, mentions_everyone) VALUES ($1, $2, $3, $4, $5) RETURNING created", msg.MsgId, msg.Content, user.Id, guildId, mentionsEveryone).Scan(&msg.Created); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -405,6 +403,7 @@ func Send(c *gin.Context) {
 	}
 	authorBody.UserId = user.Id
 	msg.Author = authorBody
+	msg.GuildId = intGuildId
 
 	if err := tx.Commit(); err != nil { //commits the transaction
 		logger.Error.Println(err)

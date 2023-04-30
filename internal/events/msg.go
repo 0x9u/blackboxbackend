@@ -1,21 +1,24 @@
 package events
 
-import "regexp"
+import (
+	"regexp"
+	"time"
+)
 
 type UnreadMsg struct {
-	Id       int64 `json:"msgId"` //message last read Id
-	Count    int   `json:"count"` //number of unread messages
-	Time     int   `json:"time"`
-	Mentions int   `json:"mentions"` //how many times user was mentioned
+	Id       int64     `json:"msgId,string"` //message last read Id
+	Count    int       `json:"count"`        //number of unread messages
+	Time     time.Time `json:"time"`
+	Mentions int       `json:"mentions"` //how many times user was mentioned
 }
 
 type Msg struct { //id and request id not omitted for checking purposes
-	MsgId            int64        `json:"id"`
-	Author           User         `json:"author,omitempty"`  // author id aka user id
-	Content          string       `json:"content"`           // message content
-	GuildId          int64        `json:"guildId,omitempty"` // Chat id
-	Created          int64        `json:"created,omitempty"`
-	Modified         int64        `json:"modified,omitempty"`
+	MsgId            int64        `json:"id,string"`
+	Author           User         `json:"author,omitempty,string"`  // author id aka user id
+	Content          string       `json:"content"`                  // message content
+	GuildId          int64        `json:"guildId,omitempty,string"` // Chat id
+	Created          time.Time    `json:"created,omitempty"`
+	Modified         time.Time    `json:"modified,omitempty"`
 	MsgSaved         bool         `json:"msgSaved,omitempty"` //shows if the message is saved or not
 	RequestId        string       `json:"requestId"`
 	MentionsEveryone bool         `json:"mentionsEveryone"`
@@ -24,7 +27,7 @@ type Msg struct { //id and request id not omitted for checking purposes
 }
 
 type Attachment struct {
-	Id int64 `json:"id"`
+	Id int64 `json:"id,string"`
 	//ContentType string `json:"contentType"` //file type
 	Filename string `json:"filename"`
 }

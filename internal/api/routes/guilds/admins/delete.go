@@ -134,6 +134,16 @@ func Delete(c *gin.Context) {
 		return
 	}
 
+	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND admin = true OR owner = true", guildId)
 	if err != nil {
 		logger.Error.Println(err)
@@ -149,9 +159,11 @@ func Delete(c *gin.Context) {
 		rows.Scan(&adminUserId)
 		res := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.User{
-				UserId: intUserId,
-			},
+			Data: events.Member{
+				GuildId: intGuildId,
+				UserInfo: events.User{
+					UserId: intUserId,
+				}},
 			Event: events.REMOVE_USER_GUILDADMIN,
 		}
 		wsclient.Pools.BroadcastClient(adminUserId, res)

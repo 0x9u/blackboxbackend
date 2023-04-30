@@ -103,7 +103,7 @@ func Ban(c *gin.Context) {
 	EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true),
 	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id = $3 AND admin = true),
 	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $1 AND user_id = $2 AND owner = true),
-	EXISTS (SELECT 1 FROM users WHERE user_id = $3)
+	EXISTS (SELECT 1 FROM users WHERE id = $3)
 	`, guildId, user.Id, userId).Scan(&hasAdmin, &isBanned, &isDm, &isUserAdmin, &isOwner, &userExists); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -130,7 +130,7 @@ func Ban(c *gin.Context) {
 		})
 		return
 	}
-	if !hasAdmin || !isOwner {
+	if !hasAdmin && !isOwner {
 		logger.Error.Println(errors.ErrNotGuildAuthorised)
 		c.JSON(http.StatusForbidden, errors.Body{
 			Error:  errors.ErrNotGuildAuthorised.Error(),
@@ -199,10 +199,9 @@ func Ban(c *gin.Context) {
 		rows.Scan(&adminUserId)
 		res := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.UserGuild{
+			Data: events.Member{
 				GuildId: intGuildId,
-				UserId:  intUserId,
-				UserData: &events.User{
+				UserInfo: events.User{
 					UserId:  intUserId,
 					Name:    username,
 					ImageId: resImageId,
@@ -222,9 +221,11 @@ func Ban(c *gin.Context) {
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
+		Data: events.Member{
 			GuildId: intGuildId,
-			UserId:  intUserId,
+			UserInfo: events.User{
+				UserId: intUserId,
+			},
 		},
 		Event: events.REMOVE_USER_GUILDLIST,
 	}

@@ -51,6 +51,8 @@
 
 - THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
 
+- fix time stamp issue for json  use ISO 8601
+
 v2.0
 
 - clean up code and put it in functions

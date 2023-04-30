@@ -102,9 +102,11 @@ func leaveGuild(c *gin.Context) {
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
+		Data: events.Member{
 			GuildId: intGuildId,
-			UserId:  user.Id,
+			UserInfo: events.User{
+				UserId: user.Id,
+			},
 		},
 		Event: events.REMOVE_USER_GUILDLIST,
 	}

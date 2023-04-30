@@ -64,7 +64,7 @@ func Delete(c *gin.Context) {
 	var hasAuth bool
 	var inviteValid bool
 	var isDm bool
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM invites WHERE invite = $1 AND guild_id=$2), EXISTS (SELECT 1 FROM guilds WHERE guild_id = $2 AND dm = true)", invite, guildId).Scan(&inviteValid, &isDm); err != nil {
+	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM invites WHERE invite = $1 AND guild_id=$2), EXISTS (SELECT 1 FROM guilds WHERE id = $2 AND dm = true)", invite, guildId).Scan(&inviteValid, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),

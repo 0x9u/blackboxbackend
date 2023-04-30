@@ -92,10 +92,9 @@ func Typing(c *gin.Context) {
 	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.UserGuild{
+		Data: events.Member{
 			GuildId: intGuildId,
-			UserId:  user.Id,
-			UserData: &events.User{
+			UserInfo: events.User{
 				UserId: user.Id,
 				Name:   username,
 			},

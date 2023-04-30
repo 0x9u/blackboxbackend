@@ -31,7 +31,7 @@ import (
 type editGuildBody struct {
 	SaveChat *bool   `json:"saveChat"`
 	Name     *string `json:"name"`
-	OwnerId  *int64  `json:"ownerId"`
+	OwnerId  *int64  `json:"ownerId,string"`
 }
 
 func editGuild(c *gin.Context) {

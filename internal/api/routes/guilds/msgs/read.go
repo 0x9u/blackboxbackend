@@ -3,6 +3,7 @@ package msgs
 import (
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -72,8 +73,8 @@ func Read(c *gin.Context) {
 		return
 	}
 
-	var lastMsgTime int
-	if err := db.Db.QueryRow("SELECT created FROM msgs WHERE id = (SELECT MAX(id) FROM msgs where guild_id = $1)", guildId).Scan(&lastMsgTime); err != nil {
+	var lastMsgTime time.Time
+	if err := db.Db.QueryRow("SELECT created FROM msgs WHERE id = $1", lastMsgId).Scan(&lastMsgTime); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
