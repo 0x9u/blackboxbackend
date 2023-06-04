@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -75,7 +76,10 @@ func leaveGuild(c *gin.Context) {
 		})
 		return
 	}
-	if _, err := db.Db.Exec("DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, user.Id); err != nil {
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -83,6 +87,34 @@ func leaveGuild(c *gin.Context) {
 		})
 		return
 	}
+	defer tx.Rollback() //rollback changes if failed
+
+	if _, err := tx.ExecContext(ctx, "DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	if _, err := tx.ExecContext(ctx, "DELETE FROM unreadmsgs WHERE guild_id=$1 AND user_id=$2", guildId, user.Id); err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		logger.Error.Println(err)
