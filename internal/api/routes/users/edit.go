@@ -28,8 +28,8 @@ import (
 )
 
 type editSelfBody struct {
+	NewPassword *string `json:"newPassword"`
 	Password    *string `json:"password"`
-	OldPassword *string `json:"oldPassword"`
 	Email       *string `json:"email"`
 	Username    *string `json:"username"`
 	Options     *int    `json:"options"`
@@ -88,7 +88,7 @@ func editSelf(c *gin.Context) {
 		return
 	}
 
-	if body.Password == nil && body.Email == nil && body.Username == nil && imageHeader == nil {
+	if body.NewPassword == nil && body.Email == nil && body.Username == nil && imageHeader == nil {
 		logger.Error.Println(errors.ErrAllFieldsEmpty)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrAllFieldsEmpty.Error(),
@@ -97,6 +97,33 @@ func editSelf(c *gin.Context) {
 		return
 	}
 	newUserInfo := events.User{}
+
+	if body.Password != nil {
+		var oldhashedpass string
+		if err := db.Db.QueryRow("SELECT password FROM users WHERE id=$1", user.Id).Scan(&oldhashedpass); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if err := bcrypt.CompareHashAndPassword([]byte(oldhashedpass), []byte(*body.Password)); err != nil {
+			logger.Error.Println(errors.ErrInvalidDetails)
+			c.JSON(http.StatusUnauthorized, errors.Body{
+				Error:  errors.ErrInvalidDetails.Error(),
+				Status: errors.StatusInvalidDetails,
+			})
+			return
+		}
+	} else {
+		logger.Error.Println(errors.ErrInvalidDetails)
+		c.JSON(http.StatusUnauthorized, errors.Body{
+			Error:  errors.ErrInvalidDetails.Error(),
+			Status: errors.StatusInvalidDetails,
+		})
+		return
+	}
 
 	//BEGIN TRANSACTION
 	ctx := context.Background()
@@ -112,26 +139,9 @@ func editSelf(c *gin.Context) {
 	defer tx.Rollback() //rollback changes if failed
 	successful := false
 
-	if body.Password != nil && body.OldPassword != nil {
-		var oldhashedpass string
-		if err := db.Db.QueryRow("SELECT password FROM users WHERE id=$1", user.Id).Scan(&oldhashedpass); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		if err := bcrypt.CompareHashAndPassword([]byte(oldhashedpass), []byte(*body.OldPassword)); err != nil {
-			logger.Error.Println(errors.ErrInvalidDetails)
-			c.JSON(http.StatusUnauthorized, errors.Body{
-				Error:  errors.ErrInvalidDetails.Error(),
-				Status: errors.StatusInvalidDetails,
-			})
-			return
-		}
+	if body.NewPassword != nil {
 
-		hashedPass, err := bcrypt.GenerateFromPassword([]byte(*body.Password), bcrypt.DefaultCost)
+		hashedPass, err := bcrypt.GenerateFromPassword([]byte(*body.NewPassword), bcrypt.DefaultCost)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
