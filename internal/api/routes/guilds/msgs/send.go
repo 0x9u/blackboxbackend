@@ -195,10 +195,10 @@ func Send(c *gin.Context) {
 	mentions := events.MentionExp.FindAllStringSubmatch(msg.Content, -1)
 	logger.Debug.Println("msgcontent:", msg.Content)
 	logger.Debug.Println("mentions:", mentions)
-	mentionsEveryone := events.MentionEveryoneExp.MatchString(msg.Content)
+	msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
 
 	if isChatSaveOn {
-		if err := tx.QueryRowContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, mentions_everyone) VALUES ($1, $2, $3, $4, $5) RETURNING created", msg.MsgId, msg.Content, user.Id, guildId, mentionsEveryone).Scan(&msg.Created); err != nil {
+		if err := tx.QueryRowContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, mentions_everyone) VALUES ($1, $2, $3, $4, $5) RETURNING created", msg.MsgId, msg.Content, user.Id, guildId, msg.MentionsEveryone).Scan(&msg.Created); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -207,6 +207,8 @@ func Send(c *gin.Context) {
 			return
 		}
 	}
+
+	msg.Mentions = make([]events.User, 0, len(mentions))
 
 	if len(mentions) > 0 {
 		logger.Debug.Println("mentions found")

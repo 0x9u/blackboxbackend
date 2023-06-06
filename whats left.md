@@ -51,7 +51,12 @@
 
 - THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
 
-- fix time stamp issue for json  use ISO 8601
+- fix time stamp issue for json  use ISO 8601 - done
+
+- **IMPORTANT**
+    - Encrypt all data somehow in a way that it cannot be decrypted without user
+        - idk how this will work but i have to do this for privacy shit
+        
 
 v2.0
 

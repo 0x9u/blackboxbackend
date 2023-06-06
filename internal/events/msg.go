@@ -33,4 +33,4 @@ type Attachment struct {
 }
 
 var MentionExp = regexp.MustCompile(`\<\@(\d+)\>`)
-var MentionEveryoneExp = regexp.MustCompile(`\@everyone`)
+var MentionEveryoneExp = regexp.MustCompile(`\<\@everyone\>`)
