@@ -56,6 +56,8 @@
 - **IMPORTANT**
     - Encrypt all data somehow in a way that it cannot be decrypted without user
         - idk how this will work but i have to do this for privacy shit
+    - make sure its timestamp with time zone
+        - without time zone creates weird bugs
         
 
 v2.0

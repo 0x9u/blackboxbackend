@@ -65,7 +65,7 @@ func (c *wsClient) Run() {
 }
 
 func (c *wsClient) tokenDeadline() {
-	<-c.deadline.Done()
+	<-c.deadline.Done() //crash sometimes happens here (invalid memory address or nil pointer dereference)
 	logger.Info.Println("deadline passed")
 	if c.deadline.Err() != context.Canceled {
 		logger.Info.Println("cancelling from deadline")

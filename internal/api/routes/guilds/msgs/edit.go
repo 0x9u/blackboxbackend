@@ -1,6 +1,8 @@
 package msgs
 
 import (
+	"context"
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -127,6 +129,19 @@ func Edit(c *gin.Context) {
 
 	var timestamp time.Time
 
+	//BEGIN TRANSACTION
+	ctx := context.Background()
+	tx, err := db.Db.BeginTx(ctx, nil)
+	if err != nil {
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
+	}
+	defer tx.Rollback() //rollback changes if failed
+
 	if !isRequestId { //vulnerability: isrequestid can be updated by any user
 
 		var msgExists bool
@@ -149,7 +164,7 @@ func Edit(c *gin.Context) {
 		}
 
 		//TODO: Replace modified with a trigger
-		if err = db.Db.QueryRow("UPDATE msgs SET content = $1, modified = now() WHERE id = $2 AND user_id = $3 AND guild_id=$4 RETURNING modified", msg.Content, msgId, user.Id, guildId).Scan(&timestamp); err != nil {
+		if err = tx.QueryRowContext(ctx, "UPDATE msgs SET content = $1, modified = now() WHERE id = $2 AND user_id = $3 AND guild_id=$4 RETURNING modified", msg.Content, msgId, user.Id, guildId).Scan(&timestamp); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -157,8 +172,84 @@ func Edit(c *gin.Context) {
 			})
 			return
 		}
+
+		if _, err := tx.ExecContext(ctx, "DELETE FROM msgmentions WHERE msg_id = $1", msgId); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+
 	} else {
 		timestamp = time.Now()
+	}
+
+	mentions := events.MentionExp.FindAllStringSubmatch(msg.Content, -1)
+	logger.Debug.Println("msgcontent:", msg.Content)
+	logger.Debug.Println("mentions:", mentions)
+	msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
+	msg.Mentions = make([]events.User, 0, len(mentions))
+
+	if len(mentions) > 0 {
+		logger.Debug.Println("mentions found")
+		seen := make(map[int64]bool)
+		for _, mention := range mentions {
+			mentionUserId, err := strconv.ParseInt(mention[1], 10, 64)
+			if err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			if seen[mentionUserId] {
+				continue
+			}
+			seen[mentionUserId] = true
+
+			var mentionUser events.User
+			mentionUser.UserId = mentionUserId
+			if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", mentionUserId).Scan(&mentionUser.Name); err != nil && err != sql.ErrNoRows {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			} else if err == sql.ErrNoRows {
+				logger.Error.Println(errors.ErrUserNotFound)
+				c.JSON(http.StatusBadRequest, errors.Body{
+					Error:  errors.ErrUserNotFound.Error(),
+					Status: errors.StatusBadRequest,
+				})
+				return
+			}
+			if !isRequestId {
+				logger.Debug.Println("inserting mention", mentionUserId, msgId)
+				if _, err := tx.ExecContext(ctx, "INSERT INTO msgmentions (msg_id, user_id) VALUES ($1, $2)", msgId, mentionUserId); err != nil {
+					logger.Error.Println(err)
+					c.JSON(http.StatusInternalServerError, errors.Body{
+						Error:  err.Error(),
+						Status: errors.StatusInternalError,
+					})
+					return
+				}
+			}
+
+			msg.Mentions = append(msg.Mentions, mentionUser)
+		}
+	}
+
+	if err := tx.Commit(); err != nil { //commits the transaction
+		logger.Error.Println(err)
+		c.JSON(http.StatusInternalServerError, errors.Body{
+			Error:  err.Error(),
+			Status: errors.StatusInternalError,
+		})
+		return
 	}
 
 	var requestId string
@@ -190,11 +281,13 @@ func Edit(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
-			MsgId:     intMsgId,
-			GuildId:   intGuildId,
-			Content:   msg.Content,
-			RequestId: requestId,
-			Modified:  timestamp,
+			MsgId:            intMsgId,
+			GuildId:          intGuildId,
+			Content:          msg.Content,
+			RequestId:        requestId,
+			Mentions:         msg.Mentions,
+			MentionsEveryone: msg.MentionsEveryone,
+			Modified:         timestamp,
 			Author: events.User{
 				UserId: user.Id,
 			},
