@@ -47,7 +47,6 @@
     - make it reference its own entities instead for better management - Cancelled
         - made it its own table instead
 
-- show member count
 
 - THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
 
@@ -58,9 +57,21 @@
         - idk how this will work but i have to do this for privacy shit
     - make sure its timestamp with time zone
         - without time zone creates weird bugs
-        
+
+v1.0
+
+- show member count
+
+- display global server announcements
+
+
+
 
 v2.0
+
+- add channels (most difficult)
+
+- add permissions for guilds
 
 - clean up code and put it in functions
 
