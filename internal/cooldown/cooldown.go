@@ -31,9 +31,8 @@ type manager struct {
 
 func (l *Limiter) run() { //6 am code
 	defer func() {
-		logger.Debug.Println("Stopped limiter")
+		Manager.removeLimiter(l.ip)
 	}()
-	logger.Debug.Println("Started limiter")
 	for {
 		select {
 		case <-l.ch:
@@ -61,16 +60,13 @@ func (m *manager) AddCount(ip string) bool { //idk if this works (returns true i
 			deadline: time.NewTimer(60 * time.Second),
 		}
 		m.limiters[ip] = limiter
-		logger.Debug.Println("Created new limiter")
 		go limiter.run()
 	}
 	limiter.deadline.Reset(60 * time.Second)
 	if limiter.count <= 0 {
 		return false
 	}
-	logger.Debug.Println("before send chan")
 	limiter.ch <- struct{}{}
-	logger.Debug.Println("after send chan")
 	return true
 }
 
