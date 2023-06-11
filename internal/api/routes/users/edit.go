@@ -400,7 +400,7 @@ func editSelf(c *gin.Context) {
 			})
 			return
 		} else if err == sql.ErrNoRows {
-			imageId = -1
+			newUserInfo.ImageId = -1
 		} else {
 			newUserInfo.ImageId = imageId
 		}

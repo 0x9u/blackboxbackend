@@ -66,7 +66,6 @@ func (c *wsClient) readData(body DataFrame) {
 		}
 		c.ws.WriteJSON(res)
 	case TYPE_IDENTIFY:
-		logger.Debug.Println("worked?")
 		if c.id > 0 {
 			c.quit()
 			return

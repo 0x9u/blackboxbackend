@@ -53,8 +53,8 @@ func (m *manager) AddCount(ip string) bool { //idk if this works (returns true i
 	if !ok {
 		limiter = &Limiter{
 			ip:       ip,
-			maxCount: 10,
-			count:    10,
+			maxCount: config.Config.User.CoolDownTokens,
+			count:    config.Config.User.CoolDownTokens,
 			ch:       make(chan struct{}),
 			ticker:   time.NewTicker(config.Config.User.CoolDownLength),
 			deadline: time.NewTimer(60 * time.Second),

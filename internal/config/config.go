@@ -25,6 +25,7 @@ type user struct {
 	MaxGuildsPerUser  int           `yaml:"maxGuildsPerUser"`  //not used yet
 	MaxFriendsPerUser int           `yaml:"maxFriendsPerUser"` //not used yet
 	CoolDownLength    time.Duration `yaml:"coolDownLength"`
+	CoolDownTokens    int           `yaml:"coolDownTokens"`
 	TokenExpireTime   time.Duration `yaml:"tokenExpireTime"`
 	WSPerUser         int           `yaml:"wsPerUser"`
 }
@@ -86,7 +87,8 @@ func createConfig() (*config, error) {
 		User: user{
 			MaxGuildsPerUser:  100,
 			MaxFriendsPerUser: 200,
-			CoolDownLength:    5 * time.Second,
+			CoolDownLength:    10 * time.Second,
+			CoolDownTokens:    25,
 			TokenExpireTime:   60 * time.Hour * 24,
 			WSPerUser:         5,
 		},
