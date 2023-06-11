@@ -10,7 +10,7 @@ import (
 )
 
 func Cooldown(c *gin.Context) {
-	ip := c.Request.RemoteAddr
+	ip := c.ClientIP()
 	canPass := cooldown.Manager.AddCount(ip)
 	logger.Debug.Println(ip)
 	if !canPass {

@@ -32,7 +32,6 @@ type manager struct {
 func (l *Limiter) run() { //6 am code
 	defer func() {
 		logger.Debug.Println("Stopped limiter")
-		Manager.removeLimiter(l.ip)
 	}()
 	logger.Debug.Println("Started limiter")
 	for {
