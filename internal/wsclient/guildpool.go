@@ -73,6 +73,7 @@ func (p *guildPool) run() {
 		case uid := <-p.Remove:
 			delete(p.clients, uid) //uid is unique id
 		case data := <-p.Add:
+			logger.Debug.Println("Added client to pool", data.UniqueId, "in guild", p.guildId)
 			p.clients[data.UniqueId] = data.Ch
 		case data := <-p.Broadcast:
 			Pools.BroadcastClientUIDMap(p.clients, data) // (BIG BAD BUG) problem this gets called before pool removal thus call on closed channel occurs
@@ -87,11 +88,12 @@ func (p *guildPool) run() {
 	}
 }
 
-func (p *pools) BroadcastGuild(guild int64, data DataFrame) error {
+func (p *pools) BroadcastGuild(guildId int64, data DataFrame) error {
 	p.guildsMutex.RLock() //prevents datarace
 	defer p.guildsMutex.RUnlock()
-	guildPool, ok := p.guilds[guild]
+	guildPool, ok := p.guilds[guildId]
 	if !ok {
+		logger.Debug.Println("Guild pool does not exist")
 		return errors.ErrGuildPoolNotExist
 	}
 	if guildPool.Disconnecting {

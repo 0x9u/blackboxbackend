@@ -291,7 +291,7 @@ func createGuild(c *gin.Context) {
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	//shit i forgot to create a pool
-	wsclient.Pools.AddUserToGuildPool(user.Id, guildId)
+	wsclient.Pools.AddUserToGuildPool(guildId, user.Id)
 	wsclient.Pools.BroadcastGuild(guildId, invRes)
 	//possible race condition but shouldnt be possible since sql does it by queue
 	c.Status(http.StatusNoContent) //writing this code at nearly 12 am gotta keep the grind up
