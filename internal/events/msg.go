@@ -14,7 +14,7 @@ type UnreadMsg struct {
 
 type Msg struct { //id and request id not omitted for checking purposes
 	MsgId            int64        `json:"id,string"`
-	Author           User         `json:"author,omitempty,string"`  // author id aka user id
+	Author           User         `json:"author,omitempty"`         // author id aka user id
 	Content          string       `json:"content"`                  // message content
 	GuildId          int64        `json:"guildId,omitempty,string"` // Chat id
 	Created          time.Time    `json:"created,omitempty"`
@@ -30,6 +30,7 @@ type Attachment struct {
 	Id int64 `json:"id,string"`
 	//ContentType string `json:"contentType"` //file type
 	Filename string `json:"filename"`
+	Type     string `json:"type"`
 }
 
 var MentionExp = regexp.MustCompile(`\<\@(\d+)\>`)

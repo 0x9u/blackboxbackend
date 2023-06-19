@@ -173,7 +173,7 @@ func Send(c *gin.Context) {
 		return
 	}
 
-	if len(msg.Content) == 0 {
+	if len(msg.Content) == 0 && len(attachmentFiles) == 0 {
 		logger.Error.Println(errors.ErrNoMsgContent)
 		c.JSON(http.StatusUnprocessableEntity, errors.Body{
 			Error:  errors.ErrNoMsgContent.Error(),
@@ -265,7 +265,7 @@ func Send(c *gin.Context) {
 		var attachment events.Attachment
 		attachment.Filename = file.Filename
 		attachment.Id = uid.Snowflake.Generate().Int64()
-		msg.Attachments = append(msg.Attachments, attachment)
+
 		//compress the file using LZ4 now
 
 		fileContents, err := file.Open()
@@ -279,6 +279,7 @@ func Send(c *gin.Context) {
 		}
 		defer fileContents.Close()
 		fileBytes, err := io.ReadAll(fileContents)
+
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -287,6 +288,10 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
+
+		attachment.Type = http.DetectContentType(fileBytes)
+		logger.Debug.Println("uploaded type", attachment.Type)
+		msg.Attachments = append(msg.Attachments, attachment)
 
 		filesize := len(fileBytes)
 
@@ -341,7 +346,7 @@ func Send(c *gin.Context) {
 		//make files temporary if chat messages save turned off
 
 		if isChatSaveOn {
-			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, msg_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'msg')", attachment.Id, msg.MsgId, attachment.Filename, msg.Created, !isChatSaveOn, filesize); err != nil {
+			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, msg_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, $4, $5, $6, $7, 'msg')", attachment.Id, msg.MsgId, attachment.Filename, msg.Created, !isChatSaveOn, filesize, attachment.Type); err != nil {
 				logger.Error.Println(err)
 				c.JSON(http.StatusInternalServerError, errors.Body{
 					Error:  err.Error(),
@@ -350,7 +355,7 @@ func Send(c *gin.Context) {
 				return
 			}
 		} else {
-			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, 'msg')", attachment.Id, attachment.Filename, msg.Created, !isChatSaveOn, filesize); err != nil {
+			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, filetype ,entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'msg')", attachment.Id, attachment.Filename, msg.Created, !isChatSaveOn, filesize, attachment.Type); err != nil {
 				logger.Error.Println(err)
 				c.JSON(http.StatusInternalServerError, errors.Body{
 					Error:  err.Error(),
@@ -361,7 +366,6 @@ func Send(c *gin.Context) {
 		}
 
 		fileIds = append(fileIds, attachment.Id)
-		msg.Attachments = append(msg.Attachments, attachment)
 	}
 
 	var isDm bool

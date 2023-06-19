@@ -165,6 +165,8 @@ func userCreate(c *gin.Context) {
 			return
 		}
 
+		fileMIMEType := http.DetectContentType(fileBytes)
+
 		if valid := files.ValidateImage(fileBytes, fileType); !valid {
 			logger.Error.Println(errors.ErrFileInvalid)
 			c.JSON(http.StatusBadRequest, errors.Body{
@@ -229,7 +231,7 @@ func userCreate(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'user')", imageId, user.UserId, filename, imageCreated, false, filesize); err != nil {
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, $4, $5, $6, $7, 'user')", imageId, user.UserId, filename, imageCreated, false, filesize, fileMIMEType); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

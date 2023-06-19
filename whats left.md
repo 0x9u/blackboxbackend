@@ -55,8 +55,9 @@
 - **IMPORTANT**
     - Encrypt all data somehow in a way that it cannot be decrypted without user
         - idk how this will work but i have to do this for privacy shit
-    - make sure its timestamp with time zone
+    - make sure its timestamp with time zone - done
         - without time zone creates weird bugs
+    - add support for streaming videos somehow 
 
 v1.0
 

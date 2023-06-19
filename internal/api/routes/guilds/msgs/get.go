@@ -143,7 +143,7 @@ func Get(c *gin.Context) { //sends message history
 		}
 		mentions.Close()
 
-		attachments, err := db.Db.Query(`SELECT id, filename FROM files WHERE msg_id = $1`, message.MsgId)
+		attachments, err := db.Db.Query(`SELECT id, filename, filetype FROM files WHERE msg_id = $1`, message.MsgId)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -157,7 +157,7 @@ func Get(c *gin.Context) { //sends message history
 
 		for attachments.Next() {
 			var attachment events.Attachment
-			if err := attachments.Scan(&attachment.Id, &attachment.Filename); err != nil {
+			if err := attachments.Scan(&attachment.Id, &attachment.Filename, &attachment.Type); err != nil {
 				logger.Error.Println(err)
 				c.JSON(http.StatusInternalServerError, errors.Body{
 					Error:  err.Error(),
