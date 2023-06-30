@@ -18,17 +18,24 @@ func main() {
 
 	logger.Info.Println("Handling requests")
 
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Fatal.Printf("Panic: %v\n", r)
+			os.Exit(1)
+		}
+	}()
+
 	if err := os.Mkdir("uploads", os.ModePerm); err != nil {
-		logger.Fatal.Println(err)
+		logger.Fatal.Panicln(err)
 	}
 	if err := os.Mkdir("uploads/user", os.ModePerm); err != nil {
-		logger.Fatal.Println(err)
+		logger.Fatal.Panicln(err)
 	}
 	if err := os.Mkdir("uploads/msg", os.ModePerm); err != nil {
-		logger.Fatal.Println(err)
+		logger.Fatal.Panicln(err)
 	}
 	if err := os.Mkdir("uploads/guild", os.ModePerm); err != nil {
-		logger.Fatal.Println(err)
+		logger.Fatal.Panicln(err)
 	}
 	defer db.Db.Close()
 
