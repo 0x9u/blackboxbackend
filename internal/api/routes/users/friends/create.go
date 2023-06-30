@@ -179,29 +179,36 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	var userImageId int64
+	var sqlUserImageId sql.NullInt64
 	var username string
-	if err := db.Db.QueryRow("SELECT files.id, username FROM files INNER JOIN users ON user_id = users.id WHERE user_id = $1", user.Id).Scan(&userImageId, &username); err != nil && err != sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", user.Id).Scan(&sqlUserImageId, &username); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
 		})
 		return
-	} else if err == sql.ErrNoRows {
+	}
+	var userImageId int64
+	if sqlUserImageId.Valid {
+		userImageId = sqlUserImageId.Int64
+	} else {
 		userImageId = -1
 	}
-
-	var friendImageId int64
+	var sqlFriendImageId sql.NullInt64
 	var friendUsername string
-	if err := db.Db.QueryRow("SELECT files.id, username FROM files INNER JOIN users ON user_id = users.id WHERE user_id = $1", userId).Scan(&friendImageId, &friendUsername); err != nil && err != sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", userId).Scan(&sqlFriendImageId, &friendUsername); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
 		})
 		return
-	} else if err == sql.ErrNoRows {
+	}
+	var friendImageId int64
+	if sqlFriendImageId.Valid {
+		friendImageId = sqlFriendImageId.Int64
+	} else {
 		friendImageId = -1
 	}
 
@@ -359,16 +366,21 @@ func CreateByName(c *gin.Context) {
 		return
 	}
 
-	var userImageId int64
+	var sqlUserImageId sql.NullInt64
 	var username string
-	if err := db.Db.QueryRow("SELECT files.id, username FROM files INNER JOIN users ON users.id = user_id WHERE user_id = $1", user.Id).Scan(&userImageId, &username); err != nil && err != sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", user.Id).Scan(&sqlUserImageId, &username); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
 		})
 		return
-	} else if err == sql.ErrNoRows {
+	}
+
+	var userImageId int64
+	if sqlUserImageId.Valid {
+		userImageId = sqlUserImageId.Int64
+	} else {
 		userImageId = -1
 	}
 

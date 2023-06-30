@@ -25,16 +25,13 @@ func main() {
 		}
 	}()
 
-	if err := os.Mkdir("uploads", os.ModePerm); err != nil {
+	if err := os.MkdirAll("uploads/user", os.ModePerm); err != nil {
 		logger.Fatal.Panicln(err)
 	}
-	if err := os.Mkdir("uploads/user", os.ModePerm); err != nil {
+	if err := os.MkdirAll("uploads/msg", os.ModePerm); err != nil {
 		logger.Fatal.Panicln(err)
 	}
-	if err := os.Mkdir("uploads/msg", os.ModePerm); err != nil {
-		logger.Fatal.Panicln(err)
-	}
-	if err := os.Mkdir("uploads/guild", os.ModePerm); err != nil {
+	if err := os.MkdirAll("uploads/guild", os.ModePerm); err != nil {
 		logger.Fatal.Panicln(err)
 	}
 	defer db.Db.Close()

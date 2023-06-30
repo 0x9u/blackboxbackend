@@ -137,7 +137,7 @@ func Accept(c *gin.Context) {
 	if clientImage.Valid {
 		resClientImage = clientImage.Int64
 	} else {
-		resClientImage = clientImage.Int64
+		resClientImage = -1
 	}
 
 	var friendUsername string

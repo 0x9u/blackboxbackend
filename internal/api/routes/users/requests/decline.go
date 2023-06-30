@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Decline(c *gin.Context) {
+func Decline(c *gin.Context) { //original sender of request can also decline
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
@@ -54,11 +54,12 @@ func Decline(c *gin.Context) {
 		return
 	}
 
-	var isRequested bool
+	var hasBeenRequested bool
+	var isTheRequestor bool
 
 	if err := db.Db.QueryRow(`
-	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
-	`, userId, user.Id).Scan(&isRequested); err != nil {
+	SELECT EXISTS(SELECT 1 FROM friends WHERE (user_id = $1 AND friend_id = $2) AND friended = false), EXISTS(SELECT 1 FROM friends WHERE (user_id = $2 AND friend_id = $1) AND friended = false)
+	`, userId, user.Id).Scan(&hasBeenRequested, &isTheRequestor); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -67,7 +68,7 @@ func Decline(c *gin.Context) {
 		return
 	}
 
-	if !isRequested {
+	if !isTheRequestor && !hasBeenRequested {
 		logger.Error.Println(errors.ErrFriendRequestNotFound)
 		c.JSON(http.StatusBadRequest, errors.Body{
 			Error:  errors.ErrFriendRequestNotFound.Error(),
@@ -77,7 +78,7 @@ func Decline(c *gin.Context) {
 	}
 
 	if _, err := db.Db.Exec(`
-	DELETE FROM friends WHERE user_id = $1 AND friend_id = $2
+	DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
 	`, userId, user.Id); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
@@ -87,19 +88,29 @@ func Decline(c *gin.Context) {
 		return
 	}
 
+	var eventTypeRes string
+	var eventTypeResFriend string
+	if isTheRequestor {
+		eventTypeRes = events.REMOVE_FRIEND_REQUEST
+		eventTypeResFriend = events.REMOVE_FRIEND_INCOMING_REQUEST
+	} else {
+		eventTypeRes = events.REMOVE_FRIEND_INCOMING_REQUEST
+		eventTypeResFriend = events.REMOVE_FRIEND_REQUEST
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.REMOVE_FRIEND_REQUEST,
+		Event: eventTypeRes,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.REMOVE_FRIEND_INCOMING_REQUEST,
+		Event: eventTypeResFriend,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, res)

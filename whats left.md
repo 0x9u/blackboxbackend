@@ -62,6 +62,7 @@
     - add support for streaming videos somehow
     - fix websocket bugs 
     - add octal descriminators
+    - make sure save chat works with files
 
 v1.0
 
