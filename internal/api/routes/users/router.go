@@ -25,6 +25,7 @@ func Routes(r *gin.RouterGroup) {
 	self.POST("/dms", directmsgs.Create)
 	self.DELETE("/dms/:dmId", directmsgs.Delete)
 
+	self.PUT("/friends", friends.CreateByName)
 	self.PUT("/friends/:userId", friends.Create)
 	self.GET("/friends", friends.Get)
 	self.DELETE("/friends/:userId", friends.Delete)
