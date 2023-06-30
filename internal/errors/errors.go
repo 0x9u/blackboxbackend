@@ -40,8 +40,9 @@ var (
 
 	//DM
 
-	ErrDmNotOpened = errors.New("dm: not opened")
-	ErrDmNotExist  = errors.New("dm: doesnt exists")
+	ErrDmNotOpened    = errors.New("dm: not opened")
+	ErrDmCannotDmSelf = errors.New("dm: cannot dm self")
+	ErrDmNotExist     = errors.New("dm: doesnt exists")
 
 	//FRIND
 	ErrFriendBlocked          = errors.New("friend: blocked")

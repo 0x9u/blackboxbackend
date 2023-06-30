@@ -1,6 +1,7 @@
 package directmsgs
 
 import (
+	"database/sql"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -82,9 +83,11 @@ func Delete(c *gin.Context) {
 		return
 	}
 
+	var userId int64
 	var username string
+	var sqlImageId sql.NullInt64
 
-	if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", user.Id).Scan(&username); err != nil {
+	if err := db.Db.QueryRow("SELECT ug.receiver_id, username, f.id FROM users INNER JOIN userguilds ug ON ug.user_id = $1 AND ug.guild_id = $2 LEFT JOIN files f ON f.user_id = ug.receiver_id  WHERE users.id = $1", user.Id, dmId).Scan(&userId, &username, &sqlImageId); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
@@ -93,11 +96,23 @@ func Delete(c *gin.Context) {
 		return
 	}
 
+	var imageId int64
+	if sqlImageId.Valid {
+		imageId = sqlImageId.Int64
+	} else {
+		imageId = -1
+	}
+
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.User{
-			UserId: intDmId,
-			Name:   username,
+		Data: events.Dm{
+			DmId: intDmId,
+			UserInfo: events.User{
+				UserId:  userId,
+				Name:    username,
+				ImageId: imageId,
+			},
+			Unread: events.UnreadMsg{},
 		},
 		Event: events.DELETE_DM,
 	}

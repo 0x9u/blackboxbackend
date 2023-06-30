@@ -48,6 +48,8 @@
         - made it its own table instead
 
 
+
+
 - THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
 
 - fix time stamp issue for json  use ISO 8601 - done
@@ -57,7 +59,9 @@
         - idk how this will work but i have to do this for privacy shit
     - make sure its timestamp with time zone - done
         - without time zone creates weird bugs
-    - add support for streaming videos somehow 
+    - add support for streaming videos somehow
+    - fix websocket bugs 
+    - add octal descriminators
 
 v1.0
 

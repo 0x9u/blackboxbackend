@@ -43,6 +43,15 @@ func Create(c *gin.Context) {
 		return
 	}
 
+	if body.ReceiverId == user.Id {
+		logger.Error.Println(errors.ErrDmCannotDmSelf)
+		c.JSON(http.StatusBadRequest, errors.Body{
+			Error:  errors.ErrDmCannotDmSelf.Error(),
+			Status: errors.StatusDmCannotDmSelf,
+		})
+		return
+	}
+
 	var userExists bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)", body.ReceiverId).Scan(&userExists); err != nil {
@@ -74,7 +83,9 @@ func Create(c *gin.Context) {
 	}
 
 	if dmExists {
-		if _, err := db.Db.Exec("UPDATE userguilds SET left_dm = false WHERE user_id = $1 AND receiver_id = $2", user.Id, body.ReceiverId); err != nil {
+		var dmId int64
+		//will return two rows but query row should be fine
+		if err := db.Db.QueryRow("UPDATE userguilds SET left_dm = false WHERE user_id = $1 AND receiver_id = $2 RETURNING guild_id", user.Id, body.ReceiverId).Scan(&dmId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -103,10 +114,14 @@ func Create(c *gin.Context) {
 
 		res := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
-			Data: events.User{
-				UserId:  body.ReceiverId,
-				Name:    username,
-				ImageId: imageId,
+			Data: events.Dm{
+				DmId: dmId,
+				UserInfo: events.User{
+					UserId:  body.ReceiverId,
+					Name:    username,
+					ImageId: imageId,
+				},
+				Unread: events.UnreadMsg{},
 			},
 			Event: events.CREATE_DM,
 		}
@@ -186,10 +201,14 @@ func Create(c *gin.Context) {
 
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.User{
-			UserId:  body.ReceiverId,
-			Name:    username,
-			ImageId: imageId,
+		Data: events.Dm{
+			DmId: dmId,
+			UserInfo: events.User{
+				UserId:  body.ReceiverId,
+				Name:    username,
+				ImageId: imageId,
+			},
+			Unread: events.UnreadMsg{},
 		},
 		Event: events.CREATE_DM,
 	}

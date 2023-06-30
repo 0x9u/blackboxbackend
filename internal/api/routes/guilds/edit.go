@@ -13,7 +13,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/config"
@@ -253,7 +252,6 @@ func editGuild(c *gin.Context) {
 		imageId := uid.Snowflake.Generate().Int64()
 		filename := imageHeader.Filename
 		fileType := filepath.Ext(filename)
-		imageCreated := time.Now().Unix()
 		image, err := imageHeader.Open()
 		if err != nil {
 			logger.Error.Println(err)
@@ -283,6 +281,8 @@ func editGuild(c *gin.Context) {
 			})
 			return
 		}
+
+		fileMIMEType := http.DetectContentType(fileBytes)
 
 		filesize := len(fileBytes)
 
@@ -345,7 +345,7 @@ func editGuild(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'guild')", imageId, guildId, filename, imageCreated, false, filesize); err != nil {
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, now(), $4, $5, $6, 'guild')", imageId, guildId, filename, false, filesize, fileMIMEType); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

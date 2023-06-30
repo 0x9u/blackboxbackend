@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/config"
@@ -294,7 +293,6 @@ func editSelf(c *gin.Context) {
 		filename := imageHeader.Filename
 		fileType := filepath.Ext(filename)
 
-		imageCreated := time.Now().Unix()
 		imageId := uid.Snowflake.Generate().Int64()
 
 		image, err := imageHeader.Open()
@@ -355,7 +353,7 @@ func editSelf(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, user_id, filetype, entity_type) VALUES ($1, $2, $3, $4, $5, $6, $7 ,'user')", imageId, filename, imageCreated, false, filesize, user.Id, fileMIMEType); err != nil {
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, user_id, filetype, entity_type) VALUES ($1, $2, now() , $3, $4, $5, $6,'user')", imageId, filename, false, filesize, user.Id, fileMIMEType); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

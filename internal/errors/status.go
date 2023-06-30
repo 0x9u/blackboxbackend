@@ -29,6 +29,7 @@ const (
 	StatusGuildIsDm
 
 	StatusDmNotOpened
+	StatusDmCannotDmSelf
 	StatusDmNotExist
 
 	StatusFriendBlocked

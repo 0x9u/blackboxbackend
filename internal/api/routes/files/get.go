@@ -75,30 +75,6 @@ func get(c *gin.Context) {
 		})
 		return
 	}
-	/*
-		file, err := os.Open(fmt.Sprintf("uploads/%s/%s.lz4", entityType, fileId))
-		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		defer file.Close()
-		var uncompressedBuffer bytes.Buffer
-		uncompressor := lz4.NewReader(file)
-		if _, err := uncompressor.WriteTo(&uncompressedBuffer); err != nil {
-			logger.Error.Println(err)
-			logger.Debug.Println("uncompressedBuffer:", uncompressedBuffer)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
-		//might be a memory leak no close apparently for NewReader
-	*/
 	fileBytes, err := os.ReadFile(fmt.Sprintf("uploads/%s/%s.lz4", entityType, fileId))
 	if err != nil {
 		logger.Error.Println(err)
