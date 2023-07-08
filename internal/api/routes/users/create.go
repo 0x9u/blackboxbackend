@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -142,8 +141,6 @@ func userCreate(c *gin.Context) {
 		filename := imageHeader.Filename
 		fileType := filepath.Ext(filename)
 
-		imageCreated := time.Now().Unix()
-
 		image, err := imageHeader.Open()
 		if err != nil {
 			logger.Error.Println(err)
@@ -231,7 +228,7 @@ func userCreate(c *gin.Context) {
 			return
 		}
 
-		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, $4, $5, $6, $7, 'user')", imageId, user.UserId, filename, imageCreated, false, filesize, fileMIMEType); err != nil {
+		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, user_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, NOW() , $4, $5, $6, 'user')", imageId, user.UserId, filename, false, filesize, fileMIMEType); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),

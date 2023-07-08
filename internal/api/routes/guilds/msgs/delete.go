@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -41,7 +42,7 @@ func Delete(c *gin.Context) { //deletes message
 		})
 		return
 	} else if !match {
-		if match, err := regexp.MatchString("^[a-zA-Z0-9]+$", msgId); err != nil {
+		if match, err := regexp.MatchString("^[0-9]+-[0-9]+$", msgId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -88,29 +89,11 @@ func Delete(c *gin.Context) { //deletes message
 
 	var hasAuth bool
 	var isDm bool
-	var isAuthor bool
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner=true OR admin=true), EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)", guildId, user.Id).Scan(&hasAuth, &isDm); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
-		})
-		return
-	}
-
-	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2)", msgId, user.Id).Scan(&isAuthor); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
-		return
-	}
-	if !hasAuth && !isAuthor {
-		logger.Error.Println(errors.ErrNotGuildAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildAuthorised.Error(),
-			Status: errors.StatusNotGuildAuthorised,
 		})
 		return
 	}
@@ -132,8 +115,10 @@ func Delete(c *gin.Context) { //deletes message
 
 	//theortically if the user did not have chat saved and ran this request it would still work
 	if isRequestId {
-		var isChatSaved bool
-		if err := db.Db.QueryRow("SELECT save_chat from guilds where id = $1", guildId).Scan(&isChatSaved); err != nil {
+		requestIdParts := strings.Split(msgId, "-") //should be protected by two in length from regex
+		authorId := requestIdParts[0]
+		intAuthorId, err := strconv.ParseInt(authorId, 10, 64)
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -141,16 +126,32 @@ func Delete(c *gin.Context) { //deletes message
 			})
 			return
 		}
-		if !isChatSaved { //if save chat is on
-			logger.Error.Println(errors.ErrGuildSaveChatOn)
-			c.JSON(http.StatusForbidden, errors.Body{
-				Error:  errors.ErrGuildSaveChatOn.Error(),
-				Status: errors.StatusGuildSaveChatOn,
+		if intAuthorId != user.Id { //if the user is not the author of the message
+			logger.Error.Println(errors.ErrNotExist)
+			c.JSON(http.StatusNotFound, errors.Body{
+				Error:  errors.ErrNotExist.Error(),
+				Status: errors.StatusNotExist,
 			})
 			return
 		}
 	} else {
-
+		var isAuthor bool
+		if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2)", msgId, user.Id).Scan(&isAuthor); err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if !hasAuth && !isAuthor {
+			logger.Error.Println(errors.ErrNotGuildAuthorised)
+			c.JSON(http.StatusForbidden, errors.Body{
+				Error:  errors.ErrNotGuildAuthorised.Error(),
+				Status: errors.StatusNotGuildAuthorised,
+			})
+			return
+		}
 		var msgExists bool
 		if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2 AND guild_id=$3)", msgId, user.Id, guildId).Scan(&msgExists); err != nil {
 			logger.Error.Println(err)
@@ -196,7 +197,16 @@ func Delete(c *gin.Context) { //deletes message
 	var intMsgId int64
 	if isRequestId {
 		requestId = msgId
-		intMsgId = 0
+		requestIdParts := strings.Split(msgId, "-")
+		intMsgId, err = strconv.ParseInt(requestIdParts[1], 10, 64)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	} else {
 		requestId = "" //there for readabilty
 		intMsgId, err = strconv.ParseInt(msgId, 10, 64)

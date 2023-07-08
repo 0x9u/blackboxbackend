@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/config"
@@ -206,6 +207,8 @@ func Send(c *gin.Context) {
 			})
 			return
 		}
+	} else {
+		msg.Created = time.Now().UTC()
 	}
 
 	msg.Mentions = make([]events.User, 0, len(mentions))
@@ -380,13 +383,50 @@ func Send(c *gin.Context) {
 	}
 
 	if isDm {
-		if _, err := tx.ExecContext(ctx, "UPDATE userguilds SET left_dm = false WHERE guild_id = $1", guildId); err != nil {
+		rows, err := tx.QueryContext(ctx, `WITH closed_dm_users AS (UPDATE userguilds SET left_dm = false WHERE guild_id = $1 AND left_dm = true RETURNING user_id, receiver_id, guild_id) 
+		SELECT closed_dm_users.user_id, receiver_id, closed_dm_users.guild_id, users.username, files.id FROM closed_dm_users INNER JOIN users ON users.id = receiver_id LEFT JOIN files ON files.user_id = receiver_id`, guildId)
+		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
 				Status: errors.StatusInternalError,
 			})
 			return
+		}
+		for rows.Next() {
+			var userId int64
+			var receiverId int64
+			var dmId int64
+			var username string
+			var sqlImageId sql.NullInt64
+			if err := rows.Scan(&userId, &receiverId, &dmId, &username, &sqlImageId); err != nil {
+				logger.Error.Println(err)
+				c.JSON(http.StatusInternalServerError, errors.Body{
+					Error:  err.Error(),
+					Status: errors.StatusInternalError,
+				})
+				return
+			}
+			var imageId int64
+			if sqlImageId.Valid {
+				imageId = sqlImageId.Int64
+			} else {
+				imageId = -1
+			}
+			res := wsclient.DataFrame{
+				Op: wsclient.TYPE_DISPATCH,
+				Data: events.Dm{
+					DmId: dmId,
+					UserInfo: events.User{
+						UserId:  receiverId,
+						Name:    username,
+						ImageId: imageId,
+					},
+					Unread: events.UnreadMsg{}, //temp will fill unreadmsgs later
+				},
+				Event: events.CREATE_DM,
+			}
+			wsclient.Pools.BroadcastClient(userId, res)
 		}
 	}
 
@@ -427,6 +467,10 @@ func Send(c *gin.Context) {
 		statusMessage = events.CREATE_DM_MESSAGE
 	} else {
 		statusMessage = events.CREATE_GUILD_MESSAGE
+	}
+
+	if !isChatSaveOn {
+		msg.RequestId = fmt.Sprintf("%d-%d", user.Id, msg.MsgId)
 	}
 
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{

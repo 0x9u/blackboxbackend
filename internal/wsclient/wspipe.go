@@ -57,7 +57,7 @@ func (c *wsClient) writePipe() {
 }
 
 func (c *wsClient) readData(body DataFrame) {
-	logger.Debug.Println("worked?")
+	//logger.Debug.Println("worked?") //most fucking annoying line ever
 	switch body.Op {
 	case TYPE_HEARTBEAT:
 		c.ws.SetReadDeadline(time.Now().Add(pingDelay))

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
@@ -41,7 +42,7 @@ func Edit(c *gin.Context) {
 		})
 		return
 	} else if !match {
-		if match, err := regexp.MatchString("^[a-zA-Z0-9]+$", msgId); err != nil {
+		if match, err := regexp.MatchString("^[0-9]+-[0-9]+$", msgId); err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
 				Error:  err.Error(),
@@ -183,8 +184,28 @@ func Edit(c *gin.Context) {
 		}
 
 	} else {
-		timestamp = time.Now()
+		requestIdParts := strings.Split(msgId, "-") //should be protected by two in length from regex
+		authorId := requestIdParts[0]
+		intAuthorId, err := strconv.ParseInt(authorId, 10, 64)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
+		if intAuthorId != user.Id { //if the user is not the author of the message
+			logger.Error.Println(errors.ErrNotExist)
+			c.JSON(http.StatusNotFound, errors.Body{
+				Error:  errors.ErrNotExist.Error(),
+				Status: errors.StatusNotExist,
+			})
+			return
+		}
 	}
+
+	timestamp = time.Now()
 
 	mentions := events.MentionExp.FindAllStringSubmatch(msg.Content, -1)
 	logger.Debug.Println("msgcontent:", msg.Content)
@@ -256,7 +277,16 @@ func Edit(c *gin.Context) {
 	var intMsgId int64
 	if isRequestId {
 		requestId = msgId
-		intMsgId = 0
+		requestIdParts := strings.Split(msgId, "-")
+		intMsgId, err = strconv.ParseInt(requestIdParts[1], 10, 64)
+		if err != nil {
+			logger.Error.Println(err)
+			c.JSON(http.StatusInternalServerError, errors.Body{
+				Error:  err.Error(),
+				Status: errors.StatusInternalError,
+			})
+			return
+		}
 	} else {
 		requestId = "" //there for readabilty
 		intMsgId, err = strconv.ParseInt(msgId, 10, 64)

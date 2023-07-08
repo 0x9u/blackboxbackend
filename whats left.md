@@ -62,7 +62,12 @@
     - add support for streaming videos somehow
     - fix websocket bugs 
     - add octal descriminators
+    - fix edit and delete for unsaved messages
+    - fix date for unsaved messages
     - make sure save chat works with files
+    - clean up api and use chatgpt to make documentation (LAST)
+        - perhaps make own api for server in python
+    - fix unread msgs not accurate when reopening dm
 
 v1.0
 

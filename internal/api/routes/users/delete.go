@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
@@ -52,21 +51,15 @@ func userDelete(c *gin.Context) {
 	}
 
 	var userHashedPass string
-	if err := db.Db.QueryRow("SELECT password FROM users WHERE username = $1", body.Name).Scan(&userHashedPass); err != nil && err != sql.ErrNoRows {
+	if err := db.Db.QueryRow("SELECT password FROM users WHERE id = $1", user.Id).Scan(&userHashedPass); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{
 			Error:  err.Error(),
 			Status: errors.StatusInternalError,
 		})
 		return
-	} else if err != nil {
-		logger.Error.Println(errors.ErrUserNotFound)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrUserNotFound.Error(),
-			Status: errors.StatusUserNotFound,
-		})
-		return
 	}
+
 	if correctPass := comparePasswords(body.Password, userHashedPass); !correctPass {
 		logger.Error.Println(errors.ErrInvalidPass)
 		c.JSON(http.StatusForbidden, errors.Body{
