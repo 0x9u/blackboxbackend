@@ -74,7 +74,7 @@ func getGuild(c *gin.Context) {
 	}
 
 	query := `
-		SELECT SELECT g.id, g.name, f.id, g.save_chat, 
+		SELECT g.id, g.name, f.id, g.save_chat, 
 		(SELECT user_id FROM userguilds WHERE guild_id = $1 AND owner = true) AS owner_id, 
 		un.msg_id AS last_read_msg_id, COUNT(m.id) filter (WHERE m.created > un.time) AS unread_msgs,
 		un.time, COUNT(mm.msg_id) filter (WHERE mm.user_id = $2 AND m.created > un.time) +
