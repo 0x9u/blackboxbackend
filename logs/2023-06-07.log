@@ -1,0 +1,252 @@
+INFO:	2023/06/07 15:01:10 main.go:19: Handling requests
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/asianchinaboi/backendserver/internal/api/routes/static.staticFiles (2 handlers)
+[GIN-debug] POST   /api/admin/reset          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.reset (4 handlers)
+[GIN-debug] POST   /api/admin/sql            --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.runSqlQuery (4 handlers)
+[GIN-debug] POST   /api/admin/banip          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin.banIP (4 handlers)
+[GIN-debug] GET    /api/admin/users          --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/users/:userId  --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/users.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds         --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Delete (4 handlers)
+[GIN-debug] PATCH  /api/admin/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds.Edit (4 handlers)
+[GIN-debug] GET    /api/admin/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/members.Kick (4 handlers)
+[GIN-debug] GET    /api/admin/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/bans.Get (4 handlers)
+[GIN-debug] PUT    /api/admin/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/admin/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/admin/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/status/              --> github.com/asianchinaboi/backendserver/internal/api/routes/status.ShowStatus (3 handlers)
+[GIN-debug] POST   /api/guilds/              --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.createGuild (4 handlers)
+[GIN-debug] POST   /api/guilds/join          --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.joinGuild (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.deleteGuild (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.editGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId      --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds.getGuild (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/members --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Get (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/members/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/members.Kick (4 handlers)
+[GIN-debug] PUT    /api/guilds/:guildId/admins/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/admins.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/admins/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/admins.Delete (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/admins --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/admins.Get (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Send (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Delete (4 handlers)
+[GIN-debug] PATCH  /api/guilds/:guildId/msgs/:msgId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Edit (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/msgs/clear --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Clear (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/typing --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Typing (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/msgs/read --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/msgs.Read (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/bans --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Get (4 handlers)
+[GIN-debug] PUT    /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Ban (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/bans/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/bans.Unban (4 handlers)
+[GIN-debug] GET    /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Get (4 handlers)
+[GIN-debug] POST   /api/guilds/:guildId/invites --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Create (4 handlers)
+[GIN-debug] DELETE /api/guilds/:guildId/invites/:invite --> github.com/asianchinaboi/backendserver/internal/api/routes/guilds/invites.Delete (4 handlers)
+[GIN-debug] POST   /api/users/               --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userCreate (3 handlers)
+[GIN-debug] GET    /api/users/:userId        --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getUserInfo (4 handlers)
+[GIN-debug] POST   /api/users/auth           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userAuth (3 handlers)
+[GIN-debug] PATCH  /api/users/@me/           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.editSelf (4 handlers)
+[GIN-debug] DELETE /api/users/@me/           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.userDelete (4 handlers)
+[GIN-debug] GET    /api/users/@me/           --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfInfo (4 handlers)
+[GIN-debug] POST   /api/users/@me/dms        --> github.com/asianchinaboi/backendserver/internal/api/routes/users/directmsgs.Create (4 handlers)
+[GIN-debug] DELETE /api/users/@me/dms/:dmId  --> github.com/asianchinaboi/backendserver/internal/api/routes/users/directmsgs.Delete (4 handlers)
+[GIN-debug] PUT    /api/users/@me/friends/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/users/friends.Create (4 handlers)
+[GIN-debug] GET    /api/users/@me/friends    --> github.com/asianchinaboi/backendserver/internal/api/routes/users/friends.Get (4 handlers)
+[GIN-debug] DELETE /api/users/@me/friends/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/users/friends.Delete (4 handlers)
+[GIN-debug] POST   /api/users/@me/requests/:userId/accept --> github.com/asianchinaboi/backendserver/internal/api/routes/users/requests.Accept (4 handlers)
+[GIN-debug] POST   /api/users/@me/requests/:userId/decline --> github.com/asianchinaboi/backendserver/internal/api/routes/users/requests.Decline (4 handlers)
+[GIN-debug] GET    /api/users/@me/requests   --> github.com/asianchinaboi/backendserver/internal/api/routes/users/requests.Get (4 handlers)
+[GIN-debug] PUT    /api/users/@me/blocked/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/users/blocked.Create (4 handlers)
+[GIN-debug] GET    /api/users/@me/blocked    --> github.com/asianchinaboi/backendserver/internal/api/routes/users/blocked.Get (4 handlers)
+[GIN-debug] DELETE /api/users/@me/blocked/:userId --> github.com/asianchinaboi/backendserver/internal/api/routes/users/blocked.Delete (4 handlers)
+[GIN-debug] GET    /api/users/@me/guilds     --> github.com/asianchinaboi/backendserver/internal/api/routes/users.getSelfGuilds (4 handlers)
+[GIN-debug] DELETE /api/users/@me/guilds/:guildId --> github.com/asianchinaboi/backendserver/internal/api/routes/users.leaveGuild (4 handlers)
+[GIN-debug] DELETE /api/users/@me/msgs       --> github.com/asianchinaboi/backendserver/internal/api/routes/users.clearUserMsg (4 handlers)
+[GIN-debug] GET    /api/ws/                  --> github.com/asianchinaboi/backendserver/internal/api/routes/ws.webSocket (3 handlers)
+[GIN-debug] GET    /api/files/:entityType/:fileId --> github.com/asianchinaboi/backendserver/internal/api/routes/files.get (3 handlers)
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26210
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26208
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26206
+INFO:	2023/06/07 15:25:16 wsclient.go:59: Websocket active of [::1]:8080
+DEBUG:	2023/06/07 15:25:16 wspipe.go:60: worked?
+DEBUG:	2023/06/07 15:25:16 wspipe.go:69: worked?
+INFO:	2023/06/07 15:25:16 getguilds.go:32: Getting guilds
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26219
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+ERROR:	2023/06/07 15:25:16 get.go:104: open uploads/guild/1652479525591715841.lz4: The system cannot find the file specified.
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26220
+ERROR:	2023/06/07 15:25:16 get.go:104: open uploads/guild/1666042794721939456.lz4: The system cannot find the file specified.
+ERROR:	2023/06/07 15:25:16 wspipe.go:98: session: too many sessions
+INFO:	2023/06/07 15:25:16 wsclient.go:69: deadline passed
+ERROR:	2023/06/07 15:25:16 wspipe.go:20: read tcp [::1]:8080->[::1]:26206: use of closed network connection
+INFO:	2023/06/07 15:25:16 wsclient.go:75: deadline passed end
+INFO:	2023/06/07 15:25:16 wspipe.go:23: Disconnecting websocket
+INFO:	2023/06/07 15:25:16 wsclient.go:33: Websocket of [::1]:8080 has been closed
+DEBUG:	2023/06/07 15:25:16 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:72: before send chan
+WARN:	2023/06/07 15:25:16 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1652479525591715840 but guild pool does not exist
+WARN:	2023/06/07 15:25:16 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1666042794700967936 but guild pool does not exist
+DEBUG:	2023/06/07 15:25:16 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:25:16 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:25:16 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:25:16 cooldown.go:15: [::1]:26217
+WARN:	2023/06/07 15:25:16 clientpool.go:23: Requested to remove ID:  1665210358509342720 UID:    however was not found
+DEBUG:	2023/06/07 15:25:16 wsclient.go:57: wsclient ended
+ERROR:	2023/06/07 15:25:16 get.go:104: open uploads/user/1665210496975900672.lz4: The system cannot find the file specified.
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:16 cooldown.go:34: Stopped limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26310
+INFO:	2023/06/07 15:26:48 wsclient.go:59: Websocket active of [::1]:8080
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26312
+INFO:	2023/06/07 15:26:48 getguilds.go:32: Getting guilds
+DEBUG:	2023/06/07 15:26:48 wspipe.go:60: worked?
+DEBUG:	2023/06/07 15:26:48 wspipe.go:69: worked?
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26311
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26314
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26315
+ERROR:	2023/06/07 15:26:48 get.go:104: open uploads/guild/1652479525591715841.lz4: The system cannot find the file specified.
+ERROR:	2023/06/07 15:26:48 get.go:104: open uploads/guild/1666042794721939456.lz4: The system cannot find the file specified.
+DEBUG:	2023/06/07 15:26:48 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:26:48 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:26:48 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:26:48 cooldown.go:15: [::1]:26316
+ERROR:	2023/06/07 15:26:48 get.go:104: open uploads/user/1665210496975900672.lz4: The system cannot find the file specified.
+ERROR:	2023/06/07 15:26:48 wspipe.go:98: session: too many sessions
+INFO:	2023/06/07 15:26:48 wsclient.go:69: deadline passed
+INFO:	2023/06/07 15:26:48 wsclient.go:75: deadline passed end
+ERROR:	2023/06/07 15:26:48 wspipe.go:20: read tcp [::1]:8080->[::1]:26310: use of closed network connection
+INFO:	2023/06/07 15:26:48 wsclient.go:33: Websocket of [::1]:8080 has been closed
+INFO:	2023/06/07 15:26:48 wspipe.go:23: Disconnecting websocket
+WARN:	2023/06/07 15:26:48 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1652479525591715840 but guild pool does not exist
+WARN:	2023/06/07 15:26:48 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1666042794700967936 but guild pool does not exist
+WARN:	2023/06/07 15:26:48 clientpool.go:23: Requested to remove ID:  1665210358509342720 UID:    however was not found
+DEBUG:	2023/06/07 15:26:48 wsclient.go:57: wsclient ended
+DEBUG:	2023/06/07 15:27:10 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:10 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:10 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:10 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:15: [::1]:26349
+DEBUG:	2023/06/07 15:27:10 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:10 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:37: Started limiter
+ERROR:	2023/06/07 15:27:10 get.go:104: open uploads/guild/1652479525591715841.lz4: The system cannot find the file specified.
+DEBUG:	2023/06/07 15:27:10 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:10 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:15: [::1]:26350
+DEBUG:	2023/06/07 15:27:10 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:10 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:10 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:10 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:10 cooldown.go:15: [::1]:26351
+ERROR:	2023/06/07 15:27:10 get.go:104: open uploads/guild/1666042794721939456.lz4: The system cannot find the file specified.
+ERROR:	2023/06/07 15:27:10 get.go:104: open uploads/user/1665210496975900672.lz4: The system cannot find the file specified.
+DEBUG:	2023/06/07 15:27:18 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:18 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:15: [::1]:26376
+INFO:	2023/06/07 15:27:18 wsclient.go:59: Websocket active of [::1]:8080
+DEBUG:	2023/06/07 15:27:18 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:18 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:15: [::1]:26377
+INFO:	2023/06/07 15:27:18 getguilds.go:32: Getting guilds
+DEBUG:	2023/06/07 15:27:18 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:15: [::1]:26377
+DEBUG:	2023/06/07 15:27:18 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:18 wspipe.go:60: worked?
+DEBUG:	2023/06/07 15:27:18 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:18 wspipe.go:69: worked?
+DEBUG:	2023/06/07 15:27:18 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:18 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:15: [::1]:26379
+DEBUG:	2023/06/07 15:27:18 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:18 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:18 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:18 cooldown.go:15: [::1]:26380
+INFO:	2023/06/07 15:27:18 wsclient.go:69: deadline passed
+INFO:	2023/06/07 15:27:18 wsclient.go:75: deadline passed end
+ERROR:	2023/06/07 15:27:18 wspipe.go:98: session: too many sessions
+ERROR:	2023/06/07 15:27:18 get.go:104: open uploads/guild/1652479525591715841.lz4: The system cannot find the file specified.
+INFO:	2023/06/07 15:27:18 wsclient.go:33: Websocket of [::1]:8080 has been closed
+ERROR:	2023/06/07 15:27:18 get.go:104: open uploads/guild/1666042794721939456.lz4: The system cannot find the file specified.
+WARN:	2023/06/07 15:27:18 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1652479525591715840 but guild pool does not exist
+WARN:	2023/06/07 15:27:18 guildpool.go:192: Tried to remove user:1665210358509342720 in guild: 1666042794700967936 but guild pool does not exist
+WARN:	2023/06/07 15:27:18 clientpool.go:23: Requested to remove ID:  1665210358509342720 UID:    however was not found
+DEBUG:	2023/06/07 15:27:18 wsclient.go:57: wsclient ended
+ERROR:	2023/06/07 15:27:18 wspipe.go:20: read tcp [::1]:8080->[::1]:26376: use of closed network connection
+INFO:	2023/06/07 15:27:18 wspipe.go:23: Disconnecting websocket
+DEBUG:	2023/06/07 15:27:19 cooldown.go:65: Created new limiter
+DEBUG:	2023/06/07 15:27:19 cooldown.go:72: before send chan
+DEBUG:	2023/06/07 15:27:19 cooldown.go:37: Started limiter
+DEBUG:	2023/06/07 15:27:19 cooldown.go:41: received a msg to add
+DEBUG:	2023/06/07 15:27:19 cooldown.go:74: after send chan
+DEBUG:	2023/06/07 15:27:19 cooldown.go:15: [::1]:26381
+ERROR:	2023/06/07 15:27:19 get.go:104: open uploads/user/1665210496975900672.lz4: The system cannot find the file specified.
+INFO:	2023/06/07 15:27:19 main.go:48: Shutting down server
+FATAL:	2023/06/07 15:27:19 main.go:40: http: Server closed
