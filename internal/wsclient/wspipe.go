@@ -10,6 +10,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/events"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
+	"github.com/gorilla/websocket"
 )
 
 func (c *wsClient) readPipe() {
@@ -51,6 +52,10 @@ func (c *wsClient) writePipe() {
 				return
 			}
 		case <-c.quitctx.Done(): //<-c.quit:
+			closeMessage := websocket.FormatCloseMessage(websocket.CloseNormalClosure, "bye")
+			if err := c.ws.WriteMessage(websocket.CloseMessage, closeMessage); err != nil {
+				logger.Warn.Printf("Error occurred when writing closure message: %v\n", err)
+			}
 			return
 		}
 	}
