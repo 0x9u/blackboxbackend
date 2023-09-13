@@ -91,7 +91,7 @@ func getGuild(c *gin.Context) {
 	if err := db.Db.QueryRow(query, guildId, user.Id).Scan(&guild.GuildId,
 		&guild.Name, &imageId,
 		&guild.SaveChat, &guild.OwnerId,
-		&guild.Unread.Id, &guild.Unread.Count,
+		&guild.Unread.MsgId, &guild.Unread.Count,
 		&guild.Unread.Time); err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.Body{

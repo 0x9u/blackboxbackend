@@ -6,7 +6,7 @@ import (
 )
 
 type UnreadMsg struct {
-	Id       int64     `json:"msgId,string"` //message last read Id
+	MsgId    int64     `json:"msgId,string"` //message last read Id
 	Count    int       `json:"count"`        //number of unread messages
 	Time     time.Time `json:"time"`
 	Mentions int       `json:"mentions"` //how many times user was mentioned

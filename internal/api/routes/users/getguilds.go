@@ -93,7 +93,7 @@ func getSelfGuilds(c *gin.Context) {
 		var imageId sql.NullInt64
 		guild.Unread = &events.UnreadMsg{}
 
-		err = guildRows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.Id, &guild.Unread.Count, &guild.Unread.Mentions, &guild.Unread.Time)
+		err = guildRows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.MsgId, &guild.Unread.Count, &guild.Unread.Mentions, &guild.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
@@ -114,7 +114,7 @@ func getSelfGuilds(c *gin.Context) {
 		var dm events.Dm
 		var imageId sql.NullInt64
 		dm.Unread = events.UnreadMsg{}
-		err = dmRows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name, &imageId, &dm.Unread.Id, &dm.Unread.Count, &dm.Unread.Mentions, &dm.Unread.Time)
+		err = dmRows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name, &imageId, &dm.Unread.MsgId, &dm.Unread.Count, &dm.Unread.Mentions, &dm.Unread.Time)
 		if err != nil {
 			logger.Error.Println(err)
 			c.JSON(http.StatusInternalServerError, errors.Body{
