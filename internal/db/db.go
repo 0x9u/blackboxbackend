@@ -27,5 +27,6 @@ func init() {
 	if err != nil {
 		logger.Fatal.Println(err)
 	}
-	Db.SetMaxOpenConns(config.Config.Server.DatabaseConfig.MaxConns)
+	Db.SetMaxOpenConns(config.Config.Server.DatabaseConfig.MaxOpenConns)
+	Db.SetMaxIdleConns(config.Config.Server.DatabaseConfig.MaxOpenConns)
 }
