@@ -6,13 +6,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/errors"
 )
 
-// user guild is to be deprecated and replaced with member
-type UserGuild struct {
-	GuildId  int64 `json:"guildId,string"`
-	UserId   int64 `json:"userId,string"` //Id to remove/add user
-	UserData *User `json:"userData,omitempty"`
-}
-
 // used for guild settings, info, join info, update info
 type Guild struct {
 	OwnerId  int64      `json:"ownerId,omitempty,string"`
