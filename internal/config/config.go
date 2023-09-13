@@ -130,7 +130,7 @@ func createConfig() (*config, error) {
 				DBName:       "chatapp",
 				SSLMode:      "disable",
 				MaxOpenConns: 50,
-				MaxIdleConns: 50,
+				MaxIdleConns: 25,
 			},
 		},
 	}
