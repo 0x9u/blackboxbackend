@@ -30,6 +30,16 @@ type user struct {
 	WSPerUser         int           `yaml:"wsPerUser"`
 }
 
+type database struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	DBName   string `yaml:"dbName"`
+	SSLMode  string `yaml:"sslMode"`
+	MaxConns int    `yaml:"maxConns"`
+}
+
 type server struct {
 	Host               string        `yaml:"host"`
 	Port               string        `yaml:"port"`
@@ -40,6 +50,7 @@ type server struct {
 	ImageProfileSize   int           `yaml:"imageProfileSize"`
 	MaxFileSize        int           `yaml:"maxFileSize"`
 	MaxBodyRequestSize int           `yaml:"maxBodyRequestSize"`
+	DatabaseConfig     database      `yaml:"databaseConfig"`
 }
 
 type timeout struct {
@@ -110,6 +121,15 @@ func createConfig() (*config, error) {
 			ImageProfileSize:   4096,
 			MaxFileSize:        1024 * 1024 * 15, // 15mb
 			MaxBodyRequestSize: 1024 * 1024 * 5,  // 5mb
+			DatabaseConfig: database{ //replace cred values later on
+				Host:     "localhost",
+				Port:     5432,
+				User:     "postgres",
+				Password: "1",
+				DBName:   "chatapp",
+				SSLMode:  "disable",
+				MaxConns: 10,
+			},
 		},
 	}
 	path, err := os.Getwd()

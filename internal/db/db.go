@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/asianchinaboi/backendserver/internal/config"
 	"github.com/asianchinaboi/backendserver/internal/logger"
 )
 
@@ -15,9 +16,16 @@ var (
 
 func init() {
 	var err error
-	loginInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslenabled)
+	loginInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		config.Config.Server.DatabaseConfig.Host,
+		config.Config.Server.DatabaseConfig.Port,
+		config.Config.Server.DatabaseConfig.User,
+		config.Config.Server.DatabaseConfig.Password,
+		config.Config.Server.DatabaseConfig.DBName,
+		config.Config.Server.DatabaseConfig.SSLMode)
 	Db, err = sql.Open("postgres", loginInfo)
 	if err != nil {
 		logger.Fatal.Println(err)
 	}
+	Db.SetMaxOpenConns(config.Config.Server.DatabaseConfig.MaxConns)
 }
