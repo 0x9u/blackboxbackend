@@ -68,6 +68,7 @@
     - clean up api and use chatgpt to make documentation (LAST)
         - perhaps make own api for server in python
     - fix unread msgs not accurate when reopening dm
+    - fix new line msg
 
 v1.0
 

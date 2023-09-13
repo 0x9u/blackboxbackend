@@ -129,6 +129,8 @@ func Get(c *gin.Context) { //sends message history
 			return
 		}
 
+		message.Mentions = []events.User{}
+
 		for mentions.Next() {
 			var mentionUser events.User
 			if err := mentions.Scan(&mentionUser.UserId, &mentionUser.Name); err != nil {
