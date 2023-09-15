@@ -13,6 +13,7 @@ func Routes(r *gin.RouterGroup) {
 	users := r.Group("/users")
 	users.POST("/", userCreate)
 	users.GET("/:userId", middleware.Auth, getUserInfo)
+	users.GET("/username/:username", middleware.Auth, getUserByUsername)
 
 	users.POST("/auth", userAuth)
 

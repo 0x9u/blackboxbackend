@@ -32,7 +32,7 @@ func Routes(r *gin.RouterGroup) {
 	guilds.POST("/:guildId/msgs", msgs.Send)
 	guilds.DELETE("/:guildId/msgs/:msgId", msgs.Delete)
 	guilds.PATCH("/:guildId/msgs/:msgId", msgs.Edit)
-	guilds.DELETE("/:guildId/msgs/clear", msgs.Clear)
+	guilds.DELETE("/:guildId/msgs/clear", msgs.Clear) //change to post later on
 	guilds.POST("/:guildId/msgs/typing", msgs.Typing) //need to persist to typing in guild pool later on
 	guilds.POST("/:guildId/msgs/read", msgs.Read)
 

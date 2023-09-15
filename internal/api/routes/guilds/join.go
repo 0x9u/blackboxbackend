@@ -16,7 +16,7 @@ import (
 )
 
 type joinGuildBody struct {
-	Invite string `json:"invite"`
+	Invite string `json:"invite" binding:"required"`
 }
 
 func joinGuild(c *gin.Context) {
