@@ -8,7 +8,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -16,22 +15,13 @@ import (
 func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	rows, err := db.Db.Query("SELECT b.blocked_id, u.username, f.id FROM blocked b INNER JOIN users u ON b.blocked_id = u.id LEFT JOIN files f ON f.user_id = u.id WHERE b.user_id = $1", user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	blockedUsers := []events.User{}
@@ -40,11 +30,7 @@ func Get(c *gin.Context) {
 		blockedUser := events.User{}
 		var imageId sql.NullInt64
 		if err := rows.Scan(&blockedUser.UserId, &blockedUser.Name, &imageId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if imageId.Valid {

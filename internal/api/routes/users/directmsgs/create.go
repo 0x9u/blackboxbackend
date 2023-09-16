@@ -9,7 +9,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/uid"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
@@ -23,62 +22,38 @@ type CreateDmBody struct {
 func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	var body CreateDmBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 		return
 	}
 
 	if body.ReceiverId == user.Id {
-		logger.Error.Println(errors.ErrDmCannotDmSelf)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrDmCannotDmSelf.Error(),
-			Status: errors.StatusDmCannotDmSelf,
-		})
+		errors.SendErrorResponse(c, errors.ErrDmCannotDmSelf, errors.StatusDmCannotDmSelf)
 		return
 	}
 
 	var userExists bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)", body.ReceiverId).Scan(&userExists); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if !userExists {
-		logger.Error.Println(errors.ErrUserNotFound)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrUserNotFound.Error(),
-			Status: errors.StatusUserNotFound,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusUserNotFound)
+		return
 	}
 
 	var dmExists bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id = $1 AND receiver_id = $2)", user.Id, body.ReceiverId).Scan(&dmExists); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -86,22 +61,14 @@ func Create(c *gin.Context) {
 		var dmId int64
 		//will return two rows but query row should be fine
 		if err := db.Db.QueryRow("UPDATE userguilds SET left_dm = false WHERE user_id = $1 AND receiver_id = $2 RETURNING guild_id", user.Id, body.ReceiverId).Scan(&dmId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		var username string
 		var sqlImageId sql.NullInt64
 
 		if err := db.Db.QueryRow("SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1", user.Id).Scan(&username, &sqlImageId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -134,11 +101,7 @@ func Create(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
@@ -146,29 +109,17 @@ func Create(c *gin.Context) {
 	dmId := uid.Snowflake.Generate().Int64()
 
 	if _, err := tx.ExecContext(ctx, "INSERT INTO guilds (id, dm) VALUES ($1, true)", dmId); err != nil { //make new dm identity
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if _, err := tx.ExecContext(ctx, "INSERT INTO userguilds(guild_id, user_id, receiver_id, left_dm, owner) VALUES ($1, $2, $3, false, true), ($1, $3, $2, true, true)", dmId, user.Id, body.ReceiverId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if _, err := tx.ExecContext(ctx, "INSERT INTO unreadmsgs(guild_id, user_id) VALUES ($1, $2), ($1, $3)", dmId, user.Id, body.ReceiverId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -176,11 +127,7 @@ func Create(c *gin.Context) {
 	var sqlImageId sql.NullInt64
 
 	if err := db.Db.QueryRow("SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1", user.Id).Scan(&username, &sqlImageId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -192,11 +139,8 @@ func Create(c *gin.Context) {
 	}
 
 	if err := tx.Commit(); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
+		return
 	}
 
 	res := wsclient.DataFrame{

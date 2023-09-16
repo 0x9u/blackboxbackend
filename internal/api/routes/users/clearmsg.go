@@ -8,7 +8,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
@@ -17,23 +16,14 @@ import (
 func clearUserMsg(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildRows, err := db.Db.Query("SELECT DISTINCT msgs.guild_id, guilds.dm FROM msgs INNER JOIN guilds ON msgs.guild_id = guilds.id WHERE user_id = $1", user.Id)
 
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -43,30 +33,18 @@ func clearUserMsg(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
 
 	if _, err = tx.ExecContext(ctx, "DELETE FROM msgs WHERE user_id = $1", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if err = tx.Commit(); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -75,11 +53,7 @@ func clearUserMsg(c *gin.Context) {
 		var isDm bool
 		err = guildRows.Scan(&guildId, &isDm)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		clearMsg := events.Msg{
@@ -100,11 +74,7 @@ func clearUserMsg(c *gin.Context) {
 			Event: statusMessage,
 		}
 		if err := wsclient.Pools.BroadcastGuild(guildId, res); err != nil && err != errors.ErrGuildPoolNotExist {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 	}

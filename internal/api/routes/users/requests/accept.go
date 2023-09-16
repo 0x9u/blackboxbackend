@@ -11,7 +11,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
@@ -20,39 +19,22 @@ import (
 func Accept(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	userId := c.Param("userId")
 	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -61,62 +43,39 @@ func Accept(c *gin.Context) {
 	if err := db.Db.QueryRow(`
 	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if !isRequested {
-		logger.Error.Println(errors.ErrFriendRequestNotFound)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendRequestNotFound.Error(),
-			Status: errors.StatusFriendRequestNotFound,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendRequestNotFound, errors.StatusFriendRequestNotFound)
 		return
 	}
 
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
+		return
 	}
 	defer tx.Rollback()
 
 	if _, err := tx.ExecContext(ctx, `
 	UPDATE friends SET friended = true WHERE (user_id = $1 AND friend_id = $2)
 	`, userId, user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if _, err := tx.ExecContext(ctx, `
 	INSERT INTO friends(user_id, friend_id, friended) VALUES ($1, $2, true)
 `, user.Id, userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if err := tx.Commit(); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -125,11 +84,7 @@ func Accept(c *gin.Context) {
 	if err := db.Db.QueryRow(`
 	SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
 	`, user.Id).Scan(&clientUsername, &clientImage); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -145,11 +100,7 @@ func Accept(c *gin.Context) {
 	if err := db.Db.QueryRow(`
 	SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1
 	`, userId).Scan(&friendUsername, &friendImage); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

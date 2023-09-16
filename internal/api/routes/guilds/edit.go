@@ -36,29 +36,16 @@ type editGuildBody struct {
 func editGuild(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -69,46 +56,26 @@ func editGuild(c *gin.Context) {
 	if strings.HasPrefix(contentType, "multipart/form-data") {
 		var err error
 		if imageHeader, err = c.FormFile("image"); err != nil && err != http.ErrMissingFile {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 		jsonData := c.PostForm("body")
 		if err := json.Unmarshal([]byte(jsonData), &newSettings); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 	} else if strings.HasPrefix(contentType, "application/json") {
 		if err := c.ShouldBindJSON(&newSettings); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 	} else {
-		logger.Error.Println(errors.ErrNotSupportedContentType)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrNotSupportedContentType.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotSupportedContentType, errors.StatusBadRequest)
 		return
 	}
 
 	if newSettings.SaveChat == nil && newSettings.Name == nil && newSettings.OwnerId == nil && imageHeader == nil {
-		logger.Error.Println(errors.ErrAllFieldsEmpty)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrAllFieldsEmpty.Error(),
-			Status: errors.StatusAllFieldsEmpty,
-		})
+		errors.SendErrorResponse(c, errors.ErrAllFieldsEmpty, errors.StatusAllFieldsEmpty)
 		return
 	}
 
@@ -121,44 +88,26 @@ func editGuild(c *gin.Context) {
 	EXISTS(SELECT 1 FROM userguilds WHERE user_id=$2 and guild_id=$1 and owner = true), 
 	EXISTS (SELECT 1 FROM userguilds WHERE user_id=$2 AND guild_id=$1 AND admin = true), 
 	EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true)`, guildId, user.Id).Scan(&exists, &isOwner, &isAdmin, &isDm); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrGuildNotExist.Error(),
-			Status: errors.StatusGuildNotExist,
-		})
+		errors.SendErrorResponse(c, errors.ErrGuildNotExist, errors.StatusGuildNotExist)
 		return
 	}
 	if isDm {
-		logger.Error.Println(errors.ErrGuildIsDm)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrGuildIsDm.Error(),
-			Status: errors.StatusGuildIsDm,
-		})
+		errors.SendErrorResponse(c, errors.ErrGuildIsDm, errors.StatusGuildIsDm)
 		return
 	}
 	if !isOwner && !isAdmin {
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotGuildAuthorised.Error(),
-			Status: errors.StatusNotGuildAuthorised,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotGuildAuthorised, errors.StatusNotGuildAuthorised)
 		return
 	}
 
 	bodyRes := events.Guild{}
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	bodyRes.GuildId = intGuildId
@@ -167,11 +116,7 @@ func editGuild(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
@@ -181,57 +126,35 @@ func editGuild(c *gin.Context) {
 	if newSettings.SaveChat != nil {
 
 		if _, err = tx.ExecContext(ctx, "UPDATE guilds SET save_chat=$1 WHERE id=$2", *newSettings.SaveChat, guildId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.SaveChat = newSettings.SaveChat
 	} else {
 		var saveChat bool
 		if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&saveChat); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.SaveChat = &saveChat
 	}
 	if newSettings.Name != nil {
 		if valid, err := events.ValidateGuildName(*newSettings.Name); err != nil {
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		} else if !valid {
-			c.JSON(http.StatusUnprocessableEntity, errors.Body{
-				Error:  errors.ErrInvalidGuildName.Error(),
-				Status: errors.StatusInvalidGuildName,
-			})
+			errors.SendErrorResponse(c, errors.ErrInvalidGuildName, errors.StatusInvalidGuildName)
 			return
 		}
 
 		if _, err = tx.ExecContext(ctx, "UPDATE guilds SET name=$1 WHERE id=$2", *newSettings.Name, guildId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.Name = *newSettings.Name
 	} else {
 		var name string
 		if err := db.Db.QueryRow("SELECT name FROM guilds WHERE id=$1", guildId).Scan(&name); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.Name = name
@@ -241,11 +164,7 @@ func editGuild(c *gin.Context) {
 
 		var oldImageId int64
 		if err := tx.QueryRowContext(ctx, "DELETE FROM files WHERE guild_id = $1 RETURNING id", guildId).Scan(&oldImageId); err != nil && err != sql.ErrNoRows {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -254,31 +173,19 @@ func editGuild(c *gin.Context) {
 		fileType := filepath.Ext(filename)
 		image, err := imageHeader.Open()
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 		defer image.Close()
 
 		fileBytes, err := io.ReadAll(image)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
 		if valid := files.ValidateImage(fileBytes, fileType); !valid {
-			logger.Error.Println(errors.ErrFileInvalid)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  errors.ErrFileInvalid.Error(),
-				Status: errors.StatusFileInvalid,
-			})
+			errors.SendErrorResponse(c, errors.ErrFileInvalid, errors.StatusFileInvalid)
 			return
 		}
 
@@ -287,18 +194,10 @@ func editGuild(c *gin.Context) {
 		filesize := len(fileBytes)
 
 		if filesize > config.Config.Server.MaxFileSize {
-			logger.Error.Println(errors.ErrFileTooLarge)
-			c.JSON(http.StatusRequestEntityTooLarge, errors.Body{
-				Error:  errors.ErrFileTooLarge.Error(),
-				Status: errors.StatusFileTooLarge,
-			})
+			errors.SendErrorResponse(c, errors.ErrFileTooLarge, errors.StatusFileTooLarge)
 			return
 		} else if !(filesize >= 0) {
-			logger.Error.Println(errors.ErrFileNoBytes)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  errors.ErrFileNoBytes.Error(),
-				Status: errors.StatusFileNoBytes,
-			})
+			errors.SendErrorResponse(c, errors.ErrFileNoBytes, errors.StatusFileNoBytes)
 			return
 		}
 
@@ -314,11 +213,7 @@ func editGuild(c *gin.Context) {
 
 		outFile, err := os.Create(fmt.Sprintf("uploads/guild/%d.lz4", imageId))
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		defer func() { //defer just in case something went wrong
@@ -337,31 +232,19 @@ func editGuild(c *gin.Context) {
 		defer outFile.Close()
 
 		if _, err = outFile.Write(compressedBuffer); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
 		if _, err = tx.ExecContext(ctx, "INSERT INTO files (id, guild_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, now(), $4, $5, $6, 'guild')", imageId, guildId, filename, false, filesize, fileMIMEType); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.ImageId = imageId
 	} else {
 		var imageId int64
 		if err := db.Db.QueryRow("SELECT id FROM files WHERE guild_id=$1", guildId).Scan(&imageId); err != nil && err != sql.ErrNoRows {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		} else if err == sql.ErrNoRows {
 			bodyRes.ImageId = -1
@@ -376,43 +259,23 @@ func editGuild(c *gin.Context) {
 		SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2),
 		EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$2 AND user_id=$3 AND owner=true)
 		`, guildId, newSettings.OwnerId, user.Id).Scan(&inGuild, &isOwner); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if isOwner {
-			logger.Error.Println(errors.ErrAlreadyOwner)
-			c.JSON(http.StatusForbidden, errors.Body{
-				Error:  errors.ErrAlreadyOwner.Error(),
-				Status: errors.StatusAlreadyOwner,
-			})
+			errors.SendErrorResponse(c, errors.ErrAlreadyOwner, errors.StatusAlreadyOwner)
 			return
 		}
 		if !inGuild {
-			logger.Error.Println(errors.ErrNotInGuild)
-			c.JSON(http.StatusForbidden, errors.Body{
-				Error:  errors.ErrNotInGuild.Error(),
-				Status: errors.StatusNotInGuild,
-			})
+			errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 			return
 		}
 		if _, err = tx.ExecContext(ctx, "UPDATE userguilds SET owner=false WHERE guild_id=$1 AND user_id = $2", guildId, user.Id); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if _, err := tx.ExecContext(ctx, "UPDATE userguilds SET owner = true WHERE user_id = $1 AND guild_id = $2", newSettings.OwnerId, guildId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		bodyRes.OwnerId = *newSettings.OwnerId
@@ -421,11 +284,7 @@ func editGuild(c *gin.Context) {
 	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	successful = true

@@ -9,7 +9,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
@@ -18,39 +17,22 @@ import (
 func Delete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	userId := c.Param("userId")
 	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -58,29 +40,17 @@ func Delete(c *gin.Context) {
 
 	//blocked in the clients perspective
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM blocked WHERE user_id = $1 AND blocked_id = $2)", user.Id, intUserId).Scan(&isBlocked); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if !isBlocked {
-		logger.Error.Println(errors.ErrUserNotBlocked)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrUserNotBlocked.Error(),
-			Status: errors.StatusUserNotBlocked,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserNotBlocked, errors.StatusUserNotBlocked)
 		return
 	}
 
 	if _, err := db.Db.Exec("DELETE FROM blocked WHERE user_id = $1 AND blocked_id = $2", user.Id, intUserId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	res := wsclient.DataFrame{

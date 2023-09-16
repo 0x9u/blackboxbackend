@@ -11,7 +11,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -19,29 +18,16 @@ import (
 func Get(c *gin.Context) { //sends message history
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -60,19 +46,11 @@ func Get(c *gin.Context) { //sends message history
 	var inGuild bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guildId, user.Id).Scan(&inGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if !inGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 
@@ -85,11 +63,7 @@ func Get(c *gin.Context) { //sends message history
 		ORDER BY m.created DESC LIMIT $3`, //wtf? (i forgot what i did to make this work but it works anyways)
 		timestamp, guildId, limit)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer rows.Close()
@@ -98,8 +72,11 @@ func Get(c *gin.Context) { //sends message history
 		message := events.Msg{}
 		var imageId sql.NullInt64
 		var modified sql.NullTime
-		err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
-			&message.GuildId, &message.Created, &modified, &message.MentionsEveryone, &message.Author.Name, &imageId)
+		if err := rows.Scan(&message.MsgId, &message.Content, &message.Author.UserId,
+			&message.GuildId, &message.Created, &modified, &message.MentionsEveryone, &message.Author.Name, &imageId); err != nil {
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
+			return
+		}
 		if modified.Valid { //to make it show in json
 			message.Modified = modified.Time
 		} else {
@@ -110,22 +87,10 @@ func Get(c *gin.Context) { //sends message history
 		} else {
 			message.Author.ImageId = -1
 		}
-		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
-			return
-		}
 
 		mentions, err := db.Db.Query(`SELECT mm.user_id, u.username FROM msgmentions mm INNER JOIN users u ON u.id = mm.user_id WHERE msg_id = $1`, message.MsgId)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -134,11 +99,7 @@ func Get(c *gin.Context) { //sends message history
 		for mentions.Next() {
 			var mentionUser events.User
 			if err := mentions.Scan(&mentionUser.UserId, &mentionUser.Name); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 			message.Mentions = append(message.Mentions, mentionUser)
@@ -147,11 +108,7 @@ func Get(c *gin.Context) { //sends message history
 
 		attachments, err := db.Db.Query(`SELECT id, filename, filetype FROM files WHERE msg_id = $1`, message.MsgId)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -160,11 +117,7 @@ func Get(c *gin.Context) { //sends message history
 		for attachments.Next() {
 			var attachment events.Attachment
 			if err := attachments.Scan(&attachment.Id, &attachment.Filename, &attachment.Type); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 

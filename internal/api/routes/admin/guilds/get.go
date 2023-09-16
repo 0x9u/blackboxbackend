@@ -10,7 +10,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -18,21 +17,12 @@ import (
 func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	if !user.Perms.Admin && !user.Perms.Guilds.Get {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotAuthorised, errors.StatusNotAuthorised)
 		return
 	}
 	queryParms := c.Request.URL.Query()
@@ -43,39 +33,23 @@ func Get(c *gin.Context) {
 	if match, err := regexp.MatchString(`^[0-9]+$`, page); !match {
 		page = "0"
 	} else if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if match, err := regexp.MatchString(`^[0-9]+$`, limit); !match {
 		limit = "0"
 	} else if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	intPage, err := strconv.ParseInt(page, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	intLimit, err := strconv.ParseInt(limit, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	offset := intPage * intLimit
@@ -88,11 +62,7 @@ func Get(c *gin.Context) {
 	}
 	rows, err := db.Db.Query("SELECT guilds.*, files.id FROM guilds LEFT JOIN files ON files.guild_id = guilds.id LIMIT $1 OFFSET $2", nullIntLimit, offset)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer rows.Close()

@@ -31,41 +31,24 @@ type guildEntity struct {
 func userDelete(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	var body events.User
 	if err := c.ShouldBindJSON(&body); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 		return
 	}
 
 	var userHashedPass string
 	if err := db.Db.QueryRow("SELECT password FROM users WHERE id = $1", user.Id).Scan(&userHashedPass); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if correctPass := comparePasswords(body.Password, userHashedPass); !correctPass {
-		logger.Error.Println(errors.ErrInvalidPass)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrInvalidPass.Error(),
-			Status: errors.StatusInvalidPass,
-		})
+		errors.SendErrorResponse(c, errors.ErrInvalidPass, errors.StatusInvalidPass)
 		return
 	}
 
@@ -73,11 +56,7 @@ func userDelete(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
@@ -85,21 +64,13 @@ func userDelete(c *gin.Context) {
 	guildIds := []int64{}
 	guildRows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id = $1 AND owner = false", user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	for guildRows.Next() {
 		var guildId int64
 		if err := guildRows.Scan(&guildId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		guildIds = append(guildIds, guildId)
@@ -111,22 +82,14 @@ func userDelete(c *gin.Context) {
 	LEFT JOIN users ON users.id = files.user_id WHERE msgs.user_id = $1 OR userguilds.user_id = $1 OR users.id = $1
 	`, user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	for fileRows.Next() {
 		var file fileEntity
 		if err := fileRows.Scan(&file.Id, &file.EntityType); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		files = append(files, file)
@@ -138,21 +101,13 @@ func userDelete(c *gin.Context) {
 	ownedGuildRows, err := tx.QueryContext(ctx, `DELETE FROM guilds u USING userguilds ug 
 	WHERE u.id = ug.guild_id AND ug.owner = true AND ug.user_id = $1 RETURNING u.id, u.dm`, user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	for ownedGuildRows.Next() {
 		var guild guildEntity
 		if err := ownedGuildRows.Scan(&guild.Id, &guild.Dm); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		ownedGuilds = append(ownedGuilds, guild)
@@ -160,20 +115,12 @@ func userDelete(c *gin.Context) {
 	ownedGuildRows.Close()
 
 	if _, err := tx.ExecContext(ctx, "DELETE FROM users WHERE id = $1", user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

@@ -8,7 +8,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -21,12 +20,7 @@ type FriendRequest struct {
 func Get(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
@@ -34,11 +28,7 @@ func Get(c *gin.Context) {
 	SELECT f.user_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.user_id = u.id LEFT JOIN files ON files.user_id = f.user_id WHERE f.friend_id = $1 AND f.friended = false
 	`, user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer pendingReqs.Close()
@@ -52,11 +42,7 @@ func Get(c *gin.Context) {
 		var imageId sql.NullInt64
 
 		if err := pendingReqs.Scan(&friendUser.UserId, &friendUser.Name, &imageId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if imageId.Valid {
@@ -71,11 +57,7 @@ func Get(c *gin.Context) {
 	SELECT f.friend_id AS friend_id, u.username AS username, files.id AS image_id FROM friends f INNER JOIN users u ON f.friend_id = u.id LEFT JOIN files ON files.user_id = f.friend_id WHERE f.user_id = $1 AND f.friended = false
 	`, user.Id)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer requestedReqs.Close()
@@ -83,11 +65,7 @@ func Get(c *gin.Context) {
 		var friendUser events.User
 		var imageId sql.NullInt64
 		if err := requestedReqs.Scan(&friendUser.UserId, &friendUser.Name, &imageId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if imageId.Valid {

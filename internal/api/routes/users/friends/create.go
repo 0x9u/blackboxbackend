@@ -19,48 +19,27 @@ import (
 func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	userId := c.Param("userId")
 	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if user.Id == intUserId {
-		logger.Error.Println(errors.ErrFriendSelf)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrFriendSelf.Error(),
-			Status: errors.StatusFriendSelf,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendSelf, errors.StatusFriendSelf)
 		return
 	}
 
@@ -73,80 +52,48 @@ func Create(c *gin.Context) {
 		 OR 
 		EXISTS (SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
 		`, user.Id, userId).Scan(&isBlocked); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if isBlocked {
-		logger.Error.Println(errors.ErrFriendBlocked)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendBlocked.Error(),
-			Status: errors.StatusFriendBlocked,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendBlocked, errors.StatusFriendBlocked)
 		return
 	}
 
 	if err := db.Db.QueryRow(`
 	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if isRequested {
-		logger.Error.Println(errors.ErrFriendAlreadyRequested)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyRequested.Error(),
-			Status: errors.StatusFriendAlreadyRequested,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendAlreadyRequested, errors.StatusFriendAlreadyRequested)
 		return
 	}
 
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
 		`, user.Id, userId).Scan(&isAlreadyFriends); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if isAlreadyFriends {
-		logger.Error.Println(errors.ErrFriendAlreadyFriends)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyFriends.Error(),
-			Status: errors.StatusFriendAlreadyFriends,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendAlreadyFriends, errors.StatusFriendAlreadyFriends)
 		return
 	}
 
 	if _, err := db.Db.Exec(`
 		INSERT INTO friends(user_id, friend_id, friended) VALUES($1, $2, false)
 		`, user.Id, userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	var sqlUserImageId sql.NullInt64
 	var username string
 	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", user.Id).Scan(&sqlUserImageId, &username); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	var userImageId int64
@@ -158,11 +105,7 @@ func Create(c *gin.Context) {
 	var sqlFriendImageId sql.NullInt64
 	var friendUsername string
 	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", userId).Scan(&sqlFriendImageId, &friendUsername); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	var friendImageId int64
@@ -205,21 +148,13 @@ func CreateByName(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
 		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 	var body CreateByNameBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 		return
 	}
 
@@ -228,27 +163,15 @@ func CreateByName(c *gin.Context) {
 	if err := db.Db.QueryRow(`
 	SELECT id FROM users WHERE username = $1
 	`, body.Username).Scan(&userId); err != nil && err != sql.ErrNoRows {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if err == sql.ErrNoRows {
-		logger.Error.Println(errors.ErrUserNotFound)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrUserNotFound.Error(),
-			Status: errors.StatusUserNotFound,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusUserNotFound)
 		return
 	}
 
 	if user.Id == userId {
-		logger.Error.Println(errors.ErrFriendSelf)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrFriendSelf.Error(),
-			Status: errors.StatusFriendSelf,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendSelf, errors.StatusFriendSelf)
 		return
 	}
 	var isBlocked bool
@@ -260,80 +183,48 @@ func CreateByName(c *gin.Context) {
 		 OR 
 		EXISTS (SELECT 1 FROM blocked WHERE user_id = $2 AND blocked_id = $1)
 		`, user.Id, userId).Scan(&isBlocked); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if isBlocked {
-		logger.Error.Println(errors.ErrFriendBlocked)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendBlocked.Error(),
-			Status: errors.StatusFriendBlocked,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendBlocked, errors.StatusFriendBlocked)
 		return
 	}
 
 	if err := db.Db.QueryRow(`
 	SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2 AND friended = false) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1 AND friended = false)
 	`, userId, user.Id).Scan(&isRequested); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if isRequested {
-		logger.Error.Println(errors.ErrFriendAlreadyRequested)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyRequested.Error(),
-			Status: errors.StatusFriendAlreadyRequested,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendAlreadyRequested, errors.StatusFriendAlreadyRequested)
 		return
 	}
 
 	if err := db.Db.QueryRow(`
 		SELECT EXISTS(SELECT 1 FROM friends WHERE user_id = $1 AND friend_id = $2) OR EXISTS(SELECT 1 FROM friends WHERE user_id = $2 AND friend_id = $1)
 		`, user.Id, userId).Scan(&isAlreadyFriends); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if isAlreadyFriends {
-		logger.Error.Println(errors.ErrFriendAlreadyFriends)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrFriendAlreadyFriends.Error(),
-			Status: errors.StatusFriendAlreadyFriends,
-		})
+		errors.SendErrorResponse(c, errors.ErrFriendAlreadyFriends, errors.StatusFriendAlreadyFriends)
 		return
 	}
 	logger.Debug.Println("user id", user.Id, "friend id", userId)
 	if _, err := db.Db.Exec(`
 	INSERT INTO friends(user_id, friend_id, friended) VALUES($1, $2, false)
 	`, user.Id, userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	var sqlUserImageId sql.NullInt64
 	var username string
 	if err := db.Db.QueryRow("SELECT files.id, username FROM users LEFT JOIN files ON user_id = users.id WHERE users.id = $1", user.Id).Scan(&sqlUserImageId, &username); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -346,11 +237,7 @@ func CreateByName(c *gin.Context) {
 
 	var friendImageId int64
 	if err := db.Db.QueryRow("SELECT files FROM files WHERE user_id = $1", userId).Scan(&friendImageId); err != nil && err != sql.ErrNoRows {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if err == sql.ErrNoRows {
 		friendImageId = -1

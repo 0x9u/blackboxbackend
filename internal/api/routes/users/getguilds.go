@@ -21,12 +21,7 @@ type guildList struct {
 func getSelfGuilds(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 	logger.Info.Println("Getting guilds")
@@ -52,11 +47,7 @@ func getSelfGuilds(c *gin.Context) {
 		user.Id,
 	)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer guildRows.Close()
@@ -79,11 +70,7 @@ func getSelfGuilds(c *gin.Context) {
 		user.Id,
 	)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer dmRows.Close()
@@ -95,11 +82,7 @@ func getSelfGuilds(c *gin.Context) {
 
 		err = guildRows.Scan(&guild.GuildId, &guild.Name, &imageId, &guild.SaveChat, &guild.OwnerId, &guild.Unread.MsgId, &guild.Unread.Count, &guild.Unread.Mentions, &guild.Unread.Time)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if imageId.Valid {
@@ -116,11 +99,7 @@ func getSelfGuilds(c *gin.Context) {
 		dm.Unread = events.UnreadMsg{}
 		err = dmRows.Scan(&dm.DmId, &dm.UserInfo.UserId, &dm.UserInfo.Name, &imageId, &dm.Unread.MsgId, &dm.Unread.Count, &dm.Unread.Mentions, &dm.Unread.Time)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if imageId.Valid {

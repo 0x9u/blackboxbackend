@@ -10,7 +10,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
@@ -19,29 +18,16 @@ import (
 func leaveGuild(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -52,76 +38,44 @@ func leaveGuild(c *gin.Context) {
 	SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND owner = true),
 	EXISTS(SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned = false)
 	`, guildId, user.Id).Scan(&isOwner, &isInGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if isOwner {
-		logger.Error.Println(errors.ErrCantLeaveOwnGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrCantLeaveOwnGuild.Error(),
-			Status: errors.StatusCantLeaveOwnGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrCantLeaveOwnGuild, errors.StatusCantLeaveOwnGuild)
 		return
 	}
 	if !isInGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 	//BEGIN TRANSACTION
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
 
 	if _, err := tx.ExecContext(ctx, "DELETE FROM userguilds WHERE guild_id=$1 AND user_id=$2", guildId, user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if _, err := tx.ExecContext(ctx, "DELETE FROM unreadmsgs WHERE guild_id=$1 AND user_id=$2", guildId, user.Id); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

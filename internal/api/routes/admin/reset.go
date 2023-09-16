@@ -27,20 +27,11 @@ type fileEntity struct {
 func reset(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 	if !user.Perms.Admin {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotAuthorised, errors.StatusNotAuthorised)
 		return
 	}
 
@@ -48,11 +39,7 @@ func reset(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
@@ -60,56 +47,32 @@ func reset(c *gin.Context) {
 	var files []fileEntity
 	fileRows, err := db.Db.Query("SELECT id, entity_type FROM files")
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	for fileRows.Next() {
 		file := fileEntity{}
 		if err := fileRows.Scan(&file.Id, &file.EntityType); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		files = append(files, file)
 	}
 	fileRows.Close()
 	if _, err := tx.ExecContext(ctx, "DELETE FROM guilds"); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if _, err := tx.ExecContext(ctx, "DELETE FROM users"); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if _, err := tx.ExecContext(ctx, "DELETE FROM bannedips"); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

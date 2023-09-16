@@ -9,7 +9,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -17,29 +16,16 @@ import (
 func getGuild(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -47,29 +33,17 @@ func getGuild(c *gin.Context) {
 	var isDm bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM userguilds WHERE user_id = $1 AND guild_id = $2 AND banned = false), EXISTS(SELECT 1 FROM guilds WHERE id = $2 AND dm = true)", user.Id, guildId).Scan(&isInGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if !isInGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 
 	if isDm {
-		logger.Error.Println(errors.ErrGuildIsDm)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrGuildIsDm.Error(),
-			Status: errors.StatusGuildIsDm,
-		})
+		errors.SendErrorResponse(c, errors.ErrGuildIsDm, errors.StatusGuildIsDm)
 		return
 	}
 
@@ -93,11 +67,7 @@ func getGuild(c *gin.Context) {
 		&guild.SaveChat, &guild.OwnerId,
 		&guild.Unread.MsgId, &guild.Unread.Count,
 		&guild.Unread.Time); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

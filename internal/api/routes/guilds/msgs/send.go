@@ -32,39 +32,22 @@ import (
 func Send(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -77,11 +60,7 @@ func Send(c *gin.Context) {
 	if strings.HasPrefix(contentType, "multipart/form-data") {
 		form, err := c.MultipartForm()
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 
@@ -98,28 +77,16 @@ func Send(c *gin.Context) {
 		}()
 		jsonData := c.PostForm("body")
 		if err := json.Unmarshal([]byte(jsonData), &msg); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 	} else if strings.HasPrefix(contentType, "application/json") {
 		if err := c.ShouldBindJSON(&msg); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusBadRequest,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 			return
 		}
 	} else {
-		logger.Error.Println(errors.ErrNotSupportedContentType)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrNotSupportedContentType.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotSupportedContentType, errors.StatusBadRequest)
 		return
 	}
 
@@ -127,19 +94,11 @@ func Send(c *gin.Context) {
 	//broadcast msg to all connections to websocket
 	var inGuild bool
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guildId, user.Id).Scan(&inGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if !inGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 
@@ -166,29 +125,17 @@ func Send(c *gin.Context) {
 	//check if guild has chat messages save turned on
 	var isChatSaveOn bool
 	if err := db.Db.QueryRow("SELECT save_chat FROM guilds WHERE id=$1", guildId).Scan(&isChatSaveOn); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if len(msg.Content) == 0 && len(attachmentFiles) == 0 {
-		logger.Error.Println(errors.ErrNoMsgContent)
-		c.JSON(http.StatusUnprocessableEntity, errors.Body{
-			Error:  errors.ErrNoMsgContent.Error(),
-			Status: errors.StatusNoMsgContent,
-		})
+		errors.SendErrorResponse(c, errors.ErrNoMsgContent, errors.StatusNoMsgContent)
 		return
 	}
 
 	if len(msg.Content) > config.Config.Guild.MaxMsgLength {
-		logger.Error.Println(errors.ErrMsgTooLong)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrMsgTooLong.Error(),
-			Status: errors.StatusMsgTooLong,
-		})
+		errors.SendErrorResponse(c, errors.ErrMsgTooLong, errors.StatusMsgTooLong)
 		return
 	}
 
@@ -200,11 +147,7 @@ func Send(c *gin.Context) {
 
 	if isChatSaveOn {
 		if err := tx.QueryRowContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, mentions_everyone) VALUES ($1, $2, $3, $4, $5) RETURNING created", msg.MsgId, msg.Content, user.Id, guildId, msg.MentionsEveryone).Scan(&msg.Created); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 	} else {
@@ -219,11 +162,7 @@ func Send(c *gin.Context) {
 		for _, mention := range mentions {
 			mentionUserId, err := strconv.ParseInt(mention[1], 10, 64)
 			if err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 			if seen[mentionUserId] {
@@ -234,28 +173,16 @@ func Send(c *gin.Context) {
 			var mentionUser events.User
 			mentionUser.UserId = mentionUserId
 			if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", mentionUserId).Scan(&mentionUser.Name); err != nil && err != sql.ErrNoRows {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			} else if err == sql.ErrNoRows {
-				logger.Error.Println(errors.ErrUserNotFound)
-				c.JSON(http.StatusBadRequest, errors.Body{
-					Error:  errors.ErrUserNotFound.Error(),
-					Status: errors.StatusBadRequest,
-				})
+				errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusBadRequest)
 				return
 			}
 
 			if isChatSaveOn {
 				if _, err := tx.ExecContext(ctx, "INSERT INTO msgmentions (msg_id, user_id) VALUES ($1, $2)", msg.MsgId, mentionUserId); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
+					errors.SendErrorResponse(c, err, errors.StatusInternalError)
 					return
 				}
 			}
@@ -273,22 +200,14 @@ func Send(c *gin.Context) {
 
 		fileContents, err := file.Open()
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		defer fileContents.Close()
 		fileBytes, err := io.ReadAll(fileContents)
 
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -299,50 +218,30 @@ func Send(c *gin.Context) {
 		filesize := len(fileBytes)
 
 		if filesize > config.Config.Server.MaxFileSize {
-			logger.Error.Println(errors.ErrFileTooLarge)
-			c.JSON(http.StatusRequestEntityTooLarge, errors.Body{
-				Error:  errors.ErrFileTooLarge.Error(),
-				Status: errors.StatusFileTooLarge,
-			})
+			errors.SendErrorResponse(c, errors.ErrFileTooLarge, errors.StatusFileTooLarge)
 			return
 		} else if !(filesize >= 0) {
-			logger.Error.Println(errors.ErrFileNoBytes)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  errors.ErrFileNoBytes.Error(),
-				Status: errors.StatusFileNoBytes,
-			})
+			errors.SendErrorResponse(c, errors.ErrFileNoBytes, errors.StatusFileNoBytes)
 			return
 		}
 
 		compressedBuffer, err := files.Compress(fileBytes, filesize)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
 		outFile, err := os.Create(fmt.Sprintf("uploads/msg/%d.lz4", attachment.Id))
 		//TODO: delete files if failed or write them after when its deemed successful
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		defer outFile.Close()
 
 		_, err = outFile.Write(compressedBuffer)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -350,20 +249,12 @@ func Send(c *gin.Context) {
 
 		if isChatSaveOn {
 			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, msg_id, filename, created, temp, filesize, filetype, entity_type) VALUES ($1, $2, $3, $4, $5, $6, $7, 'msg')", attachment.Id, msg.MsgId, attachment.Filename, msg.Created, !isChatSaveOn, filesize, attachment.Type); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 		} else {
 			if _, err := tx.ExecContext(ctx, "INSERT INTO files (id, filename, created, temp, filesize, filetype ,entity_type) VALUES ($1, $2, $3, $4, $5, $6, 'msg')", attachment.Id, attachment.Filename, msg.Created, !isChatSaveOn, filesize, attachment.Type); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 		}
@@ -374,11 +265,7 @@ func Send(c *gin.Context) {
 	var isDm bool
 
 	if err := db.Db.QueryRow("SELECT receiver_id IS NOT NULL FROM userguilds WHERE guild_id = $1 AND user_id = $2", guildId, user.Id).Scan(&isDm); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -386,11 +273,7 @@ func Send(c *gin.Context) {
 		rows, err := tx.QueryContext(ctx, `WITH closed_dm_users AS (UPDATE userguilds SET left_dm = false WHERE guild_id = $1 AND left_dm = true RETURNING user_id, receiver_id, guild_id) 
 		SELECT closed_dm_users.user_id, receiver_id, closed_dm_users.guild_id, users.username, files.id FROM closed_dm_users INNER JOIN users ON users.id = receiver_id LEFT JOIN files ON files.user_id = receiver_id`, guildId)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		for rows.Next() {
@@ -400,11 +283,7 @@ func Send(c *gin.Context) {
 			var username string
 			var sqlImageId sql.NullInt64
 			if err := rows.Scan(&userId, &receiverId, &dmId, &username, &sqlImageId); err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 			var imageId int64
@@ -435,11 +314,7 @@ func Send(c *gin.Context) {
 	var authorBody events.User
 	var imageId sql.NullInt64
 	if err := db.Db.QueryRow("SELECT username, files.id FROM users LEFT JOIN files ON files.user_id = users.id WHERE users.id=$1", user.Id).Scan(&authorBody.Name, &imageId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	if imageId.Valid {
@@ -452,11 +327,7 @@ func Send(c *gin.Context) {
 	msg.GuildId = intGuildId
 
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

@@ -5,7 +5,6 @@ import (
 
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
 )
@@ -21,34 +20,19 @@ type statusInfo struct {
 func ShowStatus(c *gin.Context) { //debugging
 	var msgNumber int
 	if err := db.Db.QueryRow("SELECT COUNT(*) FROM msgs").Scan(&msgNumber); err != nil {
-		logger.Info.Println(err)
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	var guildNumber int
 	if err := db.Db.QueryRow("SELECT COUNT(*) FROM guilds").Scan(&guildNumber); err != nil {
-		logger.Info.Println(err)
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	var fileNumber int
 	if err := db.Db.QueryRow("SELECT COUNT(*) FROM files").Scan(&fileNumber); err != nil {
-		logger.Info.Println(err)
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 

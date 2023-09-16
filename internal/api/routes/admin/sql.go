@@ -7,7 +7,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -24,50 +23,29 @@ type sqlQueryRes struct {
 func runSqlQuery(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 	if !user.Perms.Admin {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotAuthorised, errors.StatusNotAuthorised)
 		return
 	}
 	var sqlQuery sqlQueryBody
 	if err := c.ShouldBindJSON(&sqlQuery); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 		return
 	}
 
 	rows, err := db.Db.Query(sqlQuery.Query)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer rows.Close()
 
 	columns, err := rows.Columns()
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -84,11 +62,7 @@ func runSqlQuery(c *gin.Context) {
 		for rows.Next() {
 			err := rows.Scan(pointers...)
 			if err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 			row := []string{}

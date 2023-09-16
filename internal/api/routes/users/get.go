@@ -9,7 +9,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/gin-gonic/gin"
 )
@@ -17,28 +16,15 @@ import (
 func getUserInfo(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 	userId := c.Param("userId")
 	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -46,18 +32,10 @@ func getUserInfo(c *gin.Context) {
 	var imageId sql.NullInt64
 
 	if err := db.Db.QueryRow("SELECT users.id, username, flags, files.id, options FROM users LEFT JOIN files ON files.user_id = users.id WHERE users.id = $1", userId).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags, &imageId, &userBody.Options); err != nil && err == sql.ErrNoRows {
-		logger.Error.Println(errors.ErrUserNotFound)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrUserNotFound.Error(),
-			Status: errors.StatusUserNotFound,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusUserNotFound)
 		return
 	} else if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -73,29 +51,16 @@ func getUserInfo(c *gin.Context) {
 func getUserByUsername(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	username := c.Param("username")
 	if match, err := regexp.MatchString("^[A-Za-z0-9_]+$", username); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -103,18 +68,10 @@ func getUserByUsername(c *gin.Context) {
 	var imageId sql.NullInt64
 
 	if err := db.Db.QueryRow("SELECT users.id, username, flags, files.id, options FROM users LEFT JOIN files ON files.user_id = users.id WHERE username = $1", username).Scan(&userBody.UserId, &userBody.Name, &userBody.Flags, &imageId, &userBody.Options); err != nil && err == sql.ErrNoRows {
-		logger.Error.Println(errors.ErrUserNotFound)
-		c.JSON(http.StatusNotFound, errors.Body{
-			Error:  errors.ErrUserNotFound.Error(),
-			Status: errors.StatusUserNotFound,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusUserNotFound)
 		return
 	} else if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
