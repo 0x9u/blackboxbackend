@@ -9,7 +9,6 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/db"
 	"github.com/asianchinaboi/backendserver/internal/errors"
 	"github.com/asianchinaboi/backendserver/internal/events"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 	"github.com/asianchinaboi/backendserver/internal/session"
 	"github.com/asianchinaboi/backendserver/internal/wsclient"
 	"github.com/gin-gonic/gin"
@@ -18,46 +17,25 @@ import (
 func Create(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	userId := c.Param("userId")
 	if match, err := regexp.MatchString("^[0-9]+$", userId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
@@ -72,88 +50,50 @@ func Create(c *gin.Context) {
 	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3 AND admin = true),
 	EXISTS (SELECT 1 FROM userguilds WHERE guild_id = $2 AND user_id = $3)
 	`, user.Id, guildId, userId).Scan(&isOwner, &isDm, &isUserAdmin, &isUserInGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if isDm {
-		logger.Error.Println(errors.ErrGuildIsDm)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrGuildIsDm.Error(),
-			Status: errors.StatusGuildIsDm,
-		})
+		errors.SendErrorResponse(c, errors.ErrGuildIsDm, errors.StatusGuildIsDm)
 		return
 	}
-
 	if !isOwner {
-		logger.Error.Println(errors.ErrNotAuthorised)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotAuthorised.Error(),
-			Status: errors.StatusNotAuthorised,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotAuthorised, errors.StatusNotAuthorised)
 		return
 	}
-
 	if isUserAdmin {
-		logger.Error.Println(errors.ErrUserAlreadyAdmin)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrUserAlreadyAdmin.Error(),
-			Status: errors.StatusUserAlreadyAdmin,
-		})
+		errors.SendErrorResponse(c, errors.ErrUserAlreadyAdmin, errors.StatusUserAlreadyAdmin)
 		return
 	}
-
 	if !isUserInGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 
 	if _, err := db.Db.Exec("UPDATE userguilds SET admin = true WHERE user_id = $1 AND guild_id = $2", userId, guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	intUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	rows, err := db.Db.Query("SELECT user_id FROM userguilds WHERE guild_id = $1 AND admin = true OR owner = true", guildId)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
+
 	defer rows.Close()
 	for rows.Next() {
 		var adminUserId int64

@@ -22,7 +22,7 @@ type Invite struct {
 	GuildId int64  `json:"guildId,string"`
 }
 
-func ValidateGuildInput(body *Guild) (errors.StatusCode, error) {
+func ValidateGuildInput(body *Guild) (errors.ErrCode, error) {
 
 	nameValid, err := ValidateGuildName(body.Name)
 	if err != nil {

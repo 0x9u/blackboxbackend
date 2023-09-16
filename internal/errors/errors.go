@@ -1,11 +1,16 @@
 package errors
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/asianchinaboi/backendserver/internal/logger"
+	"github.com/gin-gonic/gin"
+)
 
 type Body struct {
-	Error  string     `json:"error"`
-	Status StatusCode `json:"status"`
-	Index  int        `json:"index,omitempty"`
+	Error  string  `json:"error"`
+	Status ErrCode `json:"status"`
+	Index  int     `json:"index,omitempty"`
 }
 
 var (
@@ -80,12 +85,12 @@ var (
 
 	ErrNoMsgContent = errors.New("msg: no content")
 	ErrMsgTooLong   = errors.New("msg: length too long")
+	ErrMsgNotExist  = errors.New("msg: doesn't exist")
 
 	//PATCH
 
 	ErrAllFieldsEmpty = errors.New("patch: all fields are empty")
 	ErrInvalidDetails = errors.New("patch: invalid details")
-	ErrNotExist       = errors.New("patch: doesn't exist")
 
 	//COOLDOWN
 
@@ -112,3 +117,11 @@ var (
 	//CONTENT TYPE
 	ErrNotSupportedContentType = errors.New("content type: not supported")
 )
+
+func SendErrorResponse(c *gin.Context, err error, errorCode ErrCode) {
+	logger.Error.Println(err)
+	c.JSON(getHTTPStatusCode(errorCode), Body{
+		Error:  err.Error(),
+		Status: errorCode,
+	})
+}

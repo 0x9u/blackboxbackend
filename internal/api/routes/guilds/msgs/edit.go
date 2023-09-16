@@ -23,38 +23,21 @@ import (
 func Edit(c *gin.Context) {
 	user := c.MustGet(middleware.User).(*session.Session)
 	if user == nil {
-		logger.Error.Println("user token not sent in data")
-		c.JSON(http.StatusInternalServerError,
-			errors.Body{
-				Error:  errors.ErrSessionDidntPass.Error(),
-				Status: errors.StatusInternalError,
-			})
+		errors.SendErrorResponse(c, errors.ErrSessionDidntPass, errors.StatusInternalError)
 		return
 	}
 
 	var isRequestId bool
 	msgId := c.Param("msgId") //fix request id bug
 	if match, err := regexp.MatchString("^[0-9]+$", msgId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
 		if match, err := regexp.MatchString("^[0-9]+-[0-9]+$", msgId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		} else if !match {
-			logger.Error.Println(errors.ErrRouteParamInvalid)
-			c.JSON(http.StatusBadRequest, errors.Body{
-				Error:  errors.ErrRouteParamInvalid.Error(),
-				Status: errors.StatusRouteParamInvalid,
-			})
+			errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 			return
 		}
 		isRequestId = true
@@ -62,48 +45,28 @@ func Edit(c *gin.Context) {
 
 	guildId := c.Param("guildId")
 	if match, err := regexp.MatchString("^[0-9]+$", guildId); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	} else if !match {
-		logger.Error.Println(errors.ErrRouteParamInvalid)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  errors.ErrRouteParamInvalid.Error(),
-			Status: errors.StatusRouteParamInvalid,
-		})
+		errors.SendErrorResponse(c, errors.ErrRouteParamInvalid, errors.StatusRouteParamInvalid)
 		return
 	}
 
 	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	var msg events.Msg
 
 	if err := c.ShouldBindJSON(&msg); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusBadRequest, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusBadRequest,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusBadRequest)
 		return
 	}
 
 	if msg.Content == "" {
-		logger.Error.Println(errors.ErrInvalidDetails)
-		c.JSON(http.StatusUnprocessableEntity, errors.Body{
-			Error:  errors.ErrInvalidDetails.Error(),
-			Status: errors.StatusInvalidDetails,
-		})
+		errors.SendErrorResponse(c, errors.ErrInvalidDetails, errors.StatusInvalidDetails)
 		return
 	}
 
@@ -111,20 +74,12 @@ func Edit(c *gin.Context) {
 	var inGuild bool
 
 	if err := db.Db.QueryRow("SELECT EXISTS (SELECT 1 FROM guilds WHERE id = $1 AND dm = true), EXISTS (SELECT * FROM userguilds WHERE guild_id=$1 AND user_id=$2 AND banned=false)", guildId, user.Id).Scan(&isDm, &inGuild); err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
 	if !inGuild {
-		logger.Error.Println(errors.ErrNotInGuild)
-		c.JSON(http.StatusForbidden, errors.Body{
-			Error:  errors.ErrNotInGuild.Error(),
-			Status: errors.StatusNotInGuild,
-		})
+		errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 		return
 	}
 
@@ -134,11 +89,7 @@ func Edit(c *gin.Context) {
 	ctx := context.Background()
 	tx, err := db.Db.BeginTx(ctx, nil)
 	if err != nil {
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 	defer tx.Rollback() //rollback changes if failed
@@ -147,39 +98,23 @@ func Edit(c *gin.Context) {
 
 		var msgExists bool
 		if err := db.Db.QueryRow("SELECT EXISTS(SELECT 1 FROM msgs WHERE id = $1 AND user_id = $2 AND guild_id=$3)", msgId, user.Id, guildId).Scan(&msgExists); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
 		if !msgExists {
-			logger.Error.Println(errors.ErrNotExist)
-			c.JSON(http.StatusNotFound, errors.Body{
-				Error:  errors.ErrNotExist.Error(),
-				Status: errors.StatusNotExist,
-			})
+			errors.SendErrorResponse(c, errors.ErrMsgNotExist, errors.StatusMsgNotExist)
 			return
 		}
 
 		//TODO: Replace modified with a trigger
 		if err = tx.QueryRowContext(ctx, "UPDATE msgs SET content = $1, modified = now() WHERE id = $2 AND user_id = $3 AND guild_id=$4 RETURNING modified", msg.Content, msgId, user.Id, guildId).Scan(&timestamp); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
 		if _, err := tx.ExecContext(ctx, "DELETE FROM msgmentions WHERE msg_id = $1", msgId); err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 
@@ -188,19 +123,11 @@ func Edit(c *gin.Context) {
 		authorId := requestIdParts[0]
 		intAuthorId, err := strconv.ParseInt(authorId, 10, 64)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 		if intAuthorId != user.Id { //if the user is not the author of the message
-			logger.Error.Println(errors.ErrNotExist)
-			c.JSON(http.StatusNotFound, errors.Body{
-				Error:  errors.ErrNotExist.Error(),
-				Status: errors.StatusNotExist,
-			})
+			errors.SendErrorResponse(c, errors.ErrMsgNotExist, errors.StatusMsgNotExist)
 			return
 		}
 	}
@@ -219,11 +146,7 @@ func Edit(c *gin.Context) {
 		for _, mention := range mentions {
 			mentionUserId, err := strconv.ParseInt(mention[1], 10, 64)
 			if err != nil {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
 			if seen[mentionUserId] {
@@ -234,28 +157,16 @@ func Edit(c *gin.Context) {
 			var mentionUser events.User
 			mentionUser.UserId = mentionUserId
 			if err := db.Db.QueryRow("SELECT username FROM users WHERE id = $1", mentionUserId).Scan(&mentionUser.Name); err != nil && err != sql.ErrNoRows {
-				logger.Error.Println(err)
-				c.JSON(http.StatusInternalServerError, errors.Body{
-					Error:  err.Error(),
-					Status: errors.StatusInternalError,
-				})
+				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			} else if err == sql.ErrNoRows {
-				logger.Error.Println(errors.ErrUserNotFound)
-				c.JSON(http.StatusBadRequest, errors.Body{
-					Error:  errors.ErrUserNotFound.Error(),
-					Status: errors.StatusBadRequest,
-				})
+				errors.SendErrorResponse(c, errors.ErrUserNotFound, errors.StatusUserNotFound)
 				return
 			}
 			if !isRequestId {
 				logger.Debug.Println("inserting mention", mentionUserId, msgId)
 				if _, err := tx.ExecContext(ctx, "INSERT INTO msgmentions (msg_id, user_id) VALUES ($1, $2)", msgId, mentionUserId); err != nil {
-					logger.Error.Println(err)
-					c.JSON(http.StatusInternalServerError, errors.Body{
-						Error:  err.Error(),
-						Status: errors.StatusInternalError,
-					})
+					errors.SendErrorResponse(c, err, errors.StatusInternalError)
 					return
 				}
 			}
@@ -265,11 +176,7 @@ func Edit(c *gin.Context) {
 	}
 
 	if err := tx.Commit(); err != nil { //commits the transaction
-		logger.Error.Println(err)
-		c.JSON(http.StatusInternalServerError, errors.Body{
-			Error:  err.Error(),
-			Status: errors.StatusInternalError,
-		})
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
 	}
 
@@ -280,22 +187,14 @@ func Edit(c *gin.Context) {
 		requestIdParts := strings.Split(msgId, "-")
 		intMsgId, err = strconv.ParseInt(requestIdParts[1], 10, 64)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 	} else {
 		requestId = "" //there for readabilty
 		intMsgId, err = strconv.ParseInt(msgId, 10, 64)
 		if err != nil {
-			logger.Error.Println(err)
-			c.JSON(http.StatusInternalServerError, errors.Body{
-				Error:  err.Error(),
-				Status: errors.StatusInternalError,
-			})
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
 	}

@@ -69,6 +69,8 @@
         - perhaps make own api for server in python
     - fix unread msgs not accurate when reopening dm
     - fix new line msg
+    - Migrate to GORM (LOWEST PRIORITY)
+    
 
 v1.0
 

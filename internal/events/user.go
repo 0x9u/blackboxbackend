@@ -62,7 +62,7 @@ const (
 	OAutoPlayGifs
 )
 
-func ValidateUserInput(body User) (errors.StatusCode, error) {
+func ValidateUserInput(body User) (errors.ErrCode, error) {
 
 	usernameValid, err := validateUsername(body.Name)
 	if err != nil {
