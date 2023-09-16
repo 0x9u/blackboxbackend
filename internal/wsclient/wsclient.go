@@ -54,7 +54,6 @@ func (c *wsClient) Run() {
 
 		close(c.broadcast) //close of nil channel error occurs here sometimes
 		c.deadlineCancel()
-		logger.Debug.Println("wsclient ended")
 	}()
 	logger.Info.Println("Websocket active of " + c.ws.LocalAddr().String())
 
@@ -66,14 +65,10 @@ func (c *wsClient) Run() {
 
 func (c *wsClient) tokenDeadline() {
 	<-c.deadline.Done() //crash sometimes happens here (invalid memory address or nil pointer dereference)
-	logger.Info.Println("deadline passed")
 	if c.deadline.Err() != context.Canceled {
-		logger.Info.Println("cancelling from deadline")
 		c.quit()
 		return
 	}
-	logger.Info.Println("deadline passed end")
-
 }
 
 func (c *wsClient) tokenExpireDeadline(expireTime int64) { //i have no idea if this works

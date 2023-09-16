@@ -19,12 +19,10 @@ func (c *wsClient) readPipe() {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil { //should usually return io error which is fine since it means the websocket has timeouted
 			logger.Error.Println(err) //or if the websocket has closed which is a 1000 (normal)
-			//c.quit <- true
-			c.quit() //if recieve websocket closed error then you gotta do what you gotta do
-			logger.Info.Println("Disconnecting websocket")
+			c.quit()                  //if recieve websocket closed error then you gotta do what you gotta do
+			logger.Info.Printf("Disconnecting websocket: %v\n", c.ws.RemoteAddr().String())
 			return
 		}
-		//		log.WriteLog(logger.INFO, "string json:"+string(message))
 		var received DataFrame
 		err = json.Unmarshal(message, &received)
 		if err != nil {
@@ -62,7 +60,6 @@ func (c *wsClient) writePipe() {
 }
 
 func (c *wsClient) readData(body DataFrame) {
-	//logger.Debug.Println("worked?") //most fucking annoying line ever
 	switch body.Op {
 	case TYPE_HEARTBEAT:
 		c.ws.SetReadDeadline(time.Now().Add(pingDelay))
@@ -112,20 +109,16 @@ func (c *wsClient) readData(body DataFrame) {
 			c.quit()
 			return
 		}
-		//var guilds []int
 
 		for rows.Next() {
 			var guild int64
 			rows.Scan(&guild)
-			//	guilds = append(guilds, guild)
 			Pools.AddUIDToGuildPool(guild, c.uniqueId, c.broadcast)
 		}
 
-		//		c.guilds = guilds
 		//get all the guilds the user is in
 		rows.Close()
 		Pools.AddUserToClientPool(c.id, c.uniqueId, c.broadcast)
-		logger.Info.Println("added to client pool")
 		res := DataFrame{
 			Op: TYPE_READY,
 		}

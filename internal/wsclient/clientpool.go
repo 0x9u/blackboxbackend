@@ -52,7 +52,6 @@ func (p *pools) BroadcastClient(id int64, data DataFrame) error {
 	defer p.clientsMutex.RUnlock()
 	clientList, ok := p.clients[id] //problem if two websockets of same user exist only of those two will be sent
 	if !ok {
-		logger.Debug.Println("bad shit")
 		return errors.ErrUserClientNotExist
 	}
 	for _, client := range clientList {

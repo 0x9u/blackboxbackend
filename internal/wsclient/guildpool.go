@@ -66,14 +66,12 @@ func (p *guildPool) run() {
 		close(p.Broadcast)
 		close(p.Remove)
 		close(p.Add)
-		logger.Debug.Println("Stopped guild pool")
 	}() //gracefully remove the pool when done
 	for {
 		select { //pretty sure a data race is impossible here
 		case uid := <-p.Remove:
 			delete(p.clients, uid) //uid is unique id
 		case data := <-p.Add:
-			logger.Debug.Println("Added client to pool", data.UniqueId, "in guild", p.guildId)
 			p.clients[data.UniqueId] = data.Ch
 		case data := <-p.Broadcast:
 			Pools.BroadcastClientUIDMap(p.clients, data) // (BIG BAD BUG) problem this gets called before pool removal thus call on closed channel occurs
@@ -93,7 +91,6 @@ func (p *pools) BroadcastGuild(guildId int64, data DataFrame) error {
 	defer p.guildsMutex.RUnlock()
 	guildPool, ok := p.guilds[guildId]
 	if !ok {
-		logger.Debug.Println("Guild pool does not exist")
 		return errors.ErrGuildPoolNotExist
 	}
 	if guildPool.Disconnecting {
@@ -123,7 +120,6 @@ func (p *pools) AddUserToGuildPool(guildId int64, userId int64) {
 			deadline:      deadline,
 		}
 		p.guilds[guildId] = pool
-		logger.Debug.Println("creating pools")
 		go pool.run()
 	}
 	if p.guilds[guildId].Disconnecting {
@@ -150,8 +146,6 @@ func (p *pools) AddUIDToGuildPool(guildId int64, uid string, broadcast brcastEve
 	}
 	if !ok {
 		quitCtx, quit := context.WithCancel(context.Background())
-		logger.Debug.Printf("bruh %v \n", config.Config.Guild.Timeout)
-		logger.Debug.Printf("wtf %v \n", config.Config)
 		deadline := time.NewTicker(config.Config.Guild.Timeout)
 		newPool := &guildPool{
 			guildId:       guildId,
@@ -195,11 +189,9 @@ func (p *pools) RemoveUserFromGuildPool(guildId int64, userId int64) { //most li
 		return
 	}
 	if p.guilds[guildId].Disconnecting {
-		logger.Debug.Println("guild disconnecting already")
 		return
 	}
 	for uniqueId := range p.clients[userId] { // basically for uniqueId, _ := range clientAlias[user.Id]
-		logger.Info.Printf("Removed user from pool %v", uniqueId)
 		p.guilds[guildId].Remove <- uniqueId
 	} //removes all instances of the client alias from the pool to avoid exploits
 }

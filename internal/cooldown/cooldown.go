@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/config"
-	"github.com/asianchinaboi/backendserver/internal/logger"
 )
 
 //TODO: test this
@@ -36,7 +35,6 @@ func (l *Limiter) run() { //6 am code
 	for {
 		select {
 		case <-l.ch:
-			logger.Debug.Println("received a msg to add")
 			l.count--
 		case <-l.ticker.C:
 			l.count = l.maxCount
