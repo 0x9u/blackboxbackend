@@ -47,7 +47,8 @@
     - make it reference its own entities instead for better management - Cancelled
         - made it its own table instead
 
-
+- add system messages
+    - join, leave messages
 
 
 - THERE MAY BE A RACE CONDITION WITH GUILD PROFILE PICTURES AS ADMINS CAN CHANGE CONCURRENTLY SOMEHOW
