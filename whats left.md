@@ -70,6 +70,7 @@
         - perhaps make own api for server in python
     - fix unread msgs not accurate when reopening dm
     - fix new line msg
+    - add websocket delay when client connects
     - Migrate to GORM (LOWEST PRIORITY)
     
 

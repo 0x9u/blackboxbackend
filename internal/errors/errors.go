@@ -119,7 +119,9 @@ var (
 )
 
 func SendErrorResponse(c *gin.Context, err error, errorCode ErrCode) {
-	logger.Error.Println(err)
+	if err := logger.Error.Output(2, err.Error()); err != nil {
+		logger.Error.Println("Failed to log error")
+	}
 	c.JSON(getHTTPStatusCode(errorCode), Body{
 		Error:  err.Error(),
 		Status: errorCode,

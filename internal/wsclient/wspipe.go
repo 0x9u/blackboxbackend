@@ -41,13 +41,11 @@ func (c *wsClient) writePipe() {
 			//in the future check if c.broadcast is ever closed if not remove lines 42-46
 			if !ok { //idk if this is needed or not
 				c.quit() //call cancel but never actually recieve it
-				return   //the channel has been closed get out of here
 			}
 			c.ws.WriteJSON(data)
 
 			if data.Event == events.LOG_OUT { //maybe find other solutions later
-				c.quit()
-				return
+				c.quit() // this shouldn't return as c.quitctx.Done() will not be handled
 			}
 		case <-c.quitctx.Done(): //<-c.quit:
 			closeMessage := websocket.FormatCloseMessage(websocket.CloseNormalClosure, "bye")
@@ -89,6 +87,11 @@ func (c *wsClient) readData(body DataFrame) {
 		user, err := session.CheckToken(Token)
 		if err != nil {
 			logger.Error.Println(err)
+			res := DataFrame{
+				Op:    TYPE_DISPATCH,
+				Event: events.LOG_OUT,
+			}
+			c.ws.WriteJSON(res)
 			c.quit()
 			return
 		}
