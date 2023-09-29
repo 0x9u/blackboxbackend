@@ -80,11 +80,36 @@ func Create(c *gin.Context) {
 		}
 	}
 
-	var blockedImageId int64
-	if err := db.Db.QueryRow("SELECT id FROM files WHERE user_id = $1", user.Id).Scan(&blockedImageId); err != nil && err != sql.ErrNoRows {
+	var hasBeenRequested bool
+	var isTheRequestor bool
+
+	if err := db.Db.QueryRow(`
+	SELECT EXISTS(SELECT 1 FROM friends WHERE (user_id = $1 AND friend_id = $2) AND friended = false), EXISTS(SELECT 1 FROM friends WHERE (user_id = $2 AND friend_id = $1) AND friended = false)
+	`, userId, user.Id).Scan(&hasBeenRequested, &isTheRequestor); err != nil {
 		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
-	} else if err == sql.ErrNoRows {
+	}
+
+	if isTheRequestor || hasBeenRequested {
+		if _, err := db.Db.Exec(`
+		DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)
+		`, userId, user.Id); err != nil {
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
+			return
+		}
+	}
+
+	var sqlBlockedImageId sql.NullInt64
+	var blockedUsername string
+	if err := db.Db.QueryRow("SELECT username, f.id FROM users LEFT JOIN files f ON f.user_id = users.id WHERE users.id = $1", userId).Scan(&blockedUsername, &sqlBlockedImageId); err != nil {
+		errors.SendErrorResponse(c, err, errors.StatusInternalError)
+		return
+	}
+
+	var blockedImageId int64
+	if sqlBlockedImageId.Valid {
+		blockedImageId = sqlBlockedImageId.Int64
+	} else {
 		blockedImageId = -1
 	}
 
@@ -96,28 +121,60 @@ func Create(c *gin.Context) {
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId:  intUserId,
+			Name:    blockedUsername,
 			ImageId: blockedImageId,
 		},
-		Event: events.ADD_USER_BLOCKEDLIST,
+		Event: events.USER_BLOCKED_ADD,
 	}
-	wsclient.Pools.BroadcastClient(intUserId, res)
+	wsclient.Pools.BroadcastClient(user.Id, res)
 	if isFriends {
 		resAfter := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
 			Data: events.User{
 				UserId: intUserId,
 			},
-			Event: events.REMOVE_USER_FRIENDLIST,
+			Event: events.USER_FRIEND_REMOVE,
 		}
 		resFriendAfter := wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
 			Data: events.User{
 				UserId: user.Id,
 			},
-			Event: events.REMOVE_USER_FRIENDLIST,
+			Event: events.USER_FRIEND_REMOVE,
 		}
 		wsclient.Pools.BroadcastClient(user.Id, resFriendAfter)
 		wsclient.Pools.BroadcastClient(intUserId, resAfter)
+	}
+
+	if hasBeenRequested || isTheRequestor {
+		var eventTypeRes string
+		var eventTypeResFriend string
+		if isTheRequestor {
+			eventTypeRes = events.USER_FRIEND_REQUEST_REMOVE
+			eventTypeResFriend = events.USER_FRIEND_INCOMING_REQUEST_REMOVE
+		} else {
+			eventTypeRes = events.USER_FRIEND_INCOMING_REQUEST_REMOVE
+			eventTypeResFriend = events.USER_FRIEND_REQUEST_REMOVE
+		}
+
+		res := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: intUserId,
+			},
+			Event: eventTypeRes,
+		}
+		resFriend := wsclient.DataFrame{
+			Op: wsclient.TYPE_DISPATCH,
+			Data: events.User{
+				UserId: user.Id,
+			},
+			Event: eventTypeResFriend,
+		}
+
+		wsclient.Pools.BroadcastClient(user.Id, res)
+		wsclient.Pools.BroadcastClient(intUserId, resFriend)
+
 	}
 	c.Status(http.StatusNoContent)
 }

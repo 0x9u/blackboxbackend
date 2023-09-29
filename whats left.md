@@ -72,6 +72,7 @@
     - fix new line msg
     - add websocket delay when client connects
     - Migrate to GORM (LOWEST PRIORITY)
+    - fix date/time bug files (happens with guild upload image)
     
 
 v1.0
@@ -80,18 +81,21 @@ v1.0
 
 - display global server announcements
 
-
+- add join/left messages
 
 
 v2.0
 
 - add channels (most difficult)
+    - Idea = migrate all guilds into channels
+    - rename guild into channel
+    - Channel will keep same permission columns as before
+    - Picture id will be associated with new guilds
+    - Create a new table called guilds
 
 - add permissions for guilds
 
 - clean up code and put it in functions
-
-- add join/left messages
 
 - add reactions
 

@@ -283,7 +283,7 @@ func Edit(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,
-		Event: events.UPDATE_SELF_USER_INFO,
+		Event: events.USER_INFO_UPDATE,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, res)
@@ -296,7 +296,7 @@ func Edit(c *gin.Context) {
 	otherRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfoOtherRes,
-		Event: events.UPDATE_USER_INFO,
+		Event: events.USER_INFO_UPDATE,
 	}
 
 	userIdRows, err := db.Db.Query(

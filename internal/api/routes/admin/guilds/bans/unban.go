@@ -91,7 +91,7 @@ func Unban(c *gin.Context) {
 					UserId: intUserId,
 				},
 			},
-			Event: events.REMOVE_USER_BANLIST,
+			Event: events.MEMBER_BAN_REMOVE,
 		}
 		wsclient.Pools.BroadcastClient(adminUserId, res)
 	}

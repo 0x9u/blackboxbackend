@@ -2,6 +2,7 @@ package events
 
 import (
 	"regexp"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/errors"
 )
@@ -20,6 +21,13 @@ type Guild struct {
 type Invite struct {
 	Invite  string `json:"invite"`
 	GuildId int64  `json:"guildId,string"`
+}
+
+type Typing struct { //basically member but without perms and with a dm param
+	GuildId  int64     `json:"guildId,string"`
+	UserInfo User      `json:"userInfo"`
+	Time     time.Time `json:"time"` //used for client to sync with other clients in case of latency issues
+	//if 5 seconds have passed since timestamp client will discard
 }
 
 func ValidateGuildInput(body *Guild) (errors.ErrCode, error) {

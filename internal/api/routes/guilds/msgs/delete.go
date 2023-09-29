@@ -161,14 +161,6 @@ func Delete(c *gin.Context) { //deletes message
 		}
 	}
 
-	var statusMessage string
-
-	if isDm {
-		statusMessage = events.DELETE_DM_MESSAGE
-	} else {
-		statusMessage = events.DELETE_GUILD_MESSAGE
-	}
-
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.Msg{
@@ -176,7 +168,7 @@ func Delete(c *gin.Context) { //deletes message
 			GuildId:   intGuildId,
 			RequestId: requestId,
 		},
-		Event: statusMessage,
+		Event: events.MESSAGE_DELETE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)
@@ -240,20 +232,12 @@ func Clear(c *gin.Context) {
 			}
 		}
 	}
-	var statusMessage string
-
-	if isDm {
-		statusMessage = events.CLEAR_USER_DM_MESSAGES
-	} else {
-		statusMessage = events.CLEAR_GUILD_MESSAGES
-	}
-
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Guild{
+		Data: events.Msg{
 			GuildId: intGuildId,
 		},
-		Event: statusMessage,
+		Event: events.MESSAGES_GUILD_CLEAR,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

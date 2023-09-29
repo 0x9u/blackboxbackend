@@ -285,10 +285,8 @@ func editSelf(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfo,
-		Event: events.UPDATE_SELF_USER_INFO,
+		Event: events.USER_INFO_UPDATE,
 	}
-
-	wsclient.Pools.BroadcastClient(user.Id, res)
 
 	newUserInfoOtherRes := newUserInfo
 
@@ -298,12 +296,12 @@ func editSelf(c *gin.Context) {
 	otherRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  newUserInfoOtherRes,
-		Event: events.UPDATE_USER_INFO,
+		Event: events.USER_INFO_UPDATE,
 	}
 
 	userIdRows, err := db.Db.Query(
 		`(SELECT DISTINCT userguilds.user_id AS user_id FROM userguilds WHERE EXISTS (SELECT 1 FROM userguilds AS ug2 WHERE ug2.user_id = $1 AND ug2.guild_id = userguilds.guild_id) AND userguilds.user_id != $1)
-		UNION (SELECT DISTINCT friend_id AS user_id FROM friends WHERE user_id = $1)
+		UNION (SELECT DISTINCT friend_id AS user_id FROM friends WHERE user_id = $1) UNION (SELECT $1 AS user_id)
 		`, user.Id)
 	if err != nil {
 		errors.SendErrorResponse(c, err, errors.StatusInternalError)
@@ -316,7 +314,11 @@ func editSelf(c *gin.Context) {
 			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
-		wsclient.Pools.BroadcastClient(userId, otherRes)
+		if userId == user.Id {
+			wsclient.Pools.BroadcastClient(userId, res)
+		} else {
+			wsclient.Pools.BroadcastClient(userId, otherRes)
+		}
 	}
 	c.Status(http.StatusNoContent)
 }

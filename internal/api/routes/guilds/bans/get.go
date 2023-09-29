@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"net/http"
 	"regexp"
-	"strconv"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -60,7 +59,6 @@ func Get(c *gin.Context) {
 		return
 	}
 	userlist := []events.Member{}
-	intGuildId, err := strconv.ParseInt(guildId, 10, 64)
 	if err != nil {
 		errors.SendErrorResponse(c, err, errors.StatusInternalError)
 		return
@@ -77,7 +75,6 @@ func Get(c *gin.Context) {
 		} else {
 			user.UserInfo.ImageId = -1
 		}
-		user.GuildId = intGuildId
 		userlist = append(userlist, user)
 	}
 	c.JSON(http.StatusOK, userlist)

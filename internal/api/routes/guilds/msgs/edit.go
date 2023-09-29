@@ -137,8 +137,9 @@ func Edit(c *gin.Context) {
 	mentions := events.MentionExp.FindAllStringSubmatch(msg.Content, -1)
 	logger.Debug.Println("msgcontent:", msg.Content)
 	logger.Debug.Println("mentions:", mentions)
-	msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
-	msg.Mentions = make([]events.User, 0, len(mentions))
+	msg.MentionsEveryone = new(bool)
+	*msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
+	msg.Mentions = &[]events.User{}
 
 	if len(mentions) > 0 {
 		logger.Debug.Println("mentions found")
@@ -171,7 +172,7 @@ func Edit(c *gin.Context) {
 				}
 			}
 
-			msg.Mentions = append(msg.Mentions, mentionUser)
+			*msg.Mentions = append(*msg.Mentions, mentionUser)
 		}
 	}
 
@@ -199,13 +200,7 @@ func Edit(c *gin.Context) {
 		}
 	}
 
-	var statusMessage string
-
-	if isDm {
-		statusMessage = events.UPDATE_DM_MESSAGE
-	} else {
-		statusMessage = events.UPDATE_GUILD_MESSAGE
-	}
+	msg.Attachments = &[]events.Attachment{}
 
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -216,12 +211,13 @@ func Edit(c *gin.Context) {
 			RequestId:        requestId,
 			Mentions:         msg.Mentions,
 			MentionsEveryone: msg.MentionsEveryone,
+			Attachments:      msg.Attachments,
 			Modified:         timestamp,
 			Author: events.User{
 				UserId: user.Id,
 			},
 		},
-		Event: statusMessage,
+		Event: events.MESSAGE_UPDATE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/asianchinaboi/backendserver/internal/api/middleware"
 	"github.com/asianchinaboi/backendserver/internal/db"
@@ -54,23 +55,19 @@ func Typing(c *gin.Context) {
 		return
 	}
 
-	var statusMessage string
-	if isDm {
-		statusMessage = events.USER_DM_TYPING
-	} else {
-		statusMessage = events.USER_TYPING
-	}
 	res := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
-		Data: events.Member{
+		Data: events.Typing{
 			GuildId: intGuildId,
+			Time:    time.Now().UTC(),
 			UserInfo: events.User{
 				UserId: user.Id,
 				Name:   username,
 			},
 		},
-		Event: statusMessage,
+		Event: events.TYPING_START,
 	}
+
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)
 

@@ -69,7 +69,7 @@ func Kick(c *gin.Context) {
 		Data: events.Guild{
 			GuildId: intGuildId,
 		},
-		Event: events.DELETE_GUILD,
+		Event: events.GUILD_DELETE,
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -79,7 +79,7 @@ func Kick(c *gin.Context) {
 				UserId: intUserId,
 			},
 		},
-		Event: events.REMOVE_USER_GUILDLIST,
+		Event: events.MEMBER_REMOVE,
 	}
 	wsclient.Pools.BroadcastClient(intUserId, kickRes)
 	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, intUserId)

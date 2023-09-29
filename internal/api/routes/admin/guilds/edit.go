@@ -262,7 +262,7 @@ func Edit(c *gin.Context) {
 	guildRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  bodyRes,
-		Event: events.UPDATE_GUILD,
+		Event: events.GUILD_UPDATE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
 

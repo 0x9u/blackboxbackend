@@ -62,16 +62,10 @@ func clearUserMsg(c *gin.Context) {
 			},
 			GuildId: guildId,
 		}
-		var statusMessage string
-		if isDm {
-			statusMessage = events.CLEAR_USER_DM_MESSAGES
-		} else {
-			statusMessage = events.CLEAR_USER_MESSAGES
-		}
 		res := wsclient.DataFrame{
 			Op:    wsclient.TYPE_DISPATCH,
 			Data:  clearMsg,
-			Event: statusMessage,
+			Event: events.MESSAGES_USER_CLEAR,
 		}
 		if err := wsclient.Pools.BroadcastGuild(guildId, res); err != nil && err != errors.ErrGuildPoolNotExist {
 			errors.SendErrorResponse(c, err, errors.StatusInternalError)

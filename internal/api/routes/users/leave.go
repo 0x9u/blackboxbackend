@@ -84,7 +84,7 @@ func leaveGuild(c *gin.Context) {
 		Data: events.Guild{
 			GuildId: intGuildId,
 		},
-		Event: events.DELETE_GUILD,
+		Event: events.GUILD_DELETE,
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -94,7 +94,7 @@ func leaveGuild(c *gin.Context) {
 				UserId: user.Id,
 			},
 		},
-		Event: events.REMOVE_USER_GUILDLIST,
+		Event: events.MEMBER_REMOVE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, user.Id)

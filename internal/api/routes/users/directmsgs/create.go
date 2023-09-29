@@ -90,7 +90,7 @@ func Create(c *gin.Context) {
 				},
 				Unread: events.UnreadMsg{},
 			},
-			Event: events.CREATE_DM,
+			Event: events.DM_CREATE,
 		}
 		wsclient.Pools.BroadcastClient(user.Id, res)
 
@@ -154,7 +154,7 @@ func Create(c *gin.Context) {
 			},
 			Unread: events.UnreadMsg{},
 		},
-		Event: events.CREATE_DM,
+		Event: events.DM_CREATE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 

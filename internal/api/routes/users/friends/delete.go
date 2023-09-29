@@ -59,14 +59,14 @@ func Delete(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.REMOVE_USER_FRIENDLIST,
+		Event: events.USER_FRIEND_REMOVE,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.REMOVE_USER_FRIENDLIST,
+		Event: events.USER_FRIEND_REMOVE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)

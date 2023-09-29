@@ -106,7 +106,7 @@ func Create(c *gin.Context) {
 					UserId: intUserId,
 				},
 			},
-			Event: events.ADD_USER_GUILDADMIN,
+			Event: events.MEMBER_ADMIN_ADD,
 		}
 		wsclient.Pools.BroadcastClient(adminUserId, res)
 	}

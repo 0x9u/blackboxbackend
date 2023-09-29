@@ -106,7 +106,7 @@ func Delete(c *gin.Context) {
 				UserInfo: events.User{
 					UserId: intUserId,
 				}},
-			Event: events.REMOVE_USER_GUILDADMIN,
+			Event: events.MEMBER_ADMIN_REMOVE,
 		}
 		wsclient.Pools.BroadcastClient(adminUserId, res)
 	}

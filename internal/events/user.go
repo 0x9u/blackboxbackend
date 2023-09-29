@@ -19,9 +19,9 @@ type User struct {
 }
 
 type Member struct { //may use for nicks later
-	GuildId  int64 `json:"guildId,string"`
-	Admin    bool  `json:"admin"`
-	Owner    bool  `json:"owner"`
+	GuildId  int64 `json:"guildId,string,omitempty"`
+	Admin    *bool `json:"admin,omitempty"`
+	Owner    *bool `json:"owner,omitempty"`
 	UserInfo User  `json:"userInfo"`
 }
 

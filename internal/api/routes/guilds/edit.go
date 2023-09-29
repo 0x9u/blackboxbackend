@@ -257,15 +257,20 @@ func editGuild(c *gin.Context) {
 		var inGuild bool
 		if err := db.Db.QueryRow(`
 		SELECT EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$2),
-		EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$2 AND user_id=$3 AND owner=true)
+		EXISTS (SELECT 1 FROM userguilds WHERE guild_id=$1 AND user_id=$3 AND owner=true)
 		`, guildId, newSettings.OwnerId, user.Id).Scan(&inGuild, &isOwner); err != nil {
 			errors.SendErrorResponse(c, err, errors.StatusInternalError)
 			return
 		}
-		if isOwner {
+		if !isOwner {
+			errors.SendErrorResponse(c, errors.ErrNotGuildAuthorised, errors.StatusNotGuildAuthorised)
+			return
+		}
+		if *newSettings.OwnerId == user.Id {
 			errors.SendErrorResponse(c, errors.ErrAlreadyOwner, errors.StatusAlreadyOwner)
 			return
 		}
+
 		if !inGuild {
 			errors.SendErrorResponse(c, errors.ErrNotInGuild, errors.StatusNotInGuild)
 			return
@@ -292,7 +297,7 @@ func editGuild(c *gin.Context) {
 	guildRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  bodyRes,
-		Event: events.UPDATE_GUILD,
+		Event: events.GUILD_UPDATE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, guildRes)
 

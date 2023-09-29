@@ -77,7 +77,7 @@ func Create(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  inviteBody,
-		Event: events.CREATE_INVITE,
+		Event: events.INVITE_CREATE,
 	}
 
 	wsclient.Pools.BroadcastGuild(intGuildId, res)

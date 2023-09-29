@@ -94,7 +94,7 @@ func Get(c *gin.Context) { //sends message history
 			return
 		}
 
-		message.Mentions = []events.User{}
+		message.Mentions = &[]events.User{}
 
 		for mentions.Next() {
 			var mentionUser events.User
@@ -102,7 +102,7 @@ func Get(c *gin.Context) { //sends message history
 				errors.SendErrorResponse(c, err, errors.StatusInternalError)
 				return
 			}
-			message.Mentions = append(message.Mentions, mentionUser)
+			*message.Mentions = append(*message.Mentions, mentionUser)
 		}
 		mentions.Close()
 
@@ -112,7 +112,7 @@ func Get(c *gin.Context) { //sends message history
 			return
 		}
 
-		message.Attachments = []events.Attachment{}
+		message.Attachments = &[]events.Attachment{}
 
 		for attachments.Next() {
 			var attachment events.Attachment
@@ -121,7 +121,7 @@ func Get(c *gin.Context) { //sends message history
 				return
 			}
 
-			message.Attachments = append(message.Attachments, attachment)
+			*message.Attachments = append(*message.Attachments, attachment)
 		}
 		attachments.Close()
 

@@ -83,7 +83,7 @@ func Delete(c *gin.Context) {
 			Invite:  invite,
 			GuildId: intGuildId,
 		},
-		Event: events.DELETE_INVITE,
+		Event: events.INVITE_DELETE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res)
 	c.Status(http.StatusNoContent)

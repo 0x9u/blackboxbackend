@@ -101,7 +101,7 @@ func joinGuild(c *gin.Context) {
 	res := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  guild,
-		Event: events.CREATE_GUILD,
+		Event: events.GUILD_CREATE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 
@@ -126,7 +126,7 @@ func joinGuild(c *gin.Context) {
 	guildRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  userData,
-		Event: events.ADD_USER_GUILDLIST,
+		Event: events.MEMBER_ADD,
 	}
 	wsclient.Pools.BroadcastGuild(guild.GuildId, guildRes)
 	wsclient.Pools.AddUserToGuildPool(guild.GuildId, user.Id)

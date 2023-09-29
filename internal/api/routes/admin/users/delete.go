@@ -156,14 +156,14 @@ func Delete(c *gin.Context) {
 					UserId: intUserId,
 				},
 			},
-			Event: events.CLEAR_USER_MESSAGES,
+			Event: events.MESSAGES_USER_CLEAR,
 		})
 		wsclient.Pools.BroadcastGuild(guildId, wsclient.DataFrame{
 			Op: wsclient.TYPE_DISPATCH,
 			Data: events.Msg{
 				GuildId: guildId,
 			},
-			Event: events.REMOVE_USER_GUILDLIST,
+			Event: events.MEMBER_REMOVE,
 		})
 	}
 
@@ -175,7 +175,7 @@ func Delete(c *gin.Context) {
 				Data: events.Dm{
 					DmId: ownedGuild.Id,
 				},
-				Event: events.DELETE_DM,
+				Event: events.DM_DELETE,
 			})
 		} else {
 			wsclient.Pools.BroadcastGuild(ownedGuild.Id, wsclient.DataFrame{ //makes the client delete guild
@@ -183,7 +183,7 @@ func Delete(c *gin.Context) {
 				Data: events.Guild{
 					GuildId: ownedGuild.Id,
 				},
-				Event: events.DELETE_GUILD,
+				Event: events.GUILD_DELETE,
 			})
 		}
 	}

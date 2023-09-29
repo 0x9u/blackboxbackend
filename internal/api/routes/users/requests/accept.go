@@ -116,14 +116,14 @@ func Accept(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.REMOVE_FRIEND_REQUEST,
+		Event: events.USER_FRIEND_INCOMING_REQUEST_REMOVE,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
 		Data: events.User{
 			UserId: user.Id,
 		},
-		Event: events.REMOVE_FRIEND_INCOMING_REQUEST,
+		Event: events.USER_FRIEND_REQUEST_REMOVE,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, res)
@@ -136,7 +136,7 @@ func Accept(c *gin.Context) {
 			Name:    friendUsername,
 			ImageId: resFriendImage,
 		},
-		Event: events.ADD_USER_FRIENDLIST,
+		Event: events.USER_FRIEND_ADD,
 	}
 	resFriendAfter := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -145,7 +145,7 @@ func Accept(c *gin.Context) {
 			Name:    clientUsername,
 			ImageId: resClientImage,
 		},
-		Event: events.ADD_USER_FRIENDLIST,
+		Event: events.USER_FRIEND_ADD,
 	}
 
 	wsclient.Pools.BroadcastClient(user.Id, resAfter)

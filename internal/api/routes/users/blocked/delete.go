@@ -58,7 +58,7 @@ func Delete(c *gin.Context) {
 		Data: events.User{
 			UserId: intUserId,
 		},
-		Event: events.REMOVE_USER_BLOCKEDLIST,
+		Event: events.USER_BLOCKED_REMOVE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	c.Status(http.StatusNoContent)

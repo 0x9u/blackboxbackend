@@ -65,6 +65,7 @@ const (
 	StatusNoMsgContent
 	StatusMsgTooLong
 	StatusMsgNotExist
+	StatusMsgUserBlocked
 
 	StatusAllFieldsEmpty
 	StatusInvalidDetails
@@ -185,6 +186,8 @@ func getHTTPStatusCode(errorCode ErrCode) int {
 		return http.StatusBadRequest
 	case StatusMsgTooLong:
 		return http.StatusBadRequest
+	case StatusMsgUserBlocked:
+		return http.StatusForbidden
 	case StatusAllFieldsEmpty:
 		return http.StatusBadRequest
 	case StatusInvalidDetails:

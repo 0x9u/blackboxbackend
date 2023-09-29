@@ -61,11 +61,11 @@ func Decline(c *gin.Context) { //original sender of request can also decline
 	var eventTypeRes string
 	var eventTypeResFriend string
 	if isTheRequestor {
-		eventTypeRes = events.REMOVE_FRIEND_REQUEST
-		eventTypeResFriend = events.REMOVE_FRIEND_INCOMING_REQUEST
+		eventTypeRes = events.USER_FRIEND_REQUEST_REMOVE
+		eventTypeResFriend = events.USER_FRIEND_INCOMING_REQUEST_REMOVE
 	} else {
-		eventTypeRes = events.REMOVE_FRIEND_INCOMING_REQUEST
-		eventTypeResFriend = events.REMOVE_FRIEND_REQUEST
+		eventTypeRes = events.USER_FRIEND_INCOMING_REQUEST_REMOVE
+		eventTypeResFriend = events.USER_FRIEND_REQUEST_REMOVE
 	}
 
 	res := wsclient.DataFrame{

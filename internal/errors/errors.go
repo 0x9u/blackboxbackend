@@ -83,9 +83,10 @@ var (
 
 	//MSG
 
-	ErrNoMsgContent = errors.New("msg: no content")
-	ErrMsgTooLong   = errors.New("msg: length too long")
-	ErrMsgNotExist  = errors.New("msg: doesn't exist")
+	ErrNoMsgContent   = errors.New("msg: no content")
+	ErrMsgTooLong     = errors.New("msg: length too long")
+	ErrMsgNotExist    = errors.New("msg: doesn't exist")
+	ErrMsgUserBlocked = errors.New("msg: recipient is blocked or has blocked user")
 
 	//PATCH
 

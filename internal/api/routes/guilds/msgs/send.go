@@ -57,6 +57,9 @@ func Send(c *gin.Context) {
 	fileSucessful := false
 
 	contentType := c.GetHeader("Content-Type")
+
+	msg.Attachments = &[]events.Attachment{}
+
 	if strings.HasPrefix(contentType, "multipart/form-data") {
 		form, err := c.MultipartForm()
 		if err != nil {
@@ -65,7 +68,6 @@ func Send(c *gin.Context) {
 		}
 
 		attachmentFiles = form.File["file"]
-		msg.Attachments = []events.Attachment{}
 		defer func() {
 			if !fileSucessful {
 				for _, id := range fileIds {
@@ -143,7 +145,8 @@ func Send(c *gin.Context) {
 	mentions := events.MentionExp.FindAllStringSubmatch(msg.Content, -1)
 	logger.Debug.Println("msgcontent:", msg.Content)
 	logger.Debug.Println("mentions:", mentions)
-	msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
+	msg.MentionsEveryone = new(bool)
+	*msg.MentionsEveryone = events.MentionEveryoneExp.MatchString(msg.Content)
 
 	if isChatSaveOn {
 		if err := tx.QueryRowContext(ctx, "INSERT INTO msgs (id, content, user_id, guild_id, mentions_everyone) VALUES ($1, $2, $3, $4, $5) RETURNING created", msg.MsgId, msg.Content, user.Id, guildId, msg.MentionsEveryone).Scan(&msg.Created); err != nil {
@@ -154,11 +157,11 @@ func Send(c *gin.Context) {
 		msg.Created = time.Now().UTC()
 	}
 
-	msg.Mentions = make([]events.User, 0, len(mentions))
+	msg.Mentions = &[]events.User{}
 
 	if len(mentions) > 0 {
 		logger.Debug.Println("mentions found")
-		seen := make(map[int64]bool)
+		seen := map[int64]bool{}
 		for _, mention := range mentions {
 			mentionUserId, err := strconv.ParseInt(mention[1], 10, 64)
 			if err != nil {
@@ -187,7 +190,7 @@ func Send(c *gin.Context) {
 				}
 			}
 
-			msg.Mentions = append(msg.Mentions, mentionUser)
+			*msg.Mentions = append(*msg.Mentions, mentionUser)
 		}
 	}
 
@@ -213,7 +216,7 @@ func Send(c *gin.Context) {
 
 		attachment.Type = http.DetectContentType(fileBytes)
 		logger.Debug.Println("uploaded type", attachment.Type)
-		msg.Attachments = append(msg.Attachments, attachment)
+		*msg.Attachments = append(*msg.Attachments, attachment)
 
 		filesize := len(fileBytes)
 
@@ -270,6 +273,17 @@ func Send(c *gin.Context) {
 	}
 
 	if isDm {
+		var isBlocked bool
+		if err := db.Db.QueryRow(`
+		SELECT EXISTS (SELECT 1 FROM blocked INNER JOIN userguilds ON (blocked.blocked_id = userguilds.receiver_id OR blocked.user_id = userguilds.receiver_id) AND userguilds.guild_id = $2
+			WHERE blocked.user_id = $1 OR blocked.blocked_id = $1)`, user.Id, guildId).Scan(&isBlocked); err != nil {
+			errors.SendErrorResponse(c, err, errors.StatusInternalError)
+			return
+		}
+		if isBlocked {
+			errors.SendErrorResponse(c, errors.ErrMsgUserBlocked, errors.StatusMsgUserBlocked)
+			return
+		}
 		rows, err := tx.QueryContext(ctx, `WITH closed_dm_users AS (UPDATE userguilds SET left_dm = false WHERE guild_id = $1 AND left_dm = true RETURNING user_id, receiver_id, guild_id) 
 		SELECT closed_dm_users.user_id, receiver_id, closed_dm_users.guild_id, users.username, files.id FROM closed_dm_users INNER JOIN users ON users.id = receiver_id LEFT JOIN files ON files.user_id = receiver_id`, guildId)
 		if err != nil {
@@ -303,7 +317,7 @@ func Send(c *gin.Context) {
 					},
 					Unread: events.UnreadMsg{}, //temp will fill unreadmsgs later
 				},
-				Event: events.CREATE_DM,
+				Event: events.DM_CREATE,
 			}
 			wsclient.Pools.BroadcastClient(userId, res)
 		}
@@ -333,13 +347,6 @@ func Send(c *gin.Context) {
 
 	fileSucessful = true
 
-	var statusMessage string
-	if isDm {
-		statusMessage = events.CREATE_DM_MESSAGE
-	} else {
-		statusMessage = events.CREATE_GUILD_MESSAGE
-	}
-
 	if !isChatSaveOn {
 		msg.RequestId = fmt.Sprintf("%d-%d", user.Id, msg.MsgId)
 	}
@@ -347,7 +354,7 @@ func Send(c *gin.Context) {
 	wsclient.Pools.BroadcastGuild(intGuildId, wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  msg,
-		Event: statusMessage,
+		Event: events.MESSAGE_CREATE,
 	})
 	c.Status(http.StatusNoContent)
 }

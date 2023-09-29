@@ -122,7 +122,7 @@ func Create(c *gin.Context) {
 			Name:    friendUsername,
 			ImageId: friendImageId,
 		},
-		Event: events.ADD_FRIEND_REQUEST,
+		Event: events.USER_FRIEND_REQUEST_ADD,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -131,7 +131,7 @@ func Create(c *gin.Context) {
 			Name:    username,
 			ImageId: userImageId,
 		},
-		Event: events.ADD_FRIEND_INCOMING_REQUEST,
+		Event: events.USER_FRIEND_INCOMING_REQUEST_ADD,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(intUserId, resFriend)
@@ -250,7 +250,7 @@ func CreateByName(c *gin.Context) {
 			Name:    body.Username,
 			ImageId: friendImageId,
 		},
-		Event: events.ADD_FRIEND_REQUEST,
+		Event: events.USER_FRIEND_REQUEST_ADD,
 	}
 	resFriend := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -259,7 +259,7 @@ func CreateByName(c *gin.Context) {
 			Name:    username,
 			ImageId: userImageId,
 		},
-		Event: events.ADD_FRIEND_INCOMING_REQUEST,
+		Event: events.USER_FRIEND_INCOMING_REQUEST_ADD,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	wsclient.Pools.BroadcastClient(userId, resFriend)

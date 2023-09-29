@@ -133,7 +133,7 @@ func Ban(c *gin.Context) {
 					ImageId: resImageId,
 				},
 			},
-			Event: events.ADD_USER_BANLIST,
+			Event: events.MEMBER_BAN_ADD,
 		}
 		wsclient.Pools.BroadcastClient(adminUserId, res)
 	}
@@ -143,7 +143,7 @@ func Ban(c *gin.Context) {
 		Data: events.Guild{
 			GuildId: intGuildId,
 		},
-		Event: events.DELETE_GUILD,
+		Event: events.GUILD_DELETE,
 	}
 	guildRes := wsclient.DataFrame{
 		Op: wsclient.TYPE_DISPATCH,
@@ -153,7 +153,7 @@ func Ban(c *gin.Context) {
 				UserId: intUserId,
 			},
 		},
-		Event: events.REMOVE_USER_GUILDLIST,
+		Event: events.MEMBER_REMOVE,
 	}
 	wsclient.Pools.BroadcastClient(intUserId, banRes)
 	wsclient.Pools.RemoveUserFromGuildPool(intGuildId, intUserId)

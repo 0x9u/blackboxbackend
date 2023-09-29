@@ -13,17 +13,17 @@ type UnreadMsg struct {
 }
 
 type Msg struct { //id and request id not omitted for checking purposes
-	MsgId            int64        `json:"id,string"`
-	Author           User         `json:"author,omitempty"`         // author id aka user id
-	Content          string       `json:"content"`                  // message content
-	GuildId          int64        `json:"guildId,omitempty,string"` // Chat id
-	Created          time.Time    `json:"created,omitempty"`
-	Modified         time.Time    `json:"modified,omitempty"`
-	MsgSaved         bool         `json:"msgSaved,omitempty"` //shows if the message is saved or not
-	RequestId        string       `json:"requestId"`
-	MentionsEveryone bool         `json:"mentionsEveryone"`
-	Mentions         []User       `json:"mentions"`
-	Attachments      []Attachment `json:"attachments"`
+	MsgId            int64         `json:"id,string"`
+	GuildId          int64         `json:"guildId,string"` // Chat id
+	RequestId        string        `json:"requestId"`
+	Content          string        `json:"content"` // message content
+	MentionsEveryone *bool         `json:"mentionsEveryone,omitempty"`
+	Mentions         *[]User       `json:"mentions,omitempty"`
+	Attachments      *[]Attachment `json:"attachments,omitempty"`
+	Author           User          `json:"author,omitempty"` // author id aka user id
+	Created          time.Time     `json:"created,omitempty"`
+	Modified         time.Time     `json:"modified,omitempty"`
+	MsgSaved         bool          `json:"msgSaved,omitempty"` //shows if the message is saved or not
 }
 
 type Attachment struct {

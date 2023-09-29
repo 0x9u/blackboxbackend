@@ -186,12 +186,12 @@ func createGuild(c *gin.Context) {
 			Name:    guild.Name,
 			ImageId: guild.ImageId,
 		},
-		Event: events.CREATE_GUILD,
+		Event: events.GUILD_CREATE,
 	}
 	invRes := wsclient.DataFrame{
 		Op:    wsclient.TYPE_DISPATCH,
 		Data:  invite,
-		Event: events.CREATE_INVITE,
+		Event: events.INVITE_CREATE,
 	}
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	//shit i forgot to create a pool

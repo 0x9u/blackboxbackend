@@ -118,7 +118,7 @@ func deleteGuild(c *gin.Context) {
 		Data: events.Guild{
 			GuildId: intGuildId,
 		},
-		Event: events.DELETE_GUILD,
+		Event: events.GUILD_DELETE,
 	}
 	wsclient.Pools.BroadcastGuild(intGuildId, res) // kick everyone out of the guild
 	c.Status(http.StatusNoContent)
