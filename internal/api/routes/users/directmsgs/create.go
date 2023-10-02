@@ -92,6 +92,7 @@ func Create(c *gin.Context) {
 			},
 			Event: events.DM_CREATE,
 		}
+		wsclient.Pools.AddUserToGuildPool(dmId, user.Id)
 		wsclient.Pools.BroadcastClient(user.Id, res)
 
 		c.Status(http.StatusCreated)
@@ -156,6 +157,7 @@ func Create(c *gin.Context) {
 		},
 		Event: events.DM_CREATE,
 	}
+	wsclient.Pools.AddUserToGuildPool(dmId, user.Id)
 	wsclient.Pools.BroadcastClient(user.Id, res)
 
 	c.Status(http.StatusCreated)

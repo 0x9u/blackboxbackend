@@ -106,7 +106,7 @@ func (c *wsClient) readData(body DataFrame) {
 		go c.tokenExpireDeadline(user.Expires)
 		c.uniqueId = session.GenerateRandString(32)
 
-		rows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1", c.id)
+		rows, err := db.Db.Query("SELECT guild_id FROM userguilds WHERE user_id=$1 AND (left_dm = false OR left_dm IS NULL)", c.id)
 		if err != nil {
 			logger.Error.Println(err)
 			c.quit()

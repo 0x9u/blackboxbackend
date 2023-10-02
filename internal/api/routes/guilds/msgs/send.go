@@ -319,6 +319,9 @@ func Send(c *gin.Context) {
 				},
 				Event: events.DM_CREATE,
 			}
+			logger.Debug.Printf("trying to user to dm in guild pool dmId: %d userId: %d\n", dmId, userId)
+			wsclient.Pools.AddUserToGuildPool(dmId, userId)
+			logger.Debug.Println("after adding :0")
 			wsclient.Pools.BroadcastClient(userId, res)
 		}
 	}

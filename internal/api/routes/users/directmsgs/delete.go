@@ -80,8 +80,9 @@ func Delete(c *gin.Context) {
 			},
 			Unread: events.UnreadMsg{},
 		},
-		Event: events.DM_CREATE,
+		Event: events.DM_DELETE,
 	}
+	wsclient.Pools.RemoveUserFromGuildPool(intDmId, user.Id)
 	wsclient.Pools.BroadcastClient(user.Id, res)
 	c.Status(http.StatusNoContent)
 }
