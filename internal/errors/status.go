@@ -6,7 +6,7 @@ import (
 	"github.com/asianchinaboi/backendserver/internal/logger"
 )
 
-type ErrCode int
+type ErrCode uint
 
 const (
 	StatusInternalError ErrCode = iota
