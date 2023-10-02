@@ -1,8 +1,0 @@
-1. Make sure to clear unreadmessages associated with guild breaks because of foreign key
-2. Remove foreign key for messages
-3. Return count of unread and message id last read
-add time column
-SELECT g.id, g.name, g.icon, g.owner_id FROM userguilds u INNER JOIN guilds g ON g.id = u.guild_id WHERE u.user_id=$1 AND u.banned = false
-SELECT COUNT(*), b.message_id FROM messages a INNER JOIN unreadmessages b ON b.guild_id=a.guild_id AND b.guild_id=$1 AND b.user_id=$2 AND a.id > b.message_id GROUP BY message_id
-SELECT g.id, g.name, g.icon, g.owner_id, COUNT* FROM userguilds u INNER JOIN guilds g ON g.id = u.guild_id INNER JOIN messages m ON m.guild_id = g.id INNER JOIN unreadmessages un ON un.guild_id = m.guild_id WHERE u.user_id=$1 AND u.banned = false
-row := db.QueryRow("SELECT COUNT(*), b.message_id FROM messages a INNER JOIN unreadmessages b ON b.guild_id=a.guild_id AND b.guild_id=$1 AND b.user_id=$2 AND a.id > b.message_id GROUP BY message_id", guild, user.Id)
