@@ -88,7 +88,7 @@ func ValidateUserInput(body User) (errors.ErrCode, error) {
 		return errors.StatusInvalidEmail, errors.ErrInvalidEmail
 	}
 
-	return -1, nil
+	return 0, nil
 }
 
 func validateUsername(name string) (bool, error) {

@@ -39,7 +39,7 @@ func ValidateGuildInput(body *Guild) (errors.ErrCode, error) {
 	if !nameValid {
 		return errors.StatusInvalidGuildName, errors.ErrInvalidGuildName
 	}
-	return -1, nil
+	return 0, nil
 }
 
 func ValidateGuildName(name string) (bool, error) {
