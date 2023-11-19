@@ -1,6 +1,7 @@
 package session
 
 import (
+	crypto "crypto/rand"
 	"database/sql"
 	"encoding/hex"
 	"math/rand"
@@ -90,7 +91,7 @@ func GenToken(id int64) (Session, error) {
 
 func generateSecureToken(l int) (string, error) { //also copied from stackoverflow probs still insecure
 	token := make([]byte, l)
-	if _, err := rand.Read(token); err != nil {
+	if _, err := crypto.Read(token); err != nil {
 		return "", err
 	}
 	return hex.EncodeToString(token), nil //generates 64 char string
